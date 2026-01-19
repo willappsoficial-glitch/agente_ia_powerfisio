@@ -1,0 +1,15 @@
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'Roboto', sans-serif; background-color: #1a1a1a; display: flex; justify-content: center; align-items: center; height: 100vh; }
+
+#chat-wrapper { width: 360px; height: 550px; background: #fff; border-radius: 15px; display: flex; flex-direction: column; overflow: hidden; }
+header { background: #d32f2f; color: white; padding: 15px; display: flex; align-items: center; gap: 10px; font-weight: bold; }
+.avatar-circle { width: 30px; height: 30px; background: rgba(255,255,255,0.3); border-radius: 50%; display: flex; align-items: center; justify-content: center; }
+
+#chat-content { flex: 1; padding: 15px; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; background: #f4f4f4; }
+.bubble { padding: 10px 14px; border-radius: 15px; font-size: 14px; max-width: 80%; line-height: 1.4; }
+.user { align-self: flex-end; background: #d32f2f; color: white; border-bottom-right-radius: 2px; }
+.max { align-self: flex-start; background: #e0e0e0; color: #333; border-bottom-left-radius: 2px; }
+
+footer { padding: 10px; border-top: 1px solid #ddd; display: flex; gap: 5px; }
+input { flex: 1; padding: 12px; border: 1px solid #ccc; border-radius: 25px; outline: none; }
+button { background: #d32f2f; color: white; border: none; padding: 10px 15px; border-radius: 20px; cursor: pointer; }

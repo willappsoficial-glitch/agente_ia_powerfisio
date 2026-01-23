@@ -1,24 +1,44 @@
 <!DOCTYPE html>
-<html lang="pt-br">
+<html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Max - Academia Powerfisio</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Max - Powerfisio</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
 </head>
 <body>
-    <div id="chat-wrapper">
-        <header>
-            <div class="avatar-circle">M</div>
-            <span>Max - Powerfisio</span>
-        </header>
-        <main id="chat-content"></main>
-        <footer>
-            <input type="text" id="user-input" placeholder="Digite seu CPF ou dúvida...">
-            <button id="send-btn">Enviar</button>
-        </footer>
+
+    <header>
+        <div class="avatar">P</div>
+        
+        <div class="header-info">
+            <h1>Max - Powerfisio</h1>
+            <p><span class="status-dot"></span> Online agora</p>
+        </div>
+    </header>
+
+    <div id="chat-container">
+        <div class="message bot">
+            Fala, monstro! 💪 Sou o <strong>Max</strong>, seu Personal IA da Powerfisio.<br><br>
+            Mande seu <strong>CPF</strong> para ver o treino de hoje ou tire suas dúvidas sobre exercícios!
+        </div>
+        
+        <div class="typing-indicator" id="loading">
+            <div class="dot"></div>
+            <div class="dot"></div>
+            <div class="dot"></div>
+        </div>
     </div>
+
+    <div class="input-area">
+        <input type="text" id="userInput" placeholder="Digite seu CPF ou dúvida..." autocomplete="off">
+        <button onclick="enviarMensagem()">
+            <svg viewBox="0 0 24 24"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"></path></svg>
+        </button>
+    </div>
+
     <script src="script.js"></script>
+
 </body>
 </html>

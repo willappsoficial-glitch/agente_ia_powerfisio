@@ -1,39 +1,76 @@
-// ATENÇÃO: Gere um NOVO deploy e cole a URL aqui
+// ============================================================
+// ⚠️ COLE AQUI O LINK DO SEU WEB APP (APPS SCRIPT)
+// ============================================================
 const API_URL = "https://script.google.com/macros/s/AKfycbwE4GWn_b-LDGT827HexO49mhsmjv0FDWRhzacw_V_bCSwPZeZClNl8SSqHhrZ7gIA9ag/exec"; 
+// ============================================================
 
-const input = document.getElementById('user-input');
-const btn = document.getElementById('send-btn');
-const chat = document.getElementById('chat-content');
+const chatContainer = document.getElementById('chat-container');
+const userInput = document.getElementById('userInput');
+const loading = document.getElementById('loading');
 
-async function falarComMax() {
-    const msg = input.value.trim();
-    if (!msg) return;
+// Enviar com Enter
+userInput.addEventListener('keypress', function (e) {
+    if (e.key === 'Enter') enviarMensagem();
+});
 
-    appendMessage(msg, 'user');
-    input.value = '';
-    const loading = appendMessage("O Max está consultando o sistema...", 'max');
+async function enviarMensagem() {
+    const texto = userInput.value.trim();
+    if (!texto) return;
+
+    // 1. Adiciona msg do usuário
+    addMessage(texto, 'user');
+    userInput.value = '';
+    userInput.focus();
+
+    // 2. Mostra "Digitando..."
+    showLoading(true);
 
     try {
+        // 3. Envia para o Google Apps Script
         const response = await fetch(API_URL, {
             method: 'POST',
-            body: JSON.stringify({ mensagem: msg }),
-            headers: { 'Content-Type': 'text/plain' }
+            body: JSON.stringify({ mensagem: texto })
         });
+        
+        // 4. Recebe a resposta
         const data = await response.json();
-        loading.innerText = data.resposta;
-    } catch (err) {
-        loading.innerText = "Max offline. Verifique a URL do App Script e o deploy.";
+        
+        // 5. Mostra a resposta formatada
+        showLoading(false);
+        const respostaFormatada = formatarTexto(data.resposta);
+        addMessage(respostaFormatada, 'bot');
+
+    } catch (error) {
+        showLoading(false);
+        addMessage("Opa, tive um erro de conexão. Tente de novo!", 'bot');
+        console.error(error);
     }
 }
 
-function appendMessage(txt, side) {
+function addMessage(text, sender) {
+    loading.style.display = 'none';
+
     const div = document.createElement('div');
-    div.className = `bubble ${side}`;
-    div.innerText = txt;
-    chat.appendChild(div);
-    chat.scrollTop = chat.scrollHeight;
-    return div;
+    div.classList.add('message', sender);
+    div.innerHTML = text;
+    
+    chatContainer.insertBefore(div, loading);
+    scrollToBottom();
 }
 
-btn.onclick = falarComMax;
-input.onkeypress = (e) => { if(e.key === 'Enter') falarComMax(); };
+function showLoading(show) {
+    loading.style.display = show ? 'flex' : 'none';
+    scrollToBottom();
+}
+
+function scrollToBottom() {
+    chatContainer.scrollTop = chatContainer.scrollHeight;
+}
+
+function formatarTexto(texto) {
+    if (!texto) return "";
+    let formatado = texto.replace(/\n/g, '<br>');
+    formatado = formatado.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>'); // Negrito
+    formatado = formatado.replace(/\*(.*?)\*/g, '<em>$1</em>'); // Itálico
+    return formatado;
+}

@@ -1,15 +1,15 @@
 /* --- DESIGN SYSTEM POWERFISIO --- */
 :root {
     /* Cores extraídas da Logo */
-    --primary: #FF5500; /* Laranja Vibrante (Ação/Botões) */
-    --primary-dark: #D44000; /* Laranja mais escuro para hover */
+    --primary: #FF5500; /* Laranja Vibrante */
+    --primary-dark: #D44000;
     
-    --brand-blue: #240046; /* Azul Roxo Profundo (Cabeçalho) */
-    --brand-blue-light: #3c096c; /* Variação mais clara para degradê */
+    --brand-blue: #240046; /* Azul Roxo Profundo */
+    --brand-blue-light: #3c096c;
 
     /* Tons Neutros Dark Mode */
-    --bg-app: #101014; /* Fundo quase preto, levemente azulado */
-    --bg-card: #1C1C24; /* Cartões e Input */
+    --bg-app: #101014;
+    --bg-card: #1C1C24;
     
     --text-main: #FFFFFF;
     --text-muted: #A0A0B0;
@@ -24,25 +24,32 @@ body {
     font-family: 'Inter', sans-serif;
     background-color: var(--bg-app);
     color: var(--text-main);
-    height: 100vh;
+    
+    /* CORREÇÃO MOBILE: */
+    /* Usa 100% da altura VISÍVEL real, descontando barras do navegador */
+    height: 100vh; /* Fallback para navegadores antigos */
+    height: 100dvh; /* O segredo para mobile moderno */
+    
     display: flex;
     flex-direction: column;
-    overflow: hidden;
+    overflow: hidden; /* Impede rolagem na página inteira */
 }
 
-/* --- HEADER (Identidade da Marca) --- */
+/* --- HEADER --- */
 header {
     background: linear-gradient(to right, var(--brand-blue), var(--brand-blue-light));
     padding: 15px 20px;
+    /* Adiciona espaço para o "notch" no topo se necessário */
+    padding-top: max(15px, env(safe-area-inset-top)); 
     display: flex;
     align-items: center;
     gap: 15px;
     border-bottom: 1px solid rgba(255, 255, 255, 0.1);
     box-shadow: 0 4px 20px rgba(0,0,0,0.4);
     z-index: 10;
+    flex-shrink: 0; /* Garante que o header não encolha */
 }
 
-/* Estilo para a Logo (se usar imagem) */
 .logo-img {
     width: 45px;
     height: 45px;
@@ -50,12 +57,11 @@ header {
     box-shadow: 0 0 10px rgba(0,0,0,0.3);
 }
 
-/* Estilo para o Avatar de Letra (P) */
 .avatar {
     width: 45px;
     height: 45px;
     background: var(--primary);
-    border-radius: 12px; /* Quadrado arredondado igual a logo */
+    border-radius: 12px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -64,13 +70,10 @@ header {
     color: white;
     box-shadow: 0 0 15px rgba(255, 85, 0, 0.4);
     position: relative;
-    font-style: italic; /* Para lembrar o P inclinado da logo */
+    font-style: italic;
 }
 
-/* Bolinha verde de online */
 .avatar::after, .logo-img::after { 
-    /* Nota: pseudo-elementos não funcionam bem em img tags, 
-       mas funciona na div avatar */
     content: '';
     position: absolute;
     bottom: -2px;
@@ -106,14 +109,18 @@ header {
 
 /* --- CHAT AREA --- */
 #chat-container {
-    flex: 1;
+    flex: 1; /* Ocupa todo o espaço disponível entre Header e Input */
     padding: 20px;
-    overflow-y: auto;
+    padding-bottom: 10px;
+    overflow-y: auto; /* Habilita rolagem só aqui dentro */
     display: flex;
     flex-direction: column;
     gap: 15px;
     scroll-behavior: smooth;
     background-image: radial-gradient(circle at center, rgba(36, 0, 70, 0.15) 0%, transparent 70%);
+    
+    /* Garante que a rolagem funcione bem no celular (inércia) */
+    -webkit-overflow-scrolling: touch; 
 }
 
 .message {
@@ -150,13 +157,17 @@ header {
 .bot ul { margin-left: 20px; margin-top: 8px; }
 .bot li { margin-bottom: 6px; }
 
-/* --- INPUT AREA --- */
+/* --- INPUT AREA (Ajuste Crítico Mobile) --- */
 .input-area {
     background: var(--bg-card);
     padding: 15px 20px;
     display: flex;
     gap: 12px;
     border-top: 1px solid rgba(255,255,255,0.05);
+    flex-shrink: 0; /* Impede que o input seja esmagado */
+    
+    /* CORREÇÃO: Adiciona espaço extra em baixo para a barra do iPhone/Android */
+    padding-bottom: max(15px, env(safe-area-inset-bottom));
 }
 
 input {
@@ -166,7 +177,7 @@ input {
     color: white;
     padding: 14px 22px;
     border-radius: 30px;
-    font-size: 16px;
+    font-size: 16px; /* Fonte 16px impede zoom automático no iPhone */
     outline: none;
     transition: all 0.3s ease;
 }
@@ -190,13 +201,13 @@ button {
     justify-content: center;
     transition: all 0.2s cubic-bezier(0.25, 1, 0.5, 1);
     box-shadow: 0 4px 12px rgba(255, 85, 0, 0.3);
+    flex-shrink: 0;
 }
 
-button:hover { transform: scale(1.05); background: var(--primary-dark); }
 button:active { transform: scale(0.95); }
 button svg { width: 22px; height: 22px; fill: white; margin-left: 2px; }
 
-/* --- LOADING ANIMATION --- */
+/* --- LOADING --- */
 .typing-indicator {
     display: none;
     align-self: flex-start;
@@ -215,7 +226,6 @@ button svg { width: 22px; height: 22px; fill: white; margin-left: 2px; }
     border-radius: 50%;
     animation: bounce 1.4s infinite ease-in-out both;
 }
-
 .dot:nth-child(1) { animation-delay: -0.32s; }
 .dot:nth-child(2) { animation-delay: -0.16s; }
 

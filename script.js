@@ -1,7 +1,7 @@
 // ============================================================
 // ⚠️ COLE AQUI O LINK DO SEU WEB APP (APPS SCRIPT)
 // ============================================================
-const API_URL = "https://script.google.com/macros/s/AKfycbwE4GWn_b-LDGT827HexO49mhsmjv0FDWRhzacw_V_bCSwPZeZClNl8SSqHhrZ7gIA9ag/exec"; 
+const API_URL = "https://script.google.com/macros/s/AKfycbwV5hjWHFnZw25ECLLc3FTscDn-yH0-LmScHrLq1tP3K0TER-lc0utyUA39nrI8xNvKgg/exec"; 
 // ============================================================
 
 const chatContainer = document.getElementById('chat-container');
@@ -74,3 +74,4 @@ function formatarTexto(texto) {
     formatado = formatado.replace(/\*(.*?)\*/g, '<em>$1</em>'); // Itálico
     return formatado;
 }
+

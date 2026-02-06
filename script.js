@@ -73,6 +73,7 @@ async function enviarMensagem() {
 }
 
 function addMessage(text, sender) {
+    // Garante que o loading sumiu antes de inserir
     loading.style.display = 'none';
 
     const div = document.createElement('div');
@@ -81,20 +82,33 @@ function addMessage(text, sender) {
     
     chatContainer.insertBefore(div, loading);
     
-    // --- SCROLL INTELIGENTE ---
+    // --- LÓGICA DE SCROLL CORRIGIDA ---
     if (sender === 'user') {
+        // Se for você, vai pro final pra ver o que digitou
         scrollToBottom();
     } else {
-        // Se for o Max, rola suavemente para o INÍCIO da mensagem dele
+        // Se for o Max, rola para o INÍCIO da mensagem dele
+        // com um pequeno atraso para o navegador desenhar a tela
         setTimeout(() => {
+            // Tenta usar o método nativo moderno
+            // 'start' alinha o topo da mensagem com o topo da tela
             div.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            
+            // AJUSTE FINO (Opcional): Se o cabeçalho estiver cobrindo o texto,
+            // podemos forçar um recuo extra de 80px para baixo:
+            // chatContainer.scrollBy({ top: -80, behavior: 'smooth' });
         }, 100);
     }
 }
 
 function showLoading(show) {
     loading.style.display = show ? 'flex' : 'none';
-    scrollToBottom();
+    
+    // CORREÇÃO: Só rola para o final se estiver MOSTRANDO o loading.
+    // Se estiver escondendo, não faz nada (deixa o addMessage cuidar do scroll).
+    if (show) {
+        scrollToBottom();
+    }
 }
 
 function scrollToBottom() {

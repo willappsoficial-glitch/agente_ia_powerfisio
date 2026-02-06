@@ -45,18 +45,26 @@
         </div>
     </div>
 
-    <div class="input-area">
-        <input type="text" id="userInput" placeholder="Digite seu CPF ou dúvida..." autocomplete="off">
-        <button onclick="enviarMensagem()">
-            <svg viewBox="0 0 24 24"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"></path></svg>
+    <div class="chips-area">
+    <button class="chip" onclick="usarChip('🏋️ Qual meu treino de hoje?')">🏋️ Treino de Hoje</button>
+    <button class="chip" onclick="usarChip('💧 Quanta água devo beber?')">💧 Meta de Água</button>
+    <button class="chip" onclick="usarChip('🍎 Dica pré-treino')">🍎 Pré-Treino</button>
+    <button class="chip" onclick="usarChip('🕒 Horário de funcionamento')">🕒 Horários</button>
+    <button class="chip" onclick="usarChip('💪 Calcular meu IMC')">💪 Calcular IMC</button>
+</div>
+
+<div class="input-area">
+    <input type="text" id="user-input" placeholder="Digite sua dúvida...">
+    <button onclick="enviarMensagem()">
         </button>
-    </div>
+</div>
 
     <script src="script.js"></script>
     <script src="https://unpkg.com/@lottiefiles/lottie-player@latest/dist/lottie-player.js"></script>
 
 </body>
 </html>
+
 
 
 

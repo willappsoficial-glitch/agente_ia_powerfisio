@@ -1,11 +1,11 @@
 // ============================================================
-// ⚠️ COLE AQUI O LINK DO SEU WEB APP (APPS SCRIPT)
+// ⚠️ SEU WEB APP
 // ============================================================
 const API_URL = "https://script.google.com/macros/s/AKfycbxCF_O_KVJ6nRTE_cvCkB-TwATpT2wC2xMyRI8Sb6yPNdYn8mWFEzdcQFAdu89fg31O2w/exec"; 
 // ============================================================
 
 const chatContainer = document.getElementById('chat-container');
-const userInput = document.getElementById('userInput');
+const userInput = document.getElementById('userInput'); // O ID CORRETO É ESSE
 const loading = document.getElementById('loading');
 
 // Enviar com Enter
@@ -14,26 +14,26 @@ userInput.addEventListener('keypress', function (e) {
 });
 
 async function enviarMensagem() {
-    // 1. CORREÇÃO: Busca pelo ID específico, não pelo primeiro botão
+    // Busca pelo ID específico
     const btn = document.getElementById('btn-enviar');
     
-    // Proteção: Se por algum motivo o botão não existir no HTML, para tudo
+    // Proteção
     if (!btn) {
-        console.error("Erro: Botão de enviar não encontrado (verifique o ID no HTML)");
+        console.error("Erro: Botão de enviar não encontrado.");
         return;
     }
 
-    if (btn.disabled) return; // Se já está enviando, ignora
+    if (btn.disabled) return; 
     
     const texto = userInput.value.trim();
     if (!texto) return;
 
-    // 2. Trava o botão visualmente
+    // Trava o botão
     btn.disabled = true;
     btn.style.opacity = "0.5";
     btn.style.cursor = "not-allowed";
     
-    // 3. Tenta animar o robô (Notebook)
+    // Tenta animar o robô (Notebook)
     try {
         const maxAnimacao = document.getElementById('max-animacao');
         if (maxAnimacao && typeof maxAnimacao.setSpeed === 'function') {
@@ -61,7 +61,7 @@ async function enviarMensagem() {
         showLoading(false);
         addMessage("⚠️ O Max teve um problema de conexão. Tente de novo!", 'bot');
     } finally {
-        // 4. DESTRAVA O BOTÃO CERTO
+        // DESTRAVA O BOTÃO
         btn.disabled = false;
         btn.style.opacity = "1";
         btn.style.cursor = "pointer";
@@ -75,6 +75,7 @@ async function enviarMensagem() {
         } catch (e) {}
     }
 }
+
 function addMessage(text, sender) {
     loading.style.display = 'none';
 
@@ -98,19 +99,20 @@ function scrollToBottom() {
 function formatarTexto(texto) {
     if (!texto) return "";
     let formatado = texto.replace(/\n/g, '<br>');
-    formatado = formatado.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>'); // Negrito
-    formatado = formatado.replace(/\*(.*?)\*/g, '<em>$1</em>'); // Itálico
+    formatado = formatado.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>'); 
+    formatado = formatado.replace(/\*(.*?)\*/g, '<em>$1</em>'); 
     return formatado;
 }
 
-// Função para os Botões de Ação Rápida
+// === AQUI ESTAVA O ERRO, AGORA ESTÁ CORRIGIDO ===
 function usarChip(pergunta) {
-    const input = document.getElementById('user-input');
+    // Estava 'user-input', mudei para 'userInput' (igual lá no topo)
+    const input = document.getElementById('userInput'); 
     
-    // 1. Preenche o campo
-    input.value = pergunta;
-    
-    // 2. Envia automaticamente
-    enviarMensagem();
+    if (input) {
+        input.value = pergunta;
+        enviarMensagem();
+    } else {
+        console.error("Erro: Campo de texto não encontrado.");
+    }
 }
-

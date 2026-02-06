@@ -101,6 +101,13 @@ function formatarTexto(texto) {
     return formatado;
 }
 
-
-
-
+// Função para os Botões de Ação Rápida
+function usarChip(pergunta) {
+    const input = document.getElementById('user-input');
+    
+    // 1. Preenche o campo
+    input.value = pergunta;
+    
+    // 2. Envia automaticamente
+    enviarMensagem();
+}

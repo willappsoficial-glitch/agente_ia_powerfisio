@@ -22,11 +22,11 @@ async function enviarMensagem() {
     const texto = userInput.value.trim();
     if (!texto) return;
 
-    // Trava botão
+    // Trava botão e visual
     btn.disabled = true;
     btn.style.opacity = "0.5";
     
-    // Animação Robô
+    // Tenta animar robô
     try {
         const maxAnimacao = document.getElementById('max-animacao');
         if (maxAnimacao && typeof maxAnimacao.setSpeed === 'function') maxAnimacao.setSpeed(2.5);
@@ -36,18 +36,50 @@ async function enviarMensagem() {
     userInput.value = '';
     showLoading(true);
 
-    // --- SALVA NO HISTÓRICO ---
+    // Salva histórico
     conversationHistory.push({ role: 'user', content: texto });
+    
+    // --- NOVO: FECHA O TECLADO IMEDIATAMENTE APÓS ENVIAR ---
+    // Isso evita que o teclado cubra a resposta enquanto ela carrega
+    userInput.blur(); 
 
     try {
         const response = await fetch(API_URL, {
             method: 'POST',
-            // --- ENVIA O HISTÓRICO PRO GOOGLE ---
             body: JSON.stringify({ 
                 mensagem: texto,
                 historico: conversationHistory 
             })
         });
+        
+        const data = await response.json();
+        showLoading(false);
+        
+        const respostaFormatada = formatarTexto(data.resposta);
+        addMessage(respostaFormatada, 'bot');
+
+        conversationHistory.push({ role: 'model', content: data.resposta });
+
+    } catch (error) {
+        showLoading(false);
+        addMessage("⚠️ Problema de conexão. Tente novamente.", 'bot');
+    } finally {
+        // Destrava o botão
+        btn.disabled = false;
+        btn.style.opacity = "1";
+        
+        // --- AQUI ESTAVA O PROBLEMA DO TECLADO ---
+        // ANTES: userInput.focus(); (Isso abria o teclado)
+        // AGORA: userInput.blur(); (Isso garante que ele fique fechado)
+        userInput.blur(); 
+
+        try {
+            const maxAnimacao = document.getElementById('max-animacao');
+            if (maxAnimacao && typeof maxAnimacao.setSpeed === 'function') maxAnimacao.setSpeed(1);
+        } catch (e) {}
+    }
+}
+
         
         const data = await response.json();
         showLoading(false);

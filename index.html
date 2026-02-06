@@ -10,14 +10,24 @@
 <body>
 
     <header>
-        <div class="avatar">P</div>
-        
-        <div class="header-info">
-            <h1>Max - Powerfisio</h1>
-            <p><span class="status-dot"></span> Online agora</p>
-        </div>
-    </header>
+    <div class="mascote-container">
+        <lottie-player 
+            id="max-animacao"
+            src="https://lottie.host/5b4528d7-279c-4eb1-8f2e-0f047395e869/w0Fq2c5J6k.json"
+            background="transparent"
+            speed="1"
+            style="width: 60px; height: 60px;"
+            loop
+            autoplay>
+        </lottie-player>
+        <div class="status-online"></div>
+    </div>
 
+    <div class="header-info">
+        <h1>Max - Powerfisio</h1>
+        <p>Online agora</p>
+    </div>
+</header>
     <div id="chat-container">
         <div class="message bot">
             Fala, monstro! 💪 Sou o <strong>Max</strong>, seu Personal IA da Powerfisio.<br><br>
@@ -39,6 +49,8 @@
     </div>
 
     <script src="script.js"></script>
+    <script src="https://unpkg.com/@lottiefiles/lottie-player@latest/dist/lottie-player.js"></script>
 
 </body>
 </html>
+

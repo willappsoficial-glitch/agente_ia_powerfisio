@@ -1,12 +1,14 @@
 // ============================================================
-// ⚠️ SEU WEB APP
-// ============================================================
+// ⚠️ MANTENHA SUA URL DO APPS SCRIPT AQUI
 const API_URL = "https://script.google.com/macros/s/AKfycbxCF_O_KVJ6nRTE_cvCkB-TwATpT2wC2xMyRI8Sb6yPNdYn8mWFEzdcQFAdu89fg31O2w/exec"; 
 // ============================================================
 
 const chatContainer = document.getElementById('chat-container');
-const userInput = document.getElementById('userInput'); // O ID CORRETO É ESSE
+const userInput = document.getElementById('userInput');
 const loading = document.getElementById('loading');
+
+// --- MEMÓRIA DO NAVEGADOR ---
+let conversationHistory = [];
 
 // Enviar com Enter
 userInput.addEventListener('keypress', function (e) {
@@ -14,64 +16,58 @@ userInput.addEventListener('keypress', function (e) {
 });
 
 async function enviarMensagem() {
-    // Busca pelo ID específico
     const btn = document.getElementById('btn-enviar');
-    
-    // Proteção
-    if (!btn) {
-        console.error("Erro: Botão de enviar não encontrado.");
-        return;
-    }
-
-    if (btn.disabled) return; 
+    if (!btn || btn.disabled) return;
     
     const texto = userInput.value.trim();
     if (!texto) return;
 
-    // Trava o botão
+    // Trava botão
     btn.disabled = true;
     btn.style.opacity = "0.5";
-    btn.style.cursor = "not-allowed";
     
-    // Tenta animar o robô (Notebook)
+    // Animação Robô
     try {
         const maxAnimacao = document.getElementById('max-animacao');
-        if (maxAnimacao && typeof maxAnimacao.setSpeed === 'function') {
-            maxAnimacao.setSpeed(2.5); 
-        }
-    } catch (err) {}
+        if (maxAnimacao && typeof maxAnimacao.setSpeed === 'function') maxAnimacao.setSpeed(2.5);
+    } catch (e) {}
 
     addMessage(texto, 'user');
     userInput.value = '';
     showLoading(true);
 
+    // --- SALVA NO HISTÓRICO ---
+    conversationHistory.push({ role: 'user', content: texto });
+
     try {
         const response = await fetch(API_URL, {
             method: 'POST',
-            body: JSON.stringify({ mensagem: texto })
+            // --- ENVIA O HISTÓRICO PRO GOOGLE ---
+            body: JSON.stringify({ 
+                mensagem: texto,
+                historico: conversationHistory 
+            })
         });
         
         const data = await response.json();
-        
         showLoading(false);
+        
         const respostaFormatada = formatarTexto(data.resposta);
         addMessage(respostaFormatada, 'bot');
 
+        // --- SALVA A RESPOSTA NO HISTÓRICO ---
+        conversationHistory.push({ role: 'model', content: data.resposta });
+
     } catch (error) {
         showLoading(false);
-        addMessage("⚠️ O Max teve um problema de conexão. Tente de novo!", 'bot');
+        addMessage("⚠️ Problema de conexão. Tente novamente.", 'bot');
     } finally {
-        // DESTRAVA O BOTÃO
         btn.disabled = false;
         btn.style.opacity = "1";
-        btn.style.cursor = "pointer";
         userInput.focus();
-
         try {
             const maxAnimacao = document.getElementById('max-animacao');
-            if (maxAnimacao && typeof maxAnimacao.setSpeed === 'function') {
-                maxAnimacao.setSpeed(1);
-            }
+            if (maxAnimacao && typeof maxAnimacao.setSpeed === 'function') maxAnimacao.setSpeed(1);
         } catch (e) {}
     }
 }
@@ -84,7 +80,16 @@ function addMessage(text, sender) {
     div.innerHTML = text;
     
     chatContainer.insertBefore(div, loading);
-    scrollToBottom();
+    
+    // --- SCROLL INTELIGENTE ---
+    if (sender === 'user') {
+        scrollToBottom();
+    } else {
+        // Se for o Max, rola suavemente para o INÍCIO da mensagem dele
+        setTimeout(() => {
+            div.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }, 100);
+    }
 }
 
 function showLoading(show) {
@@ -104,15 +109,10 @@ function formatarTexto(texto) {
     return formatado;
 }
 
-// === AQUI ESTAVA O ERRO, AGORA ESTÁ CORRIGIDO ===
 function usarChip(pergunta) {
-    // Estava 'user-input', mudei para 'userInput' (igual lá no topo)
-    const input = document.getElementById('userInput'); 
-    
+    const input = document.getElementById('userInput');
     if (input) {
         input.value = pergunta;
         enviarMensagem();
-    } else {
-        console.error("Erro: Campo de texto não encontrado.");
     }
 }

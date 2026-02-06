@@ -263,3 +263,45 @@ lottie-player {
     z-index: 5;
     box-shadow: 0 0 5px rgba(0,0,0,0.5);
 }
+
+/* --- CHIPS (BOTÕES RÁPIDOS) --- */
+.chips-area {
+    display: flex;
+    gap: 10px;
+    padding: 10px 20px;
+    background: var(--bg-app); /* Mesma cor do fundo para fundir */
+    overflow-x: auto; /* Permite rolar para o lado no celular */
+    white-space: nowrap; /* Impede que os botões quebrem linha */
+    
+    /* Esconde a barra de rolagem feia, mas mantém a função */
+    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none;  /* IE */
+}
+
+.chips-area::-webkit-scrollbar { 
+    display: none; /* Chrome/Safari */
+}
+
+.chip {
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: var(--text-main);
+    padding: 8px 16px;
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    
+    /* Importante: Sobrescreve o estilo padrão de botão redondo que tínhamos antes */
+    width: auto; 
+    height: auto;
+    flex-shrink: 0; /* Garante que não sejam esmagados */
+}
+
+.chip:active {
+    transform: scale(0.95);
+    background: var(--primary);
+    border-color: var(--primary);
+    color: white;
+}

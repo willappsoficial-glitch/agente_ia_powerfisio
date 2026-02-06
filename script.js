@@ -6,6 +6,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbxCF_O_KVJ6nRTE_cvCkB-T
 const chatContainer = document.getElementById('chat-container');
 const userInput = document.getElementById('userInput');
 const loading = document.getElementById('loading');
+const btnEnviar = document.getElementById('btn-enviar'); // Pegamos o botão aqui fora pra garantir
 
 // --- MEMÓRIA DO NAVEGADOR ---
 let conversationHistory = [];
@@ -15,35 +16,45 @@ userInput.addEventListener('keypress', function (e) {
     if (e.key === 'Enter') enviarMensagem();
 });
 
+// Enviar com Clique
+if (btnEnviar) {
+    btnEnviar.addEventListener('click', enviarMensagem);
+}
+
 async function enviarMensagem() {
-    const btn = document.getElementById('btn-enviar');
-    if (!btn || btn.disabled) return;
+    // 1. Verificações iniciais
+    if (!btnEnviar || btnEnviar.disabled) return;
     
     const texto = userInput.value.trim();
     if (!texto) return;
 
-    // Trava botão e visual
-    btn.disabled = true;
-    btn.style.opacity = "0.5";
+    // 2. Trava o botão e muda visual
+    btnEnviar.disabled = true;
+    btnEnviar.style.opacity = "0.5";
+    btnEnviar.style.cursor = "not-allowed";
     
-    // Tenta animar robô
+    // 3. Tenta acelerar o robô (sem travar se falhar)
     try {
         const maxAnimacao = document.getElementById('max-animacao');
-        if (maxAnimacao && typeof maxAnimacao.setSpeed === 'function') maxAnimacao.setSpeed(2.5);
-    } catch (e) {}
+        if (maxAnimacao && typeof maxAnimacao.setSpeed === 'function') {
+            maxAnimacao.setSpeed(2.5);
+        }
+    } catch (e) { console.log("Robô offline, seguindo..."); }
 
+    // 4. Adiciona mensagem do usuário na tela
     addMessage(texto, 'user');
+    
+    // 5. Limpa campo e FECHA TECLADO
     userInput.value = '';
+    userInput.blur(); // <--- O segredo para fechar o teclado
+    
     showLoading(true);
 
-    // Salva histórico
+    // 6. Atualiza histórico
     conversationHistory.push({ role: 'user', content: texto });
-    
-    // --- NOVO: FECHA O TECLADO IMEDIATAMENTE APÓS ENVIAR ---
-    // Isso evita que o teclado cubra a resposta enquanto ela carrega
-    userInput.blur(); 
 
     try {
+        // 7. Envia para o Google
         const response = await fetch(API_URL, {
             method: 'POST',
             body: JSON.stringify({ 
@@ -53,59 +64,41 @@ async function enviarMensagem() {
         });
         
         const data = await response.json();
-        showLoading(false);
         
+        // 8. Recebeu resposta
+        showLoading(false);
         const respostaFormatada = formatarTexto(data.resposta);
         addMessage(respostaFormatada, 'bot');
 
+        // Salva resposta no histórico
         conversationHistory.push({ role: 'model', content: data.resposta });
 
     } catch (error) {
         showLoading(false);
-        addMessage("⚠️ Problema de conexão. Tente novamente.", 'bot');
+        addMessage("⚠️ O Max piscou... Tente de novo! (Erro de conexão)", 'bot');
+        console.error(error);
     } finally {
-        // Destrava o botão
-        btn.disabled = false;
-        btn.style.opacity = "1";
+        // 9. Destrava tudo (Sempre roda, mesmo com erro)
+        if (btnEnviar) {
+            btnEnviar.disabled = false;
+            btnEnviar.style.opacity = "1";
+            btnEnviar.style.cursor = "pointer";
+        }
         
-        // --- AQUI ESTAVA O PROBLEMA DO TECLADO ---
-        // ANTES: userInput.focus(); (Isso abria o teclado)
-        // AGORA: userInput.blur(); (Isso garante que ele fique fechado)
+        // Garante que o teclado continue fechado
         userInput.blur(); 
 
+        // Desacelera robô
         try {
             const maxAnimacao = document.getElementById('max-animacao');
-            if (maxAnimacao && typeof maxAnimacao.setSpeed === 'function') maxAnimacao.setSpeed(1);
-        } catch (e) {}
-    }
-}
-
-        
-        const data = await response.json();
-        showLoading(false);
-        
-        const respostaFormatada = formatarTexto(data.resposta);
-        addMessage(respostaFormatada, 'bot');
-
-        // --- SALVA A RESPOSTA NO HISTÓRICO ---
-        conversationHistory.push({ role: 'model', content: data.resposta });
-
-    } catch (error) {
-        showLoading(false);
-        addMessage("⚠️ Problema de conexão. Tente novamente.", 'bot');
-    } finally {
-        btn.disabled = false;
-        btn.style.opacity = "1";
-        userInput.focus();
-        try {
-            const maxAnimacao = document.getElementById('max-animacao');
-            if (maxAnimacao && typeof maxAnimacao.setSpeed === 'function') maxAnimacao.setSpeed(1);
+            if (maxAnimacao && typeof maxAnimacao.setSpeed === 'function') {
+                maxAnimacao.setSpeed(1);
+            }
         } catch (e) {}
     }
 }
 
 function addMessage(text, sender) {
-    // Garante que o loading sumiu antes de inserir
     loading.style.display = 'none';
 
     const div = document.createElement('div');
@@ -114,30 +107,21 @@ function addMessage(text, sender) {
     
     chatContainer.insertBefore(div, loading);
     
-    // --- LÓGICA DE SCROLL CORRIGIDA ---
+    // --- LÓGICA DE SCROLL INTELIGENTE ---
     if (sender === 'user') {
-        // Se for você, vai pro final pra ver o que digitou
+        // Se foi você, desce tudo pra ver o que escreveu
         scrollToBottom();
     } else {
-        // Se for o Max, rola para o INÍCIO da mensagem dele
-        // com um pequeno atraso para o navegador desenhar a tela
+        // Se foi o Max, rola suave para o INÍCIO da mensagem dele
         setTimeout(() => {
-            // Tenta usar o método nativo moderno
-            // 'start' alinha o topo da mensagem com o topo da tela
             div.scrollIntoView({ behavior: 'smooth', block: 'start' });
-            
-            // AJUSTE FINO (Opcional): Se o cabeçalho estiver cobrindo o texto,
-            // podemos forçar um recuo extra de 80px para baixo:
-            // chatContainer.scrollBy({ top: -80, behavior: 'smooth' });
         }, 100);
     }
 }
 
 function showLoading(show) {
     loading.style.display = show ? 'flex' : 'none';
-    
-    // CORREÇÃO: Só rola para o final se estiver MOSTRANDO o loading.
-    // Se estiver escondendo, não faz nada (deixa o addMessage cuidar do scroll).
+    // Só rola pra baixo se estiver MOSTRANDO o loading
     if (show) {
         scrollToBottom();
     }
@@ -155,10 +139,10 @@ function formatarTexto(texto) {
     return formatado;
 }
 
+// Função dos Botões Rápidos (Chips)
 function usarChip(pergunta) {
-    const input = document.getElementById('userInput');
-    if (input) {
-        input.value = pergunta;
+    if (userInput) {
+        userInput.value = pergunta;
         enviarMensagem();
     }
 }

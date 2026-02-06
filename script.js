@@ -14,39 +14,25 @@ userInput.addEventListener('keypress', function (e) {
 });
 
 async function enviarMensagem() {
-    const texto = userInput.value.trim();
-    if (!texto) return;
-
-    // 1. Adiciona msg do usuário
-    addMessage(texto, 'user');
-    userInput.value = '';
-    userInput.focus();
-
-    // 2. Mostra "Digitando..."
-    showLoading(true);
+    // ... seu código de travar botão ...
+    
+    // Pega o mascote
+    const max = document.getElementById('max-animacao');
+    
+    // MUDANÇA DE ESTADO: Max fica rápido (Pensando) ⚡
+    if(max) max.setSpeed(2.5); 
 
     try {
-        // 3. Envia para o Google Apps Script
-        const response = await fetch(API_URL, {
-            method: 'POST',
-            body: JSON.stringify({ mensagem: texto })
-        });
+        // ... seu fetch ...
+    } catch (e) {
+        // ... erro ...
+    } finally {
+        // VOLTA AO NORMAL: Max acalma 🧘‍♂️
+        if(max) max.setSpeed(1);
         
-        // 4. Recebe a resposta
-        const data = await response.json();
-        
-        // 5. Mostra a resposta formatada
-        showLoading(false);
-        const respostaFormatada = formatarTexto(data.resposta);
-        addMessage(respostaFormatada, 'bot');
-
-    } catch (error) {
-        showLoading(false);
-        addMessage("Opa, tive um erro de conexão. Tente de novo!", 'bot');
-        console.error(error);
+        // ... destrava botão ...
     }
 }
-
 function addMessage(text, sender) {
     loading.style.display = 'none';
 
@@ -74,5 +60,6 @@ function formatarTexto(texto) {
     formatado = formatado.replace(/\*(.*?)\*/g, '<em>$1</em>'); // Itálico
     return formatado;
 }
+
 
 

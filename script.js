@@ -75,7 +75,6 @@ async function enviarMensagem() {
         } catch (e) {}
     }
 }
-
 function addMessage(text, sender) {
     loading.style.display = 'none';
 
@@ -114,3 +113,4 @@ function usarChip(pergunta) {
     // 2. Envia automaticamente
     enviarMensagem();
 }
+

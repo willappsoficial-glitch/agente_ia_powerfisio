@@ -14,9 +14,16 @@ userInput.addEventListener('keypress', function (e) {
 });
 
 async function enviarMensagem() {
-    // 1. Evita cliques múltiplos
-    const btn = document.querySelector('button');
-    if (btn.disabled) return;
+    // 1. CORREÇÃO: Busca pelo ID específico, não pelo primeiro botão
+    const btn = document.getElementById('btn-enviar');
+    
+    // Proteção: Se por algum motivo o botão não existir no HTML, para tudo
+    if (!btn) {
+        console.error("Erro: Botão de enviar não encontrado (verifique o ID no HTML)");
+        return;
+    }
+
+    if (btn.disabled) return; // Se já está enviando, ignora
     
     const texto = userInput.value.trim();
     if (!texto) return;
@@ -26,15 +33,13 @@ async function enviarMensagem() {
     btn.style.opacity = "0.5";
     btn.style.cursor = "not-allowed";
     
-    // 3. Tenta animar o robô (Se der erro, ele ignora e segue)
+    // 3. Tenta animar o robô (Notebook)
     try {
         const maxAnimacao = document.getElementById('max-animacao');
-        if (maxAnimacao && maxAnimacao.setSpeed) {
-            maxAnimacao.setSpeed(2.0); // Acelera o robô
+        if (maxAnimacao && typeof maxAnimacao.setSpeed === 'function') {
+            maxAnimacao.setSpeed(2.5); 
         }
-    } catch (err) {
-        console.log("Erro na animação (ignorado):", err);
-    }
+    } catch (err) {}
 
     addMessage(texto, 'user');
     userInput.value = '';
@@ -55,18 +60,16 @@ async function enviarMensagem() {
     } catch (error) {
         showLoading(false);
         addMessage("⚠️ O Max teve um problema de conexão. Tente de novo!", 'bot');
-        console.error(error);
     } finally {
-        // 4. Destrava tudo no final
+        // 4. DESTRAVA O BOTÃO CERTO
         btn.disabled = false;
         btn.style.opacity = "1";
         btn.style.cursor = "pointer";
         userInput.focus();
 
-        // Desacelera o robô
         try {
             const maxAnimacao = document.getElementById('max-animacao');
-            if (maxAnimacao && maxAnimacao.setSpeed) {
+            if (maxAnimacao && typeof maxAnimacao.setSpeed === 'function') {
                 maxAnimacao.setSpeed(1);
             }
         } catch (e) {}

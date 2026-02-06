@@ -14,25 +14,65 @@ userInput.addEventListener('keypress', function (e) {
 });
 
 async function enviarMensagem() {
-    // ... seu código de travar botão ...
+    // 1. Evita cliques múltiplos
+    const btn = document.querySelector('button');
+    if (btn.disabled) return;
     
-    // Pega o mascote
-    const max = document.getElementById('max-animacao');
+    const texto = userInput.value.trim();
+    if (!texto) return;
+
+    // 2. Trava o botão visualmente
+    btn.disabled = true;
+    btn.style.opacity = "0.5";
+    btn.style.cursor = "not-allowed";
     
-    // MUDANÇA DE ESTADO: Max fica rápido (Pensando) ⚡
-    if(max) max.setSpeed(2.5); 
+    // 3. Tenta animar o robô (Se der erro, ele ignora e segue)
+    try {
+        const maxAnimacao = document.getElementById('max-animacao');
+        if (maxAnimacao && maxAnimacao.setSpeed) {
+            maxAnimacao.setSpeed(2.0); // Acelera o robô
+        }
+    } catch (err) {
+        console.log("Erro na animação (ignorado):", err);
+    }
+
+    addMessage(texto, 'user');
+    userInput.value = '';
+    showLoading(true);
 
     try {
-        // ... seu fetch ...
-    } catch (e) {
-        // ... erro ...
-    } finally {
-        // VOLTA AO NORMAL: Max acalma 🧘‍♂️
-        if(max) max.setSpeed(1);
+        const response = await fetch(API_URL, {
+            method: 'POST',
+            body: JSON.stringify({ mensagem: texto })
+        });
         
-        // ... destrava botão ...
+        const data = await response.json();
+        
+        showLoading(false);
+        const respostaFormatada = formatarTexto(data.resposta);
+        addMessage(respostaFormatada, 'bot');
+
+    } catch (error) {
+        showLoading(false);
+        addMessage("⚠️ O Max teve um problema de conexão. Tente de novo!", 'bot');
+        console.error(error);
+    } finally {
+        // 4. Destrava tudo no final
+        btn.disabled = false;
+        btn.style.opacity = "1";
+        btn.style.cursor = "pointer";
+        userInput.focus();
+
+        // Desacelera o robô
+        try {
+            const maxAnimacao = document.getElementById('max-animacao');
+            if (maxAnimacao && maxAnimacao.setSpeed) {
+                maxAnimacao.setSpeed(1);
+            }
+        } catch (e) {}
     }
 }
+
 function addMessage(text, sender) {
     loading.style.display = 'none';
 
@@ -60,6 +100,7 @@ function formatarTexto(texto) {
     formatado = formatado.replace(/\*(.*?)\*/g, '<em>$1</em>'); // Itálico
     return formatado;
 }
+
 
 
 

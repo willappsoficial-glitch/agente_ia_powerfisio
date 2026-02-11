@@ -134,11 +134,23 @@ function scrollToBottom() {
 function formatarTexto(texto) {
     if (!texto) return "";
     let formatado = texto.replace(/\n/g, '<br>');
+    
+    // Negrito e Itálico
     formatado = formatado.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>'); 
     formatado = formatado.replace(/\*(.*?)\*/g, '<em>$1</em>'); 
+
+    // DETECTAR LINK DO YOUTUBE E TRANSFORMAR EM IFRAME
+    // Pega links do tipo youtube.com ou youtu.be
+    const regexYoutube = /(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/(?:[^\/\n\s]+\/\S+\/|(?:v|e(?:mbed)?)\/|\S*?[?&]v=)|youtu\.be\/)([a-zA-Z0-9_-]{11})/g;
+    
+    formatado = formatado.replace(regexYoutube, (match, idVideo) => {
+        return `<div class="video-container">
+                    <iframe src="https://www.youtube.com/embed/${idVideo}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                </div>`;
+    });
+
     return formatado;
 }
-
 // Função dos Botões Rápidos (Chips)
 function usarChip(pergunta) {
     if (userInput) {

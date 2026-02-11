@@ -1,326 +1,376 @@
-/* --- DESIGN SYSTEM POWERFISIO --- */
 :root {
-    /* Cores extraídas da Logo */
-    --primary: #FF5500; /* Laranja Vibrante */
-    --primary-dark: #D44000;
-    
-    --brand-blue: #240046; /* Azul Roxo Profundo */
-    --brand-blue-light: #3c096c;
-
-    /* Tons Neutros Dark Mode */
-    --bg-app: #101014;
-    --bg-card: #1C1C24;
-    
-    --text-main: #FFFFFF;
-    --text-muted: #A0A0B0;
-    
-    --msg-user: linear-gradient(135deg, var(--primary), var(--primary-dark));
-    --msg-bot: #25252E;
+    --primary-color: #ff4500; /* Laranja estilo academia/energia */
+    --bg-color: #121212;
+    --card-bg: #1e1e1e;
+    --text-color: #ffffff;
 }
 
-* { box-sizing: border-box; margin: 0; padding: 0; }
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
 
 body {
-    font-family: 'Inter', sans-serif;
-    background-color: var(--bg-app);
-    color: var(--text-main);
-    
-    /* CORREÇÃO MOBILE: */
-    /* Usa 100% da altura VISÍVEL real, descontando barras do navegador */
-    height: 100vh; /* Fallback para navegadores antigos */
-    height: 100dvh; /* O segredo para mobile moderno */
-    
+    background-color: var(--bg-color);
+    color: var(--text-color);
     display: flex;
-    flex-direction: column;
-    overflow: hidden; /* Impede rolagem na página inteira */
-}
-
-/* --- HEADER --- */
-header {
-    background: linear-gradient(to right, var(--brand-blue), var(--brand-blue-light));
-    padding: 15px 20px;
-    /* Adiciona espaço para o "notch" no topo se necessário */
-    padding-top: max(15px, env(safe-area-inset-top)); 
-    display: flex;
-    align-items: center;
-    gap: 15px;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-    box-shadow: 0 4px 20px rgba(0,0,0,0.4);
-    z-index: 10;
-    flex-shrink: 0; /* Garante que o header não encolha */
-}
-
-.logo-img {
-    width: 45px;
-    height: 45px;
-    border-radius: 12px;
-    box-shadow: 0 0 10px rgba(0,0,0,0.3);
-}
-
-.avatar {
-    width: 45px;
-    height: 45px;
-    background: var(--primary);
-    border-radius: 12px;
-    display: flex;
-    align-items: center;
     justify-content: center;
-    font-weight: 800;
-    font-size: 24px;
-    color: white;
-    box-shadow: 0 0 15px rgba(255, 85, 0, 0.4);
-    position: relative;
-    font-style: italic;
-}
-
-.avatar::after, .logo-img::after { 
-    content: '';
-    position: absolute;
-    bottom: -2px;
-    right: -2px;
-    width: 12px;
-    height: 12px;
-    background: #00E676;
-    border: 2px solid var(--brand-blue);
-    border-radius: 50%;
-}
-
-.header-info h1 {
-    font-size: 17px;
-    font-weight: 600;
-    letter-spacing: 0.5px;
-}
-
-.header-info p {
-    font-size: 13px;
-    color: var(--text-muted);
-    display: flex;
     align-items: center;
-    gap: 6px;
-}
-
-.status-dot {
-    width: 8px;
-    height: 8px;
-    background-color: #00E676;
-    border-radius: 50%;
-    box-shadow: 0 0 5px #00E676;
-}
-
-/* --- CHAT AREA --- */
-#chat-container {
-    flex: 1; /* Ocupa todo o espaço disponível entre Header e Input */
+    min-height: 100vh;
     padding: 20px;
-    padding-bottom: 10px;
-    overflow-y: auto; /* Habilita rolagem só aqui dentro */
+}
+
+.container {
+    width: 100%;
+    max-width: 500px;
+    text-align: center;
+}
+
+header h1 {
+    font-size: 1.8rem;
+    margin-bottom: 5px;
+}
+
+header p {
+    color: #888;
+    margin-bottom: 20px;
+}
+
+.search-box {
     display: flex;
-    flex-direction: column;
-    gap: 15px;
-    scroll-behavior: smooth;
-    background-image: radial-gradient(circle at center, rgba(36, 0, 70, 0.15) 0%, transparent 70%);
-    
-    /* Garante que a rolagem funcione bem no celular (inércia) */
-    -webkit-overflow-scrolling: touch; 
-}
-
-.message {
-    max-width: 85%;
-    padding: 14px 18px;
-    border-radius: 20px;
-    font-size: 15px;
-    line-height: 1.5;
-    position: relative;
-    animation: fadeIn 0.3s cubic-bezier(0.25, 1, 0.5, 1);
-    word-wrap: break-word;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-}
-
-@keyframes fadeIn { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
-
-.bot {
-    align-self: flex-start;
-    background-color: var(--msg-bot);
-    color: #E0E0E0;
-    border-bottom-left-radius: 4px;
-    border: 1px solid rgba(255,255,255,0.05);
-}
-
-.user {
-    align-self: flex-end;
-    background: var(--msg-user);
-    color: white;
-    border-bottom-right-radius: 4px;
-    box-shadow: 0 4px 15px rgba(255, 85, 0, 0.25);
-}
-
-.message strong { color: #fff; font-weight: 700; }
-.bot ul { margin-left: 20px; margin-top: 8px; }
-.bot li { margin-bottom: 6px; }
-
-/* --- INPUT AREA (Ajuste Crítico Mobile) --- */
-.input-area {
-    background: var(--bg-card);
-    padding: 15px 20px;
-    display: flex;
-    gap: 12px;
-    border-top: 1px solid rgba(255,255,255,0.05);
-    flex-shrink: 0; /* Impede que o input seja esmagado */
-    
-    /* CORREÇÃO: Adiciona espaço extra em baixo para a barra do iPhone/Android */
-    padding-bottom: max(15px, env(safe-area-inset-bottom));
+    gap: 10px;
+    margin-bottom: 30px;
 }
 
 input {
     flex: 1;
-    background: #25252E;
-    border: 1px solid rgba(255,255,255,0.1);
+    padding: 15px;
+    font-size: 1.5rem;
+    border-radius: 12px;
+    border: 2px solid #333;
+    background: #2c2c2c;
     color: white;
-    padding: 14px 22px;
-    border-radius: 30px;
-    font-size: 16px; /* Fonte 16px impede zoom automático no iPhone */
+    text-align: center;
     outline: none;
-    transition: all 0.3s ease;
+    transition: 0.3s;
 }
 
 input:focus {
-    border-color: var(--primary);
-    background: #2C2C36;
-    box-shadow: 0 0 0 3px rgba(255, 85, 0, 0.15);
+    border-color: var(--primary-color);
 }
 
 button {
-    background: var(--primary);
-    color: white;
+    padding: 15px 25px;
+    background-color: var(--primary-color);
     border: none;
-    width: 52px;
-    height: 52px;
-    border-radius: 50%;
+    border-radius: 12px;
     cursor: pointer;
+    color: white;
+    transition: transform 0.2s;
+}
+
+button:active {
+    transform: scale(0.95);
+}
+
+.card {
+    background-color: var(--card-bg);
+    padding: 20px;
+    border-radius: 15px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+    animation: fadeIn 0.5s;
+}
+
+.media-container {
+    width: 100%;
+    height: 300px; /* Altura fixa para manter layout */
+    background: #000;
+    border-radius: 10px;
+    margin: 15px 0;
+    overflow: hidden;
     display: flex;
     align-items: center;
     justify-content: center;
-    transition: all 0.2s cubic-bezier(0.25, 1, 0.5, 1);
-    box-shadow: 0 4px 12px rgba(255, 85, 0, 0.3);
-    flex-shrink: 0;
 }
 
-button:active { transform: scale(0.95); }
-button svg { width: 22px; height: 22px; fill: white; margin-left: 2px; }
+.media-container img, .media-container video {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+}
 
-/* --- LOADING --- */
-.typing-indicator {
-    display: none;
-    align-self: flex-start;
-    background: var(--msg-bot);
-    padding: 12px 18px;
+.tag-id {
+    background: #333;
+    display: inline-block;
+    padding: 5px 15px;
     border-radius: 20px;
-    border-bottom-left-radius: 4px;
-    gap: 6px;
-    border: 1px solid rgba(255,255,255,0.05);
+    font-size: 0.9rem;
+    color: #ccc;
 }
 
-.dot {
+.hidden {
+    display: none;
+}
+
+#erro {
+    color: #ff6b6b;
+    margin-top: 20px;
+}
+
+#loading {
+    color: var(--primary-color);
+    font-weight: bold;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+:root {
+    --primary: #ff4500; /* Laranja PowerFisio */
+    --dark-bg: #121212;
+    --card-bg: #1e1e1e;
+    --text: #ffffff;
+    --chat-bg: #252525;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', sans-serif; }
+
+body {
+    background-color: var(--dark-bg);
+    color: var(--text);
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden; /* Evita rolagem da página inteira */
+}
+
+/* --- ÁREA PRINCIPAL --- */
+.main-container {
+    width: 100%;
+    max-width: 600px;
+    text-align: center;
+    padding: 20px;
+    transition: filter 0.3s;
+}
+
+.logo { width: 60px; margin-bottom: 10px; filter:none; opacity: 0.8;
+    border-radius: 100px;
+    border-style:inset;
+}
+
+
+.search-box {
+    display: flex;
+    gap: 10px;
+    margin: 30px 0;
+    width: 100%; /* Garante que usa a largura disponível */
+    padding: 0 10px; /* Margem de segurança nas laterais */
+}
+
+input {
+    flex: 1; /* Ocupa todo espaço possível */
+    min-width: 0; /* TRUQUE DE MESTRE: Impede o Flexbox de estourar a tela */
+    padding: 20px;
+    font-size: 1.5rem; /* Levemente menor para não quebrar em telas pequenas */
+    border-radius: 15px;
+    border: 2px solid #333;
+    background: #2c2c2c;
+    color: white;
+    text-align: center;
+    outline: none;
+    transition: border-color 0.3s;
+}
+
+.avatar-max {
+    width: 35px;
+    height: 35px;
+    background: linear-gradient(135deg, #ff4500, #ff8c00); /* Laranja degradê */
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    box-shadow: 0 0 10px rgba(255, 69, 0, 0.5); /* Brilho neon */
+    margin-right: 10px;
+    border: 2px solid #fff;
+}
+
+.avatar-max .material-icons {
+    font-size: 20px;
+    color: white;
+}
+
+.typing-indicator {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    padding: 10px 15px;
+    background: #333;
+    border-radius: 15px;
+    border-bottom-left-radius: 2px;
+    width: fit-content;
+}
+
+.typing-indicator span {
     width: 8px;
     height: 8px;
-    background: #666;
+    background: #aaa;
     border-radius: 50%;
     animation: bounce 1.4s infinite ease-in-out both;
 }
-.dot:nth-child(1) { animation-delay: -0.32s; }
-.dot:nth-child(2) { animation-delay: -0.16s; }
 
-@keyframes bounce { 0%, 80%, 100% { transform: scale(0); } 40% { transform: scale(1); } }
+.typing-indicator span:nth-child(1) { animation-delay: -0.32s; }
+.typing-indicator span:nth-child(2) { animation-delay: -0.16s; }
 
-/* Container que segura o robô */
-.mascote-container {
-    position: relative;
-    width: 55px;  /* Largura fixa */
-    height: 55px; /* Altura fixa */
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: rgba(255, 255, 255, 0.05); /* Fundo leve para você ver se ele está lá */
-    border-radius: 50%; /* Deixa redondinho o fundo */
+@keyframes bounce {
+    0%, 80%, 100% { transform: scale(0); opacity: 0.5; }
+    40% { transform: scale(1); opacity: 1; background: var(--primary); }
 }
 
-/* O Player do Robô */
-lottie-player {
-    width: 100%;
-    height: 100%;
-    transform: scale(1.4); /* Aumenta um pouco o robô dentro da bolinha */
-}
+input:focus { border-color: var(--primary); }
 
-/* Bolinha Verde */
-.status-online {
-    position: absolute;
-    bottom: 2px;
-    right: 2px;
-    width: 12px;
-    height: 12px;
-    background-color: #00E676;
-    border: 2px solid var(--brand-blue);
-    border-radius: 50%;
-    z-index: 5;
-    box-shadow: 0 0 5px rgba(0,0,0,0.5);
-}
-
-/* --- CHIPS (BOTÕES RÁPIDOS) --- */
-.chips-area {
-    display: flex;
-    gap: 10px;
-    padding: 10px 20px;
-    background: var(--bg-app); /* Mesma cor do fundo para fundir */
-    overflow-x: auto; /* Permite rolar para o lado no celular */
-    white-space: nowrap; /* Impede que os botões quebrem linha */
-    
-    /* Esconde a barra de rolagem feia, mas mantém a função */
-    scrollbar-width: none; /* Firefox */
-    -ms-overflow-style: none;  /* IE */
-}
-
-.chips-area::-webkit-scrollbar { 
-    display: none; /* Chrome/Safari */
-}
-
-.chip {
-    background: rgba(255, 255, 255, 0.08);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    color: var(--text-main);
-    padding: 8px 16px;
-    border-radius: 20px;
-    font-size: 13px;
-    font-weight: 500;
-    cursor: pointer;
-    transition: all 0.2s ease;
-    
-    /* Importante: Sobrescreve o estilo padrão de botão redondo que tínhamos antes */
-    width: auto; 
-    height: auto;
-    flex-shrink: 0; /* Garante que não sejam esmagados */
-}
-
-.chip:active {
-    transform: scale(0.95);
+button#btn-buscar {
+    padding: 0 30px;
     background: var(--primary);
-    border-color: var(--primary);
+    border: none;
+    border-radius: 15px;
+    cursor: pointer;
     color: white;
 }
 
-/* Container de vídeo no chat */
-.video-container {
-    position: relative;
-    padding-bottom: 56.25%; /* Proporção 16:9 */
-    height: 0;
-    overflow: hidden;
-    margin-top: 10px;
-    border-radius: 12px;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+/* --- CARD DE RESULTADO --- */
+.card {
+    background: var(--card-bg);
+    padding: 20px;
+    border-radius: 20px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+    animation: slideUp 0.4s ease;
 }
 
-.video-container iframe {
+.card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
+.badge-ref { background: #333; padding: 5px 10px; border-radius: 10px; font-weight: bold; color: var(--primary); }
+
+.media-wrapper {
+    width: 100%;
+    height: 350px; /* Altura fixa para o vídeo */
+    background: black;
+    border-radius: 10px;
+    overflow: hidden;
+    position: relative;
+}
+
+/* --- ÁREA DO VÍDEO (Responsiva 16:9) --- */
+.media-wrapper {
+    position: relative;
+    width: 100%;
+    /* Define a proporção 16:9 (Altura é 56.25% da largura) */
+    padding-top: 56.25%; 
+    background: #000;
+    border-radius: 12px;
+    overflow: hidden;
+    margin-bottom: 10px;
+    box-shadow: inset 0 0 20px rgba(0,0,0,0.8); /* Efeito de profundidade */
+}
+
+/* Força o vídeo/iframe a ocupar 100% do espaço acima */
+.media-wrapper iframe, 
+.media-wrapper video, 
+.media-wrapper img {
     position: absolute;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
+    object-fit: cover; /* Garante preenchimento total */
+    border: none;
+}
+
+.card-footer { margin-top: 15px; color: #aaa; font-style: italic; }
+.btn-fechar-resultado {
+    margin-top: 15px; background: #333; color: white; border: none; padding: 10px 20px;
+    border-radius: 8px; cursor: pointer; width: 100%;
+}
+
+/* --- BOTÃO FLUTUANTE DO MAX (FAB) --- */
+#fab-max {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    width: 70px;
+    height: 70px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--primary), #cc3700);
+    border: none;
+    box-shadow: 0 4px 15px rgba(255, 69, 0, 0.4);
+    color: white;
+    cursor: pointer;
+    z-index: 1000;
+    transition: transform 0.2s;
+    display: flex; align-items: center; justify-content: center;
+}
+
+#fab-max .material-icons { font-size: 36px; }
+#fab-max:hover { transform: scale(1.1); }
+
+/* --- WIDGET DO CHAT --- */
+.chat-widget {
+    position: fixed;
+    bottom: 110px; /* Acima do botão */
+    right: 30px;
+    width: 350px;
+    height: 500px;
+    background: var(--chat-bg);
+    border-radius: 20px;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.6);
+    display: flex;
+    flex-direction: column;
+    z-index: 999;
+    overflow: hidden;
+    border: 1px solid #333;
+    animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.chat-widget.hidden { display: none; }
+
+.chat-header {
+    background: #333;
+    padding: 15px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-weight: bold;
+}
+
+.chat-body { flex: 1; padding: 15px; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; }
+
+.chat-footer { padding: 10px; background: #1a1a1a; display: flex; gap: 10px; }
+#chat-input { padding: 10px; font-size: 1rem; text-align: left; }
+.chat-footer button { background: var(--primary); padding: 0 15px; border-radius: 10px; border: none; color: white; cursor: pointer; }
+
+/* Balões de Mensagem */
+.message { display: flex; width: 100%; }
+.message.bot { justify-content: flex-start; }
+.message.user { justify-content: flex-end; }
+.bubble {
+    max-width: 80%;
+    padding: 10px 15px;
+    border-radius: 15px;
+    font-size: 0.9rem;
+    line-height: 1.4;
+}
+.bot .bubble { background: #333; color: #ddd; border-bottom-left-radius: 2px; }
+.user .bubble { background: var(--primary); color: white; border-bottom-right-radius: 2px; }
+
+/* Animações e Utilitários */
+.hidden { display: none; }
+@keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes popIn { from { opacity: 0; transform: scale(0.8) translateY(20px); } to { opacity: 1; transform: scale(1); translateY(0); } }
+
+/* Responsividade para Celular */
+@media (max-width: 500px) {
+    .chat-widget { width: 90%; right: 5%; bottom: 100px; height: 60vh; }
 }

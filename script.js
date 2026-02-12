@@ -1,28 +1,29 @@
-// CONFIGURAÇÃO
-const API_URL = 'https://script.google.com/macros/s/AKfycbxCF_O_KVJ6nRTE_cvCkB-TwATpT2wC2xMyRI8Sb6yPNdYn8mWFEzdcQFAdu89fg31O2w/exec';
+// ============================================================
+// CONFIGURAÇÕES GERAIS
+// ============================================================
+const API_URL = "https://script.google.com/macros/s/AKfycbxCF_O_KVJ6nRTE_cvCkB-TwATpT2wC2xMyRI8Sb6yPNdYn8mWFEzdcQFAdu89fg31O2w/exec"; 
 
-// ESTADO GLOBAL
 let listaExercicios = [];
-let historicoChat = [];
+let conversationHistory = [];
 
-// ==========================================
-// INICIALIZAÇÃO (Ao carregar a página)
-// ==========================================
+// ============================================================
+// INICIALIZAÇÃO (CARREGA TUDO)
+// ============================================================
 window.addEventListener('load', async () => {
-    console.log("Sistema iniciado...");
+    console.log("Sistema Max v2.0 Iniciado");
 
-    // 1. Carrega banco de dados
+    // 1. Carrega a lista de exercícios para busca rápida
     await carregarBaseDeDados();
 
-    // 2. Configura EVENTOS (Cliques e Teclas)
+    // 2. Configura todos os botões e inputs
     configurarEventos();
 });
 
 function configurarEventos() {
-    // Busca de Exercício (Input e Botão)
-    const inputBusca = document.getElementById('input-id');
-    const btnBusca = document.getElementById('btn-buscar');
-    
+    // --- EVENTOS DA BUSCA DE EXERCÍCIO ---
+    const inputBusca = document.getElementById('input-id'); // O input laranja do vídeo
+    const btnBusca = document.querySelector('.search-box button'); // O botão de lupa
+
     if (inputBusca) {
         inputBusca.addEventListener('keypress', (e) => { if (e.key === 'Enter') buscarExercicio(); });
     }
@@ -30,168 +31,180 @@ function configurarEventos() {
         btnBusca.addEventListener('click', buscarExercicio);
     }
 
-    // Chat do Max (Input e Botão Enviar)
-    const inputChat = document.getElementById('chat-input');
-    const btnEnviar = document.getElementById('btn-enviar'); // CERTIFIQUE-SE QUE O ID NO HTML É ESSE
-    const btnFab = document.getElementById('fab-max');
-    const btnFecharChat = document.querySelector('.btn-close-chat');
+    // --- EVENTOS DO CHAT ---
+    const btnFab = document.getElementById('fab-max'); // O botão flutuante laranja
+    const btnFechar = document.querySelector('.btn-close-chat');
+    const btnEnviarChat = document.getElementById('btn-enviar');
+    const inputChat = document.getElementById('userInput');
 
+    // ABRIR/FECHAR CHAT (AQUI ESTAVA O ERRO)
+    if (btnFab) {
+        btnFab.addEventListener('click', toggleChat);
+    }
+    if (btnFechar) {
+        btnFechar.addEventListener('click', toggleChat);
+    }
+
+    // ENVIAR MENSAGEM NO CHAT
     if (inputChat) {
-        inputChat.addEventListener('keypress', (e) => { if (e.key === 'Enter') enviarMensagemMax(); });
+        inputChat.addEventListener('keypress', (e) => { if (e.key === 'Enter') enviarMensagem(); });
     }
-    
-    // AQUI ESTAVA O PROBLEMA: Agora forçamos o evento de clique
-    if (btnEnviar) {
-        console.log("Botão de enviar detectado!");
-        btnEnviar.addEventListener('click', () => {
-            console.log("Clique no enviar detectado");
-            enviarMensagemMax();
-        });
-    } else {
-        console.error("ERRO CRÍTICO: Botão 'btn-enviar' não encontrado no HTML");
+    if (btnEnviarChat) {
+        btnEnviarChat.addEventListener('click', enviarMensagem);
     }
-
-    if (btnFab) btnFab.addEventListener('click', toggleChat);
-    if (btnFecharChat) btnFecharChat.addEventListener('click', toggleChat);
 }
 
-// ==========================================
-// LÓGICA DE EXERCÍCIOS
-// ==========================================
+// ============================================================
+// FUNÇÕES: BUSCA DE EXERCÍCIO (TELA PRINCIPAL)
+// ============================================================
 async function carregarBaseDeDados() {
-    const loading = document.getElementById('loading');
-    if(loading) loading.classList.remove('hidden');
-    
     try {
+        // Usa a mesma API, mas espera JSON (doGet no Apps Script)
         const res = await fetch(API_URL);
-        listaExercicios = await res.json();
-        if(loading) loading.classList.add('hidden');
-        console.log("Base carregada:", listaExercicios.length);
+        const dados = await res.json();
+        
+        // Se a API retornar a lista direta (array)
+        if (Array.isArray(dados)) {
+            listaExercicios = dados;
+        } else {
+            console.log("API retornou formato diferente, tentando adaptar...");
+        }
+        console.log("Exercícios carregados:", listaExercicios.length);
     } catch (err) {
-        console.error("Erro ao carregar:", err);
-        if(loading) loading.innerText = "Erro de conexão.";
+        console.error("Erro ao carregar exercícios:", err);
     }
 }
 
 function buscarExercicio() {
     const input = document.getElementById('input-id');
-    const resultadoDiv = document.getElementById('resultado');
-    const erroDiv = document.getElementById('erro');
+    const cardResultado = document.getElementById('resultado'); // O card preto
+    const divErro = document.getElementById('erro');
     
     if (!input) return;
-    const idBusca = input.value.trim();
-    
-    if (!idBusca) return;
+    const termo = input.value.trim();
+    if (!termo) return;
 
-    const exercicio = listaExercicios.find(item => item.id == idBusca);
+    // Procura na lista local (ID igual ao digitado)
+    const exercicio = listaExercicios.find(item => item.id == termo);
 
     if (exercicio) {
-        mostrarResultado(exercicio);
-        if(erroDiv) erroDiv.classList.add('hidden');
+        mostrarCard(exercicio);
+        if (divErro) divErro.classList.add('hidden');
     } else {
-        if(erroDiv) erroDiv.classList.remove('hidden');
-        if(resultadoDiv) resultadoDiv.classList.add('hidden');
+        if (cardResultado) cardResultado.classList.add('hidden');
+        if (divErro) divErro.classList.remove('hidden');
     }
-    input.value = '';
+    
+    // Fecha teclado
     input.blur();
 }
 
-function mostrarResultado(ex) {
-    const divNome = document.getElementById('ex-nome');
-    const divId = document.getElementById('ex-id');
-    const divDica = document.getElementById('ex-dica');
-    const mediaDiv = document.getElementById('media-content');
-    const resultadoDiv = document.getElementById('resultado');
-
-    if(divNome) divNome.innerText = ex.nome;
-    if(divId) divId.innerText = ex.id;
-    if(divDica) divDica.innerText = "Dica do Max: Mantenha a postura!";
-
-    if(mediaDiv) {
-        mediaDiv.innerHTML = '';
-        if (ex.media.includes('youtube') || ex.media.includes('youtu.be')) {
-            let videoId = ex.media.split('v=')[1] || ex.media.split('/').pop();
-            videoId = videoId.split('?')[0];
-            mediaDiv.innerHTML = `<iframe src="https://www.youtube.com/embed/${videoId}?autoplay=1&mute=1&loop=1&controls=0" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>`;
-        } else {
-            mediaDiv.innerHTML = `<video autoplay loop muted playsinline src="${ex.media}"></video>`;
-        }
-    }
-    if(resultadoDiv) resultadoDiv.classList.remove('hidden');
-}
-
-// ==========================================
-// LÓGICA DO CHAT (MAX)
-// ==========================================
-function toggleChat() {
-    const chatWidget = document.getElementById('chat-widget');
-    if (chatWidget) chatWidget.classList.toggle('hidden');
-}
-
-async function enviarMensagemMax() {
-    const input = document.getElementById('chat-input');
-    if (!input) return;
+function mostrarCard(ex) {
+    const card = document.getElementById('resultado');
     
-    const texto = input.value.trim();
+    // Preenche os dados
+    document.getElementById('ex-nome').innerText = ex.nome || "Exercício";
+    document.getElementById('ex-id').innerText = ex.id;
+    document.getElementById('ex-dica').innerText = ex.dica || "Mantenha a postura correta e controle a respiração."; // Dica padrão se não tiver
+
+    // Lógica do Vídeo/Imagem
+    const containerMedia = document.getElementById('media-content');
+    containerMedia.innerHTML = ''; // Limpa anterior
+
+    if (ex.media && (ex.media.includes('youtube') || ex.media.includes('youtu.be'))) {
+        let videoId = ex.media.split('v=')[1] || ex.media.split('/').pop();
+        videoId = videoId.split('?')[0];
+        containerMedia.innerHTML = `<iframe src="https://www.youtube.com/embed/${videoId}?autoplay=1&mute=1&loop=1&playlist=${videoId}&controls=0" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>`;
+    } else {
+        containerMedia.innerHTML = `<img src="${ex.media}" alt="${ex.nome}" style="width:100%; height:100%; object-fit:cover;">`;
+    }
+
+    card.classList.remove('hidden');
+    
+    // Rola a página suavemente até o card para garantir que a dica apareça
+    setTimeout(() => {
+        card.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }, 300);
+}
+
+// ============================================================
+// FUNÇÕES: CHAT DO MAX
+// ============================================================
+function toggleChat() {
+    const chatWidget = document.getElementById('chat-widget'); // O container do chat
+    if (chatWidget) {
+        // Troca a classe hidden (mostra/esconde)
+        if (chatWidget.style.display === 'none' || chatWidget.classList.contains('hidden')) {
+            chatWidget.classList.remove('hidden');
+            chatWidget.style.display = 'flex';
+        } else {
+            chatWidget.classList.add('hidden');
+            chatWidget.style.display = 'none';
+        }
+    } else {
+        console.error("Elemento 'chat-widget' não encontrado no HTML!");
+    }
+}
+
+async function enviarMensagem() {
+    const userInput = document.getElementById('userInput');
+    const btnEnviar = document.getElementById('btn-enviar');
+    const chatContainer = document.getElementById('chat-container');
+    const loading = document.getElementById('loading');
+    
+    const texto = userInput.value.trim();
     if (!texto) return;
 
-    // 1. UI: Mostra mensagem do usuário
-    adicionarBalao(texto, 'user');
-    input.value = '';
-    historicoChat.push({ role: "user", content: texto });
+    // UI: Bloqueia envio duplicado
+    btnEnviar.disabled = true;
+    
+    // 1. Adiciona msg do usuário
+    addMessage(texto, 'user');
+    userInput.value = '';
+    userInput.blur();
+    conversationHistory.push({ role: 'user', content: texto });
 
-    // 2. UI: Mostra "Digitando..."
-    const idDigitando = 'loading-temp';
-    adicionarBalao('...', 'bot', idDigitando);
+    // 2. Mostra Loading
+    loading.style.display = 'flex';
+    chatContainer.scrollTop = chatContainer.scrollHeight;
 
     try {
-        // 3. ENVIA PARA API (AJUSTE O MODO CONFORME NECESSÁRIO)
-        // Se der erro de CORS, use mode: 'no-cors' mas saiba que não receberá resposta JSON
+        // 3. Envia para API
         const response = await fetch(API_URL, {
-            method: "POST",
-            body: JSON.stringify({ mensagem: texto, historico: historicoChat })
-            // mode: 'cors' é o padrão. Se falhar, tente usar proxy ou verificar o script.google
+            method: 'POST',
+            body: JSON.stringify({ mensagem: texto, historico: conversationHistory })
         });
-        
-        const data = await response.json(); // Tenta ler JSON
+        const data = await response.json();
 
-        // 4. UI: Substitui "Digitando..." pela resposta
-        const msgDigitando = document.getElementById(idDigitando);
-        if(msgDigitando) msgDigitando.remove();
-        
-        adicionarBalao(data.resposta, 'bot');
-        historicoChat.push({ role: "model", content: data.resposta });
+        // 4. Resposta do Robô
+        loading.style.display = 'none';
+        const respostaFormatada = formatarTexto(data.resposta);
+        addMessage(respostaFormatada, 'bot');
+        conversationHistory.push({ role: 'model', content: data.resposta });
 
-    } catch (err) {
-        console.error(err);
-        const msgDigitando = document.getElementById(idDigitando);
-        if(msgDigitando) msgDigitando.remove();
-        adicionarBalao("Estou offline agora. Tente depois! 🔌", 'bot');
+    } catch (error) {
+        loading.style.display = 'none';
+        addMessage("⚠️ Estou sem sinal... Tente de novo!", 'bot');
+    } finally {
+        btnEnviar.disabled = false;
     }
 }
 
-function adicionarBalao(texto, tipo, idOpcional = null) {
-    const chatBody = document.getElementById('chat-body');
-    if (!chatBody) return;
-
+function addMessage(text, sender) {
+    const chatContainer = document.getElementById('chat-container');
+    const loading = document.getElementById('loading');
+    
     const div = document.createElement('div');
-    div.className = `message ${tipo}`;
-    if (idOpcional) div.id = idOpcional;
+    div.classList.add('message', sender);
+    div.innerHTML = text;
     
-    let conteudo = '';
-    if (tipo === 'bot') {
-        // Avatar do Max
-        conteudo += `<div class="avatar-max"><span class="material-icons" style="font-size:16px">smart_toy</span></div>`;
-    }
-    
-    // Se for o indicador de digitação (3 pontinhos)
-    if (texto === '...') {
-        conteudo += `<div class="typing-indicator"><span></span><span></span><span></span></div>`;
-    } else {
-        conteudo += `<div class="bubble">${texto}</div>`;
-    }
+    chatContainer.insertBefore(div, loading); // Insere antes do loading
+    chatContainer.scrollTop = chatContainer.scrollHeight;
+}
 
-    div.innerHTML = conteudo;
-    chatBody.appendChild(div);
-    chatBody.scrollTop = chatBody.scrollHeight;
+function formatarTexto(texto) {
+    if (!texto) return "";
+    let t = texto.replace(/\n/g, '<br>');
+    t = t.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+    return t;
 }

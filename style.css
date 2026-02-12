@@ -36,6 +36,29 @@ body {
 .main-header h1 { font-size: 24px; margin: 10px 0 5px; }
 .main-header p { color: #888; font-size: 14px; }
 
+/* Estilo da Logo Principal */
+.logo-app {
+    width: 80px;  /* Tamanho ideal para celular */
+    height: 80px;
+    border-radius: 18px; /* Arredonda os cantos igual ao ícone do app */
+    margin-bottom: 10px;
+    object-fit: cover;
+    
+    /* Um brilho laranja sutil atrás da logo para destacar no fundo preto */
+    box-shadow: 0 5px 20px rgba(255, 85, 0, 0.3); 
+    border: 2px solid rgba(255, 255, 255, 0.1); /* Borda fina e discreta */
+    
+    /* Animação suave ao abrir */
+    animation: popIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+/* Animação de entrada (se ainda não tiver no seu CSS) */
+@keyframes popIn {
+    from { opacity: 0; transform: scale(0.5); }
+    to { opacity: 1; transform: scale(1); }
+}
+
+
 /* INPUT DE BUSCA (Ajuste Mobile) */
 .search-box {
     display: flex;

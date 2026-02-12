@@ -1,311 +1,106 @@
 :root {
-    --primary-color: #ff4500; /* Laranja estilo academia/energia */
-    --bg-color: #121212;
-    --card-bg: #1e1e1e;
-    --text-color: #ffffff;
+    --primary: #FF5500;
+    --primary-dark: #D44000;
+    --bg-app: #101014;
+    --bg-card: #1C1C24;
+    --text-main: #FFFFFF;
+    --msg-user: linear-gradient(135deg, var(--primary), var(--primary-dark));
+    --msg-bot: #25252E;
 }
 
-* {
-    box-sizing: border-box;
-    margin: 0;
-    padding: 0;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-}
+* { box-sizing: border-box; margin: 0; padding: 0; }
 
 body {
     font-family: 'Inter', sans-serif;
     background-color: var(--bg-app);
     color: var(--text-main);
-    
-    /* CORREÇÃO DO CORTE: */
-    /* Removemos o 'hidden' e permitimos rolar se necessário */
     min-height: 100vh;
-    overflow-y: auto; /* Permite rolar a página verticalmente */
-    overflow-x: hidden; /* Evita rolar para os lados */
-    
-    display: flex;
-    flex-direction: column;
+    overflow-y: auto; /* Permite rolar a tela principal */
+    overflow-x: hidden;
 }
 
-/* Adicione isso para garantir espaço no fundo (para o FAB não cobrir conteúdo) */
-.main-container {
-    padding-bottom: 120px; /* Espaço extra no final da rolagem */
-}
-
-.container {
-    width: 100%;
-    max-width: 500px;
-    text-align: center;
-}
-
-header h1 {
-    font-size: 1.8rem;
-    margin-bottom: 5px;
-}
-
-header p {
-    color: #888;
-    margin-bottom: 20px;
-}
-
-.search-box {
-    display: flex;
-    gap: 10px;
-    margin-bottom: 30px;
-}
-
-input {
-    flex: 1;
-    padding: 15px;
-    font-size: 1.5rem;
-    border-radius: 12px;
-    border: 2px solid #333;
-    background: #2c2c2c;
-    color: white;
-    text-align: center;
-    outline: none;
-    transition: 0.3s;
-}
-
-input:focus {
-    border-color: var(--primary-color);
-}
-
-button {
-    padding: 15px 25px;
-    background-color: var(--primary-color);
-    border: none;
-    border-radius: 12px;
-    cursor: pointer;
-    color: white;
-    transition: transform 0.2s;
-}
-
-button:active {
-    transform: scale(0.95);
-}
-
-.card {
-    background-color: var(--card-bg);
-    padding: 20px;
-    border-radius: 15px;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.5);
-    animation: fadeIn 0.5s;
-}
-
-.media-container {
-    width: 100%;
-    height: 300px; /* Altura fixa para manter layout */
-    background: #000;
-    border-radius: 10px;
-    margin: 15px 0;
-    overflow: hidden;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.media-container img, .media-container video {
-    width: 100%;
-    height: 100%;
-    object-fit: contain;
-}
-
-.tag-id {
-    background: #333;
-    display: inline-block;
-    padding: 5px 15px;
-    border-radius: 20px;
-    font-size: 0.9rem;
-    color: #ccc;
-}
-
-.hidden {
-    display: none;
-}
-
-#erro {
-    color: #ff6b6b;
-    margin-top: 20px;
-}
-
-#loading {
-    color: var(--primary-color);
-    font-weight: bold;
-}
-
-@keyframes fadeIn {
-    from { opacity: 0; transform: translateY(10px); }
-    to { opacity: 1; transform: translateY(0); }
-}
-
-:root {
-    --primary: #ff4500; /* Laranja PowerFisio */
-    --dark-bg: #121212;
-    --card-bg: #1e1e1e;
-    --text: #ffffff;
-    --chat-bg: #252525;
-}
-
-* { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', sans-serif; }
-
-body {
-    background-color: var(--dark-bg);
-    color: var(--text);
-    height: 100vh;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    overflow: hidden; /* Evita rolagem da página inteira */
-}
-
-/* --- ÁREA PRINCIPAL --- */
+/* --- TELA PRINCIPAL (BUSCA) --- */
 .main-container {
     width: 100%;
     max-width: 600px;
-    text-align: center;
+    margin: 0 auto;
     padding: 20px;
-    transition: filter 0.3s;
+    padding-bottom: 120px; /* Espaço para não cobrir conteúdo com o chat */
+    text-align: center;
 }
 
-.logo { width: 60px; margin-bottom: 10px; filter:none; opacity: 0.8;
-    border-radius: 100px;
-    border-style:inset;
-}
-
+.main-header h1 { font-size: 24px; margin: 10px 0 5px; }
+.main-header p { color: #888; }
 
 .search-box {
     display: flex;
     gap: 10px;
     margin: 30px 0;
-    width: 100%; /* Garante que usa a largura disponível */
-    padding: 0 10px; /* Margem de segurança nas laterais */
 }
 
-input {
-    flex: 1; /* Ocupa todo espaço possível */
-    min-width: 0; /* TRUQUE DE MESTRE: Impede o Flexbox de estourar a tela */
+#input-id {
+    flex: 1;
     padding: 20px;
-    font-size: 1.5rem; /* Levemente menor para não quebrar em telas pequenas */
+    font-size: 2rem;
     border-radius: 15px;
     border: 2px solid #333;
     background: #2c2c2c;
     color: white;
     text-align: center;
     outline: none;
-    transition: border-color 0.3s;
 }
+#input-id:focus { border-color: var(--primary); }
 
-.avatar-max {
-    width: 35px;
-    height: 35px;
-    background: linear-gradient(135deg, #ff4500, #ff8c00); /* Laranja degradê */
-    border-radius: 50%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    box-shadow: 0 0 10px rgba(255, 69, 0, 0.5); /* Brilho neon */
-    margin-right: 10px;
-    border: 2px solid #fff;
-}
-
-.avatar-max .material-icons {
-    font-size: 20px;
-    color: white;
-}
-
-.typing-indicator {
-    display: flex;
-    align-items: center;
-    gap: 5px;
-    padding: 10px 15px;
-    background: #333;
-    border-radius: 15px;
-    border-bottom-left-radius: 2px;
-    width: fit-content;
-}
-
-.typing-indicator span {
-    width: 8px;
-    height: 8px;
-    background: #aaa;
-    border-radius: 50%;
-    animation: bounce 1.4s infinite ease-in-out both;
-}
-
-.typing-indicator span:nth-child(1) { animation-delay: -0.32s; }
-.typing-indicator span:nth-child(2) { animation-delay: -0.16s; }
-
-@keyframes bounce {
-    0%, 80%, 100% { transform: scale(0); opacity: 0.5; }
-    40% { transform: scale(1); opacity: 1; background: var(--primary); }
-}
-
-input:focus { border-color: var(--primary); }
-
-button#btn-buscar {
-    padding: 0 30px;
+#btn-buscar {
+    width: 70px;
     background: var(--primary);
-    border: none;
     border-radius: 15px;
-    cursor: pointer;
+    border: none;
     color: white;
+    cursor: pointer;
 }
 
 /* --- CARD DE RESULTADO --- */
 .card {
-    background: var(--card-bg);
+    background: var(--bg-card);
     padding: 20px;
     border-radius: 20px;
     box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-    animation: slideUp 0.4s ease;
+    margin-top: 20px;
+    text-align: left;
 }
+.card.hidden { display: none; }
 
 .card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
-.badge-ref { background: #333; padding: 5px 10px; border-radius: 10px; font-weight: bold; color: var(--primary); }
+.badge-ref { background: #333; padding: 5px 10px; border-radius: 10px; color: var(--primary); font-weight: bold; }
 
-.media-wrapper {
-    width: 100%;
-    height: 350px; /* Altura fixa para o vídeo */
-    background: black;
-    border-radius: 10px;
-    overflow: hidden;
-    position: relative;
-}
-
-/* --- ÁREA DO VÍDEO (Responsiva 16:9) --- */
 .media-wrapper {
     position: relative;
     width: 100%;
-    /* Define a proporção 16:9 (Altura é 56.25% da largura) */
-    padding-top: 56.25%; 
+    padding-top: 56.25%; /* 16:9 Aspect Ratio */
     background: #000;
     border-radius: 12px;
     overflow: hidden;
-    margin-bottom: 10px;
-    box-shadow: inset 0 0 20px rgba(0,0,0,0.8); /* Efeito de profundidade */
+}
+.media-wrapper iframe, .media-wrapper video, .media-wrapper img {
+    position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; border: none;
 }
 
-/* Força o vídeo/iframe a ocupar 100% do espaço acima */
-.media-wrapper iframe, 
-.media-wrapper video, 
-.media-wrapper img {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    object-fit: cover; /* Garante preenchimento total */
-    border: none;
-}
+.card-footer { margin: 15px 0; color: #aaa; font-style: italic; }
 
-.card-footer { margin-top: 15px; color: #aaa; font-style: italic; }
 .btn-fechar-resultado {
-    margin-top: 15px; background: #333; color: white; border: none; padding: 10px 20px;
-    border-radius: 8px; cursor: pointer; width: 100%;
+    width: 100%;
+    padding: 15px;
+    background: #333;
+    color: white;
+    border: none;
+    border-radius: 12px;
+    cursor: pointer;
+    font-weight: 600;
+    margin-top: 10px;
 }
 
-/* --- BOTÃO FLUTUANTE DO MAX (FAB) --- */
+/* --- BOTÃO FLUTUANTE (FAB) --- */
 #fab-max {
     position: fixed;
     bottom: 30px;
@@ -316,71 +111,90 @@ button#btn-buscar {
     background: linear-gradient(135deg, var(--primary), #cc3700);
     border: none;
     box-shadow: 0 4px 15px rgba(255, 69, 0, 0.4);
-    color: white;
     cursor: pointer;
-    z-index: 1000;
-    transition: transform 0.2s;
+    z-index: 9999; /* Garante que fica em cima de tudo */
     display: flex; align-items: center; justify-content: center;
+    transition: transform 0.2s;
 }
-
-#fab-max .material-icons { font-size: 36px; }
-#fab-max:hover { transform: scale(1.1); }
+#fab-max:active { transform: scale(0.9); }
 
 /* --- WIDGET DO CHAT --- */
 .chat-widget {
     position: fixed;
-    bottom: 110px; /* Acima do botão */
+    bottom: 110px;
     right: 30px;
     width: 350px;
     height: 500px;
-    background: var(--chat-bg);
+    background: var(--bg-app);
     border-radius: 20px;
-    box-shadow: 0 10px 40px rgba(0,0,0,0.6);
+    box-shadow: 0 10px 40px rgba(0,0,0,0.8);
     display: flex;
     flex-direction: column;
-    z-index: 999;
-    overflow: hidden;
+    z-index: 10000; /* Maior que o FAB */
     border: 1px solid #333;
-    animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    overflow: hidden;
 }
+.chat-widget.hidden { display: none !important; }
 
-.chat-widget.hidden { display: none; }
-
+/* Header Chat */
 .chat-header {
-    background: #333;
+    background: #1a1a1a;
     padding: 15px;
     display: flex;
-    justify-content: space-between;
     align-items: center;
-    font-weight: bold;
+    gap: 10px;
+    border-bottom: 1px solid #333;
+}
+.header-info h3 { font-size: 16px; margin: 0; }
+.header-info p { font-size: 12px; color: #00E676; margin: 0; }
+#btn-fechar-chat { background: none; border: none; color: #aaa; margin-left: auto; width: auto; height: auto; }
+
+/* Corpo Chat */
+.chat-body {
+    flex: 1;
+    padding: 15px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    background: radial-gradient(circle at center, rgba(255,85,0,0.05) 0%, transparent 70%);
 }
 
-.chat-body { flex: 1; padding: 15px; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; }
-
-.chat-footer { padding: 10px; background: #1a1a1a; display: flex; gap: 10px; }
-#chat-input { padding: 10px; font-size: 1rem; text-align: left; }
-.chat-footer button { background: var(--primary); padding: 0 15px; border-radius: 10px; border: none; color: white; cursor: pointer; }
-
-/* Balões de Mensagem */
-.message { display: flex; width: 100%; }
-.message.bot { justify-content: flex-start; }
-.message.user { justify-content: flex-end; }
-.bubble {
-    max-width: 80%;
-    padding: 10px 15px;
-    border-radius: 15px;
-    font-size: 0.9rem;
+.message {
+    padding: 12px 16px;
+    border-radius: 18px;
+    font-size: 14px;
+    max-width: 85%;
     line-height: 1.4;
 }
-.bot .bubble { background: #333; color: #ddd; border-bottom-left-radius: 2px; }
-.user .bubble { background: var(--primary); color: white; border-bottom-right-radius: 2px; }
+.bot { align-self: flex-start; background: var(--msg-bot); border-bottom-left-radius: 4px; }
+.user { align-self: flex-end; background: var(--msg-user); color: white; border-bottom-right-radius: 4px; }
 
-/* Animações e Utilitários */
-.hidden { display: none; }
-@keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
-@keyframes popIn { from { opacity: 0; transform: scale(0.8) translateY(20px); } to { opacity: 1; transform: scale(1); translateY(0); } }
+/* Footer Chat */
+.chat-footer { padding: 10px; background: #1a1a1a; display: flex; gap: 10px; }
+#chat-input {
+    flex: 1; padding: 12px; border-radius: 20px; border: 1px solid #333; background: #252525; color: white;
+}
+#btn-enviar-chat {
+    width: 45px; height: 45px; border-radius: 50%; background: var(--primary); border: none; color: white; display: flex; align-items: center; justify-content: center;
+}
 
-/* Responsividade para Celular */
-@media (max-width: 500px) {
+/* Chips */
+.chips-area {
+    display: flex; gap: 8px; padding: 10px; overflow-x: auto; background: #151515; white-space: nowrap;
+}
+.chip {
+    background: #333; color: white; border: none; padding: 8px 12px; border-radius: 15px; font-size: 12px; cursor: pointer; flex-shrink: 0;
+}
+
+/* Loading */
+.typing-indicator { display: none; gap: 5px; padding: 10px; background: #252525; align-self: flex-start; border-radius: 15px; }
+.dot { width: 6px; height: 6px; background: #aaa; border-radius: 50%; animation: bounce 1.4s infinite; }
+.dot:nth-child(2) { animation-delay: 0.2s; }
+.dot:nth-child(3) { animation-delay: 0.4s; }
+@keyframes bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-5px); } }
+
+/* Responsividade Mobile */
+@media (max-width: 480px) {
     .chat-widget { width: 90%; right: 5%; bottom: 100px; height: 60vh; }
 }

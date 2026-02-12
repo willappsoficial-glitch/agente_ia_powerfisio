@@ -1,60 +1,66 @@
 // ============================================================
-// CONFIGURAÇÕES GERAIS
-// ============================================================
+// ⚠️ SUA URL DO APPS SCRIPT (MANTENHA ESTA)
 const API_URL = "https://script.google.com/macros/s/AKfycbxCF_O_KVJ6nRTE_cvCkB-TwATpT2wC2xMyRI8Sb6yPNdYn8mWFEzdcQFAdu89fg31O2w/exec"; 
+// ============================================================
 
 let listaExercicios = [];
 let conversationHistory = [];
 
-// ============================================================
-// INICIALIZAÇÃO (CARREGA TUDO)
-// ============================================================
 window.addEventListener('load', async () => {
-    console.log("Sistema Max Completo Iniciado");
+    console.log("Sistema Max Unificado Iniciado");
+    
+    // 1. Inicia download da base e configura status
+    const statusLoading = document.getElementById('loading-search');
+    if (statusLoading) statusLoading.classList.remove('hidden');
 
-    // 1. Carrega a lista de exercícios para busca rápida
     await carregarBaseDeDados();
+    
+    // 2. Base carregada? Esconde o loading
+    if (statusLoading) statusLoading.classList.add('hidden');
 
-    // 2. Configura EVENTOS (Cliques e Teclas)
     configurarEventos();
 });
 
+// --- FUNÇÃO 1: CARREGAR DADOS ---
+async function carregarBaseDeDados() {
+    try {
+        const res = await fetch(API_URL);
+        const dados = await res.json();
+        
+        if (Array.isArray(dados)) {
+            listaExercicios = dados;
+        }
+        console.log("Exercícios carregados:", listaExercicios.length);
+    } catch (err) {
+        console.error("Erro ao carregar DB:", err);
+        // Se der erro, muda o texto do loading para avisar
+        const statusLoading = document.getElementById('loading-search');
+        if (statusLoading) statusLoading.innerHTML = "❌ Erro de conexão. Recarregue a página.";
+    }
+}
+
 function configurarEventos() {
-    // --- EVENTOS DA BUSCA DE EXERCÍCIO ---
+    // Busca
     const inputBusca = document.getElementById('input-id');
     const btnBusca = document.getElementById('btn-buscar');
-    const btnNovaBusca = document.getElementById('btn-nova-busca'); // Aquele botão laranja do card
+    const btnNovaBusca = document.getElementById('btn-nova-busca');
 
-    if (inputBusca) {
-        inputBusca.addEventListener('keypress', (e) => { if (e.key === 'Enter') buscarExercicio(); });
-    }
-    if (btnBusca) {
-        btnBusca.addEventListener('click', buscarExercicio);
-    }
-    if (btnNovaBusca) {
-        btnNovaBusca.addEventListener('click', fecharResultado); // Agora ele funciona!
-    }
+    if (inputBusca) inputBusca.addEventListener('keypress', (e) => { if (e.key === 'Enter') buscarExercicio(); });
+    if (btnBusca) btnBusca.addEventListener('click', buscarExercicio);
+    if (btnNovaBusca) btnNovaBusca.addEventListener('click', fecharResultado);
 
-    // --- EVENTOS DO CHAT ---
+    // Chat
     const btnFab = document.getElementById('fab-max');
     const btnFecharChat = document.getElementById('btn-fechar-chat');
     const btnEnviarChat = document.getElementById('btn-enviar-chat');
     const inputChat = document.getElementById('chat-input');
     const chips = document.querySelectorAll('.chip');
 
-    // Toggle Chat
     if (btnFab) btnFab.addEventListener('click', toggleChat);
     if (btnFecharChat) btnFecharChat.addEventListener('click', toggleChat);
+    if (inputChat) inputChat.addEventListener('keypress', (e) => { if (e.key === 'Enter') enviarMensagemChat(); });
+    if (btnEnviarChat) btnEnviarChat.addEventListener('click', enviarMensagemChat);
 
-    // Enviar Mensagem
-    if (inputChat) {
-        inputChat.addEventListener('keypress', (e) => { if (e.key === 'Enter') enviarMensagemChat(); });
-    }
-    if (btnEnviarChat) {
-        btnEnviarChat.addEventListener('click', enviarMensagemChat);
-    }
-
-    // Chips (Botões Rápidos)
     chips.forEach(chip => {
         chip.addEventListener('click', () => {
             const pergunta = chip.getAttribute('data-pergunta');
@@ -66,42 +72,29 @@ function configurarEventos() {
     });
 }
 
-// ============================================================
-// LÓGICA DE BUSCA DE EXERCÍCIO (TELA PRINCIPAL)
-// ============================================================
-async function carregarBaseDeDados() {
-    const loading = document.getElementById('loading-search');
-    if (loading) loading.classList.remove('hidden');
-    
-    try {
-        const res = await fetch(API_URL);
-        const dados = await res.json();
-        if (Array.isArray(dados)) {
-            listaExercicios = dados;
-        }
-        if (loading) loading.classList.add('hidden');
-        console.log("Exercícios carregados:", listaExercicios.length);
-    } catch (err) {
-        console.error("Erro ao carregar DB:", err);
-    }
-}
-
+// --- FUNÇÃO 2: BUSCAR EXERCÍCIO ---
 function buscarExercicio() {
     const input = document.getElementById('input-id');
     const cardResultado = document.getElementById('resultado');
     const divErro = document.getElementById('erro');
+    const divLoading = document.getElementById('loading-search'); // Garante que loading está sumido
     
+    // Limpa estados anteriores
+    if (divLoading) divLoading.classList.add('hidden');
+    if (divErro) divErro.classList.add('hidden');
+    if (cardResultado) cardResultado.classList.add('hidden');
+
     if (!input) return;
     const termo = input.value.trim();
     if (!termo) return;
 
+    // Busca exata pelo ID
     const exercicio = listaExercicios.find(item => item.id == termo);
 
     if (exercicio) {
         mostrarCard(exercicio);
-        if (divErro) divErro.classList.add('hidden');
     } else {
-        if (cardResultado) cardResultado.classList.add('hidden');
+        // Se não achou, só agora mostra o erro
         if (divErro) divErro.classList.remove('hidden');
     }
     input.blur();
@@ -132,17 +125,18 @@ function mostrarCard(ex) {
 function fecharResultado() {
     const card = document.getElementById('resultado');
     const input = document.getElementById('input-id');
+    const divErro = document.getElementById('erro');
     
     if (card) card.classList.add('hidden');
+    if (divErro) divErro.classList.add('hidden');
+    
     if (input) {
         input.value = '';
         input.focus();
     }
 }
 
-// ============================================================
-// LÓGICA DO CHAT FLUTUANTE
-// ============================================================
+// --- FUNÇÃO 3: CHAT ---
 function toggleChat() {
     const chatWidget = document.getElementById('chat-widget');
     if (chatWidget) {
@@ -158,27 +152,23 @@ async function enviarMensagemChat() {
     const texto = userInput.value.trim();
     if (!texto) return;
 
-    // 1. UI Usuário
     addMessage(texto, 'user');
     userInput.value = '';
     userInput.blur();
     conversationHistory.push({ role: 'user', content: texto });
 
-    // 2. Loading
     if (loading) {
         loading.style.display = 'flex';
         chatBody.scrollTop = chatBody.scrollHeight;
     }
 
     try {
-        // 3. API
         const response = await fetch(API_URL, {
             method: 'POST',
             body: JSON.stringify({ mensagem: texto, historico: conversationHistory })
         });
         const data = await response.json();
 
-        // 4. Resposta Bot
         if (loading) loading.style.display = 'none';
         addMessage(formatarTexto(data.resposta), 'bot');
         conversationHistory.push({ role: 'model', content: data.resposta });
@@ -197,7 +187,6 @@ function addMessage(text, sender) {
     div.classList.add('message', sender);
     div.innerHTML = text;
     
-    // Insere antes do loading
     if (loading) {
         chatBody.insertBefore(div, loading);
     } else {

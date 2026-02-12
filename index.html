@@ -13,9 +13,7 @@
 
     <div class="main-container">
         <header class="main-header">
-            <div class="logo-area">
-                <span class="material-icons" style="font-size: 40px; color: var(--primary);">fitness_center</span>
-            </div>
+            <span class="material-icons" style="font-size: 40px; color: var(--primary);">fitness_center</span>
             <h1>Guia de Execução</h1>
             <p>Digite o número da sua ficha</p>
         </header>
@@ -27,8 +25,14 @@
             </button>
         </div>
 
-        <div id="loading-search" class="hidden">🔄 Carregando base de dados...</div>
-        <div id="erro" class="hidden">❌ Exercício não encontrado</div>
+        <div id="status-area">
+            <div id="loading-search" class="status-msg">
+                <span class="material-icons spin">sync</span> Carregando base de dados...
+            </div>
+            <div id="erro" class="status-msg hidden error">
+                <span class="material-icons">error_outline</span> Exercício não encontrado
+            </div>
+        </div>
 
         <div id="resultado" class="card hidden">
             <div class="card-header">
@@ -53,7 +57,7 @@
             src="https://assets10.lottiefiles.com/packages/lf20_w51pcehl.json"
             background="transparent"
             speed="1"
-            style="width: 50px; height: 50px;"
+            style="width: 55px; height: 55px;"
             loop
             autoplay>
         </lottie-player>
@@ -63,7 +67,6 @@
         <div class="chat-header">
             <div class="mascote-header">
                 <lottie-player 
-                    id="max-animacao-header"
                     src="https://assets10.lottiefiles.com/packages/lf20_w51pcehl.json"
                     background="transparent"
                     speed="1"
@@ -85,7 +88,7 @@
         <div id="chat-body" class="chat-body">
             <div class="message bot">
                 Fala, monstro! 💪 Sou o <strong>Max</strong>.<br>
-                Posso te ajudar com treinos ou dúvidas. É só mandar!
+                Posso te ajudar com treinos ou dúvidas.
             </div>
             <div class="typing-indicator" id="loading-chat">
                 <div class="dot"></div><div class="dot"></div><div class="dot"></div>

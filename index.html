@@ -1,34 +1,39 @@
 <!DOCTYPE html>
-<html lang="pt-br">
+<html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>PowerFisio - Guia & Max</title>
-    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <script src="https://unpkg.com/@lottiefiles/lottie-player@latest/dist/lottie-player.js"></script>
 </head>
 <body>
 
     <div class="main-container">
-        <header>
-            <img src="pflogo.png" alt="Logo" class="logo">
+        <header class="main-header">
+            <div class="logo-area">
+                <span class="material-icons" style="font-size: 40px; color: var(--primary);">fitness_center</span>
+            </div>
             <h1>Guia de Execução</h1>
             <p>Digite o número da sua ficha</p>
         </header>
 
         <div class="search-box">
             <input type="number" id="input-id" placeholder="Ex: 45" autofocus>
-            <button onclick="buscarExercicio()" id="btn-buscar">
+            <button id="btn-buscar">
                 <span class="material-icons">search</span>
             </button>
         </div>
 
-        <div id="loading" class="hidden">Carregando base de dados...</div>
+        <div id="loading-search" class="hidden">🔄 Carregando base de dados...</div>
+        <div id="erro" class="hidden">❌ Exercício não encontrado</div>
 
         <div id="resultado" class="card hidden">
             <div class="card-header">
-                <h2 id="ex-nome">Nome do Exercício</h2>
-                <span class="badge-ref">Ref: <span id="ex-id">00</span></span>
+                <h2 id="ex-nome">NOME DO EXERCÍCIO</h2>
+                <span class="badge-ref">Ref: <span id="ex-id">0</span></span>
             </div>
             
             <div class="media-wrapper">
@@ -39,42 +44,63 @@
                 <p>💡 <span id="ex-dica">Carregando dica...</span></p>
             </div>
             
-            <button onclick="fecharResultado()" class="btn-fechar-resultado">Nova Busca</button>
-        </div>
-
-        <div id="erro" class="hidden">
-            <span class="material-icons">error_outline</span>
-            <p>Exercício não encontrado.</p>
+            <button id="btn-nova-busca" class="btn-fechar-resultado">Nova Busca</button>
         </div>
     </div>
 
-    <button id="fab-max" onclick="toggleChat()">
-        <span class="material-icons">smart_toy</span>
+    <button id="fab-max">
+        <lottie-player 
+            src="https://assets10.lottiefiles.com/packages/lf20_w51pcehl.json"
+            background="transparent"
+            speed="1"
+            style="width: 50px; height: 50px;"
+            loop
+            autoplay>
+        </lottie-player>
     </button>
 
     <div id="chat-widget" class="chat-widget hidden">
         <div class="chat-header">
-            <div class="chat-title" style="display: flex; align-items: center;">
-                <div class="avatar-max">
-                    <span class="material-icons">smart_toy</span>
-                </div>
-                <span>Max - Personal IA</span>
+            <div class="mascote-header">
+                <lottie-player 
+                    id="max-animacao-header"
+                    src="https://assets10.lottiefiles.com/packages/lf20_w51pcehl.json"
+                    background="transparent"
+                    speed="1"
+                    style="width: 40px; height: 40px;"
+                    loop
+                    autoplay>
+                </lottie-player>
+                <div class="status-online"></div>
             </div>
-            <button onclick="toggleChat()" class="btn-close-chat">
+            <div class="header-info">
+                <h3>Max - Powerfisio</h3>
+                <p>Online agora</p>
+            </div>
+            <button id="btn-fechar-chat">
                 <span class="material-icons">close</span>
             </button>
         </div>
         
         <div id="chat-body" class="chat-body">
             <div class="message bot">
-                <div class="bubble">Olá! Sou o Max. Se tiver dúvida sobre treino, dores ou quiser conversar, estou aqui! 💪</div>
+                Fala, monstro! 💪 Sou o <strong>Max</strong>.<br>
+                Posso te ajudar com treinos ou dúvidas. É só mandar!
             </div>
+            <div class="typing-indicator" id="loading-chat">
+                <div class="dot"></div><div class="dot"></div><div class="dot"></div>
+            </div>
+        </div>
+
+        <div class="chips-area">
+            <button class="chip" data-pergunta="🏋️ Qual meu treino de hoje?">🏋️ Treino</button>
+            <button class="chip" data-pergunta="💧 Quanta água devo beber?">💧 Água</button>
+            <button class="chip" data-pergunta="🕒 Horário de funcionamento">🕒 Horários</button>
         </div>
         
         <div class="chat-footer">
-            <input type="text" id="chat-input" placeholder="Pergunte ao Max...">
-            
-            <button id="btn-enviar">
+            <input type="text" id="chat-input" placeholder="Digite sua dúvida...">
+            <button id="btn-enviar-chat">
                 <span class="material-icons">send</span>
             </button>
         </div>

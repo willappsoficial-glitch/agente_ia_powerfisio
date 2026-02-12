@@ -10,19 +10,20 @@ let conversationHistory = [];
 // INICIALIZAÇÃO (CARREGA TUDO)
 // ============================================================
 window.addEventListener('load', async () => {
-    console.log("Sistema Max v2.0 Iniciado");
+    console.log("Sistema Max Completo Iniciado");
 
     // 1. Carrega a lista de exercícios para busca rápida
     await carregarBaseDeDados();
 
-    // 2. Configura todos os botões e inputs
+    // 2. Configura EVENTOS (Cliques e Teclas)
     configurarEventos();
 });
 
 function configurarEventos() {
     // --- EVENTOS DA BUSCA DE EXERCÍCIO ---
-    const inputBusca = document.getElementById('input-id'); // O input laranja do vídeo
-    const btnBusca = document.querySelector('.search-box button'); // O botão de lupa
+    const inputBusca = document.getElementById('input-id');
+    const btnBusca = document.getElementById('btn-buscar');
+    const btnNovaBusca = document.getElementById('btn-nova-busca'); // Aquele botão laranja do card
 
     if (inputBusca) {
         inputBusca.addEventListener('keypress', (e) => { if (e.key === 'Enter') buscarExercicio(); });
@@ -30,61 +31,70 @@ function configurarEventos() {
     if (btnBusca) {
         btnBusca.addEventListener('click', buscarExercicio);
     }
+    if (btnNovaBusca) {
+        btnNovaBusca.addEventListener('click', fecharResultado); // Agora ele funciona!
+    }
 
     // --- EVENTOS DO CHAT ---
-    const btnFab = document.getElementById('fab-max'); // O botão flutuante laranja
-    const btnFechar = document.querySelector('.btn-close-chat');
-    const btnEnviarChat = document.getElementById('btn-enviar');
-    const inputChat = document.getElementById('userInput');
+    const btnFab = document.getElementById('fab-max');
+    const btnFecharChat = document.getElementById('btn-fechar-chat');
+    const btnEnviarChat = document.getElementById('btn-enviar-chat');
+    const inputChat = document.getElementById('chat-input');
+    const chips = document.querySelectorAll('.chip');
 
-    // ABRIR/FECHAR CHAT (AQUI ESTAVA O ERRO)
-    if (btnFab) {
-        btnFab.addEventListener('click', toggleChat);
-    }
-    if (btnFechar) {
-        btnFechar.addEventListener('click', toggleChat);
-    }
+    // Toggle Chat
+    if (btnFab) btnFab.addEventListener('click', toggleChat);
+    if (btnFecharChat) btnFecharChat.addEventListener('click', toggleChat);
 
-    // ENVIAR MENSAGEM NO CHAT
+    // Enviar Mensagem
     if (inputChat) {
-        inputChat.addEventListener('keypress', (e) => { if (e.key === 'Enter') enviarMensagem(); });
+        inputChat.addEventListener('keypress', (e) => { if (e.key === 'Enter') enviarMensagemChat(); });
     }
     if (btnEnviarChat) {
-        btnEnviarChat.addEventListener('click', enviarMensagem);
+        btnEnviarChat.addEventListener('click', enviarMensagemChat);
     }
+
+    // Chips (Botões Rápidos)
+    chips.forEach(chip => {
+        chip.addEventListener('click', () => {
+            const pergunta = chip.getAttribute('data-pergunta');
+            if (inputChat) {
+                inputChat.value = pergunta;
+                enviarMensagemChat();
+            }
+        });
+    });
 }
 
 // ============================================================
-// FUNÇÕES: BUSCA DE EXERCÍCIO (TELA PRINCIPAL)
+// LÓGICA DE BUSCA DE EXERCÍCIO (TELA PRINCIPAL)
 // ============================================================
 async function carregarBaseDeDados() {
+    const loading = document.getElementById('loading-search');
+    if (loading) loading.classList.remove('hidden');
+    
     try {
-        // Usa a mesma API, mas espera JSON (doGet no Apps Script)
         const res = await fetch(API_URL);
         const dados = await res.json();
-        
-        // Se a API retornar a lista direta (array)
         if (Array.isArray(dados)) {
             listaExercicios = dados;
-        } else {
-            console.log("API retornou formato diferente, tentando adaptar...");
         }
+        if (loading) loading.classList.add('hidden');
         console.log("Exercícios carregados:", listaExercicios.length);
     } catch (err) {
-        console.error("Erro ao carregar exercícios:", err);
+        console.error("Erro ao carregar DB:", err);
     }
 }
 
 function buscarExercicio() {
     const input = document.getElementById('input-id');
-    const cardResultado = document.getElementById('resultado'); // O card preto
+    const cardResultado = document.getElementById('resultado');
     const divErro = document.getElementById('erro');
     
     if (!input) return;
     const termo = input.value.trim();
     if (!termo) return;
 
-    // Procura na lista local (ID igual ao digitado)
     const exercicio = listaExercicios.find(item => item.id == termo);
 
     if (exercicio) {
@@ -94,112 +104,106 @@ function buscarExercicio() {
         if (cardResultado) cardResultado.classList.add('hidden');
         if (divErro) divErro.classList.remove('hidden');
     }
-    
-    // Fecha teclado
     input.blur();
 }
 
 function mostrarCard(ex) {
     const card = document.getElementById('resultado');
     
-    // Preenche os dados
     document.getElementById('ex-nome').innerText = ex.nome || "Exercício";
     document.getElementById('ex-id').innerText = ex.id;
-    document.getElementById('ex-dica').innerText = ex.dica || "Mantenha a postura correta e controle a respiração."; // Dica padrão se não tiver
+    document.getElementById('ex-dica').innerText = ex.dica || "Mantenha a postura correta.";
 
-    // Lógica do Vídeo/Imagem
     const containerMedia = document.getElementById('media-content');
-    containerMedia.innerHTML = ''; // Limpa anterior
+    containerMedia.innerHTML = ''; 
 
     if (ex.media && (ex.media.includes('youtube') || ex.media.includes('youtu.be'))) {
         let videoId = ex.media.split('v=')[1] || ex.media.split('/').pop();
         videoId = videoId.split('?')[0];
-        containerMedia.innerHTML = `<iframe src="https://www.youtube.com/embed/${videoId}?autoplay=1&mute=1&loop=1&playlist=${videoId}&controls=0" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>`;
+        containerMedia.innerHTML = `<iframe src="https://www.youtube.com/embed/${videoId}?autoplay=1&mute=1&loop=1&controls=0" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>`;
     } else {
         containerMedia.innerHTML = `<img src="${ex.media}" alt="${ex.nome}" style="width:100%; height:100%; object-fit:cover;">`;
     }
 
     card.classList.remove('hidden');
-    
-    // Rola a página suavemente até o card para garantir que a dica apareça
-    setTimeout(() => {
-        card.scrollIntoView({ behavior: 'smooth', block: 'center' });
-    }, 300);
+    setTimeout(() => { card.scrollIntoView({ behavior: 'smooth', block: 'center' }); }, 300);
 }
 
-// ============================================================
-// FUNÇÕES: CHAT DO MAX
-// ============================================================
-function toggleChat() {
-    const chatWidget = document.getElementById('chat-widget'); // O container do chat
-    if (chatWidget) {
-        // Troca a classe hidden (mostra/esconde)
-        if (chatWidget.style.display === 'none' || chatWidget.classList.contains('hidden')) {
-            chatWidget.classList.remove('hidden');
-            chatWidget.style.display = 'flex';
-        } else {
-            chatWidget.classList.add('hidden');
-            chatWidget.style.display = 'none';
-        }
-    } else {
-        console.error("Elemento 'chat-widget' não encontrado no HTML!");
+function fecharResultado() {
+    const card = document.getElementById('resultado');
+    const input = document.getElementById('input-id');
+    
+    if (card) card.classList.add('hidden');
+    if (input) {
+        input.value = '';
+        input.focus();
     }
 }
 
-async function enviarMensagem() {
-    const userInput = document.getElementById('userInput');
-    const btnEnviar = document.getElementById('btn-enviar');
-    const chatContainer = document.getElementById('chat-container');
-    const loading = document.getElementById('loading');
+// ============================================================
+// LÓGICA DO CHAT FLUTUANTE
+// ============================================================
+function toggleChat() {
+    const chatWidget = document.getElementById('chat-widget');
+    if (chatWidget) {
+        chatWidget.classList.toggle('hidden');
+    }
+}
+
+async function enviarMensagemChat() {
+    const userInput = document.getElementById('chat-input');
+    const chatBody = document.getElementById('chat-body');
+    const loading = document.getElementById('loading-chat');
     
     const texto = userInput.value.trim();
     if (!texto) return;
 
-    // UI: Bloqueia envio duplicado
-    btnEnviar.disabled = true;
-    
-    // 1. Adiciona msg do usuário
+    // 1. UI Usuário
     addMessage(texto, 'user');
     userInput.value = '';
     userInput.blur();
     conversationHistory.push({ role: 'user', content: texto });
 
-    // 2. Mostra Loading
-    loading.style.display = 'flex';
-    chatContainer.scrollTop = chatContainer.scrollHeight;
+    // 2. Loading
+    if (loading) {
+        loading.style.display = 'flex';
+        chatBody.scrollTop = chatBody.scrollHeight;
+    }
 
     try {
-        // 3. Envia para API
+        // 3. API
         const response = await fetch(API_URL, {
             method: 'POST',
             body: JSON.stringify({ mensagem: texto, historico: conversationHistory })
         });
         const data = await response.json();
 
-        // 4. Resposta do Robô
-        loading.style.display = 'none';
-        const respostaFormatada = formatarTexto(data.resposta);
-        addMessage(respostaFormatada, 'bot');
+        // 4. Resposta Bot
+        if (loading) loading.style.display = 'none';
+        addMessage(formatarTexto(data.resposta), 'bot');
         conversationHistory.push({ role: 'model', content: data.resposta });
 
     } catch (error) {
-        loading.style.display = 'none';
-        addMessage("⚠️ Estou sem sinal... Tente de novo!", 'bot');
-    } finally {
-        btnEnviar.disabled = false;
+        if (loading) loading.style.display = 'none';
+        addMessage("⚠️ Erro de conexão. Tente novamente!", 'bot');
     }
 }
 
 function addMessage(text, sender) {
-    const chatContainer = document.getElementById('chat-container');
-    const loading = document.getElementById('loading');
+    const chatBody = document.getElementById('chat-body');
+    const loading = document.getElementById('loading-chat');
     
     const div = document.createElement('div');
     div.classList.add('message', sender);
     div.innerHTML = text;
     
-    chatContainer.insertBefore(div, loading); // Insere antes do loading
-    chatContainer.scrollTop = chatContainer.scrollHeight;
+    // Insere antes do loading
+    if (loading) {
+        chatBody.insertBefore(div, loading);
+    } else {
+        chatBody.appendChild(div);
+    }
+    chatBody.scrollTop = chatBody.scrollHeight;
 }
 
 function formatarTexto(texto) {

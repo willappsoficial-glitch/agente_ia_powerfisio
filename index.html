@@ -3,51 +3,63 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>PowerFisio - Guia de Execução</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <title>Totem - PowerFisio</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-    <div class="main-container">
+    <div id="tela-busca" class="tela active">
         <header class="main-header">
             <img src="pflogo.png" alt="PowerFisio" class="logo-app">
-            <h1>Guia de Execução</h1>
-            <p>Digite o número da sua ficha</p>
+            <h1>GUIA DE EXECUÇÃO</h1>
+            <p>Digite o número da máquina/exercício</p>
         </header>
 
-        <div class="search-box">
-            <input type="number" id="input-id" placeholder="Ex: 45" autofocus>
-            <button id="btn-buscar">
-                <span class="material-icons">search</span>
+        <div class="display-container">
+            <div id="display-numero" class="display-vazio">_ _ _</div>
+            <div id="erro-msg" class="erro-escondido">❌ ID não encontrado</div>
+        </div>
+
+        <div id="loading-search" class="status-msg">
+            <span class="material-icons spin">sync</span> Sincronizando sistema...
+        </div>
+
+        <div class="teclado-grid">
+            <button class="btn-tecla" onclick="digitar('1')">1</button>
+            <button class="btn-tecla" onclick="digitar('2')">2</button>
+            <button class="btn-tecla" onclick="digitar('3')">3</button>
+            <button class="btn-tecla" onclick="digitar('4')">4</button>
+            <button class="btn-tecla" onclick="digitar('5')">5</button>
+            <button class="btn-tecla" onclick="digitar('6')">6</button>
+            <button class="btn-tecla" onclick="digitar('7')">7</button>
+            <button class="btn-tecla" onclick="digitar('8')">8</button>
+            <button class="btn-tecla" onclick="digitar('9')">9</button>
+            <button class="btn-tecla btn-apagar" onclick="apagar()"><span class="material-icons">backspace</span></button>
+            <button class="btn-tecla" onclick="digitar('0')">0</button>
+            <button class="btn-tecla btn-buscar" onclick="buscarExercicio()">IR <span class="material-icons">chevron_right</span></button>
+        </div>
+    </div>
+
+    <div id="tela-video" class="tela hidden">
+        <div class="video-header">
+            <div>
+                <span class="badge-ref">REF: <span id="ex-id">0</span></span>
+                <h2 id="ex-nome">NOME DO EXERCÍCIO</h2>
+            </div>
+            <button id="btn-fechar" class="btn-fechar-video" onclick="fecharVideo()">
+                <span class="material-icons">close</span> VOLTAR
             </button>
         </div>
-
-        <div id="status-area">
-            <div id="loading-search" class="status-msg">
-                <span class="material-icons spin">sync</span> Carregando base de dados...
-            </div>
-            <div id="erro" class="status-msg hidden error">
-                <span class="material-icons">error_outline</span> Exercício não encontrado
-            </div>
+        
+        <div class="media-fullscreen">
+            <div id="media-content"></div>
         </div>
-
-        <div id="resultado" class="card hidden">
-            <div class="card-header">
-                <h2 id="ex-nome">NOME DO EXERCÍCIO</h2>
-                <span class="badge-ref">Ref: <span id="ex-id">0</span></span>
-            </div>
-            
-            <div class="media-wrapper">
-                <div id="media-content"></div>
-            </div>
-            
-            <div class="card-footer">
-                <p>💡 <span id="ex-dica">Carregando dica...</span></p>
-            </div>
-            
-            <button id="btn-nova-busca" class="btn-fechar-resultado">Nova Busca</button>
+        
+        <div class="dica-max">
+            <span class="material-icons icone-dica">lightbulb</span>
+            <p id="ex-dica">Mantenha a postura correta e contraia o abdômen.</p>
         </div>
     </div>
 

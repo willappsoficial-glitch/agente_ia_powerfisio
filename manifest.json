@@ -8,12 +8,12 @@
   "orientation": "portrait",
   "icons": [
     {
-      "src": "pflogo.png",
+      "src": "pflogoicone1.png",
       "sizes": "192x192",
       "type": "image/png"
     },
     {
-      "src": "pflogo.png",
+      "src": "pflogoicone2.png",
       "sizes": "512x512",
       "type": "image/png"
     }

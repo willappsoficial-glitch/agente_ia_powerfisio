@@ -1,0 +1,21 @@
+{
+  "name": "Totem PowerFisio",
+  "short_name": "Totem PF",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#000000",
+  "theme_color": "#FF5500",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "pflogo.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "pflogo.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

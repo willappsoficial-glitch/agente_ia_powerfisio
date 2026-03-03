@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Max - Personal IA</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link rel="stylesheet" href="max.css">
+    <script src="https://unpkg.com/@lottiefiles/lottie-player@latest/dist/lottie-player.js"></script>
+</head>
+<body>
+
+    <div class="chat-container">
+        <header class="chat-header">
+            <lottie-player 
+                src="https://assets10.lottiefiles.com/packages/lf20_w51pcehl.json"
+                background="transparent"
+                speed="1"
+                style="width: 50px; height: 50px;"
+                loop
+                autoplay>
+            </lottie-player>
+            <div class="header-info">
+                <h1>Max IA</h1>
+                <p>Powerfisio - Online</p>
+            </div>
+        </header>
+        
+        <main id="chat-body" class="chat-body">
+            <div class="message bot">
+                Fala, monstro! 💪 Sou o <strong>Max</strong>, seu Personal IA.<br>
+                Posso montar seu treino ou tirar dúvidas. Como posso te ajudar hoje?
+            </div>
+            <div class="typing-indicator hidden" id="loading-chat">
+                <div class="dot"></div><div class="dot"></div><div class="dot"></div>
+            </div>
+        </main>
+
+        <div class="chips-area">
+            <button class="chip" data-pergunta="🏋️ Quero um treino de peito">🏋️ Treino de Peito</button>
+            <button class="chip" data-pergunta="🦵 Quero um treino de pernas">🦵 Treino de Pernas</button>
+            <button class="chip" data-pergunta="🕒 Qual o horário de funcionamento?">🕒 Horários</button>
+        </div>
+        
+        <footer class="chat-footer">
+            <input type="text" id="chat-input" placeholder="Digite sua dúvida ou peça um treino...">
+            <button id="btn-enviar-chat">
+                <span class="material-icons">send</span>
+            </button>
+        </footer>
+    </div>
+
+    <script src="max.js"></script>
+</body>
+</html>

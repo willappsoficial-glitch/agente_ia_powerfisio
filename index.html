@@ -3,11 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>PowerFisio - Guia & Max</title>
+    <title>PowerFisio - Guia de Execução</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
-    <script src="https://unpkg.com/@lottiefiles/lottie-player@latest/dist/lottie-player.js"></script>
 </head>
 <body>
 
@@ -49,63 +48,6 @@
             </div>
             
             <button id="btn-nova-busca" class="btn-fechar-resultado">Nova Busca</button>
-        </div>
-    </div>
-
-    <button id="fab-max">
-        <lottie-player 
-            src="https://assets10.lottiefiles.com/packages/lf20_w51pcehl.json"
-            background="transparent"
-            speed="1"
-            style="width: 55px; height: 55px;"
-            loop
-            autoplay>
-        </lottie-player>
-    </button>
-
-    <div id="chat-widget" class="chat-widget hidden">
-        <div class="chat-header">
-            <div class="mascote-header">
-                <lottie-player 
-                    src="https://assets10.lottiefiles.com/packages/lf20_w51pcehl.json"
-                    background="transparent"
-                    speed="1"
-                    style="width: 40px; height: 40px;"
-                    loop
-                    autoplay>
-                </lottie-player>
-                <div class="status-online"></div>
-            </div>
-            <div class="header-info">
-                <h3>Max - Powerfisio</h3>
-                <p>Online agora</p>
-            </div>
-            <button id="btn-fechar-chat">
-                <span class="material-icons">close</span>
-            </button>
-        </div>
-        
-        <div id="chat-body" class="chat-body">
-            <div class="message bot">
-                Fala, monstro! 💪 Sou o <strong>Max</strong>.<br>
-                Posso te ajudar com treinos ou dúvidas.
-            </div>
-            <div class="typing-indicator" id="loading-chat">
-                <div class="dot"></div><div class="dot"></div><div class="dot"></div>
-            </div>
-        </div>
-
-        <div class="chips-area">
-            <button class="chip" data-pergunta="🏋️ Qual meu treino de hoje?">🏋️ Treino</button>
-            <button class="chip" data-pergunta="💧 Quanta água devo beber?">💧 Água</button>
-            <button class="chip" data-pergunta="🕒 Horário de funcionamento">🕒 Horários</button>
-        </div>
-        
-        <div class="chat-footer">
-            <input type="text" id="chat-input" placeholder="Digite sua dúvida...">
-            <button id="btn-enviar-chat">
-                <span class="material-icons">send</span>
-            </button>
         </div>
     </div>
 

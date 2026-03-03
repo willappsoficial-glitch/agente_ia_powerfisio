@@ -4,8 +4,6 @@
     --bg-app: #101014;
     --bg-card: #1C1C24;
     --text-main: #FFFFFF;
-    --msg-user: linear-gradient(135deg, var(--primary), var(--primary-dark));
-    --msg-bot: #25252E;
 }
 
 * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -15,17 +13,17 @@ body {
     background-color: var(--bg-app);
     color: var(--text-main);
     height: 100vh;
-    overflow-y: auto; /* Permite rolar a tela principal */
-    overflow-x: hidden; /* Evita quebrar horizontalmente */
+    overflow-y: auto; 
+    overflow-x: hidden; 
 }
 
 /* --- TELA PRINCIPAL (BUSCA) --- */
 .main-container {
     width: 100%;
-    max-width: 500px; /* Limita largura em tablets */
+    max-width: 500px; 
     margin: 0 auto;
     padding: 20px;
-    padding-bottom: 120px;
+    padding-bottom: 40px; /* Margem reduzida (não tem mais botão flutuante) */
     text-align: center;
     display: flex;
     flex-direction: column;
@@ -38,38 +36,33 @@ body {
 
 /* Estilo da Logo Principal */
 .logo-app {
-    width: 80px;  /* Tamanho ideal para celular */
+    width: 80px; 
     height: 80px;
-    border-radius: 18px; /* Arredonda os cantos igual ao ícone do app */
+    border-radius: 18px; 
     margin-bottom: 10px;
     object-fit: cover;
-    
-    /* Um brilho laranja sutil atrás da logo para destacar no fundo preto */
     box-shadow: 0 5px 20px rgba(255, 85, 0, 0.3); 
-    border: 2px solid rgba(255, 255, 255, 0.1); /* Borda fina e discreta */
-    
-    /* Animação suave ao abrir */
+    border: 2px solid rgba(255, 255, 255, 0.1); 
     animation: popIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
 
-/* Animação de entrada (se ainda não tiver no seu CSS) */
 @keyframes popIn {
     from { opacity: 0; transform: scale(0.5); }
     to { opacity: 1; transform: scale(1); }
 }
 
 
-/* INPUT DE BUSCA (Ajuste Mobile) */
+/* INPUT DE BUSCA */
 .search-box {
     display: flex;
     gap: 10px;
     margin: 30px 0;
-    width: 100%; /* Ocupa 100% do container */
+    width: 100%; 
 }
 
 #input-id {
     flex: 1;
-    width: 100%; /* Força respeitar o pai */
+    width: 100%; 
     padding: 20px;
     font-size: 1.8rem;
     border-radius: 15px;
@@ -78,7 +71,7 @@ body {
     color: white;
     text-align: center;
     outline: none;
-    min-width: 0; /* Impede estourar o flexbox */
+    min-width: 0; 
 }
 #input-id:focus { border-color: var(--primary); }
 
@@ -89,7 +82,7 @@ body {
     border: none;
     color: white;
     cursor: pointer;
-    flex-shrink: 0; /* Não deixa o botão esmagar */
+    flex-shrink: 0; 
 }
 
 /* --- MENSAGENS DE STATUS --- */
@@ -152,72 +145,3 @@ body {
     cursor: pointer;
     font-weight: 600;
 }
-
-/* --- BOTÃO FLUTUANTE (FAB) --- */
-#fab-max {
-    position: fixed;
-    bottom: 25px;
-    right: 25px;
-    width: 65px;
-    height: 65px;
-    border-radius: 50%;
-    background: linear-gradient(135deg, var(--primary), #cc3700);
-    border: none;
-    box-shadow: 0 4px 15px rgba(255, 69, 0, 0.4);
-    cursor: pointer;
-    z-index: 9999;
-    display: flex; align-items: center; justify-content: center;
-}
-
-/* --- WIDGET DO CHAT --- */
-.chat-widget {
-    position: fixed;
-    bottom: 100px;
-    right: 25px;
-    width: 340px;
-    height: 480px;
-    background: var(--bg-app);
-    border-radius: 20px;
-    box-shadow: 0 10px 40px rgba(0,0,0,0.8);
-    display: flex;
-    flex-direction: column;
-    z-index: 10000;
-    border: 1px solid #333;
-}
-.chat-widget.hidden { display: none !important; }
-
-/* Layout Mobile do Chat */
-@media (max-width: 480px) {
-    .chat-widget {
-        width: 90%;
-        right: 5%;
-        height: 60vh;
-        bottom: 100px;
-    }
-}
-
-/* Estilos Internos do Chat (Header, Body, Input) */
-.chat-header { background: #1a1a1a; padding: 15px; display: flex; align-items: center; gap: 10px; border-bottom: 1px solid #333; }
-.header-info h3 { font-size: 16px; color: white; margin: 0; }
-.header-info p { font-size: 12px; color: #00E676; margin: 0; }
-#btn-fechar-chat { background: none; border: none; color: #aaa; margin-left: auto; cursor: pointer; }
-
-.chat-body { flex: 1; padding: 15px; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; background: radial-gradient(circle at center, rgba(255,85,0,0.05) 0%, transparent 70%); }
-
-.message { padding: 12px 16px; border-radius: 18px; font-size: 14px; max-width: 85%; line-height: 1.4; color: white; }
-.bot { align-self: flex-start; background: var(--msg-bot); border-bottom-left-radius: 4px; }
-.user { align-self: flex-end; background: var(--msg-user); border-bottom-right-radius: 4px; }
-
-.chat-footer { padding: 10px; background: #1a1a1a; display: flex; gap: 10px; }
-#chat-input { flex: 1; padding: 12px; border-radius: 20px; border: 1px solid #333; background: #252525; color: white; outline: none; }
-#btn-enviar-chat { width: 45px; height: 45px; border-radius: 50%; background: var(--primary); border: none; color: white; cursor: pointer; display: flex; align-items: center; justify-content: center; }
-
-/* Chips */
-.chips-area { display: flex; gap: 8px; padding: 10px; overflow-x: auto; background: #151515; }
-.chip { background: #333; color: white; border: none; padding: 8px 12px; border-radius: 15px; font-size: 12px; cursor: pointer; white-space: nowrap; flex-shrink: 0; }
-
-.typing-indicator { display: none; gap: 5px; padding: 10px; background: #252525; align-self: flex-start; border-radius: 15px; }
-.dot { width: 6px; height: 6px; background: #aaa; border-radius: 50%; animation: bounce 1.4s infinite; }
-.dot:nth-child(2) { animation-delay: 0.2s; }
-.dot:nth-child(3) { animation-delay: 0.4s; }
-@keyframes bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-5px); } }

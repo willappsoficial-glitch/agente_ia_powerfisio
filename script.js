@@ -5,27 +5,31 @@ const API_URL = "https://script.google.com/macros/s/AKfycbxCF_O_KVJ6nRTE_cvCkB-T
 
 let listaExercicios = [];
 let numeroDigitado = ""; 
+let baseCarregada = false; // 🔒 NOVA TRAVA DE SEGURANÇA
 
-// MUDANÇA: DOMContentLoaded aciona instantaneamente
 document.addEventListener('DOMContentLoaded', async () => {
     const statusLoading = document.getElementById('loading-search');
     
     try {
-        // Tenta baixar a planilha imediatamente
         const res = await fetch(API_URL);
         const dados = await res.json();
         
         if (Array.isArray(dados)) {
             listaExercicios = dados;
+            baseCarregada = true; // 🔓 Download concluído! Libera o uso.
         }
         
-        // Sucesso: Arranca o spinner da tela!
-        if (statusLoading) statusLoading.classList.add('hidden');
+        // Sucesso: Força o sumiço do texto de "Sincronizando..."
+        if (statusLoading) {
+            statusLoading.style.display = 'none';
+        }
         
     } catch (err) {
         console.error("Erro no Fetch:", err);
-        // Se a internet cair, ele avisa na tela em vez de girar infinito
-        if (statusLoading) statusLoading.innerHTML = "❌ Erro ao sincronizar. Verifique a internet e recarregue.";
+        if (statusLoading) {
+            statusLoading.innerHTML = "❌ Erro ao conectar. Verifique a internet.";
+            statusLoading.style.color = "#ff3333";
+        }
     }
 });
 
@@ -48,6 +52,7 @@ function atualizarDisplay() {
     const display = document.getElementById('display-numero');
     const erroMsg = document.getElementById('erro-msg');
     
+    // Esconde qualquer erro ao voltar a digitar
     erroMsg.classList.remove('erro-visivel');
 
     if (numeroDigitado === "") {
@@ -65,14 +70,24 @@ function atualizarDisplay() {
 function buscarExercicio() {
     if (numeroDigitado === "") return;
 
-    const exercicio = listaExercicios.find(item => item.id == numeroDigitado);
     const erroMsg = document.getElementById('erro-msg');
+
+    // 🔒 VERIFICAÇÃO DA TRAVA: Se clicar em IR antes da planilha baixar
+    if (!baseCarregada) {
+        erroMsg.innerText = "⏳ Aguarde sincronizar...";
+        erroMsg.classList.add('erro-visivel');
+        return;
+    }
+
+    const exercicio = listaExercicios.find(item => item.id == numeroDigitado);
 
     if (exercicio) {
         erroMsg.classList.remove('erro-visivel');
         abrirTelaVideo(exercicio);
     } else {
+        erroMsg.innerText = "❌ ID não encontrado"; // Texto padrão de erro
         erroMsg.classList.add('erro-visivel');
+        
         setTimeout(() => {
             numeroDigitado = "";
             atualizarDisplay();

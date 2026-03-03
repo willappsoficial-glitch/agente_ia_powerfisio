@@ -4,10 +4,9 @@ const API_URL = "https://script.google.com/macros/s/AKfycbxCF_O_KVJ6nRTE_cvCkB-T
 // ============================================================
 
 let listaExercicios = [];
-let conversationHistory = [];
 
 window.addEventListener('load', async () => {
-    console.log("Sistema Max Unificado Iniciado");
+    console.log("Sistema Guia de Execução Iniciado");
     
     // 1. Inicia download da base e configura status
     const statusLoading = document.getElementById('loading-search');
@@ -48,28 +47,6 @@ function configurarEventos() {
     if (inputBusca) inputBusca.addEventListener('keypress', (e) => { if (e.key === 'Enter') buscarExercicio(); });
     if (btnBusca) btnBusca.addEventListener('click', buscarExercicio);
     if (btnNovaBusca) btnNovaBusca.addEventListener('click', fecharResultado);
-
-    // Chat
-    const btnFab = document.getElementById('fab-max');
-    const btnFecharChat = document.getElementById('btn-fechar-chat');
-    const btnEnviarChat = document.getElementById('btn-enviar-chat');
-    const inputChat = document.getElementById('chat-input');
-    const chips = document.querySelectorAll('.chip');
-
-    if (btnFab) btnFab.addEventListener('click', toggleChat);
-    if (btnFecharChat) btnFecharChat.addEventListener('click', toggleChat);
-    if (inputChat) inputChat.addEventListener('keypress', (e) => { if (e.key === 'Enter') enviarMensagemChat(); });
-    if (btnEnviarChat) btnEnviarChat.addEventListener('click', enviarMensagemChat);
-
-    chips.forEach(chip => {
-        chip.addEventListener('click', () => {
-            const pergunta = chip.getAttribute('data-pergunta');
-            if (inputChat) {
-                inputChat.value = pergunta;
-                enviarMensagemChat();
-            }
-        });
-    });
 }
 
 // --- FUNÇÃO 2: BUSCAR EXERCÍCIO ---
@@ -77,7 +54,7 @@ function buscarExercicio() {
     const input = document.getElementById('input-id');
     const cardResultado = document.getElementById('resultado');
     const divErro = document.getElementById('erro');
-    const divLoading = document.getElementById('loading-search'); // Garante que loading está sumido
+    const divLoading = document.getElementById('loading-search'); 
     
     // Limpa estados anteriores
     if (divLoading) divLoading.classList.add('hidden');
@@ -134,70 +111,4 @@ function fecharResultado() {
         input.value = '';
         input.focus();
     }
-}
-
-// --- FUNÇÃO 3: CHAT ---
-function toggleChat() {
-    const chatWidget = document.getElementById('chat-widget');
-    if (chatWidget) {
-        chatWidget.classList.toggle('hidden');
-    }
-}
-
-async function enviarMensagemChat() {
-    const userInput = document.getElementById('chat-input');
-    const chatBody = document.getElementById('chat-body');
-    const loading = document.getElementById('loading-chat');
-    
-    const texto = userInput.value.trim();
-    if (!texto) return;
-
-    addMessage(texto, 'user');
-    userInput.value = '';
-    userInput.blur();
-    conversationHistory.push({ role: 'user', content: texto });
-
-    if (loading) {
-        loading.style.display = 'flex';
-        chatBody.scrollTop = chatBody.scrollHeight;
-    }
-
-    try {
-        const response = await fetch(API_URL, {
-            method: 'POST',
-            body: JSON.stringify({ mensagem: texto, historico: conversationHistory })
-        });
-        const data = await response.json();
-
-        if (loading) loading.style.display = 'none';
-        addMessage(formatarTexto(data.resposta), 'bot');
-        conversationHistory.push({ role: 'model', content: data.resposta });
-
-    } catch (error) {
-        if (loading) loading.style.display = 'none';
-        addMessage("⚠️ Erro de conexão. Tente novamente!", 'bot');
-    }
-}
-
-function addMessage(text, sender) {
-    const chatBody = document.getElementById('chat-body');
-    const loading = document.getElementById('loading-chat');
-    
-    const div = document.createElement('div');
-    div.classList.add('message', sender);
-    div.innerHTML = text;
-    
-    if (loading) {
-        chatBody.insertBefore(div, loading);
-    } else {
-        chatBody.appendChild(div);
-    }
-    chatBody.scrollTop = chatBody.scrollHeight;
-}
-
-function formatarTexto(texto) {
-    if (!texto) return "";
-    let t = texto.replace(/\n/g, '<br>');
-    t = t.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
-    return t;
 }

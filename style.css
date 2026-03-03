@@ -1,147 +1,91 @@
 :root {
     --primary: #FF5500;
-    --primary-dark: #D44000;
-    --bg-app: #101014;
-    --bg-card: #1C1C24;
+    --bg-dark: #000000;
+    --bg-surface: #121212;
+    --bg-tecla: #1E1E1E;
     --text-main: #FFFFFF;
 }
 
-* { box-sizing: border-box; margin: 0; padding: 0; }
+* { box-sizing: border-box; margin: 0; padding: 0; user-select: none; /* Impede selecionar texto no touch */ }
 
 body {
     font-family: 'Inter', sans-serif;
-    background-color: var(--bg-app);
+    background-color: var(--bg-dark);
     color: var(--text-main);
     height: 100vh;
-    overflow-y: auto; 
-    overflow-x: hidden; 
-}
-
-/* --- TELA PRINCIPAL (BUSCA) --- */
-.main-container {
-    width: 100%;
-    max-width: 500px; 
-    margin: 0 auto;
-    padding: 20px;
-    padding-bottom: 40px; /* Margem reduzida (não tem mais botão flutuante) */
-    text-align: center;
+    overflow: hidden; /* Trava rolagem, layout fixo de totem */
     display: flex;
-    flex-direction: column;
-    align-items: center;
-}
-
-.main-header { margin-top: 20px; }
-.main-header h1 { font-size: 24px; margin: 10px 0 5px; }
-.main-header p { color: #888; font-size: 14px; }
-
-/* Estilo da Logo Principal */
-.logo-app {
-    width: 80px; 
-    height: 80px;
-    border-radius: 18px; 
-    margin-bottom: 10px;
-    object-fit: cover;
-    box-shadow: 0 5px 20px rgba(255, 85, 0, 0.3); 
-    border: 2px solid rgba(255, 255, 255, 0.1); 
-    animation: popIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-}
-
-@keyframes popIn {
-    from { opacity: 0; transform: scale(0.5); }
-    to { opacity: 1; transform: scale(1); }
-}
-
-
-/* INPUT DE BUSCA */
-.search-box {
-    display: flex;
-    gap: 10px;
-    margin: 30px 0;
-    width: 100%; 
-}
-
-#input-id {
-    flex: 1;
-    width: 100%; 
-    padding: 20px;
-    font-size: 1.8rem;
-    border-radius: 15px;
-    border: 2px solid #333;
-    background: #2c2c2c;
-    color: white;
-    text-align: center;
-    outline: none;
-    min-width: 0; 
-}
-#input-id:focus { border-color: var(--primary); }
-
-#btn-buscar {
-    width: 60px;
-    background: var(--primary);
-    border-radius: 15px;
-    border: none;
-    color: white;
-    cursor: pointer;
-    flex-shrink: 0; 
-}
-
-/* --- MENSAGENS DE STATUS --- */
-.status-msg {
-    display: flex;
-    align-items: center;
     justify-content: center;
-    gap: 8px;
-    padding: 10px;
-    color: #aaa;
-    font-size: 14px;
-    margin-top: 10px;
+    align-items: center;
 }
-.status-msg.error { color: #ff4d4d; font-weight: bold; }
-.hidden { display: none !important; }
 
-/* Animação de girar */
+/* Gerenciador de Telas */
+.tela { width: 100%; height: 100%; display: flex; flex-direction: column; position: absolute; top: 0; left: 0; transition: opacity 0.3s ease; }
+.tela.hidden { opacity: 0; pointer-events: none; z-index: -1; }
+.tela.active { opacity: 1; pointer-events: all; z-index: 10; }
+
+/* --- TELA 1: BUSCA --- */
+#tela-busca { max-width: 600px; margin: 0 auto; padding: 30px 20px; justify-content: center; }
+
+.main-header { text-align: center; margin-bottom: 20px; }
+.logo-app { width: 90px; height: 90px; border-radius: 20px; box-shadow: 0 10px 30px rgba(255, 85, 0, 0.4); border: 2px solid rgba(255,255,255,0.05); margin-bottom: 15px; }
+.main-header h1 { font-size: 28px; font-weight: 900; letter-spacing: 1px; margin-bottom: 5px; }
+.main-header p { color: #888; font-size: 16px; }
+
+/* Display Customizado (Substitui o Input) */
+.display-container { text-align: center; margin-bottom: 20px; }
+#display-numero {
+    font-size: 4rem; font-weight: 900; color: var(--text-main); background: var(--bg-surface);
+    border: 3px solid #333; border-radius: 20px; padding: 20px; height: 100px;
+    display: flex; align-items: center; justify-content: center; letter-spacing: 5px;
+    transition: all 0.2s; box-shadow: inset 0 5px 15px rgba(0,0,0,0.5);
+}
+#display-numero.display-vazio { color: #444; }
+#display-numero.display-ativo { border-color: var(--primary); box-shadow: 0 0 20px rgba(255, 85, 0, 0.3); }
+.erro-escondido { opacity: 0; color: #ff3333; font-weight: bold; font-size: 1.1rem; margin-top: 10px; transition: opacity 0.2s; }
+.erro-visivel { opacity: 1; animation: tremer 0.4s; }
+
+/* Animação de Erro */
+@keyframes tremer { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-10px); } 75% { transform: translateX(10px); } }
+
+/* Teclado Kiosk */
+.teclado-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; flex: 1; max-height: 500px; }
+.btn-tecla {
+    background: var(--bg-tecla); border: 2px solid #2A2A2A; border-radius: 20px; color: white;
+    font-size: 2.5rem; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center;
+    box-shadow: 0 8px 0 #111; transition: all 0.1s;
+}
+.btn-tecla:active { transform: translateY(6px); box-shadow: 0 2px 0 #111; background: #333; }
+.btn-apagar { background: #2A1111; color: #ff4444; border-color: #441111; }
+.btn-apagar .material-icons { font-size: 2.5rem; }
+.btn-buscar { background: var(--primary); color: white; border-color: #cc4400; box-shadow: 0 8px 0 #993300; font-size: 1.8rem; }
+.btn-buscar:active { background: #e64d00; box-shadow: 0 2px 0 #993300; }
+
+.status-msg { text-align: center; color: var(--primary); font-weight: bold; margin-bottom: 15px; display: flex; align-items: center; justify-content: center; gap: 8px;}
 .spin { animation: spin 1s linear infinite; }
 @keyframes spin { 100% { transform: rotate(360deg); } }
 
+/* --- TELA 2: VÍDEO FULLSCREEN --- */
+#tela-video { background: var(--bg-dark); padding: 20px; }
+.video-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 20px; padding-top: 20px; }
+.badge-ref { background: var(--primary); padding: 6px 12px; border-radius: 8px; font-weight: 900; font-size: 1rem; color: white; letter-spacing: 1px; display: inline-block; margin-bottom: 8px; }
+#ex-nome { font-size: 2.2rem; font-weight: 900; text-transform: uppercase; line-height: 1.1; }
 
-/* --- CARD DE RESULTADO --- */
-.card {
-    width: 100%;
-    background: var(--bg-card);
-    padding: 20px;
-    border-radius: 20px;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-    margin-top: 20px;
-    text-align: left;
-    animation: slideUp 0.3s ease;
+.btn-fechar-video {
+    background: #333; border: none; padding: 15px 25px; border-radius: 15px; color: white;
+    font-size: 1.2rem; font-weight: 700; display: flex; align-items: center; gap: 8px; cursor: pointer;
 }
-@keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+.btn-fechar-video:active { background: #444; transform: scale(0.95); }
 
-.card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
-.card-header h2 { font-size: 1.2rem; margin: 0; }
-.badge-ref { background: #333; padding: 5px 10px; border-radius: 10px; color: var(--primary); font-weight: bold; font-size: 0.9rem; white-space: nowrap; }
-
-.media-wrapper {
-    position: relative;
-    width: 100%;
-    padding-top: 56.25%; /* 16:9 */
-    background: #000;
-    border-radius: 12px;
-    overflow: hidden;
+.media-fullscreen {
+    flex: 1; width: 100%; background: #111; border-radius: 20px; overflow: hidden; position: relative;
+    border: 2px solid #222; box-shadow: 0 20px 50px rgba(0,0,0,0.8);
 }
-.media-wrapper iframe, .media-wrapper video, .media-wrapper img {
-    position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; border: none;
-}
+.media-fullscreen iframe, .media-fullscreen img { width: 100%; height: 100%; object-fit: cover; position: absolute; top: 0; left: 0; }
 
-.card-footer { margin: 15px 0; color: #aaa; font-style: italic; font-size: 0.9rem; }
-
-.btn-fechar-resultado {
-    width: 100%;
-    padding: 15px;
-    background: #333;
-    color: white;
-    border: none;
-    border-radius: 12px;
-    cursor: pointer;
-    font-weight: 600;
+.dica-max {
+    background: var(--bg-surface); margin-top: 20px; padding: 20px; border-radius: 15px; border-left: 6px solid var(--primary);
+    display: flex; align-items: center; gap: 15px; margin-bottom: 20px;
 }
+.icone-dica { color: var(--primary); font-size: 2.5rem; }
+#ex-dica { font-size: 1.3rem; line-height: 1.4; color: #ddd; font-weight: 400; }

@@ -1,85 +1,86 @@
 // ============================================================
-// ⚠️ SUA URL DO APPS SCRIPT (MANTENHA ESTA)
+// ⚠️ SUA URL DO APPS SCRIPT
 const API_URL = "https://script.google.com/macros/s/AKfycbxCF_O_KVJ6nRTE_cvCkB-TwATpT2wC2xMyRI8Sb6yPNdYn8mWFEzdcQFAdu89fg31O2w/exec"; 
 // ============================================================
 
 let listaExercicios = [];
+let numeroDigitado = ""; 
 
-window.addEventListener('load', async () => {
-    console.log("Sistema Guia de Execução Iniciado");
-    
-    // 1. Inicia download da base e configura status
+// MUDANÇA: DOMContentLoaded aciona instantaneamente
+document.addEventListener('DOMContentLoaded', async () => {
     const statusLoading = document.getElementById('loading-search');
-    if (statusLoading) statusLoading.classList.remove('hidden');
-
-    await carregarBaseDeDados();
     
-    // 2. Base carregada? Esconde o loading
-    if (statusLoading) statusLoading.classList.add('hidden');
-
-    configurarEventos();
-});
-
-// --- FUNÇÃO 1: CARREGAR DADOS ---
-async function carregarBaseDeDados() {
     try {
+        // Tenta baixar a planilha imediatamente
         const res = await fetch(API_URL);
         const dados = await res.json();
         
         if (Array.isArray(dados)) {
             listaExercicios = dados;
         }
-        console.log("Exercícios carregados:", listaExercicios.length);
+        
+        // Sucesso: Arranca o spinner da tela!
+        if (statusLoading) statusLoading.classList.add('hidden');
+        
     } catch (err) {
-        console.error("Erro ao carregar DB:", err);
-        // Se der erro, muda o texto do loading para avisar
-        const statusLoading = document.getElementById('loading-search');
-        if (statusLoading) statusLoading.innerHTML = "❌ Erro de conexão. Recarregue a página.";
+        console.error("Erro no Fetch:", err);
+        // Se a internet cair, ele avisa na tela em vez de girar infinito
+        if (statusLoading) statusLoading.innerHTML = "❌ Erro ao sincronizar. Verifique a internet e recarregue.";
+    }
+});
+
+// --- FUNÇÕES DO TECLADO KIOSK ---
+function digitar(numero) {
+    if (numeroDigitado.length < 4) { 
+        numeroDigitado += numero;
+        atualizarDisplay();
     }
 }
 
-function configurarEventos() {
-    // Busca
-    const inputBusca = document.getElementById('input-id');
-    const btnBusca = document.getElementById('btn-buscar');
-    const btnNovaBusca = document.getElementById('btn-nova-busca');
-
-    if (inputBusca) inputBusca.addEventListener('keypress', (e) => { if (e.key === 'Enter') buscarExercicio(); });
-    if (btnBusca) btnBusca.addEventListener('click', buscarExercicio);
-    if (btnNovaBusca) btnNovaBusca.addEventListener('click', fecharResultado);
+function apagar() {
+    if (numeroDigitado.length > 0) {
+        numeroDigitado = numeroDigitado.slice(0, -1);
+        atualizarDisplay();
+    }
 }
 
-// --- FUNÇÃO 2: BUSCAR EXERCÍCIO ---
-function buscarExercicio() {
-    const input = document.getElementById('input-id');
-    const cardResultado = document.getElementById('resultado');
-    const divErro = document.getElementById('erro');
-    const divLoading = document.getElementById('loading-search'); 
+function atualizarDisplay() {
+    const display = document.getElementById('display-numero');
+    const erroMsg = document.getElementById('erro-msg');
     
-    // Limpa estados anteriores
-    if (divLoading) divLoading.classList.add('hidden');
-    if (divErro) divErro.classList.add('hidden');
-    if (cardResultado) cardResultado.classList.add('hidden');
+    erroMsg.classList.remove('erro-visivel');
 
-    if (!input) return;
-    const termo = input.value.trim();
-    if (!termo) return;
+    if (numeroDigitado === "") {
+        display.innerText = "_ _ _";
+        display.classList.remove('display-ativo');
+        display.classList.add('display-vazio');
+    } else {
+        display.innerText = numeroDigitado;
+        display.classList.remove('display-vazio');
+        display.classList.add('display-ativo');
+    }
+}
 
-    // Busca exata pelo ID
-    const exercicio = listaExercicios.find(item => item.id == termo);
+// --- FUNÇÃO DE BUSCA E TRANSIÇÃO DE TELA ---
+function buscarExercicio() {
+    if (numeroDigitado === "") return;
+
+    const exercicio = listaExercicios.find(item => item.id == numeroDigitado);
+    const erroMsg = document.getElementById('erro-msg');
 
     if (exercicio) {
-        mostrarCard(exercicio);
+        erroMsg.classList.remove('erro-visivel');
+        abrirTelaVideo(exercicio);
     } else {
-        // Se não achou, só agora mostra o erro
-        if (divErro) divErro.classList.remove('hidden');
+        erroMsg.classList.add('erro-visivel');
+        setTimeout(() => {
+            numeroDigitado = "";
+            atualizarDisplay();
+        }, 1500);
     }
-    input.blur();
 }
 
-function mostrarCard(ex) {
-    const card = document.getElementById('resultado');
-    
+function abrirTelaVideo(ex) {
     document.getElementById('ex-nome').innerText = ex.nome || "Exercício";
     document.getElementById('ex-id').innerText = ex.id;
     document.getElementById('ex-dica').innerText = ex.dica || "Mantenha a postura correta.";
@@ -92,23 +93,25 @@ function mostrarCard(ex) {
         videoId = videoId.split('?')[0];
         containerMedia.innerHTML = `<iframe src="https://www.youtube.com/embed/${videoId}?autoplay=1&mute=1&loop=1&controls=0" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>`;
     } else {
-        containerMedia.innerHTML = `<img src="${ex.media}" alt="${ex.nome}" style="width:100%; height:100%; object-fit:cover;">`;
+        containerMedia.innerHTML = `<img src="${ex.media}" alt="${ex.nome}">`;
     }
 
-    card.classList.remove('hidden');
-    setTimeout(() => { card.scrollIntoView({ behavior: 'smooth', block: 'center' }); }, 300);
+    document.getElementById('tela-busca').classList.remove('active');
+    document.getElementById('tela-busca').classList.add('hidden');
+    
+    document.getElementById('tela-video').classList.remove('hidden');
+    document.getElementById('tela-video').classList.add('active');
 }
 
-function fecharResultado() {
-    const card = document.getElementById('resultado');
-    const input = document.getElementById('input-id');
-    const divErro = document.getElementById('erro');
+function fecharVideo() {
+    document.getElementById('media-content').innerHTML = '';
     
-    if (card) card.classList.add('hidden');
-    if (divErro) divErro.classList.add('hidden');
+    numeroDigitado = "";
+    atualizarDisplay();
+
+    document.getElementById('tela-video').classList.remove('active');
+    document.getElementById('tela-video').classList.add('hidden');
     
-    if (input) {
-        input.value = '';
-        input.focus();
-    }
+    document.getElementById('tela-busca').classList.remove('hidden');
+    document.getElementById('tela-busca').classList.add('active');
 }

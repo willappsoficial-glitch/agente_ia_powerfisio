@@ -87,28 +87,34 @@
         const btnInstalar = document.getElementById('btn-instalar-app');
 
         window.addEventListener('beforeinstallprompt', (e) => {
-            // Impede o Chrome de mostrar o aviso padrão
             e.preventDefault();
-            // Guarda o evento para usarmos no botão
             eventoInstalacao = e;
-            // Mostra o nosso botão laranja na tela!
             btnInstalar.style.display = 'flex';
         });
 
-        // 3. O QUE ACONTECE QUANDO CLICA NO NOSSO BOTÃO
-        btnInstalar.addEventListener('click', async () => {
-            if (eventoInstalacao) {
-                // Dispara a janela oficial de instalação do Android
+        // 3. O QUE ACONTECE QUANDO CLICA NO NOSSO BOTÃO (Versão blindada para tablets antigos)
+        btnInstalar.addEventListener('click', () => {
+            if (!eventoInstalacao) {
+                return;
+            }
+
+            try {
+                // Dispara a janela oficial sem usar 'async/await'
                 eventoInstalacao.prompt();
-                // Espera o usuário clicar em "Instalar"
-                const { outcome } = await eventoInstalacao.userChoice;
-                if (outcome === 'accepted') {
-                    // Se ele instalou, esconde o botão
-                    btnInstalar.style.display = 'none';
-                }
-                eventoInstalacao = null;
+                
+                // Pega a resposta do usuário no formato antigo e compatível
+                eventoInstalacao.userChoice.then((resultado) => {
+                    if (resultado.outcome === 'accepted') {
+                        btnInstalar.style.display = 'none';
+                    }
+                    eventoInstalacao = null;
+                });
+            } catch (erro) {
+                // Se o tablet surtar, ele te avisa na tela!
+                alert("O sistema do tablet bloqueou o clique. Tente ir nos 3 pontinhos e 'Adicionar à tela inicial'.");
             }
         });
     </script>
 </body>
 </html>
+    

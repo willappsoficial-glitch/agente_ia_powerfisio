@@ -75,14 +75,40 @@
 
     <script src="script.js?v=totem"></script>
     <script>
-        // Registra o Service Worker para habilitar o botão de Instalar
+        // 1. Inicia o PWA
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
-                navigator.serviceWorker.register('sw.js')
-                    .then(reg => console.log('PWA ativado com sucesso!', reg.scope))
-                    .catch(err => console.error('Erro no PWA:', err));
+                navigator.serviceWorker.register('sw.js');
             });
         }
+
+        // 2. SEQUESTRA O EVENTO DE INSTALAÇÃO DO ANDROID
+        let eventoInstalacao;
+        const btnInstalar = document.getElementById('btn-instalar-app');
+
+        window.addEventListener('beforeinstallprompt', (e) => {
+            // Impede o Chrome de mostrar o aviso padrão
+            e.preventDefault();
+            // Guarda o evento para usarmos no botão
+            eventoInstalacao = e;
+            // Mostra o nosso botão laranja na tela!
+            btnInstalar.style.display = 'flex';
+        });
+
+        // 3. O QUE ACONTECE QUANDO CLICA NO NOSSO BOTÃO
+        btnInstalar.addEventListener('click', async () => {
+            if (eventoInstalacao) {
+                // Dispara a janela oficial de instalação do Android
+                eventoInstalacao.prompt();
+                // Espera o usuário clicar em "Instalar"
+                const { outcome } = await eventoInstalacao.userChoice;
+                if (outcome === 'accepted') {
+                    // Se ele instalou, esconde o botão
+                    btnInstalar.style.display = 'none';
+                }
+                eventoInstalacao = null;
+            }
+        });
     </script>
 </body>
 </html>

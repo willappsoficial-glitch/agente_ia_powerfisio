@@ -1,19 +1,20 @@
-@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@700;800&family=Inter:wght@400;500;600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
 
 :root {
-    --primary: #FF4500; /* Laranja esportivo super vibrante */
-    --primary-dark: #CC3700;
-    --bg-app: #000000; /* Preto Absoluto */
-    --bg-bot-card: #111111;
-    --text-main: #FFFFFF;
-    --text-muted: #888888;
-    --border-neon: rgba(255, 69, 0, 0.3);
+    --primary: #FF5500;
+    --primary-light: #FF7733;
+    --bg-app: #F4F5F8; /* Cinza super claro, estilo fundo de app iOS */
+    --bg-chat: #FFFFFF; /* Branco puro */
+    --bg-bot: #F0F2F5; /* Cinza suave para o balão do Max */
+    --text-main: #1D1D21; /* Quase preto para leitura perfeita */
+    --text-muted: #6B6B76;
+    --border-light: #E5E7EB;
 }
 
 * { box-sizing: border-box; margin: 0; padding: 0; }
 
 body {
-    font-family: 'Inter', sans-serif;
+    font-family: 'Inter', -apple-system, sans-serif;
     background-color: var(--bg-app);
     color: var(--text-main);
     height: 100vh;
@@ -30,138 +31,139 @@ body {
     height: 100dvh;
     display: flex;
     flex-direction: column;
-    background: var(--bg-app);
+    background: var(--bg-chat);
+    box-shadow: 0 0 40px rgba(0, 0, 0, 0.04); /* Sombra super leve */
 }
 
-/* HEADER: Minimalista e Esportivo */
+/* HEADER: Branco, limpo, estilo clínica */
 .chat-header {
-    background: transparent;
-    padding: 20px;
+    background: #FFFFFF;
+    padding: 18px 24px;
     display: flex;
     align-items: center;
     gap: 15px;
-    border-bottom: 1px solid #1A1A1A;
+    border-bottom: 1px solid var(--border-light);
     z-index: 10;
 }
 
 .header-info h1 { 
-    font-family: 'Montserrat', sans-serif; 
-    font-size: 1.4rem; 
-    color: #FFFFFF; 
-    text-transform: uppercase;
-    letter-spacing: 1px;
+    font-size: 1.3rem; 
+    color: var(--text-main); 
+    margin: 0; 
+    font-weight: 700;
+    letter-spacing: -0.5px;
 }
 .header-info p { 
-    font-size: 0.75rem; 
-    color: var(--primary); 
+    font-size: 0.8rem; 
+    color: #10B981; /* Verde esmeralda para o status "Online" */
+    margin: 0; 
     font-weight: 600; 
-    text-transform: uppercase; 
-    letter-spacing: 2px;
 }
 
-/* CHAT BODY: Fundo limpo, foco nas mensagens */
+/* CHAT BODY */
 .chat-body {
     flex: 1;
-    padding: 30px 20px;
+    padding: 24px;
     overflow-y: auto;
     display: flex;
     flex-direction: column;
-    gap: 24px;
+    gap: 20px;
+    background: #FFFFFF;
     scroll-behavior: smooth;
 }
-.chat-body::-webkit-scrollbar { display: none; } /* Oculta a rolagem para visual 100% limpo */
+.chat-body::-webkit-scrollbar { width: 5px; }
+.chat-body::-webkit-scrollbar-thumb { background-color: #D1D5DB; border-radius: 10px; }
 
-@keyframes popIn {
-    0% { opacity: 0; transform: scale(0.95) translateY(10px); }
-    100% { opacity: 1; transform: scale(1) translateY(0); }
+@keyframes slideUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
 }
 
 .message {
-    padding: 16px 22px;
-    font-size: 0.95rem;
-    max-width: 85%;
-    line-height: 1.6;
-    animation: popIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+    padding: 14px 20px;
+    font-size: 1rem;
+    max-width: 80%;
+    line-height: 1.5;
+    animation: slideUp 0.3s ease-out forwards;
 }
 
-/* BOT: Estilo Painel/Card */
+/* BOT: Estilo bolha clássica de assistente */
 .bot {
     align-self: flex-start;
-    background: var(--bg-bot-card);
-    color: #E0E0E0;
-    border-radius: 4px 24px 24px 24px;
-    border: 1px solid #222;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+    background: var(--bg-bot);
+    color: var(--text-main);
+    border-radius: 20px 20px 20px 4px;
 }
-.bot strong { color: #FFF; font-family: 'Montserrat', sans-serif; }
+.bot strong { color: #000; font-weight: 700; }
 
-/* USER: Energia e Velocidade */
+/* USER: Laranja vibrante no fundo branco */
 .user {
     align-self: flex-end;
-    background: var(--primary);
-    color: #FFF;
+    background: linear-gradient(135deg, var(--primary), var(--primary-light));
+    color: #FFFFFF;
     font-weight: 500;
-    border-radius: 24px 24px 4px 24px;
-    box-shadow: 0 8px 25px rgba(255, 69, 0, 0.35);
+    border-radius: 20px 20px 4px 20px;
+    box-shadow: 0 4px 15px rgba(255, 85, 0, 0.2);
 }
 
-/* CHIPS: Estilo Tags Esportivas */
+/* CHIPS: Botões pílula minimalistas */
 .chips-area {
     display: flex;
-    gap: 12px;
-    padding: 0 20px 15px 20px;
+    gap: 10px;
+    padding: 10px 24px 15px 24px;
     overflow-x: auto;
-    background: transparent;
+    background: #FFFFFF;
 }
 .chips-area::-webkit-scrollbar { display: none; }
 .chip {
-    background: transparent;
-    color: var(--text-main);
-    border: 1px solid #333;
+    background: #FFFFFF;
+    color: var(--text-muted);
+    border: 1px solid var(--border-light);
     padding: 10px 18px;
-    border-radius: 30px;
-    font-size: 0.85rem;
-    font-weight: 600;
+    border-radius: 25px;
+    font-size: 0.9rem;
+    font-weight: 500;
     cursor: pointer;
     white-space: nowrap;
-    transition: all 0.3s ease;
+    transition: all 0.2s ease;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.02);
 }
 .chip:hover, .chip:active {
-    background: var(--primary);
-    border-color: var(--primary);
-    transform: translateY(-3px);
-    box-shadow: 0 5px 15px rgba(255, 69, 0, 0.4);
+    background: var(--bg-app);
+    color: var(--text-main);
+    border-color: #D1D5DB;
+    transform: scale(0.98);
 }
 
-/* FOOTER: Input Flutuante (Ultra Moderno) */
+/* FOOTER: Área de digitação invisível */
 .chat-footer {
-    padding: 10px 20px 25px 20px;
-    background: linear-gradient(to top, #000000 80%, transparent);
+    padding: 15px 24px 24px 24px;
+    background: #FFFFFF;
     display: flex;
     gap: 12px;
+    border-top: 1px solid var(--border-light);
 }
 
 #chat-input {
     flex: 1;
-    padding: 16px 24px;
-    border-radius: 30px;
-    border: 1px solid #222;
-    background: #111;
-    color: white;
+    padding: 16px 20px;
+    border-radius: 25px;
+    border: none;
+    background: var(--bg-bot);
+    color: var(--text-main);
     font-size: 1rem;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.8);
-    transition: all 0.3s ease;
+    transition: all 0.2s ease;
 }
+#chat-input::placeholder { color: var(--text-muted); }
 #chat-input:focus {
-    border-color: var(--primary);
-    background: #1A1A1A;
-    box-shadow: 0 0 0 2px var(--border-neon), 0 10px 30px rgba(0,0,0,0.8);
+    background: #FFFFFF;
+    box-shadow: 0 0 0 2px var(--primary);
     outline: none;
 }
 
 #btn-enviar-chat {
-    width: 54px;
-    height: 54px;
+    width: 52px;
+    height: 52px;
     border-radius: 50%;
     background: var(--primary);
     border: none;
@@ -170,34 +172,33 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
-    box-shadow: 0 8px 20px rgba(255, 69, 0, 0.4);
-    transition: all 0.2s;
+    box-shadow: 0 4px 12px rgba(255, 85, 0, 0.25);
+    transition: transform 0.2s;
 }
 #btn-enviar-chat:active {
     transform: scale(0.9);
 }
 
-/* Animação de Digitação Refinada */
+/* Animação Digitando Clean */
 .typing-indicator {
     display: flex;
-    gap: 5px;
+    gap: 4px;
     padding: 18px 24px;
-    background: var(--bg-bot-card);
+    background: var(--bg-bot);
     align-self: flex-start;
-    border-radius: 4px 24px 24px 24px;
-    border: 1px solid #222;
+    border-radius: 20px 20px 20px 4px;
 }
 .dot {
     width: 6px;
     height: 6px;
     background: var(--text-muted);
     border-radius: 50%;
-    animation: typingBounce 1.2s infinite ease-in-out;
+    animation: typing 1.4s infinite ease-in-out both;
 }
 .dot:nth-child(1) { animation-delay: -0.32s; }
 .dot:nth-child(2) { animation-delay: -0.16s; }
 
-@keyframes typingBounce {
-    0%, 80%, 100% { transform: scale(0.6); opacity: 0.4; }
-    40% { transform: scale(1.2); opacity: 1; background: var(--primary); }
+@keyframes typing {
+    0%, 80%, 100% { transform: scale(0.8); opacity: 0.5; }
+    40% { transform: scale(1.2); opacity: 1; background: var(--text-main); }
 }

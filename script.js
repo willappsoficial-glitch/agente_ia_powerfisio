@@ -1,6 +1,6 @@
 // ============================================================
 // ⚠️ SUA URL DO APPS SCRIPT
-const API_URL = "https://script.google.com/macros/s/AKfycbybtXHMaVNsNHiDr7S2Xko7MdPPHPD0hrgXi4vMVHUYVseU6NwZYhIVyuj3PO4sUiyx/exec"; 
+const API_URL = "https://script.google.com/macros/s/AKfycbymmi66Cm-NVhfdi1TRdSxPikd7GcUq79ESYaJh0ca07FAgAMYpmOhJVg2vWtdekba_1w/exec"; 
 // ============================================================
 
 let listaExercicios = [];

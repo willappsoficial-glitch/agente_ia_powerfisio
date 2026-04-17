@@ -1,6 +1,6 @@
 // ============================================================
 // ⚠️ SUA URL DO APPS SCRIPT (A MESMA DO TABLET)
-const API_URL = "https://script.google.com/macros/s/AKfycbxCF_O_KVJ6nRTE_cvCkB-TwATpT2wC2xMyRI8Sb6yPNdYn8mWFEzdcQFAdu89fg31O2w/exec"; 
+const API_URL = "https://script.google.com/macros/s/AKfycbwTMFXxeTYxMsH0aMmm0aXgqoqhSH06AbrIYvW-bI5x30g4pVRvehZIFiF6nbGvm_XQuA/exec"; 
 // ============================================================
 
 let conversationHistory = [];

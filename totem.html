@@ -181,9 +181,13 @@
             if (!radarLigado) return; // Se já tiver alguém na tela, pausa o radar
 
             try {
-                // Chama o Apps Script pedindo a ação "catraca"
-                const resposta = await fetch(API_URL + "?acao=catraca");
+                // 🚨 CACHE BUSTER: Adicionamos um carimbo de tempo para forçar a internet!
+                const carimboTempo = new Date().getTime();
+                const resposta = await fetch(API_URL + "?acao=catraca&t=" + carimboTempo);
                 const dados = await resposta.json();
+
+                // 👀 ISSO AQUI MOSTRA O BATIMENTO DO RADAR NO F12
+                console.log("Radar escutando...", dados); 
 
                 // Se o Google disser "Tem gente nova!"
                 if (dados.detectado) {
@@ -194,7 +198,6 @@
                 console.log("Erro de conexão no radar", e);
             }
         }
-
         // Função para mostrar a tela quando o aluno é detectado (ou no clique manual DEV)
         function mostrarTelaAluno(nome, idAluno) {
             document.getElementById('tela-espera').style.display = 'none';

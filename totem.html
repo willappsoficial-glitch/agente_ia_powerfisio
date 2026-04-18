@@ -159,85 +159,62 @@
     </div>
 
     <script>
-        // =========================================================
-        // 🚨 COLOQUE SUA URL DO APPS SCRIPT ABAIXO (DEVE TERMINAR EM /exec)
-        const API_URL = "https://script.google.com/macros/s/AKfycbwTMFXxeTYxMsH0aMmm0aXgqoqhSH06AbrIYvW-bI5x30g4pVRvehZIFiF6nbGvm_XQuA/exec"; 
-        // =========================================================
+    const API_URL = "https://script.google.com/macros/s/AKfycbwTMFXxeTYxMsH0aMmm0aXgqoqhSH06AbrIYvW-bI5x30g4pVRvehZIFiF6nbGvm_XQuA/exec"; // Mantenha sua URL com /exec
+    let radarLigado = true;
+    let ultimoIdDetectado = null;
 
-        let timeoutReset;
-        let radarLigado = true;
+    window.onload = () => setInterval(escutarCatraca, 3000);
 
-        // Inicia o radar automaticamente quando a tela abre
-        window.onload = function() {
-            iniciarRadar();
-        };
+    async function escutarCatraca() {
+        if (!radarLigado) return;
 
-        function iniciarRadar() {
-            // Fica perguntando pro Cache do Google a cada 3 segundos
-            setInterval(escutarCatraca, 3000);
-        }
+        try {
+            const carimbo = new Date().getTime();
+            const res = await fetch(API_URL + "?acao=catraca&t=" + carimbo);
+            const dados = await res.json();
 
-        async function escutarCatraca() {
-            if (!radarLigado) return; // Se já tiver alguém na tela, pausa o radar
+            console.log("📡 Radar Powerfisio:", dados);
 
-            try {
-                // 🚨 CACHE BUSTER: Adicionamos um carimbo de tempo para forçar a internet!
-                const carimboTempo = new Date().getTime();
-                const resposta = await fetch(API_URL + "?acao=catraca&t=" + carimboTempo);
-                const dados = await resposta.json();
-
-                // 👀 ISSO AQUI MOSTRA O BATIMENTO DO RADAR NO F12
-                console.log("Radar escutando...", dados); 
-
-                // Se o Google disser "Tem gente nova!"
-                if (dados.detectado) {
-                    radarLigado = false; 
-                    mostrarTelaAluno(dados.nome, dados.idAluno);
-                }
-            } catch (e) {
-                console.log("Erro de conexão no radar", e);
+            if (dados.detectado && dados.idAluno !== ultimoIdDetectado) {
+                console.log("✅ Novo aluno detectado:", dados.nome);
+                ultimoIdDetectado = dados.idAluno;
+                radarLigado = false;
+                mostrarTelaAluno(dados.nome, dados.idAluno);
             }
+        } catch (e) {
+            console.error("❌ Erro na ponte de dados:", e);
         }
-        // Função para mostrar a tela quando o aluno é detectado (ou no clique manual DEV)
-        function mostrarTelaAluno(nome, idAluno) {
-            document.getElementById('tela-espera').style.display = 'none';
-            document.getElementById('tela-aluno').style.display = 'flex';
-            document.getElementById('nome-aluno').innerText = nome;
-            
-            // Salva o ID no botão da Max para sabermos qual treino imprimir
-            document.getElementById('btn-max').setAttribute('data-idaluno', idAluno);
+    }
 
-            // Reseta a tela em 15 segundos se a pessoa for embora sem clicar
-            clearTimeout(timeoutReset);
-            timeoutReset = setTimeout(resetarTela, 15000);
-        }
+    function mostrarTelaAluno(nome, idAluno) {
+        try {
+            const elEspera = document.getElementById('tela-espera');
+            const elAluno = document.getElementById('tela-aluno');
+            const elNome = document.getElementById('nome-aluno');
+            const btnMax = document.getElementById('btn-max');
 
-        function simularPassagemCatraca(nome, idAluno) {
-            radarLigado = false;
-            mostrarTelaAluno(nome, idAluno);
-        }
-
-        function imprimirTreino(tipo) {
-            document.getElementById('area-impressao').style.display = 'block';
-            
-            if (tipo === 'MAX') {
-                const id = document.getElementById('btn-max').getAttribute('data-idaluno');
-                document.getElementById('texto-impresso').innerText = "Imprimindo treino da Max para o ID: " + id;
-            } else {
-                document.getElementById('texto-impresso').innerText = "Imprimindo: Treino " + tipo;
+            if (!elEspera || !elAluno || !elNome || !btnMax) {
+                console.error("🚨 ERRO CRÍTICO: Algum elemento (ID) sumiu do HTML!");
+                return;
             }
-            
-            window.print();
-            
-            document.getElementById('area-impressao').style.display = 'none';
-            resetarTela();
-        }
 
-        function resetarTela() {
-            document.getElementById('tela-espera').style.display = 'flex';
-            document.getElementById('tela-aluno').style.display = 'none';
-            radarLigado = true; // Religa o radar para escutar o próximo aluno
+            elEspera.style.display = 'none';
+            elAluno.style.display = 'flex';
+            elNome.innerText = nome;
+            btnMax.setAttribute('data-idaluno', idAluno);
+
+            setTimeout(resetarTela, 15000);
+        } catch (err) {
+            console.error("💥 Falha ao mudar a tela:", err);
         }
-    </script>
+    }
+
+    function resetarTela() {
+        document.getElementById('tela-espera').style.display = 'flex';
+        document.getElementById('tela-aluno').style.display = 'none';
+        ultimoIdDetectado = null; // Limpa para permitir a próxima entrada
+        radarLigado = true;
+    }
+</script>
 </body>
 </html>

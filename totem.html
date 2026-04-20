@@ -3,41 +3,44 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Totem Powerfisio - Max IA</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+    <title>Totem Powerfisio - Max IA Pro</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;900&display=swap" rel="stylesheet">
     <style>
         :root {
             --primary: #FF5500;
-            --bg-app: #F4F5F8;
-            --text-main: #1D1D21;
+            --bg-app: #0F1115; /* Fundo escuro profissional */
+            --bg-card: #1A1D24; /* Cinza chumbo para os cards */
+            --text-main: #FFFFFF;
+            --text-muted: #8B92A5;
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; }
 
         body {
-            font-family: 'Inter', sans-serif;
+            font-family: 'Montserrat', sans-serif;
             background-color: var(--bg-app);
             color: var(--text-main);
             height: 100vh;
             display: flex;
             align-items: center;
             justify-content: center;
-            overflow: hidden; /* Zero rolagem */
+            overflow: hidden;
         }
 
-        /* TELA 1: AGUARDANDO CATRACA */
+        /* --- TELA 1: RADAR --- */
         #tela-espera {
             text-align: center;
-            display: flex; /* Visível por padrão */
+            display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 20px;
+            gap: 25px;
         }
 
         .radar {
-            width: 120px;
-            height: 120px;
-            background: rgba(255, 85, 0, 0.1);
+            width: 140px;
+            height: 140px;
+            background: rgba(255, 85, 0, 0.05);
+            border: 2px solid rgba(255, 85, 0, 0.2);
             border-radius: 50%;
             display: flex;
             align-items: center;
@@ -45,82 +48,84 @@
             animation: pulse 2s infinite;
         }
 
-        .radar h1 { font-size: 3rem; color: var(--primary); margin: 0;}
+        .radar h1 { font-size: 3.5rem; color: var(--primary); font-weight: 900; margin: 0; letter-spacing: -2px;}
 
         @keyframes pulse {
-            0% { box-shadow: 0 0 0 0 rgba(255, 85, 0, 0.4); }
-            70% { box-shadow: 0 0 0 50px rgba(255, 85, 0, 0); }
+            0% { box-shadow: 0 0 0 0 rgba(255, 85, 0, 0.3); }
+            70% { box-shadow: 0 0 0 40px rgba(255, 85, 0, 0); }
             100% { box-shadow: 0 0 0 0 rgba(255, 85, 0, 0); }
         }
 
-        /* TELA 2: PERFIL DO ALUNO (Oculto por padrão) */
+        .titulo-radar { font-size: 2.5rem; font-weight: 900; text-transform: uppercase; letter-spacing: 1px; }
+        .sub-radar { font-size: 1.2rem; color: var(--text-muted); font-weight: 400; }
+
+        /* --- TELA 2: PERFIL DO ALUNO --- */
         #tela-aluno {
             display: none;
             flex-direction: column;
             align-items: center;
-            width: 90%;
-            max-width: 1000px;
-            background: white;
-            padding: 50px;
-            border-radius: 30px;
-            box-shadow: 0 20px 50px rgba(0,0,0,0.05);
+            width: 95%;
+            max-width: 1200px;
+            background: var(--bg-card);
+            padding: 60px;
+            border-radius: 16px;
+            border: 1px solid #2A2F3A;
+            box-shadow: 0 30px 60px rgba(0,0,0,0.5);
             text-align: center;
         }
 
-        .avatar-aluno {
-            width: 150px;
-            height: 150px;
-            background: #E5E7EB;
-            border-radius: 50%;
-            margin-bottom: 20px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 4rem;
-        }
+        .saudacao { font-size: 3rem; font-weight: 900; text-transform: uppercase; letter-spacing: -1px; margin-bottom: 10px; }
+        .saudacao span { color: var(--primary); }
+        .pergunta { font-size: 1.5rem; color: var(--text-muted); margin-bottom: 50px; font-weight: 700;}
 
-        #tela-aluno h2 { font-size: 2.5rem; margin-bottom: 10px; }
-        #tela-aluno p { font-size: 1.2rem; color: #666; margin-bottom: 40px; }
-
-        /* GRADE DE BOTÕES GIGANTES */
+        /* --- GRADE DE BOTÕES (ALTA PERFORMANCE) --- */
         .grid-treinos {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 20px;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 30px;
             width: 100%;
         }
 
         .btn-treino {
-            background: white;
-            border: 2px solid #E5E7EB;
+            background: var(--bg-app);
+            border: 2px solid #2A2F3A;
             padding: 40px 20px;
-            border-radius: 20px;
-            font-size: 1.5rem;
-            font-weight: 600;
+            border-radius: 12px;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 1.4rem;
+            font-weight: 800;
+            text-transform: uppercase;
             color: var(--text-main);
             cursor: pointer;
-            transition: all 0.2s;
+            transition: all 0.2s ease;
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 15px;
+            gap: 20px;
         }
+
+        .btn-treino:hover { border-color: var(--text-muted); transform: translateY(-5px); }
+        .btn-treino:active { transform: translateY(0); }
 
         .btn-treino.destaque {
             background: var(--primary);
-            color: white;
             border-color: var(--primary);
-            box-shadow: 0 10px 30px rgba(255, 85, 0, 0.3);
+            box-shadow: 0 15px 30px rgba(255, 85, 0, 0.2);
         }
+        .btn-treino.destaque:hover { box-shadow: 0 20px 40px rgba(255, 85, 0, 0.4); transform: translateY(-5px); }
 
-        .btn-treino:active { transform: scale(0.95); }
-        .btn-treino span { font-size: 2.5rem; }
+        /* Ícones em SVG limpos */
+        .icon { width: 50px; height: 50px; fill: currentColor; }
 
-        /* Estilo invisível que só aparece no papel da impressora */
+        /* --- IMPRESSÃO CLÁSSICA (Branco e Preto) --- */
         @media print {
             body * { visibility: hidden; }
-            #area-impressao, #area-impressao * { visibility: visible; }
-            #area-impressao { position: absolute; left: 0; top: 0; width: 100%; font-size: 12px; }
+            #area-impressao, #area-impressao * { visibility: visible; color: #000 !important; font-family: sans-serif; }
+            #area-impressao { 
+                position: absolute; left: 0; top: 0; width: 100%; 
+                background: #FFF; padding: 20px; text-align: left; 
+            }
+            .no-print { display: none !important; }
         }
     </style>
 </head>
@@ -128,93 +133,140 @@
 
     <div id="tela-espera">
         <div class="radar"><h1>PF</h1></div>
-        <h2 style="font-size: 2rem; color: #333;">Aguardando Liberação...</h2>
-        <p style="font-size: 1.2rem; color: #888;">Passe pela catraca para liberar seu treino</p>
-        <button onclick="simularPassagemCatraca('Williano Teste', '123')" style="margin-top: 30px; padding: 10px; opacity: 0.2;">Simular Passagem (DEV)</button>
+        <h2 class="titulo-radar">Aguardando Liberação...</h2>
+        <p class="sub-radar">Passe para iniciar o treino</p>
+        <button onclick="simularPassagemCatraca('FRANCISCO MATHEUS PEREIRA COSTA', '123')" style="margin-top: 50px; padding: 10px; opacity: 0.1; background: transparent; color: white; border: 1px solid white;">Simular (DEV)</button>
     </div>
 
     <div id="tela-aluno">
-        <div class="avatar-aluno">👤</div>
-        <h2>Fala, <span id="nome-aluno">Aluno</span>!</h2>
-        <p>O que vamos treinar hoje?</p>
+        <h2 class="saudacao">FALA, <span id="nome-aluno">ALUNO</span>!</h2>
+        <p class="pergunta">QUAL É A MISSÃO DE HOJE?</p>
 
         <div class="grid-treinos">
-            <button class="btn-treino" onclick="imprimirTreino('A')">
-                <span>🏋️‍♂️</span> Treino A (Peito/Tríceps)
+            <button class="btn-treino" onclick="imprimirTreino('A - Peito e Tríceps')">
+                <svg class="icon" viewBox="0 0 24 24"><path d="M20.57 14.86L22 13.43 20.57 12 17 15.57 8.43 7 12 3.43 10.57 2 9.14 3.43 7.71 2 5.57 4.14 4.14 2.71 2.71 4.14l1.43 1.43L2 7.71l1.43 1.43L2 10.57 3.43 12 7 8.43 15.57 17 12 20.57 13.43 22l1.43-1.43L16.29 22l2.14-2.14 1.43 1.43 1.43-1.43-1.43-1.43 1.43-1.43z"/></svg>
+                TREINO A
             </button>
-            <button class="btn-treino" onclick="imprimirTreino('B')">
-                <span>🦵</span> Treino B (Pernas)
+            <button class="btn-treino" onclick="imprimirTreino('B - Pernas e Ombro')">
+                <svg class="icon" viewBox="0 0 24 24"><path d="M13.5 22H15V19C15 17.34 13.66 16 12 16H9.5V14H15V12.5C15 11.12 13.88 10 12.5 10H8.5V8H14V6.5C14 5.12 12.88 4 11.5 4H8V2H6.5V4H5V5.5C5 6.88 6.12 8 7.5 8H11.5V10H6V11.5C6 12.88 7.12 14 8.5 14H12C12.55 14 13 14.45 13 15V16H8.5C6.57 16 5 17.57 5 19.5V22H6.5V19.5C6.5 18.4 7.4 17.5 8.5 17.5H12C12.83 17.5 13.5 18.17 13.5 19V22Z"/></svg>
+                TREINO B
             </button>
-            <button id="btn-max" class="btn-treino destaque" data-idaluno="" onclick="imprimirTreino('MAX')">
-                <span>🤖</span> Treino da Max IA
+            <button id="btn-max" class="btn-treino destaque" data-idaluno="" onclick="imprimirTreino('MAX IA INTELIGENTE')">
+                <svg class="icon" viewBox="0 0 24 24"><path d="M12 2a2 2 0 0 1 2 2c0 .74-.4 1.39-1 1.73V7h1a7 7 0 0 1 7 7h1v4h-1c0 2.21-1.79 4-4 4H7c-2.21 0-4-1.79-4-4H2v-4h1a7 7 0 0 1 7-7h1V5.73c-.6-.34-1-.99-1-1.73a2 2 0 0 1 2-2M7 20h10c1.1 0 2-.9 2-2H5c0 1.1.9 2 2 2m5-11c-2.76 0-5 2.24-5 5h10c0-2.76-2.24-5-5-5m-2 4a1 1 0 0 0-1-1 1 1 0 0 0-1 1 1 1 0 0 0 1 1 1 1 0 0 0 1-1m6 0a1 1 0 0 0-1-1 1 1 0 0 0-1 1 1 1 0 0 0 1 1 1 1 0 0 0 1-1z"/></svg>
+                TREINO MAX IA
             </button>
         </div>
     </div>
 
     <div id="area-impressao" style="display: none;">
-        <h3>Powerfisio - Treino</h3>
-        <p id="texto-impresso"></p>
-        <p>_______________________</p>
-        <p>Bom treino!</p>
+        <h2 style="margin-bottom: 5px;">POWERFISIO</h2>
+        <p style="font-size: 12px; border-bottom: 1px dashed #000; padding-bottom: 10px; margin-bottom: 10px;">SEU TREINO DE HOJE</p>
+        
+        <h3 id="texto-impresso" style="margin-bottom: 15px;">Treino A</h3>
+        
+        <p style="font-size: 10px; margin-bottom: 20px;">Aluno(a): <span id="print-nome"></span></p>
+        <p style="font-size: 12px; border-top: 1px dashed #000; padding-top: 10px;">Bom treino! 💪</p>
     </div>
 
     <script>
-    const API_URL = "https://script.google.com/macros/s/AKfycbwTMFXxeTYxMsH0aMmm0aXgqoqhSH06AbrIYvW-bI5x30g4pVRvehZIFiF6nbGvm_XQuA/exec"; // Mantenha sua URL com /exec
-    let radarLigado = true;
-    let ultimoIdDetectado = null;
+        // =========================================================
+        // 🚨 COLOQUE SUA URL DO APPS SCRIPT ABAIXO
+        const API_URL = "https://script.google.com/macros/s/AKfycby62vambopzAU-hOp4Och0Qg9_ZOxNCqqo19BFZvUA13OFTYBRMnTnNckq3aBzncXKTJg/exec"; 
+        // =========================================================
 
-    window.onload = () => setInterval(escutarCatraca, 3000);
+        let timeoutReset;
+        let radarLigado = true;
+        let ultimoIdDetectado = null;
 
-    async function escutarCatraca() {
-        if (!radarLigado) return;
+        window.onload = function() {
+            setInterval(escutarCatraca, 3000);
+        };
 
-        try {
-            const carimbo = new Date().getTime();
-            const res = await fetch(API_URL + "?acao=catraca&t=" + carimbo);
-            const dados = await res.json();
-
-            console.log("📡 Radar Powerfisio:", dados);
-
-            if (dados.detectado && dados.idAluno !== ultimoIdDetectado) {
-                console.log("✅ Novo aluno detectado:", dados.nome);
-                ultimoIdDetectado = dados.idAluno;
-                radarLigado = false;
-                mostrarTelaAluno(dados.nome, dados.idAluno);
+        // --- FUNÇÃO DE FORMATAÇÃO DE NOME ---
+        // Transforma "FRANCISCO MATHEUS PEREIRA COSTA" em "Francisco Matheus"
+        function formatarNomeAmigavel(nomeCompleto) {
+            if (!nomeCompleto) return "Atleta";
+            const partes = nomeCompleto.trim().split(" ");
+            
+            // Pega a primeira parte e capitaliza
+            let nomeFinal = partes[0].charAt(0).toUpperCase() + partes[0].slice(1).toLowerCase();
+            
+            // Se tiver sobrenome, pega o segundo também (ignorando de, da, dos)
+            if (partes.length >= 2) {
+                let seg = partes[1].toLowerCase();
+                if (seg === "de" || seg === "da" || seg === "do" || seg === "dos" || seg === "das") {
+                    if(partes.length >= 3) {
+                         nomeFinal += " " + partes[2].charAt(0).toUpperCase() + partes[2].slice(1).toLowerCase();
+                    }
+                } else {
+                    nomeFinal += " " + partes[1].charAt(0).toUpperCase() + partes[1].slice(1).toLowerCase();
+                }
             }
-        } catch (e) {
-            console.error("❌ Erro na ponte de dados:", e);
+            return nomeFinal;
         }
-    }
 
-    function mostrarTelaAluno(nome, idAluno) {
-        try {
-            const elEspera = document.getElementById('tela-espera');
-            const elAluno = document.getElementById('tela-aluno');
-            const elNome = document.getElementById('nome-aluno');
-            const btnMax = document.getElementById('btn-max');
+        async function escutarCatraca() {
+            if (!radarLigado) return; 
 
-            if (!elEspera || !elAluno || !elNome || !btnMax) {
-                console.error("🚨 ERRO CRÍTICO: Algum elemento (ID) sumiu do HTML!");
-                return;
+            try {
+                const carimbo = new Date().getTime();
+                const resposta = await fetch(API_URL + "?acao=catraca&t=" + carimbo);
+                const dados = await resposta.json();
+
+                console.log("Radar:", dados); 
+
+                if (dados.detectado) {
+                    radarLigado = false; 
+                    mostrarTelaAluno(dados.nome, dados.idAluno);
+                }
+            } catch (e) {
+                console.log("Erro no radar", e);
             }
-
-            elEspera.style.display = 'none';
-            elAluno.style.display = 'flex';
-            elNome.innerText = nome;
-            btnMax.setAttribute('data-idaluno', idAluno);
-
-            setTimeout(resetarTela, 15000);
-        } catch (err) {
-            console.error("💥 Falha ao mudar a tela:", err);
         }
-    }
 
-    function resetarTela() {
-        document.getElementById('tela-espera').style.display = 'flex';
-        document.getElementById('tela-aluno').style.display = 'none';
-        ultimoIdDetectado = null; // Limpa para permitir a próxima entrada
-        radarLigado = true;
-    }
-</script>
+        function mostrarTelaAluno(nomeCompleto, idAluno) {
+            const nomeCurto = formatarNomeAmigavel(nomeCompleto);
+
+            document.getElementById('tela-espera').style.display = 'none';
+            document.getElementById('tela-aluno').style.display = 'flex';
+            
+            document.getElementById('nome-aluno').innerText = nomeCurto;
+            document.getElementById('print-nome').innerText = nomeCurto; // Preenche o papel
+            
+            document.getElementById('btn-max').setAttribute('data-idaluno', idAluno);
+
+            clearTimeout(timeoutReset);
+            timeoutReset = setTimeout(resetarTela, 15000);
+        }
+
+        function simularPassagemCatraca(nome, idAluno) {
+            radarLigado = false;
+            mostrarTelaAluno(nome, idAluno);
+        }
+
+        function imprimirTreino(tipoTreino) {
+            // Cancela o reset automático para a tela não sumir na cara do aluno
+            clearTimeout(timeoutReset); 
+
+            // Prepara a folha de impressão
+            document.getElementById('area-impressao').style.display = 'block';
+            document.getElementById('texto-impresso').innerText = tipoTreino;
+            
+            // Dá uma pequena pausa para o navegador renderizar a área antes de chamar a impressora
+            setTimeout(() => {
+                window.print();
+                
+                // Limpeza pós-impressão
+                document.getElementById('area-impressao').style.display = 'none';
+                resetarTela();
+            }, 300);
+        }
+
+        function resetarTela() {
+            document.getElementById('tela-espera').style.display = 'flex';
+            document.getElementById('tela-aluno').style.display = 'none';
+            radarLigado = true; 
+        }
+    </script>
 </body>
 </html>

@@ -3,257 +3,314 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Powerfisio - Admin Max</title>
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;800&display=swap" rel="stylesheet">
+    <title>Totem Powerfisio - Max IA Pro</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;900&display=swap" rel="stylesheet">
     <style>
         :root {
             --primary: #FF5500;
-            --primary-hover: #e64d00;
-            --bg-dark: #0F1115;
+            --bg-app: #0F1115;
             --bg-card: #1A1D24;
             --text-main: #FFFFFF;
             --text-muted: #8B92A5;
-            --glass: rgba(255, 255, 255, 0.03);
         }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
 
         body {
             font-family: 'Montserrat', sans-serif;
-            background-color: var(--bg-dark);
+            background-color: var(--bg-app);
             color: var(--text-main);
+            height: 100vh;
             display: flex;
-            justify-content: center;
             align-items: center;
-            min-height: 100vh;
-            margin: 0;
-            background-image: radial-gradient(circle at 20% 30%, rgba(255, 85, 0, 0.05) 0%, transparent 40%);
+            justify-content: center;
+            overflow: hidden;
         }
 
-        .container {
-            width: 90%;
-            max-width: 500px;
-            background: var(--bg-card);
-            padding: 40px;
-            border-radius: 24px;
-            border: 1px solid rgba(255, 255, 255, 0.05);
-            box-shadow: 0 20px 50px rgba(0,0,0,0.4);
-            animation: fadeIn 0.6s ease-out;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        .header { text-align: center; margin-bottom: 30px; }
-        .header h1 { font-weight: 800; letter-spacing: -1px; margin-bottom: 5px; }
-        .header h1 span { color: var(--primary); }
-        .header p { color: var(--text-muted); font-size: 0.9rem; }
-
-        .search-box {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 30px;
-        }
-
-        input {
-            flex: 1;
-            background: var(--glass);
-            border: 1px solid #2A2F3A;
-            padding: 15px 20px;
-            border-radius: 12px;
-            color: white;
-            font-family: inherit;
-            outline: none;
-            transition: 0.3s;
-        }
-
-        input:focus { border-color: var(--primary); box-shadow: 0 0 0 4px rgba(255, 85, 0, 0.1); }
-
-        button {
-            background: var(--primary);
-            color: white;
-            border: none;
-            padding: 15px 25px;
-            border-radius: 12px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: 0.3s;
-        }
-
-        button:hover { background: var(--primary-hover); transform: translateY(-2px); }
-
-        /* --- Resultado da Busca --- */
-        #resultado-busca {
-            background: var(--glass);
-            border-radius: 16px;
-            padding: 20px;
-            margin-bottom: 25px;
-            display: none;
-            border: 1px solid rgba(255, 85, 0, 0.2);
-        }
-
-        .aluno-info h3 { font-size: 1.2rem; margin-bottom: 5px; }
-        .aluno-info p { color: var(--primary); font-weight: 600; font-size: 0.8rem; }
-
-        /* --- Grid de Tags --- */
-        .tags-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 10px;
-            margin-bottom: 20px;
-        }
-
-        .tag {
-            background: #2A2F3A;
-            padding: 12px;
-            border-radius: 10px;
+        /* --- TELA 1: RADAR --- */
+        #tela-espera {
             text-align: center;
-            font-size: 0.85rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: 0.2s;
-            border: 1px solid transparent;
-            user-select: none;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 25px;
         }
 
-        .tag.active {
-            background: rgba(255, 85, 0, 0.1);
-            border-color: var(--primary);
-            color: var(--primary);
+        .radar {
+            width: 140px;
+            height: 140px;
+            background: rgba(255, 85, 0, 0.05);
+            border: 2px solid rgba(255, 85, 0, 0.2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            animation: pulse 2s infinite;
         }
 
-        textarea {
-            width: 100%;
-            background: var(--glass);
+        .radar h1 { font-size: 3.5rem; color: var(--primary); font-weight: 900; margin: 0; letter-spacing: -2px;}
+
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(255, 85, 0, 0.3); }
+            70% { box-shadow: 0 0 0 40px rgba(255, 85, 0, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(255, 85, 0, 0); }
+        }
+
+        .titulo-radar { font-size: 2.5rem; font-weight: 900; text-transform: uppercase; letter-spacing: 1px; }
+        .sub-radar { font-size: 1.2rem; color: var(--text-muted); font-weight: 400; }
+
+        /* --- TELA 2: PERFIL DO ALUNO --- */
+        #tela-aluno {
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            width: 95%;
+            max-width: 1200px;
+            background: var(--bg-card);
+            padding: 60px;
+            border-radius: 16px;
             border: 1px solid #2A2F3A;
-            padding: 15px;
-            border-radius: 12px;
-            color: white;
-            resize: none;
-            margin-bottom: 25px;
-            font-family: inherit;
+            box-shadow: 0 30px 60px rgba(0,0,0,0.5);
+            text-align: center;
         }
 
-        #msg { text-align: center; font-size: 0.9rem; font-weight: 600; min-height: 20px; }
+        .saudacao { font-size: 3rem; font-weight: 900; text-transform: uppercase; letter-spacing: -1px; margin-bottom: 10px; }
+        .saudacao span { color: var(--primary); }
+        .pergunta { font-size: 1.5rem; color: var(--text-muted); margin-bottom: 50px; font-weight: 700;}
 
-        .btn-salvar { width: 100%; padding: 18px; font-size: 1rem; text-transform: uppercase; letter-spacing: 1px; }
+        /* --- GRADE DE BOTÕES --- */
+        .grid-treinos {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 30px;
+            width: 100%;
+        }
 
+        .btn-treino {
+            background: var(--bg-app);
+            border: 2px solid #2A2F3A;
+            padding: 40px 20px;
+            border-radius: 12px;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 1.4rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            color: var(--text-main);
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .btn-treino:hover { border-color: var(--text-muted); transform: translateY(-5px); }
+        .btn-treino:active { transform: translateY(0); }
+
+        .btn-treino.destaque {
+            background: var(--primary);
+            border-color: var(--primary);
+            box-shadow: 0 15px 30px rgba(255, 85, 0, 0.2);
+        }
+        .btn-treino.destaque:hover { box-shadow: 0 20px 40px rgba(255, 85, 0, 0.4); transform: translateY(-5px); }
+
+        /* Ícones */
+        .icon { width: 50px; height: 50px; fill: currentColor; }
+
+        /* --- IMPRESSÃO TÉRMICA --- */
+        @media print {
+            body * { visibility: hidden; }
+            #area-impressao, #area-impressao * { visibility: visible; color: #000 !important; font-family: sans-serif; }
+            #area-impressao { 
+                position: absolute; left: 0; top: 0; width: 100%; 
+                background: #FFF; padding: 20px; text-align: left; 
+            }
+        }
     </style>
 </head>
 <body>
 
-<div class="container">
-    <div class="header">
-        <h1>POWER<span>FISIO</span></h1>
-        <p>Prontuário Clínico - Max IA</p>
+    <div id="tela-espera">
+        <div class="radar"><h1>PF</h1></div>
+        <h2 class="titulo-radar">Aguardando Liberação...</h2>
+        <p class="sub-radar">Passe sua digital para iniciar o treino</p>
+        <button onclick="simularPassagemCatraca('ALUNO TESTE', '123')" style="margin-top: 50px; padding: 10px; opacity: 0.1; background: transparent; color: white; border: 1px solid white;">Simular (DEV)</button>
     </div>
 
-    <div class="search-box">
-        <input type="text" id="inputBusca" placeholder="ID ou Nome do Aluno...">
-        <button onclick="buscarAluno()">BUSCAR</button>
-    </div>
+    <div id="tela-aluno">
+        <h2 class="saudacao">FALA, <span id="nome-aluno">ALUNO</span>!</h2>
+        <p class="pergunta" id="txt-instrucao">QUAL É A MISSÃO DE HOJE?</p>
 
-    <div id="resultado-busca">
-        <div class="aluno-info">
-            <h3 id="nomeAluno">---</h3>
-            <p>ID EVO: <span id="idAluno">---</span></p>
+        <div class="grid-treinos" id="menu-principal">
+            <button class="btn-treino" onclick="imprimirTreino('TREINO A', 'Ficha padrão da academia.')">
+                <svg class="icon" viewBox="0 0 24 24"><path d="M20.57 14.86L22 13.43 20.57 12 17 15.57 8.43 7 12 3.43 10.57 2 9.14 3.43 7.71 2 5.57 4.14 4.14 2.71 2.71 4.14l1.43 1.43L2 7.71l1.43 1.43L2 10.57 3.43 12 7 8.43 15.57 17 12 20.57 13.43 22l1.43-1.43L16.29 22l2.14-2.14 1.43 1.43 1.43-1.43-1.43-1.43 1.43-1.43z"/></svg>
+                TREINO A
+            </button>
+            <button class="btn-treino" onclick="imprimirTreino('TREINO B', 'Ficha padrão da academia.')">
+                <svg class="icon" viewBox="0 0 24 24"><path d="M13.5 22H15V19C15 17.34 13.66 16 12 16H9.5V14H15V12.5C15 11.12 13.88 10 12.5 10H8.5V8H14V6.5C14 5.12 12.88 4 11.5 4H8V2H6.5V4H5V5.5C5 6.88 6.12 8 7.5 8H11.5V10H6V11.5C6 12.88 7.12 14 8.5 14H12C12.55 14 13 14.45 13 15V16H8.5C6.57 16 5 17.57 5 19.5V22H6.5V19.5C6.5 18.4 7.4 17.5 8.5 17.5H12C12.83 17.5 13.5 18.17 13.5 19V22Z"/></svg>
+                TREINO B
+            </button>
+            <button class="btn-treino destaque" onclick="abrirSeletorDias()">
+                <svg class="icon" viewBox="0 0 24 24"><path d="M12 2a2 2 0 0 1 2 2c0 .74-.4 1.39-1 1.73V7h1a7 7 0 0 1 7 7h1v4h-1c0 2.21-1.79 4-4 4H7c-2.21 0-4-1.79-4-4H2v-4h1a7 7 0 0 1 7-7h1V5.73c-.6-.34-1-.99-1-1.73a2 2 0 0 1 2-2M7 20h10c1.1 0 2-.9 2-2H5c0 1.1.9 2 2 2m5-11c-2.76 0-5 2.24-5 5h10c0-2.76-2.24-5-5-5m-2 4a1 1 0 0 0-1-1 1 1 0 0 0-1 1 1 1 0 0 0 1 1 1 1 0 0 0 1-1m6 0a1 1 0 0 0-1-1 1 1 0 0 0-1 1 1 1 0 0 0 1 1 1 1 0 0 0 1-1z"/></svg>
+                TREINO MAX IA
+            </button>
+        </div>
+
+        <div class="grid-treinos" id="seletor-dias" style="display: none;">
+            <button class="btn-treino" onclick="gerarTreinoIA('Segunda')">SEG</button>
+            <button class="btn-treino" onclick="gerarTreinoIA('Terça')">TER</button>
+            <button class="btn-treino" onclick="gerarTreinoIA('Quarta')">QUA</button>
+            <button class="btn-treino" onclick="gerarTreinoIA('Quinta')">QUI</button>
+            <button class="btn-treino" onclick="gerarTreinoIA('Sexta')">SEX</button>
+            <button class="btn-treino" style="background: #333; color: white;" onclick="voltarMenu()">VOLTAR</button>
+        </div>
+        
+        <div id="loading" style="display: none; font-size: 1.5rem; color: var(--primary); font-weight: 800; margin-top: 20px;">
+            🤖 MAX ESTÁ MONTANDO SEU TREINO...
         </div>
     </div>
 
-    <div id="formulario" style="display: none;">
-        <label style="display:block; margin-bottom:10px; font-size: 0.8rem; color: var(--text-muted);">CONDIÇÕES DE SAÚDE:</label>
-        <div class="tags-grid">
-            <div class="tag" onclick="toggleTag(this)">Hérnia de Disco</div>
-            <div class="tag" onclick="toggleTag(this)">Escoliose</div>
-            <div class="tag" onclick="toggleTag(this)">Hipertensão</div>
-            <div class="tag" onclick="toggleTag(this)">Condromalácia</div>
-            <div class="tag" onclick="toggleTag(this)">Labirintite</div>
-            <div class="tag" onclick="toggleTag(this)">Gestante</div>
-            <div class="tag" onclick="toggleTag(this)">Pós-Cirúrgico</div>
-            <div class="tag" onclick="toggleTag(this)">Diabetes</div>
-        </div>
-
-        <label style="display:block; margin-bottom:10px; font-size: 0.8rem; color: var(--text-muted);">OBSERVAÇÕES ADICIONAIS:</label>
-        <textarea id="obs" rows="3" placeholder="Ex: Limitação de carga no agachamento..."></textarea>
-
-        <button class="btn-salvar" id="btnSalvar" onclick="salvarProntuario()">SALVAR NO MAX</button>
+    <div id="area-impressao" style="display: none;">
+        <h2 style="margin-bottom: 5px;">POWERFISIO</h2>
+        <p style="font-size: 12px; border-bottom: 1px dashed #000; padding-bottom: 10px; margin-bottom: 10px;">SEU TREINO DE HOJE</p>
+        
+        <h3 id="texto-impresso" style="margin-bottom: 10px;">Treino</h3>
+        <p id="corpo-treino" style="font-size: 14px; margin-bottom: 15px; white-space: pre-wrap; font-family: monospace;"></p>
+        
+        <p style="font-size: 10px; margin-bottom: 20px;">Aluno(a): <span id="print-nome"></span></p>
+        <p style="font-size: 12px; border-top: 1px dashed #000; padding-top: 10px;">Bom treino! 💪</p>
     </div>
 
-    <div id="msg"></div>
-</div>
+    <script>
+        // =========================================================
+        // URL DA API (GOOGLE APPS SCRIPT)
+        const API_URL = "https://script.google.com/macros/s/AKfycby62vambopzAU-hOp4Och0Qg9_ZOxNCqqo19BFZvUA13OFTYBRMnTnNckq3aBzncXKTJg/exec"; 
+        // =========================================================
 
-<script>
-    // URL DA SUA API (GOOGLE APPS SCRIPT)
-    const GOOGLE_API_URL = "https://script.google.com/macros/s/AKfycby62vambopzAU-hOp4Och0Qg9_ZOxNCqqo19BFZvUA13OFTYBRMnTnNckq3aBzncXKTJg/exec"; 
-    
-    let alunoSelecionado = null;
+        let timeoutReset;
+        let radarLigado = true;
+        let alunoAtualId = ""; 
 
-    function toggleTag(el) { el.classList.toggle('active'); }
+        window.onload = function() {
+            setInterval(escutarCatraca, 3000);
+        };
 
-    async function buscarAluno() {
-        const query = document.getElementById('inputBusca').value;
-        if (!query) return;
-        
-        const msg = document.getElementById('msg');
-        msg.innerText = "🔍 Localizando na EVO...";
-        msg.style.color = "var(--text-muted)";
-        
-        try {
-            const res = await fetch(`${GOOGLE_API_URL}?acao=buscar&query=${encodeURIComponent(query)}`);
-            const aluno = await res.json();
-            
-            if (aluno && aluno.id) {
-                alunoSelecionado = aluno;
-                document.getElementById('nomeAluno').innerText = aluno.nome;
-                document.getElementById('idAluno').innerText = aluno.id;
-                document.getElementById('resultado-busca').style.display = 'block';
-                document.getElementById('formulario').style.display = 'block';
-                msg.innerText = "";
-            } else {
-                msg.innerText = "❌ Aluno não encontrado.";
-                msg.style.color = "#ff4444";
+        function formatarNomeAmigavel(nomeCompleto) {
+            if (!nomeCompleto) return "Atleta";
+            const partes = nomeCompleto.trim().split(" ");
+            let nomeFinal = partes[0].charAt(0).toUpperCase() + partes[0].slice(1).toLowerCase();
+            if (partes.length >= 2) {
+                let seg = partes[1].toLowerCase();
+                if (["de", "da", "do", "dos", "das"].includes(seg)) {
+                    if(partes.length >= 3) nomeFinal += " " + partes[2].charAt(0).toUpperCase() + partes[2].slice(1).toLowerCase();
+                } else {
+                    nomeFinal += " " + partes[1].charAt(0).toUpperCase() + partes[1].slice(1).toLowerCase();
+                }
             }
-        } catch (err) {
-            msg.innerText = "⚠️ Erro de conexão com a API.";
+            return nomeFinal;
         }
-    }
 
-    async function salvarProntuario() {
-        const tags = Array.from(document.querySelectorAll('.tag.active')).map(t => t.innerText);
-        const obs = document.getElementById('obs').value;
-        const btn = document.getElementById('btnSalvar');
-        const msg = document.getElementById('msg');
-        
-        btn.disabled = true;
-        msg.innerText = "💾 Gravando prontuário...";
-
-        try {
-            const res = await fetch(GOOGLE_API_URL, {
-                method: 'POST',
-                body: JSON.stringify({
-                    acao: 'salvar',
-                    id: alunoSelecionado.id,
-                    nome: alunoSelecionado.nome,
-                    condicoes: tags.join(", "),
-                    observacoes: obs
-                })
-            });
-            
-            const resposta = await res.text();
-            if (resposta === "Sucesso") {
-                msg.style.color = "#00ff88";
-                msg.innerText = "✅ PRONTUÁRIO ATUALIZADO!";
-                setTimeout(() => location.reload(), 2000);
-            } else {
-                throw new Error();
+        async function escutarCatraca() {
+            if (!radarLigado) return; 
+            try {
+                const carimbo = new Date().getTime();
+                // 🔴 AQUI MUDA PARA "?acao=radar"
+                const resposta = await fetch(API_URL + "?acao=radar&t=" + carimbo);
+                const dados = await resposta.json();
+                
+                if (dados.detectado) {
+                    radarLigado = false; 
+                    mostrarTelaAluno(dados.nome, dados.idAluno);
+                }
+            } catch (e) {
+                console.log("Erro no radar", e);
             }
-        } catch (err) {
-            msg.style.color = "#ff4444";
-            msg.innerText = "❌ Erro ao salvar.";
-            btn.disabled = false;
         }
-    }
-</script>
 
+        function mostrarTelaAluno(nomeCompleto, idAluno) {
+            const nomeCurto = formatarNomeAmigavel(nomeCompleto);
+            alunoAtualId = idAluno; 
+
+            document.getElementById('tela-espera').style.display = 'none';
+            document.getElementById('tela-aluno').style.display = 'flex';
+            
+            document.getElementById('nome-aluno').innerText = nomeCurto;
+            document.getElementById('print-nome').innerText = nomeCurto;
+            
+            clearTimeout(timeoutReset);
+            timeoutReset = setTimeout(resetarTela, 15000);
+        }
+
+        function simularPassagemCatraca(nome, idAluno) {
+            radarLigado = false;
+            mostrarTelaAluno(nome, idAluno);
+        }
+
+        function abrirSeletorDias() {
+            document.getElementById('menu-principal').style.display = 'none';
+            document.getElementById('seletor-dias').style.display = 'grid';
+            document.getElementById('txt-instrucao').innerText = "PARA QUAL DIA?";
+            
+            clearTimeout(timeoutReset);
+            timeoutReset = setTimeout(resetarTela, 20000); 
+        }
+
+        function voltarMenu() {
+            document.getElementById('menu-principal').style.display = 'grid';
+            document.getElementById('seletor-dias').style.display = 'none';
+            document.getElementById('txt-instrucao').innerText = "QUAL É A MISSÃO DE HOJE?";
+            
+            clearTimeout(timeoutReset);
+            timeoutReset = setTimeout(resetarTela, 15000);
+        }
+
+        async function gerarTreinoIA(dia) {
+            document.getElementById('seletor-dias').style.display = 'none';
+            document.getElementById('loading').style.display = 'block';
+            document.getElementById('txt-instrucao').innerText = "CONECTANDO CÉREBRO...";
+
+            clearTimeout(timeoutReset);
+
+            try {
+                // 🔴 AQUI CHAMA A API PARA GERAR O TREINO
+                const res = await fetch(`${API_URL}?acao=gerarTreinoMax&idAluno=${alunoAtualId}&dia=${dia}`);
+                const dados = await res.json();
+                
+                if (dados.sucesso) {
+                    imprimirTreino(dados.cabecalho, dados.conteudo);
+                } else {
+                    imprimirTreino("ERRO", dados.conteudo);
+                }
+            } catch (e) {
+                alert("Erro ao conectar com a Max IA.");
+                voltarMenu();
+            } finally {
+                document.getElementById('loading').style.display = 'none';
+            }
+        }
+
+        function imprimirTreino(titulo, conteudo = "") {
+            clearTimeout(timeoutReset); 
+
+            document.getElementById('area-impressao').style.display = 'block';
+            document.getElementById('texto-impresso').innerText = titulo;
+            document.getElementById('corpo-treino').innerText = conteudo; 
+            
+            setTimeout(() => {
+                window.print();
+                document.getElementById('area-impressao').style.display = 'none';
+                resetarTela();
+            }, 500);
+        }
+
+        function resetarTela() {
+            document.getElementById('tela-espera').style.display = 'flex';
+            document.getElementById('tela-aluno').style.display = 'none';
+            document.getElementById('menu-principal').style.display = 'grid';
+            document.getElementById('seletor-dias').style.display = 'none';
+            document.getElementById('txt-instrucao').innerText = "QUAL É A MISSÃO DE HOJE?";
+            radarLigado = true; 
+        }
+    </script>
 </body>
 </html>

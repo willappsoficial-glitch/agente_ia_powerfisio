@@ -60,52 +60,70 @@
 </div>
 
 <script>
-  let alunoSelecionado = null;
-
-  function toggleTag(el) {
-    el.classList.toggle('active');
-  }
-
-  function buscarAluno() {
-    const query = document.getElementById('inputBusca').value;
-    if (!query) return;
-    
-    document.getElementById('msg').innerText = "A pesquisar...";
-    google.script.run.withSuccessHandler(function(aluno) {
-      if (aluno) {
-        alunoSelecionado = aluno;
-        document.getElementById('nomeAluno').innerText = aluno.nome;
-        document.getElementById('idAluno').innerText = aluno.id;
-        document.getElementById('resultado-busca').style.display = 'block';
-        document.getElementById('formulario').style.display = 'block';
-        document.getElementById('msg').innerText = "";
-      } else {
-        alert("Aluno não encontrado na EVO.");
-      }
-    }).buscarAlunoEvoAdmin(query);
-  }
-
-  function salvarProntuario() {
-    const tags = Array.from(document.querySelectorAll('.tag.active')).map(t => t.innerText);
-    const obs = document.getElementById('obs').value;
-    
-    const dados = {
-      id: alunoSelecionado.id,
-      nome: alunoSelecionado.nome,
-      condicoes: tags.join(", "),
-      observacoes: obs
-    };
-
-    document.getElementById('btnSalvar').disabled = true;
-    document.getElementById('msg').innerText = "A guardar...";
-
-    google.script.run.withSuccessHandler(function() {
-      document.getElementById('msg').style.color = "green";
-      document.getElementById('msg').innerText = "✅ Guardado com sucesso!";
-      setTimeout(() => location.reload(), 2000);
-    }).salvarSaudeAdmin(dados);
-  }
-</script>
+    // COLE A SUA URL DO GOOGLE APPS SCRIPT AQUI (Terminada em /exec)
+    const GOOGLE_API_URL = "https://script.google.com/macros/s/AKfycby62vambopzAU-hOp4Och0Qg9_ZOxNCqqo19BFZvUA13OFTYBRMnTnNckq3aBzncXKTJg/exec"; 
+    let alunoSelecionado = null;
+  
+    function toggleTag(el) { el.classList.toggle('active'); }
+  
+    function buscarAluno() {
+      const query = document.getElementById('inputBusca').value;
+      if (!query) return;
+      
+      document.getElementById('msg').innerText = "A pesquisar...";
+      
+      // Usando fetch() em vez de google.script.run
+      fetch(`${GOOGLE_API_URL}?acao=buscar&query=${encodeURIComponent(query)}`)
+        .then(res => res.json())
+        .then(aluno => {
+          if (aluno && aluno.id) {
+            alunoSelecionado = aluno;
+            document.getElementById('nomeAluno').innerText = aluno.nome;
+            document.getElementById('idAluno').innerText = aluno.id;
+            document.getElementById('resultado-busca').style.display = 'block';
+            document.getElementById('formulario').style.display = 'block';
+            document.getElementById('msg').innerText = "";
+          } else {
+            alert("Aluno não encontrado na EVO.");
+            document.getElementById('msg').innerText = "";
+          }
+        })
+        .catch(err => {
+           alert("Erro de comunicação com o servidor.");
+           document.getElementById('msg').innerText = "";
+        });
+    }
+  
+    function salvarProntuario() {
+      const tags = Array.from(document.querySelectorAll('.tag.active')).map(t => t.innerText);
+      const obs = document.getElementById('obs').value;
+      
+      document.getElementById('btnSalvar').disabled = true;
+      document.getElementById('msg').innerText = "A guardar...";
+  
+      // Usando fetch POST para enviar os dados
+      fetch(GOOGLE_API_URL, {
+        method: 'POST',
+        body: JSON.stringify({
+          acao: 'salvar',
+          id: alunoSelecionado.id,
+          nome: alunoSelecionado.nome,
+          condicoes: tags.join(", "),
+          observacoes: obs
+        })
+      })
+      .then(res => res.text())
+      .then(resposta => {
+        document.getElementById('msg').style.color = "green";
+        document.getElementById('msg').innerText = "✅ Guardado com sucesso!";
+        setTimeout(() => location.reload(), 2000);
+      }).catch(err => {
+        document.getElementById('msg').style.color = "red";
+        document.getElementById('msg').innerText = "❌ Erro ao guardar.";
+        document.getElementById('btnSalvar').disabled = false;
+      });
+    }
+  </script>
 
 </body>
 </html>

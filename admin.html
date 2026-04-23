@@ -1,129 +1,259 @@
 <!DOCTYPE html>
-<html>
+<html lang="pt-BR">
 <head>
-  <base target="_top">
-  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
-  <style>
-    body { font-family: 'Montserrat', sans-serif; background: #f4f7f6; padding: 20px; color: #333; }
-    .container { max-width: 600px; margin: 0 auto; background: white; padding: 30px; border-radius: 12px; shadow: 0 4px 6px rgba(0,0,0,0.1); }
-    h2 { color: #FF5500; text-transform: uppercase; margin-bottom: 20px; }
-    .search-box { display: flex; gap: 10px; margin-bottom: 30px; }
-    input[type="text"] { flex: 1; padding: 12px; border: 1px solid #ddd; border-radius: 6px; }
-    button { padding: 12px 20px; background: #FF5500; color: white; border: none; border-radius: 6px; cursor: pointer; font-weight: bold; }
-    button:hover { background: #e64d00; }
-    
-    #resultado-busca { margin-bottom: 20px; padding: 15px; border: 1px solid #eee; display: none; border-radius: 8px; background: #fafafa; }
-    .tag-container { display: flex; flex-wrap: wrap; gap: 10px; margin: 20px 0; }
-    .tag { padding: 10px 15px; background: #eee; border-radius: 20px; cursor: pointer; font-size: 13px; transition: 0.2s; border: 1px solid #ddd; }
-    .tag.active { background: #FF5500; color: white; border-color: #FF5500; }
-    
-    textarea { width: 100%; height: 80px; padding: 10px; border-radius: 6px; border: 1px solid #ddd; margin-top: 10px; box-sizing: border-box; }
-    .save-area { margin-top: 30px; text-align: right; border-top: 1px solid #eee; padding-top: 20px; }
-    #msg { margin-top: 10px; font-weight: bold; }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Powerfisio - Admin Max</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #FF5500;
+            --primary-hover: #e64d00;
+            --bg-dark: #0F1115;
+            --bg-card: #1A1D24;
+            --text-main: #FFFFFF;
+            --text-muted: #8B92A5;
+            --glass: rgba(255, 255, 255, 0.03);
+        }
+
+        body {
+            font-family: 'Montserrat', sans-serif;
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            background-image: radial-gradient(circle at 20% 30%, rgba(255, 85, 0, 0.05) 0%, transparent 40%);
+        }
+
+        .container {
+            width: 90%;
+            max-width: 500px;
+            background: var(--bg-card);
+            padding: 40px;
+            border-radius: 24px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            box-shadow: 0 20px 50px rgba(0,0,0,0.4);
+            animation: fadeIn 0.6s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .header { text-align: center; margin-bottom: 30px; }
+        .header h1 { font-weight: 800; letter-spacing: -1px; margin-bottom: 5px; }
+        .header h1 span { color: var(--primary); }
+        .header p { color: var(--text-muted); font-size: 0.9rem; }
+
+        .search-box {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 30px;
+        }
+
+        input {
+            flex: 1;
+            background: var(--glass);
+            border: 1px solid #2A2F3A;
+            padding: 15px 20px;
+            border-radius: 12px;
+            color: white;
+            font-family: inherit;
+            outline: none;
+            transition: 0.3s;
+        }
+
+        input:focus { border-color: var(--primary); box-shadow: 0 0 0 4px rgba(255, 85, 0, 0.1); }
+
+        button {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 15px 25px;
+            border-radius: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        button:hover { background: var(--primary-hover); transform: translateY(-2px); }
+
+        /* --- Resultado da Busca --- */
+        #resultado-busca {
+            background: var(--glass);
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 25px;
+            display: none;
+            border: 1px solid rgba(255, 85, 0, 0.2);
+        }
+
+        .aluno-info h3 { font-size: 1.2rem; margin-bottom: 5px; }
+        .aluno-info p { color: var(--primary); font-weight: 600; font-size: 0.8rem; }
+
+        /* --- Grid de Tags --- */
+        .tags-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .tag {
+            background: #2A2F3A;
+            padding: 12px;
+            border-radius: 10px;
+            text-align: center;
+            font-size: 0.85rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.2s;
+            border: 1px solid transparent;
+            user-select: none;
+        }
+
+        .tag.active {
+            background: rgba(255, 85, 0, 0.1);
+            border-color: var(--primary);
+            color: var(--primary);
+        }
+
+        textarea {
+            width: 100%;
+            background: var(--glass);
+            border: 1px solid #2A2F3A;
+            padding: 15px;
+            border-radius: 12px;
+            color: white;
+            resize: none;
+            margin-bottom: 25px;
+            font-family: inherit;
+        }
+
+        #msg { text-align: center; font-size: 0.9rem; font-weight: 600; min-height: 20px; }
+
+        .btn-salvar { width: 100%; padding: 18px; font-size: 1rem; text-transform: uppercase; letter-spacing: 1px; }
+
+    </style>
 </head>
 <body>
 
 <div class="container">
-  <h2>Painel Admin Max - Powerfisio</h2>
-  
-  <div class="search-box">
-    <input type="text" id="inputBusca" placeholder="Nome ou ID do aluno na EVO...">
-    <button onclick="buscarAluno()">PESQUISAR</button>
-  </div>
-
-  <div id="resultado-busca">
-    <strong id="nomeAluno">Nome do Aluno</strong><br>
-    <small>ID EVO: <span id="idAluno"></span></small>
-  </div>
-
-  <div id="formulario" style="display:none;">
-    <p><strong>Selecione as condições:</strong></p>
-    <div class="tag-container" id="tags">
-      <div class="tag" onclick="toggleTag(this)">Condromalácia Patelar</div>
-      <div class="tag" onclick="toggleTag(this)">Hérnia de Disco</div>
-      <div class="tag" onclick="toggleTag(this)">Hipertensão</div>
-      <div class="tag" onclick="toggleTag(this)">Diabetes</div>
-      <div class="tag" onclick="toggleTag(this)">Escoliose</div>
-      <div class="tag" onclick="toggleTag(this)">Artrose/Osteoporose</div>
-      <div class="tag" onclick="toggleTag(this)">Lesão no Ombro</div>
+    <div class="header">
+        <h1>POWER<span>FISIO</span></h1>
+        <p>Prontuário Clínico - Max IA</p>
     </div>
 
-    <p><strong>Observações Adicionais:</strong></p>
-    <textarea id="obs" placeholder="Ex: L4-L5, nível da escoliose, ou outros detalhes específicos..."></textarea>
-
-    <div class="save-area">
-      <button onclick="salvarProntuario()" id="btnSalvar">SALVAR NO MAX</button>
-      <div id="msg"></div>
+    <div class="search-box">
+        <input type="text" id="inputBusca" placeholder="ID ou Nome do Aluno...">
+        <button onclick="buscarAluno()">BUSCAR</button>
     </div>
-  </div>
+
+    <div id="resultado-busca">
+        <div class="aluno-info">
+            <h3 id="nomeAluno">---</h3>
+            <p>ID EVO: <span id="idAluno">---</span></p>
+        </div>
+    </div>
+
+    <div id="formulario" style="display: none;">
+        <label style="display:block; margin-bottom:10px; font-size: 0.8rem; color: var(--text-muted);">CONDIÇÕES DE SAÚDE:</label>
+        <div class="tags-grid">
+            <div class="tag" onclick="toggleTag(this)">Hérnia de Disco</div>
+            <div class="tag" onclick="toggleTag(this)">Escoliose</div>
+            <div class="tag" onclick="toggleTag(this)">Hipertensão</div>
+            <div class="tag" onclick="toggleTag(this)">Condromalácia</div>
+            <div class="tag" onclick="toggleTag(this)">Labirintite</div>
+            <div class="tag" onclick="toggleTag(this)">Gestante</div>
+            <div class="tag" onclick="toggleTag(this)">Pós-Cirúrgico</div>
+            <div class="tag" onclick="toggleTag(this)">Diabetes</div>
+        </div>
+
+        <label style="display:block; margin-bottom:10px; font-size: 0.8rem; color: var(--text-muted);">OBSERVAÇÕES ADICIONAIS:</label>
+        <textarea id="obs" rows="3" placeholder="Ex: Limitação de carga no agachamento..."></textarea>
+
+        <button class="btn-salvar" id="btnSalvar" onclick="salvarProntuario()">SALVAR NO MAX</button>
+    </div>
+
+    <div id="msg"></div>
 </div>
 
 <script>
-    // COLE A SUA URL DO GOOGLE APPS SCRIPT AQUI (Terminada em /exec)
+    // URL DA SUA API (GOOGLE APPS SCRIPT)
     const GOOGLE_API_URL = "https://script.google.com/macros/s/AKfycby62vambopzAU-hOp4Och0Qg9_ZOxNCqqo19BFZvUA13OFTYBRMnTnNckq3aBzncXKTJg/exec"; 
+    
     let alunoSelecionado = null;
-  
+
     function toggleTag(el) { el.classList.toggle('active'); }
-  
-    function buscarAluno() {
-      const query = document.getElementById('inputBusca').value;
-      if (!query) return;
-      
-      document.getElementById('msg').innerText = "A pesquisar...";
-      
-      // Usando fetch() em vez de google.script.run
-      fetch(`${GOOGLE_API_URL}?acao=buscar&query=${encodeURIComponent(query)}`)
-        .then(res => res.json())
-        .then(aluno => {
-          if (aluno && aluno.id) {
-            alunoSelecionado = aluno;
-            document.getElementById('nomeAluno').innerText = aluno.nome;
-            document.getElementById('idAluno').innerText = aluno.id;
-            document.getElementById('resultado-busca').style.display = 'block';
-            document.getElementById('formulario').style.display = 'block';
-            document.getElementById('msg').innerText = "";
-          } else {
-            alert("Aluno não encontrado na EVO.");
-            document.getElementById('msg').innerText = "";
-          }
-        })
-        .catch(err => {
-           alert("Erro de comunicação com o servidor.");
-           document.getElementById('msg').innerText = "";
-        });
+
+    async function buscarAluno() {
+        const query = document.getElementById('inputBusca').value;
+        if (!query) return;
+        
+        const msg = document.getElementById('msg');
+        msg.innerText = "🔍 Localizando na EVO...";
+        msg.style.color = "var(--text-muted)";
+        
+        try {
+            const res = await fetch(`${GOOGLE_API_URL}?acao=buscar&query=${encodeURIComponent(query)}`);
+            const aluno = await res.json();
+            
+            if (aluno && aluno.id) {
+                alunoSelecionado = aluno;
+                document.getElementById('nomeAluno').innerText = aluno.nome;
+                document.getElementById('idAluno').innerText = aluno.id;
+                document.getElementById('resultado-busca').style.display = 'block';
+                document.getElementById('formulario').style.display = 'block';
+                msg.innerText = "";
+            } else {
+                msg.innerText = "❌ Aluno não encontrado.";
+                msg.style.color = "#ff4444";
+            }
+        } catch (err) {
+            msg.innerText = "⚠️ Erro de conexão com a API.";
+        }
     }
-  
-    function salvarProntuario() {
-      const tags = Array.from(document.querySelectorAll('.tag.active')).map(t => t.innerText);
-      const obs = document.getElementById('obs').value;
-      
-      document.getElementById('btnSalvar').disabled = true;
-      document.getElementById('msg').innerText = "A guardar...";
-  
-      // Usando fetch POST para enviar os dados
-      fetch(GOOGLE_API_URL, {
-        method: 'POST',
-        body: JSON.stringify({
-          acao: 'salvar',
-          id: alunoSelecionado.id,
-          nome: alunoSelecionado.nome,
-          condicoes: tags.join(", "),
-          observacoes: obs
-        })
-      })
-      .then(res => res.text())
-      .then(resposta => {
-        document.getElementById('msg').style.color = "green";
-        document.getElementById('msg').innerText = "✅ Guardado com sucesso!";
-        setTimeout(() => location.reload(), 2000);
-      }).catch(err => {
-        document.getElementById('msg').style.color = "red";
-        document.getElementById('msg').innerText = "❌ Erro ao guardar.";
-        document.getElementById('btnSalvar').disabled = false;
-      });
+
+    async function salvarProntuario() {
+        const tags = Array.from(document.querySelectorAll('.tag.active')).map(t => t.innerText);
+        const obs = document.getElementById('obs').value;
+        const btn = document.getElementById('btnSalvar');
+        const msg = document.getElementById('msg');
+        
+        btn.disabled = true;
+        msg.innerText = "💾 Gravando prontuário...";
+
+        try {
+            const res = await fetch(GOOGLE_API_URL, {
+                method: 'POST',
+                body: JSON.stringify({
+                    acao: 'salvar',
+                    id: alunoSelecionado.id,
+                    nome: alunoSelecionado.nome,
+                    condicoes: tags.join(", "),
+                    observacoes: obs
+                })
+            });
+            
+            const resposta = await res.text();
+            if (resposta === "Sucesso") {
+                msg.style.color = "#00ff88";
+                msg.innerText = "✅ PRONTUÁRIO ATUALIZADO!";
+                setTimeout(() => location.reload(), 2000);
+            } else {
+                throw new Error();
+            }
+        } catch (err) {
+            msg.style.color = "#ff4444";
+            msg.innerText = "❌ Erro ao salvar.";
+            btn.disabled = false;
+        }
     }
-  </script>
+</script>
 
 </body>
 </html>

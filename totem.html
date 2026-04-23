@@ -183,7 +183,7 @@
 
     <script>
         // =========================================================
-        // 🚨 COLE AQUI A SUA URL DO APPS SCRIPT
+        // URL DA API (GOOGLE APPS SCRIPT)
         const API_URL = "https://script.google.com/macros/s/AKfycby62vambopzAU-hOp4Och0Qg9_ZOxNCqqo19BFZvUA13OFTYBRMnTnNckq3aBzncXKTJg/exec"; 
         // =========================================================
 
@@ -214,7 +214,8 @@
             if (!radarLigado) return; 
             try {
                 const carimbo = new Date().getTime();
-                const resposta = await fetch(API_URL + "?acao=catraca&t=" + carimbo);
+                // 🔴 AQUI MUDA PARA "?acao=radar"
+                const resposta = await fetch(API_URL + "?acao=radar&t=" + carimbo);
                 const dados = await resposta.json();
                 
                 if (dados.detectado) {
@@ -271,6 +272,7 @@
             clearTimeout(timeoutReset);
 
             try {
+                // 🔴 AQUI CHAMA A API PARA GERAR O TREINO
                 const res = await fetch(`${API_URL}?acao=gerarTreinoMax&idAluno=${alunoAtualId}&dia=${dia}`);
                 const dados = await res.json();
                 

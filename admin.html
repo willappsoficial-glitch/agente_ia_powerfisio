@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <base target="_top">
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    body { font-family: 'Montserrat', sans-serif; background: #f4f7f6; padding: 20px; color: #333; }
+    .container { max-width: 600px; margin: 0 auto; background: white; padding: 30px; border-radius: 12px; shadow: 0 4px 6px rgba(0,0,0,0.1); }
+    h2 { color: #FF5500; text-transform: uppercase; margin-bottom: 20px; }
+    .search-box { display: flex; gap: 10px; margin-bottom: 30px; }
+    input[type="text"] { flex: 1; padding: 12px; border: 1px solid #ddd; border-radius: 6px; }
+    button { padding: 12px 20px; background: #FF5500; color: white; border: none; border-radius: 6px; cursor: pointer; font-weight: bold; }
+    button:hover { background: #e64d00; }
+    
+    #resultado-busca { margin-bottom: 20px; padding: 15px; border: 1px solid #eee; display: none; border-radius: 8px; background: #fafafa; }
+    .tag-container { display: flex; flex-wrap: wrap; gap: 10px; margin: 20px 0; }
+    .tag { padding: 10px 15px; background: #eee; border-radius: 20px; cursor: pointer; font-size: 13px; transition: 0.2s; border: 1px solid #ddd; }
+    .tag.active { background: #FF5500; color: white; border-color: #FF5500; }
+    
+    textarea { width: 100%; height: 80px; padding: 10px; border-radius: 6px; border: 1px solid #ddd; margin-top: 10px; box-sizing: border-box; }
+    .save-area { margin-top: 30px; text-align: right; border-top: 1px solid #eee; padding-top: 20px; }
+    #msg { margin-top: 10px; font-weight: bold; }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <h2>Painel Admin Max - Powerfisio</h2>
+  
+  <div class="search-box">
+    <input type="text" id="inputBusca" placeholder="Nome ou ID do aluno na EVO...">
+    <button onclick="buscarAluno()">PESQUISAR</button>
+  </div>
+
+  <div id="resultado-busca">
+    <strong id="nomeAluno">Nome do Aluno</strong><br>
+    <small>ID EVO: <span id="idAluno"></span></small>
+  </div>
+
+  <div id="formulario" style="display:none;">
+    <p><strong>Selecione as condições:</strong></p>
+    <div class="tag-container" id="tags">
+      <div class="tag" onclick="toggleTag(this)">Condromalácia Patelar</div>
+      <div class="tag" onclick="toggleTag(this)">Hérnia de Disco</div>
+      <div class="tag" onclick="toggleTag(this)">Hipertensão</div>
+      <div class="tag" onclick="toggleTag(this)">Diabetes</div>
+      <div class="tag" onclick="toggleTag(this)">Escoliose</div>
+      <div class="tag" onclick="toggleTag(this)">Artrose/Osteoporose</div>
+      <div class="tag" onclick="toggleTag(this)">Lesão no Ombro</div>
+    </div>
+
+    <p><strong>Observações Adicionais:</strong></p>
+    <textarea id="obs" placeholder="Ex: L4-L5, nível da escoliose, ou outros detalhes específicos..."></textarea>
+
+    <div class="save-area">
+      <button onclick="salvarProntuario()" id="btnSalvar">SALVAR NO MAX</button>
+      <div id="msg"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+  let alunoSelecionado = null;
+
+  function toggleTag(el) {
+    el.classList.toggle('active');
+  }
+
+  function buscarAluno() {
+    const query = document.getElementById('inputBusca').value;
+    if (!query) return;
+    
+    document.getElementById('msg').innerText = "A pesquisar...";
+    google.script.run.withSuccessHandler(function(aluno) {
+      if (aluno) {
+        alunoSelecionado = aluno;
+        document.getElementById('nomeAluno').innerText = aluno.nome;
+        document.getElementById('idAluno').innerText = aluno.id;
+        document.getElementById('resultado-busca').style.display = 'block';
+        document.getElementById('formulario').style.display = 'block';
+        document.getElementById('msg').innerText = "";
+      } else {
+        alert("Aluno não encontrado na EVO.");
+      }
+    }).buscarAlunoEvoAdmin(query);
+  }
+
+  function salvarProntuario() {
+    const tags = Array.from(document.querySelectorAll('.tag.active')).map(t => t.innerText);
+    const obs = document.getElementById('obs').value;
+    
+    const dados = {
+      id: alunoSelecionado.id,
+      nome: alunoSelecionado.nome,
+      condicoes: tags.join(", "),
+      observacoes: obs
+    };
+
+    document.getElementById('btnSalvar').disabled = true;
+    document.getElementById('msg').innerText = "A guardar...";
+
+    google.script.run.withSuccessHandler(function() {
+      document.getElementById('msg').style.color = "green";
+      document.getElementById('msg').innerText = "✅ Guardado com sucesso!";
+      setTimeout(() => location.reload(), 2000);
+    }).salvarSaudeAdmin(dados);
+  }
+</script>
+
+</body>
+</html>

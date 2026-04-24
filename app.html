@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Powerfisio - Max Mobile</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;800;900&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #FF5500;
+            --bg-dark: #0F1115;
+            --bg-card: #1A1D24;
+            --text-main: #FFFFFF;
+            --text-muted: #8B92A5;
+            --success: #00FF88;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+
+        body {
+            font-family: 'Montserrat', sans-serif;
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            overflow-x: hidden;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        .screen { display: none; flex-direction: column; padding: 30px 20px; animation: slideUp 0.4s ease-out; flex: 1; }
+        .screen.active { display: flex; }
+
+        @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* --- LOGIN --- */
+        .brand { text-align: center; margin-bottom: 40px; margin-top: 15vh; }
+        .brand h1 { font-weight: 900; font-size: 2.5rem; letter-spacing: -2px; }
+        .brand span { color: var(--primary); }
+
+        .input-group { margin-bottom: 20px; }
+        input {
+            width: 100%; background: var(--bg-card); border: 1px solid #2A2F3A; padding: 18px; 
+            border-radius: 16px; color: white; font-size: 1rem; outline: none; text-align: center;
+        }
+
+        .btn-main {
+            background: var(--primary); color: white; border: none; padding: 18px; border-radius: 16px;
+            font-weight: 800; text-transform: uppercase; width: 100%; cursor: pointer; box-shadow: 0 10px 20px rgba(255, 85, 0, 0.2);
+            transition: 0.3s;
+        }
+
+        /* --- BLOQUEADO --- */
+        .lock-icon { font-size: 5rem; margin-bottom: 20px; text-align: center; }
+        .status-card { background: var(--bg-card); padding: 30px; border-radius: 24px; text-align: center; border: 1px dashed var(--primary); }
+
+        /* --- TREINO --- */
+        .header-app { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+        .user-badge { display: flex; align-items: center; gap: 10px; }
+        .user-badge .avatar { width: 45px; height: 45px; background: var(--primary); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 900; }
+
+        .workout-card { background: var(--bg-card); border-radius: 24px; padding: 25px; margin-bottom: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.3); }
+
+        /* Estilos dos Exercícios Interativos */
+        .exercise-item {
+            display: flex; align-items: center; padding: 15px; border-bottom: 1px solid #2A2F3A;
+            border-radius: 12px; transition: all 0.3s ease; margin-bottom: 8px;
+        }
+        
+        .exercise-info { flex: 1; }
+        .exercise-info h4 { font-size: 0.95rem; margin-bottom: 2px; }
+        
+        /* Estado 1: Pendente (Laranja) */
+        .exercise-item.pendente { border: 1px solid rgba(255, 85, 0, 0.4); background: rgba(255, 85, 0, 0.05); cursor: pointer; }
+        
+        /* Estado 2: Concluído (Verde e Riscado) */
+        .exercise-item.concluido { opacity: 0.5; text-decoration: line-through; border-color: var(--success); background: rgba(0, 255, 136, 0.05); cursor: pointer; }
+        
+        .exercise-checkbox { width: 22px; height: 22px; border-radius: 50%; border: 2px solid #555; margin-right: 15px; display: none; align-items: center; justify-content: center; transition: 0.3s; }
+        .exercise-item.pendente .exercise-checkbox { display: flex; border-color: var(--primary); }
+        .exercise-item.concluido .exercise-checkbox { display: flex; background: var(--success); border-color: var(--success); }
+        .exercise-item.concluido .exercise-checkbox::after { content: '✓'; color: black; font-weight: bold; font-size: 14px; }
+
+        /* Cronómetro */
+        #painel-treino-ativo { text-align: center; margin-bottom: 20px; display: none; }
+        #cronometro { font-size: 3rem; font-weight: 900; color: var(--primary); font-variant-numeric: tabular-nums; letter-spacing: 2px; }
+
+        .ranking-bar { background: rgba(255, 255, 255, 0.05); padding: 15px; border-radius: 12px; margin-top: 20px; font-size: 0.8rem; text-align: center; }
+    </style>
+</head>
+<body>
+
+    <div id="screen-login" class="screen active">
+        <div class="brand"><h1>POWER<span>FISIO</span></h1><p style="color: var(--text-muted)">Portal do Aluno - Max IA</p></div>
+        <div class="input-group"><input type="tel" id="alunoCpf" placeholder="Digite seu CPF (apenas números)"></div>
+        <button class="btn-main" onclick="fazerLogin()">Entrar na Arena</button>
+    </div>
+
+    <div id="screen-locked" class="screen">
+        <div class="header-app">
+            <div class="user-badge">
+                <div class="avatar" id="avatar-letra">W</div>
+                <div><h3 id="user-welcome">Olá!</h3><p style="font-size: 0.7rem; color: var(--text-muted)">Aguardando...</p></div>
+            </div>
+        </div>
+        <div class="status-card">
+            <div class="lock-icon">🔒</div><h2 style="margin-bottom: 10px;">MISSÃO BLOQUEADA</h2>
+            <p style="color: var(--text-muted)">O Max já preparou tudo. Passe a digital na catraca para liberar o seu treino!</p>
+        </div>
+        <div class="ranking-bar" id="txt-ranking">Carregando posição...</div>
+    </div>
+
+    <div id="screen-workout" class="screen">
+        <div class="header-app"><h2 id="dia-titulo" style="color:var(--primary);">TREINO</h2></div>
+
+        <div id="painel-treino-ativo">
+            <div id="cronometro">00:00</div>
+            <p style="color: var(--text-muted); font-size: 0.7rem; font-weight: bold; letter-spacing: 1px;">TEMPO DE TREINO</p>
+        </div>
+
+        <div class="workout-card">
+            <div id="lista-exercicios"></div>
+        </div>
+
+        <button id="btn-iniciar-treino" class="btn-main" onclick="iniciarTreinoInterativo()">COMEÇAR TREINO 🚀</button>
+        <button id="btn-concluir-treino" class="btn-main" style="background: var(--success); color: black; display: none;" onclick="concluirMissao()">CONCLUIR MISSÃO ✅</button>
+    </div>
+
+    <script>
+        // 🚨 COLE AQUI A SUA URL DA API DO GOOGLE APPS SCRIPT (TERMINADA EM /exec)
+        const API_URL = "https://script.google.com/macros/s/AKfycby62vambopzAU-hOp4Och0Qg9_ZOxNCqqo19BFZvUA13OFTYBRMnTnNckq3aBzncXKTJg/exec";
+        
+        let AlunoLogado = { id: "", nome: "", cpf: "", posicao: "" };
+        let radarAppInterval;
+        let tempoSegundos = 0;
+        let timerId;
+
+        async function fazerLogin() {
+            const cpfInput = document.getElementById('alunoCpf');
+            const btn = document.querySelector('#screen-login .btn-main');
+            const cpf = cpfInput.value.replace(/\D/g, '');
+            if(cpf.length < 11) return alert("Digite um CPF válido.");
+            
+            btn.innerText = "⏳ AUTENTICANDO..."; btn.disabled = true;
+
+            try {
+                const res = await fetch(`${API_URL}?acao=loginApp&cpf=${cpf}`);
+                const dados = await res.json();
+
+                if(dados.sucesso) {
+                    AlunoLogado = { id: dados.id, nome: dados.nome, cpf: cpf, posicao: dados.posicao };
+                    document.getElementById('user-welcome').innerText = `Olá, ${dados.nome}!`;
+                    document.getElementById('avatar-letra').innerText = dados.nome.charAt(0);
+                    document.getElementById('txt-ranking').innerHTML = `Você está em <strong>${dados.posicao}º lugar</strong> no ranking! 🔥`;
+                    trocarTela('screen-locked');
+                    radarAppInterval = setInterval(checarDesbloqueio, 5000);
+                } else { alert("❌ CPF não encontrado na Powerfisio."); }
+            } catch(e) { alert("Erro de ligação."); } 
+            finally { btn.innerText = "ENTRAR NA ARENA"; btn.disabled = false; }
+        }
+
+        function trocarTela(id) {
+            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+            document.getElementById(id).classList.add('active');
+        }
+
+        async function checarDesbloqueio() {
+            try {
+                const res = await fetch(`${API_URL}?acao=checkCatracaApp&idAluno=${AlunoLogado.id}`);
+                const dados = await res.json();
+                if (dados.desbloqueado) { clearInterval(radarAppInterval); carregarTreinoDaAPI(); }
+            } catch(e) {}
+        }
+
+        async function carregarTreinoDaAPI() {
+            trocarTela('screen-workout');
+            const listaDiv = document.getElementById('lista-exercicios');
+            listaDiv.innerHTML = `<h3 style="text-align:center; color: var(--primary);">🤖 Gerando missão...</h3>`;
+            
+            const diasSemana = ['Domingo', 'Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta', 'Sábado'];
+            const diaHoje = diasSemana[new Date().getDay()];
+            document.getElementById('dia-titulo').innerText = diaHoje.toUpperCase();
+
+            try {
+                const res = await fetch(`${API_URL}?acao=gerarTreinoMax&idAluno=${AlunoLogado.id}&dia=${diaHoje}`);
+                const treino = await res.json();
+
+                if (treino.sucesso) {
+                    let HTML = `<p style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 20px;">${treino.cabecalho}</p>`;
+                    const linhas = treino.conteudo.split('\n');
+                    
+                    linhas.forEach(linha => {
+                        if(linha.trim() === "") return;
+                        if(linha.toLowerCase().includes("como executar") || linha.toLowerCase().includes("nota clínica")) {
+                            HTML += `<h4 style="color: var(--text-muted); margin-top: 20px; font-size: 0.8rem;">${linha}</h4>`;
+                        } else if (/^\d/.test(linha.trim())) {
+                            // Envolve os exercícios num DIV especial (sem classes laranja ainda)
+                            HTML += `
+                            <div class="exercise-item unstarted">
+                                <div class="exercise-checkbox"></div>
+                                <div class="exercise-info"><h4>${linha.replace(/\*\*/g, '')}</h4></div>
+                            </div>`;
+                        } else {
+                            HTML += `<p style="font-size: 0.8rem; color: #CCC; margin-bottom: 5px;">${linha}</p>`;
+                        }
+                    });
+                    listaDiv.innerHTML = HTML;
+                }
+            } catch(e) { listaDiv.innerHTML = `<p>Erro ao ligar ao Max.</p>`; }
+        }
+
+        function iniciarTreinoInterativo() {
+            // Esconde o botão de começar e mostra o cronómetro e botão de concluir
+            document.getElementById('btn-iniciar-treino').style.display = 'none';
+            document.getElementById('painel-treino-ativo').style.display = 'block';
+            document.getElementById('btn-concluir-treino').style.display = 'block';
+
+            // Dá cor laranja e ativa o clique em todos os exercícios
+            document.querySelectorAll('.exercise-item.unstarted').forEach(item => {
+                item.classList.remove('unstarted');
+                item.classList.add('pendente');
+                
+                item.onclick = function() {
+                    this.classList.toggle('pendente');
+                    this.classList.toggle('concluido');
+                };
+            });
+
+            // Inicia o cronómetro
+            tempoSegundos = 0;
+            timerId = setInterval(() => {
+                tempoSegundos++;
+                let m = String(Math.floor(tempoSegundos / 60)).padStart(2, '0');
+                let s = String(tempoSegundos % 60).padStart(2, '0');
+                document.getElementById('cronometro').innerText = `${m}:${s}`;
+            }, 1000);
+        }
+
+        async function concluirMissao() {
+            if(confirm("Parabéns! Missão cumprida por hoje?")) {
+                clearInterval(timerId); // Pára o relógio
+                const btn = document.getElementById('btn-concluir-treino');
+                btn.innerText = "A GUARDAR..."; btn.disabled = true;
+                
+                try {
+                    // Tranca a catraca de novo e passa o CPF para o ranking subir!
+                    // Adicionámos o &nome= para a planilha gravar o nome caso seja a primeira vez no mês!
+await fetch(`${API_URL}?acao=concluirTreinoApp&idAluno=${AlunoLogado.id}&cpf=${AlunoLogado.cpf}&nome=${AlunoLogado.nome}`);
+                    alert("BOA! +1 Ponto no Ranking! 🎉💪");
+                    location.reload(); 
+                } catch(e) {
+                    alert("Erro ao gravar. Verifique a internet.");
+                    btn.innerText = "CONCLUIR MISSÃO ✅"; btn.disabled = false;
+                }
+            }
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Powerfisio - TV Ranking</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;900&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #FF5500;
+            --bg-dark: #0B0C10;
+            --bg-card: #1A1D24;
+            --gold: #FFD700;
+            --silver: #C0C0C0;
+            --bronze: #CD7F32;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Montserrat', sans-serif;
+            background-color: var(--bg-dark);
+            color: #FFF;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .header {
+            text-align: center;
+            padding: 30px;
+            background: linear-gradient(180deg, rgba(255,85,0,0.1) 0%, rgba(11,12,16,1) 100%);
+            border-bottom: 2px solid rgba(255, 85, 0, 0.2);
+        }
+
+        .header h1 { font-size: 4rem; font-weight: 900; letter-spacing: -2px; }
+        .header h1 span { color: var(--primary); }
+        .header p { font-size: 1.5rem; color: #8B92A5; text-transform: uppercase; font-weight: 700; letter-spacing: 5px; margin-top: 10px; }
+
+        .container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            flex: 1;
+            padding: 20px;
+            gap: 15px;
+            width: 90%;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .rank-row {
+            display: flex;
+            align-items: center;
+            width: 100%;
+            background: var(--bg-card);
+            padding: 15px 40px;
+            border-radius: 20px;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.3);
+            border-left: 6px solid #2A2F3A;
+            transition: transform 0.5s ease;
+            animation: fadeIn 0.5s ease forwards;
+            opacity: 0;
+        }
+
+        .rank-row:nth-child(1) { animation-delay: 0.1s; border-color: var(--gold); background: linear-gradient(90deg, rgba(255, 215, 0, 0.1) 0%, var(--bg-card) 50%); transform: scale(1.05); z-index: 10; margin-bottom: 10px;}
+        .rank-row:nth-child(2) { animation-delay: 0.2s; border-color: var(--silver); background: linear-gradient(90deg, rgba(192, 192, 192, 0.1) 0%, var(--bg-card) 50%); transform: scale(1.02); z-index: 9; margin-bottom: 5px;}
+        .rank-row:nth-child(3) { animation-delay: 0.3s; border-color: var(--bronze); background: linear-gradient(90deg, rgba(205, 127, 50, 0.1) 0%, var(--bg-card) 50%); transform: scale(1.01); z-index: 8; margin-bottom: 15px;}
+        
+        @keyframes fadeIn { to { opacity: 1; } }
+
+        .pos { font-size: 3rem; font-weight: 900; width: 100px; color: #555; }
+        .rank-row:nth-child(1) .pos { color: var(--gold); }
+        .rank-row:nth-child(2) .pos { color: var(--silver); }
+        .rank-row:nth-child(3) .pos { color: var(--bronze); }
+
+        .nome { font-size: 2.5rem; font-weight: 800; flex: 1; text-align: left; }
+        
+        .pontos-container { display: flex; align-items: center; gap: 15px; }
+        .pontos { font-size: 3.5rem; font-weight: 900; color: var(--primary); }
+        .label { font-size: 1.2rem; color: #8B92A5; text-transform: uppercase; font-weight: 700; margin-top: 5px;}
+
+        .max-badge { position: absolute; bottom: 20px; right: 20px; font-size: 1rem; color: #444; font-weight: bold; display: flex; align-items: center; gap: 10px;}
+        .max-badge span { display: inline-block; width: 12px; height: 12px; background: #00FF88; border-radius: 50%; box-shadow: 0 0 10px #00FF88; animation: pulse 2s infinite;}
+
+        @keyframes pulse { 0% { opacity: 0.5; } 50% { opacity: 1; box-shadow: 0 0 20px #00FF88; } 100% { opacity: 0.5; } }
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <h1>POWER<span>FISIO</span></h1>
+        <p>RANKING DE TREINOS - TOP 10 DO MÊS</p>
+    </div>
+
+    <div class="container" id="board">
+        <h2 style="color: var(--primary); margin-top: 20vh;">A carregar dados do Cérebro Max...</h2>
+    </div>
+
+    <div class="max-badge">
+        <span></span> ATUALIZAÇÃO EM TEMPO REAL
+    </div>
+
+    <script>
+        // 🚨 COLE A SUA URL AQUI
+        const API_URL = "https://script.google.com/macros/s/AKfycby62vambopzAU-hOp4Och0Qg9_ZOxNCqqo19BFZvUA13OFTYBRMnTnNckq3aBzncXKTJg/exec";
+
+        async function carregarRanking() {
+            try {
+                const res = await fetch(`${API_URL}?acao=getRankingTV`);
+                const dados = await res.json();
+
+                const board = document.getElementById('board');
+                
+                if(dados.length === 0) {
+                    board.innerHTML = `<h2 style="color: #8B92A5; margin-top: 20vh;">Nenhum treino concluído este mês ainda.</h2>`;
+                    return;
+                }
+
+                let html = '';
+                dados.forEach(aluno => {
+                    html += `
+                    <div class="rank-row">
+                        <div class="pos">${aluno.posicao}º</div>
+                        <div class="nome">${aluno.nome}</div>
+                        <div class="pontos-container">
+                            <div class="pontos">${aluno.pontos}</div>
+                            <div class="label">Treinos</div>
+                        </div>
+                    </div>`;
+                });
+
+                board.innerHTML = html;
+
+            } catch(e) {
+                console.error("Erro ao puxar o ranking", e);
+            }
+        }
+
+        // Carrega logo que abre
+        carregarRanking();
+
+        // Atualiza a cada 15 segundos
+        setInterval(carregarRanking, 15000);
+    </script>
+</body>
+</html>

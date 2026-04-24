@@ -28,26 +28,8 @@
         }
 
         /* --- TELA 1: RADAR --- */
-        #tela-espera {
-            text-align: center;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 25px;
-        }
-
-        .radar {
-            width: 140px;
-            height: 140px;
-            background: rgba(255, 85, 0, 0.05);
-            border: 2px solid rgba(255, 85, 0, 0.2);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            animation: pulse 2s infinite;
-        }
-
+        #tela-espera { text-align: center; display: flex; flex-direction: column; align-items: center; gap: 25px; }
+        .radar { width: 140px; height: 140px; background: rgba(255, 85, 0, 0.05); border: 2px solid rgba(255, 85, 0, 0.2); border-radius: 50%; display: flex; align-items: center; justify-content: center; animation: pulse 2s infinite; }
         .radar h1 { font-size: 3.5rem; color: var(--primary); font-weight: 900; margin: 0; letter-spacing: -2px;}
 
         @keyframes pulse {
@@ -60,71 +42,25 @@
         .sub-radar { font-size: 1.2rem; color: var(--text-muted); font-weight: 400; }
 
         /* --- TELA 2: PERFIL DO ALUNO --- */
-        #tela-aluno {
-            display: none;
-            flex-direction: column;
-            align-items: center;
-            width: 95%;
-            max-width: 1200px;
-            background: var(--bg-card);
-            padding: 60px;
-            border-radius: 16px;
-            border: 1px solid #2A2F3A;
-            box-shadow: 0 30px 60px rgba(0,0,0,0.5);
-            text-align: center;
-        }
-
+        #tela-aluno { display: none; flex-direction: column; align-items: center; width: 95%; max-width: 1200px; background: var(--bg-card); padding: 60px; border-radius: 16px; border: 1px solid #2A2F3A; box-shadow: 0 30px 60px rgba(0,0,0,0.5); text-align: center; }
         .saudacao { font-size: 3rem; font-weight: 900; text-transform: uppercase; letter-spacing: -1px; margin-bottom: 10px; }
         .saudacao span { color: var(--primary); }
         .pergunta { font-size: 1.5rem; color: var(--text-muted); margin-bottom: 50px; font-weight: 700;}
 
         /* --- GRADE DE BOTÕES --- */
-        .grid-treinos {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 30px;
-            width: 100%;
-        }
-
-        .btn-treino {
-            background: var(--bg-app);
-            border: 2px solid #2A2F3A;
-            padding: 40px 20px;
-            border-radius: 12px;
-            font-family: 'Montserrat', sans-serif;
-            font-size: 1.4rem;
-            font-weight: 800;
-            text-transform: uppercase;
-            color: var(--text-main);
-            cursor: pointer;
-            transition: all 0.2s ease;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 20px;
-        }
-
+        .grid-treinos { display: grid; grid-template-columns: repeat(3, 1fr); gap: 30px; width: 100%; }
+        .btn-treino { background: var(--bg-app); border: 2px solid #2A2F3A; padding: 40px 20px; border-radius: 12px; font-family: 'Montserrat', sans-serif; font-size: 1.4rem; font-weight: 800; text-transform: uppercase; color: var(--text-main); cursor: pointer; transition: all 0.2s ease; display: flex; flex-direction: column; align-items: center; gap: 20px; }
         .btn-treino:hover { border-color: var(--text-muted); transform: translateY(-5px); }
         .btn-treino:active { transform: translateY(0); }
-
-        .btn-treino.destaque {
-            background: var(--primary);
-            border-color: var(--primary);
-            box-shadow: 0 15px 30px rgba(255, 85, 0, 0.2);
-        }
+        .btn-treino.destaque { background: var(--primary); border-color: var(--primary); box-shadow: 0 15px 30px rgba(255, 85, 0, 0.2); }
         .btn-treino.destaque:hover { box-shadow: 0 20px 40px rgba(255, 85, 0, 0.4); transform: translateY(-5px); }
-
-        /* Ícones */
         .icon { width: 50px; height: 50px; fill: currentColor; }
 
         /* --- IMPRESSÃO TÉRMICA --- */
         @media print {
             body * { visibility: hidden; }
             #area-impressao, #area-impressao * { visibility: visible; color: #000 !important; font-family: sans-serif; }
-            #area-impressao { 
-                position: absolute; left: 0; top: 0; width: 100%; 
-                background: #FFF; padding: 20px; text-align: left; 
-            }
+            #area-impressao { position: absolute; left: 0; top: 0; width: 100%; background: #FFF; padding: 20px; text-align: left; }
         }
     </style>
 </head>
@@ -134,7 +70,7 @@
         <div class="radar"><h1>PF</h1></div>
         <h2 class="titulo-radar">Aguardando Liberação...</h2>
         <p class="sub-radar">Passe sua digital para iniciar o treino</p>
-        <button onclick="simularPassagemCatraca('ALUNO TESTE', '123')" style="margin-top: 50px; padding: 10px; opacity: 0.1; background: transparent; color: white; border: 1px solid white;">Simular (DEV)</button>
+        <button onclick="simularPassagemCatraca('ALUNO TESTE', '123', 15)" style="margin-top: 50px; padding: 10px; opacity: 0.1; background: transparent; color: white; border: 1px solid white;">Simular (DEV)</button>
     </div>
 
     <div id="tela-aluno">
@@ -151,7 +87,7 @@
                 TREINO B
             </button>
             <button class="btn-treino destaque" onclick="abrirSeletorDias()">
-                <svg class="icon" viewBox="0 0 24 24"><path d="M12 2a2 2 0 0 1 2 2c0 .74-.4 1.39-1 1.73V7h1a7 7 0 0 1 7 7h1v4h-1c0 2.21-1.79 4-4 4H7c-2.21 0-4-1.79-4-4H2v-4h1a7 7 0 0 1 7-7h1V5.73c-.6-.34-1-.99-1-1.73a2 2 0 0 1 2-2M7 20h10c1.1 0 2-.9 2-2H5c0 1.1.9 2 2 2m5-11c-2.76 0-5 2.24-5 5h10c0-2.76-2.24-5-5-5m-2 4a1 1 0 0 0-1-1 1 1 0 0 0-1 1 1 1 0 0 0 1 1 1 1 0 0 0 1-1m6 0a1 1 0 0 0-1-1 1 1 0 0 0-1 1 1 1 0 0 0 1 1 1 1 0 0 0 1-1z"/></svg>
+                <svg class="icon" viewBox="0 0 24 24"><path d="M12 2a2 2 0 0 1 2 2c0 .74-.4 1.39-1 1.73V7h1a7 7 0 0 1 7 7h1v4h-1c0 2.21-1.79 4-4 4H7c-2.21 0-4-1.79-4-4H2v-4h1a7 7 0 0 1 7-7h1V5.73c-.6-.34-1-.99-1-1.73a2 2 0 0 1 2-2M7 20h10c1.1 0 2-.9 2-2H5c0 1.1.9 2 2 2m5-11c-2.76 0-5 2.24-5 5h10c0-2.76-2.24-5-5-5m-2 4a1 1 0 0 0-1-1 1 1 0 0 0-1 1 1 1 0 0 0 1 1 1 1 0 0 0 1-1m6 0a1 1 0 0 0-1-1 1 1 0 0 0-1 1 1 1 0 0 0 1-1z"/></svg>
                 TREINO MAX IA
             </button>
         </div>
@@ -214,20 +150,18 @@
             if (!radarLigado) return; 
             try {
                 const carimbo = new Date().getTime();
-                // 🔴 AQUI MUDA PARA "?acao=radar"
                 const resposta = await fetch(API_URL + "?acao=radar&t=" + carimbo);
                 const dados = await resposta.json();
                 
                 if (dados.detectado) {
                     radarLigado = false; 
-                    mostrarTelaAluno(dados.nome, dados.idAluno);
+                    // 🔴 Agora passamos a posição!
+                    mostrarTelaAluno(dados.nome, dados.idAluno, dados.posicao);
                 }
-            } catch (e) {
-                console.log("Erro no radar", e);
-            }
+            } catch (e) { console.log("Erro no radar", e); }
         }
 
-        function mostrarTelaAluno(nomeCompleto, idAluno) {
+        function mostrarTelaAluno(nomeCompleto, idAluno, posicao) {
             const nomeCurto = formatarNomeAmigavel(nomeCompleto);
             alunoAtualId = idAluno; 
 
@@ -236,14 +170,27 @@
             
             document.getElementById('nome-aluno').innerText = nomeCurto;
             document.getElementById('print-nome').innerText = nomeCurto;
+
+            // 🏆 NOVIDADE: Mensagem de Ranking Motivacional
+            const txtInstrucao = document.getElementById('txt-instrucao');
+            if (posicao) {
+                let medalha = "";
+                if (posicao == 1) medalha = "🥇 ";
+                else if (posicao == 2) medalha = "🥈 ";
+                else if (posicao == 3) medalha = "🥉 ";
+                
+                txtInstrucao.innerHTML = `${medalha}VOCÊ É O <strong>${posicao}º</strong> NO RANKING!<br><span style="font-size: 1rem; color: var(--text-muted); font-weight: normal;">BORA SUBIR MAIS?</span>`;
+            } else {
+                txtInstrucao.innerText = "QUAL É A MISSÃO DE HOJE?";
+            }
             
             clearTimeout(timeoutReset);
             timeoutReset = setTimeout(resetarTela, 15000);
         }
 
-        function simularPassagemCatraca(nome, idAluno) {
+        function simularPassagemCatraca(nome, idAluno, posFicticia = 5) {
             radarLigado = false;
-            mostrarTelaAluno(nome, idAluno);
+            mostrarTelaAluno(nome, idAluno, posFicticia);
         }
 
         function abrirSeletorDias() {
@@ -272,7 +219,6 @@
             clearTimeout(timeoutReset);
 
             try {
-                // 🔴 AQUI CHAMA A API PARA GERAR O TREINO
                 const res = await fetch(`${API_URL}?acao=gerarTreinoMax&idAluno=${alunoAtualId}&dia=${dia}`);
                 const dados = await res.json();
                 
@@ -291,7 +237,6 @@
 
         function imprimirTreino(titulo, conteudo = "") {
             clearTimeout(timeoutReset); 
-
             document.getElementById('area-impressao').style.display = 'block';
             document.getElementById('texto-impresso').innerText = titulo;
             document.getElementById('corpo-treino').innerText = conteudo; 

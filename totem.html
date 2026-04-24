@@ -135,7 +135,8 @@
         let radarLigado = true;
         let alunoAtualId = ""; 
 
-        window.onload = function() { setInterval(escutarCatraca, 3000); };
+        // 🚀 ACELERAÇÃO 1: O Radar agora bate a cada 1 segundo (1000ms) em vez de 3
+        window.onload = function() { setInterval(escutarCatraca, 1000); };
 
         function formatarNomeAmigavel(nomeCompleto) {
             if (!nomeCompleto) return "Atleta";
@@ -161,10 +162,9 @@
                 
                 if (dados.detectado) {
                     radarLigado = false; 
-                    // 📸 Passamos também a URL da foto!
                     mostrarTelaAluno(dados.nome, dados.idAluno, dados.posicao, dados.foto);
                 }
-            } catch (e) { console.log("Erro no radar", e); }
+            } catch (e) { /* Silenciamos o erro para não travar o radar rápido */ }
         }
 
         function mostrarTelaAluno(nomeCompleto, idAluno, posicao, urlFoto) {
@@ -177,7 +177,6 @@
             document.getElementById('nome-aluno').innerText = nomeCurto;
             document.getElementById('print-nome').innerText = nomeCurto;
 
-            // 📸 LÓGICA DA FOTO VS LETRA INICIAL
             const imgEl = document.getElementById('img-aluno');
             const letraEl = document.getElementById('letra-aluno');
             
@@ -191,7 +190,6 @@
                 letraEl.style.display = 'block';
             }
 
-            // Lógica do Ranking Motivacional
             const txtInstrucao = document.getElementById('txt-instrucao');
             if (posicao) {
                 let medalha = "";
@@ -205,7 +203,8 @@
             }
             
             clearTimeout(timeoutReset);
-            timeoutReset = setTimeout(resetarTela, 15000);
+            // 🚀 ACELERAÇÃO 2: A tela some em 6 segundos se ele não clicar em nada!
+            timeoutReset = setTimeout(resetarTela, 6000);
         }
 
         function simularPassagemCatraca(nome, idAluno, posFicticia = 5, foto = "") {
@@ -219,7 +218,8 @@
             document.getElementById('txt-instrucao').innerText = "PARA QUAL DIA?";
             
             clearTimeout(timeoutReset);
-            timeoutReset = setTimeout(resetarTela, 20000); 
+            // Se ele clicou em "Treino Max IA", damos 10 segundos extras para ele pensar e escolher o dia
+            timeoutReset = setTimeout(resetarTela, 10000); 
         }
 
         function voltarMenu() {
@@ -228,7 +228,7 @@
             document.getElementById('txt-instrucao').innerText = "QUAL É A MISSÃO DE HOJE?";
             
             clearTimeout(timeoutReset);
-            timeoutReset = setTimeout(resetarTela, 15000);
+            timeoutReset = setTimeout(resetarTela, 6000);
         }
 
         async function gerarTreinoIA(dia) {

@@ -136,7 +136,7 @@
         let alunoAtualId = ""; 
 
         // 🚀 ACELERAÇÃO 1: O Radar agora bate a cada 1 segundo (1000ms) em vez de 3
-        window.onload = function() { setInterval(escutarCatraca, 1000); };
+        window.onload = function() { setInterval(escutarCatraca, 500); };
 
         function formatarNomeAmigavel(nomeCompleto) {
             if (!nomeCompleto) return "Atleta";
@@ -204,7 +204,7 @@
             
             clearTimeout(timeoutReset);
             // 🚀 ACELERAÇÃO 2: A tela some em 6 segundos se ele não clicar em nada!
-            timeoutReset = setTimeout(resetarTela, 6000);
+            timeoutReset = setTimeout(resetarTela, 4000);
         }
 
         function simularPassagemCatraca(nome, idAluno, posFicticia = 5, foto = "") {

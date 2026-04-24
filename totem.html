@@ -30,8 +30,7 @@
         /* --- TELA 1: RADAR --- */
         #tela-espera { text-align: center; display: flex; flex-direction: column; align-items: center; gap: 25px; }
         .radar { width: 140px; height: 140px; background: rgba(255, 85, 0, 0.05); border: 2px solid rgba(255, 85, 0, 0.2); border-radius: 50%; display: flex; align-items: center; justify-content: center; animation: pulse 2s infinite; }
-        .radar h1 { font-size: 3.5rem; color: var(--primary); font-weight: 900; margin: 0; letter-spacing: -2px;}
-
+        
         @keyframes pulse {
             0% { box-shadow: 0 0 0 0 rgba(255, 85, 0, 0.3); }
             70% { box-shadow: 0 0 0 40px rgba(255, 85, 0, 0); }
@@ -42,10 +41,14 @@
         .sub-radar { font-size: 1.2rem; color: var(--text-muted); font-weight: 400; }
 
         /* --- TELA 2: PERFIL DO ALUNO --- */
-        #tela-aluno { display: none; flex-direction: column; align-items: center; width: 95%; max-width: 1200px; background: var(--bg-card); padding: 60px; border-radius: 16px; border: 1px solid #2A2F3A; box-shadow: 0 30px 60px rgba(0,0,0,0.5); text-align: center; }
-        .saudacao { font-size: 3rem; font-weight: 900; text-transform: uppercase; letter-spacing: -1px; margin-bottom: 10px; }
+        #tela-aluno { display: none; flex-direction: column; align-items: center; width: 95%; max-width: 1200px; background: var(--bg-card); padding: 50px; border-radius: 16px; border: 1px solid #2A2F3A; box-shadow: 0 30px 60px rgba(0,0,0,0.5); text-align: center; }
+        
+        /* 📸 NOVIDADE: MOLDURA DA FOTO DO ALUNO */
+        .moldura-foto { width: 130px; height: 130px; border-radius: 50%; border: 4px solid var(--primary); margin-bottom: 15px; box-shadow: 0 10px 25px rgba(255, 85, 0, 0.3); overflow: hidden; display: flex; align-items: center; justify-content: center; background: var(--bg-app); font-size: 4rem; font-weight: 900; color: var(--primary); }
+        
+        .saudacao { font-size: 2.8rem; font-weight: 900; text-transform: uppercase; letter-spacing: -1px; margin-bottom: 5px; }
         .saudacao span { color: var(--primary); }
-        .pergunta { font-size: 1.5rem; color: var(--text-muted); margin-bottom: 50px; font-weight: 700;}
+        .pergunta { font-size: 1.4rem; color: var(--text-muted); margin-bottom: 40px; font-weight: 700;}
 
         /* --- GRADE DE BOTÕES --- */
         .grid-treinos { display: grid; grid-template-columns: repeat(3, 1fr); gap: 30px; width: 100%; }
@@ -69,13 +72,18 @@
     <div id="tela-espera">
         <div class="radar">
             <img src="logo.jpeg" alt="Radar PF" style="width: 85%; height: 85%; object-fit: cover; border-radius: 50%;">
-            </div>
+        </div>
         <h2 class="titulo-radar">Aguardando Liberação...</h2>
         <p class="sub-radar">Passe sua digital para iniciar o treino</p>
-        <button onclick="simularPassagemCatraca('ALUNO TESTE', '123', 15)" style="margin-top: 50px; padding: 10px; opacity: 0.1; background: transparent; color: white; border: 1px solid white;">Simular (DEV)</button>
+        <button onclick="simularPassagemCatraca('WILLIANO COSTA', '123', 1, '')" style="margin-top: 50px; padding: 10px; opacity: 0.1; background: transparent; color: white; border: 1px solid white;">Simular (DEV)</button>
     </div>
 
     <div id="tela-aluno">
+        <div class="moldura-foto">
+            <img id="img-aluno" src="" style="width: 100%; height: 100%; object-fit: cover; display: none;">
+            <span id="letra-aluno">W</span>
+        </div>
+
         <h2 class="saudacao">FALA, <span id="nome-aluno">ALUNO</span>!</h2>
         <p class="pergunta" id="txt-instrucao">QUAL É A MISSÃO DE HOJE?</p>
 
@@ -120,18 +128,14 @@
     </div>
 
     <script>
-        // =========================================================
-        // URL DA API (GOOGLE APPS SCRIPT)
+        // 🚨 COLE AQUI A SUA URL DA API DO GOOGLE APPS SCRIPT (TERMINADA EM /exec)
         const API_URL = "https://script.google.com/macros/s/AKfycby62vambopzAU-hOp4Och0Qg9_ZOxNCqqo19BFZvUA13OFTYBRMnTnNckq3aBzncXKTJg/exec"; 
-        // =========================================================
 
         let timeoutReset;
         let radarLigado = true;
         let alunoAtualId = ""; 
 
-        window.onload = function() {
-            setInterval(escutarCatraca, 3000);
-        };
+        window.onload = function() { setInterval(escutarCatraca, 3000); };
 
         function formatarNomeAmigavel(nomeCompleto) {
             if (!nomeCompleto) return "Atleta";
@@ -157,13 +161,13 @@
                 
                 if (dados.detectado) {
                     radarLigado = false; 
-                    // 🔴 Agora passamos a posição!
-                    mostrarTelaAluno(dados.nome, dados.idAluno, dados.posicao);
+                    // 📸 Passamos também a URL da foto!
+                    mostrarTelaAluno(dados.nome, dados.idAluno, dados.posicao, dados.foto);
                 }
             } catch (e) { console.log("Erro no radar", e); }
         }
 
-        function mostrarTelaAluno(nomeCompleto, idAluno, posicao) {
+        function mostrarTelaAluno(nomeCompleto, idAluno, posicao, urlFoto) {
             const nomeCurto = formatarNomeAmigavel(nomeCompleto);
             alunoAtualId = idAluno; 
 
@@ -173,7 +177,21 @@
             document.getElementById('nome-aluno').innerText = nomeCurto;
             document.getElementById('print-nome').innerText = nomeCurto;
 
-            // 🏆 NOVIDADE: Mensagem de Ranking Motivacional
+            // 📸 LÓGICA DA FOTO VS LETRA INICIAL
+            const imgEl = document.getElementById('img-aluno');
+            const letraEl = document.getElementById('letra-aluno');
+            
+            if (urlFoto && urlFoto.length > 5) {
+                imgEl.src = urlFoto;
+                imgEl.style.display = 'block';
+                letraEl.style.display = 'none';
+            } else {
+                imgEl.style.display = 'none';
+                letraEl.innerText = nomeCurto.charAt(0).toUpperCase();
+                letraEl.style.display = 'block';
+            }
+
+            // Lógica do Ranking Motivacional
             const txtInstrucao = document.getElementById('txt-instrucao');
             if (posicao) {
                 let medalha = "";
@@ -190,9 +208,9 @@
             timeoutReset = setTimeout(resetarTela, 15000);
         }
 
-        function simularPassagemCatraca(nome, idAluno, posFicticia = 5) {
+        function simularPassagemCatraca(nome, idAluno, posFicticia = 5, foto = "") {
             radarLigado = false;
-            mostrarTelaAluno(nome, idAluno, posFicticia);
+            mostrarTelaAluno(nome, idAluno, posFicticia, foto);
         }
 
         function abrirSeletorDias() {
@@ -217,24 +235,17 @@
             document.getElementById('seletor-dias').style.display = 'none';
             document.getElementById('loading').style.display = 'block';
             document.getElementById('txt-instrucao').innerText = "CONECTANDO CÉREBRO...";
-
             clearTimeout(timeoutReset);
 
             try {
                 const res = await fetch(`${API_URL}?acao=gerarTreinoMax&idAluno=${alunoAtualId}&dia=${dia}`);
                 const dados = await res.json();
-                
-                if (dados.sucesso) {
-                    imprimirTreino(dados.cabecalho, dados.conteudo);
-                } else {
-                    imprimirTreino("ERRO", dados.conteudo);
-                }
+                if (dados.sucesso) imprimirTreino(dados.cabecalho, dados.conteudo);
+                else imprimirTreino("ERRO", dados.conteudo);
             } catch (e) {
                 alert("Erro ao conectar com a Max IA.");
                 voltarMenu();
-            } finally {
-                document.getElementById('loading').style.display = 'none';
-            }
+            } finally { document.getElementById('loading').style.display = 'none'; }
         }
 
         function imprimirTreino(titulo, conteudo = "") {

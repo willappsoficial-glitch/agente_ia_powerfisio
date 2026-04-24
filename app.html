@@ -92,11 +92,15 @@
     <div id="screen-login" class="screen active">
         <div class="brand">
             <img src="logo.jpeg" alt="Logo Powerfisio" style="max-width: 120px; margin-bottom: 15px; border-radius: 10px;">
-            
             <h1>POWER<span>FISIO</span></h1>
             <p style="color: var(--text-muted)">Portal do Aluno - Max IA</p>
         </div>
-        
+        <div class="input-group">
+            <input type="tel" id="alunoCpf" placeholder="Digite seu CPF (apenas números)">
+        </div>
+        <button class="btn-main" onclick="fazerLogin()">Entrar na Arena</button>
+    </div>
+
     <div id="screen-locked" class="screen">
         <div class="header-app">
             <div class="user-badge">
@@ -246,7 +250,7 @@
                 try {
                     // Tranca a catraca de novo e passa o CPF para o ranking subir!
                     // Adicionámos o &nome= para a planilha gravar o nome caso seja a primeira vez no mês!
-await fetch(`${API_URL}?acao=concluirTreinoApp&idAluno=${AlunoLogado.id}&cpf=${AlunoLogado.cpf}&nome=${AlunoLogado.nome}`);
+                    await fetch(`${API_URL}?acao=concluirTreinoApp&idAluno=${AlunoLogado.id}&cpf=${AlunoLogado.cpf}&nome=${AlunoLogado.nome}`);
                     alert("BOA! +1 Ponto no Ranking! 🎉💪");
                     location.reload(); 
                 } catch(e) {

@@ -29,8 +29,19 @@
 
         /* --- TELA 1: RADAR --- */
         #tela-espera { text-align: center; display: flex; flex-direction: column; align-items: center; gap: 25px; }
-        .radar { width: 140px; height: 140px; background: rgba(255, 85, 0, 0.05); border: 2px solid rgba(255, 85, 0, 0.2); border-radius: 50%; display: flex; align-items: center; justify-content: center; animation: pulse 2s infinite; }
         
+        .radar { 
+            width: 140px; 
+            height: 140px; 
+            background: rgba(255, 85, 0, 0.05); 
+            border: 2px solid rgba(255, 85, 0, 0.2); 
+            border-radius: 50%; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            animation: pulse 2s infinite; 
+        }
+
         @keyframes pulse {
             0% { box-shadow: 0 0 0 0 rgba(255, 85, 0, 0.3); }
             70% { box-shadow: 0 0 0 40px rgba(255, 85, 0, 0); }
@@ -41,10 +52,37 @@
         .sub-radar { font-size: 1.2rem; color: var(--text-muted); font-weight: 400; }
 
         /* --- TELA 2: PERFIL DO ALUNO --- */
-        #tela-aluno { display: none; flex-direction: column; align-items: center; width: 95%; max-width: 1200px; background: var(--bg-card); padding: 50px; border-radius: 16px; border: 1px solid #2A2F3A; box-shadow: 0 30px 60px rgba(0,0,0,0.5); text-align: center; }
-        
-        /* 📸 NOVIDADE: MOLDURA DA FOTO DO ALUNO */
-        .moldura-foto { width: 130px; height: 130px; border-radius: 50%; border: 4px solid var(--primary); margin-bottom: 15px; box-shadow: 0 10px 25px rgba(255, 85, 0, 0.3); overflow: hidden; display: flex; align-items: center; justify-content: center; background: var(--bg-app); font-size: 4rem; font-weight: 900; color: var(--primary); }
+        #tela-aluno { 
+            display: none; 
+            flex-direction: column; 
+            align-items: center; 
+            width: 95%; 
+            max-width: 1200px; 
+            background: var(--bg-card); 
+            padding: 50px; 
+            border-radius: 16px; 
+            border: 1px solid #2A2F3A; 
+            box-shadow: 0 30px 60px rgba(0,0,0,0.5); 
+            text-align: center; 
+        }
+
+        /* MOLDURA DA FOTO DO ALUNO */
+        .moldura-foto { 
+            width: 130px; 
+            height: 130px; 
+            border-radius: 50%; 
+            border: 4px solid var(--primary); 
+            margin-bottom: 15px; 
+            box-shadow: 0 10px 25px rgba(255, 85, 0, 0.3); 
+            overflow: hidden; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            background: var(--bg-app); 
+            font-size: 4rem; 
+            font-weight: 900; 
+            color: var(--primary); 
+        }
         
         .saudacao { font-size: 2.8rem; font-weight: 900; text-transform: uppercase; letter-spacing: -1px; margin-bottom: 5px; }
         .saudacao span { color: var(--primary); }
@@ -52,7 +90,23 @@
 
         /* --- GRADE DE BOTÕES --- */
         .grid-treinos { display: grid; grid-template-columns: repeat(3, 1fr); gap: 30px; width: 100%; }
-        .btn-treino { background: var(--bg-app); border: 2px solid #2A2F3A; padding: 40px 20px; border-radius: 12px; font-family: 'Montserrat', sans-serif; font-size: 1.4rem; font-weight: 800; text-transform: uppercase; color: var(--text-main); cursor: pointer; transition: all 0.2s ease; display: flex; flex-direction: column; align-items: center; gap: 20px; }
+        .btn-treino { 
+            background: var(--bg-app); 
+            border: 2px solid #2A2F3A; 
+            padding: 40px 20px; 
+            border-radius: 12px; 
+            font-family: 'Montserrat', sans-serif; 
+            font-size: 1.4rem; 
+            font-weight: 800; 
+            text-transform: uppercase; 
+            color: var(--text-main); 
+            cursor: pointer; 
+            transition: all 0.2s ease; 
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+            gap: 20px; 
+        }
         .btn-treino:hover { border-color: var(--text-muted); transform: translateY(-5px); }
         .btn-treino:active { transform: translateY(0); }
         .btn-treino.destaque { background: var(--primary); border-color: var(--primary); box-shadow: 0 15px 30px rgba(255, 85, 0, 0.2); }
@@ -71,7 +125,7 @@
 
     <div id="tela-espera">
         <div class="radar">
-            <img src="logo.jpeg" alt="Radar PF" style="width: 85%; height: 85%; object-fit: cover; border-radius: 50%;">
+            <img src="logo.jpeg" alt="Radar Powerfisio" style="width: 85%; height: 85%; object-fit: cover; border-radius: 50%;">
         </div>
         <h2 class="titulo-radar">Aguardando Liberação...</h2>
         <p class="sub-radar">Passe sua digital para iniciar o treino</p>
@@ -89,7 +143,7 @@
 
         <div class="grid-treinos" id="menu-principal">
             <button class="btn-treino" onclick="imprimirTreino('TREINO A', 'Ficha padrão da academia.')">
-                <svg class="icon" viewBox="0 0 24 24"><path d="M20.57 14.86L22 13.43 20.57 12 17 15.57 8.43 7 12 3.43 10.57 2 9.14 3.43 7.71 2 5.57 4.14 4.14 2.71 2.71 4.14l1.43 1.43L2 7.71l1.43 1.43L2 10.57 3.43 12 7 8.43 15.57 17 12 20.57 13.43 22l1.43-1.43L16.29 22l2.14-2.14 1.43 1.43 1.43-1.43-1.43-1.43 1.43-1.43z"/></svg>
+                <svg class="icon" viewBox="0 0 24 24"><path d="M20.57 14.86L22 13.43 20.57 12 17 15.57 8.43 7 12 3.43 10.57 2 9.14 3.43 7.71 2 5.57 4.14 4.14 2.71 2.71 4.14l1.43 1.43L2 7.71l1.43 1.43L2 10.57 3.43 12 7 8.43 15.57 17 12 20.57 13.43 22l1.43-1.43L16.29 22l2.14-2.14 1.43 1.43 1.43-1.43-1.43-1.43 1.43-1.43 1.43-1.43z"/></svg>
                 TREINO A
             </button>
             <button class="btn-treino" onclick="imprimirTreino('TREINO B', 'Ficha padrão da academia.')">
@@ -97,7 +151,7 @@
                 TREINO B
             </button>
             <button class="btn-treino destaque" onclick="abrirSeletorDias()">
-                <svg class="icon" viewBox="0 0 24 24"><path d="M12 2a2 2 0 0 1 2 2c0 .74-.4 1.39-1 1.73V7h1a7 7 0 0 1 7 7h1v4h-1c0 2.21-1.79 4-4 4H7c-2.21 0-4-1.79-4-4H2v-4h1a7 7 0 0 1 7-7h1V5.73c-.6-.34-1-.99-1-1.73a2 2 0 0 1 2-2M7 20h10c1.1 0 2-.9 2-2H5c0 1.1.9 2 2 2m5-11c-2.76 0-5 2.24-5 5h10c0-2.76-2.24-5-5-5m-2 4a1 1 0 0 0-1-1 1 1 0 0 0-1 1 1 1 0 0 0 1 1 1 1 0 0 0 1-1m6 0a1 1 0 0 0-1-1 1 1 0 0 0-1 1 1 1 0 0 0 1-1z"/></svg>
+                <svg class="icon" viewBox="0 0 24 24"><path d="M12 2a2 2 0 0 1 2 2c0 .74-.4 1.39-1 1.73V7h1a7 7 0 0 1 7 7h1v4h-1c0 2.21-1.79 4-4 4H7c-2.21 0-4-1.79-4-4H2v-4h1a7 7 0 0 1 7-7h1V5.73c-.6-.34-1-.99-1-1.73a2 2 0 0 1 2-2M7 20h10c1.1 0 2-.9 2-2H5c0 1.1.9 2 2 2m5-11c-2.76 0-5 2.24-5 5h10c0-2.76-2.24-5-5-5m-2 4a1 1 0 0 0-1-1 1 1 0 0 0-1 1 1 1 0 0 0 1 1 1 1 0 0 0 1-1m6 0a1 1 0 0 0-1-1 1 1 0 0 0-1 1 1 1 0 0 0 1 1 1 1 0 0 0 1-1z"/></svg>
                 TREINO MAX IA
             </button>
         </div>
@@ -128,15 +182,15 @@
     </div>
 
     <script>
-        // 🚨 COLE AQUI A SUA URL DA API DO GOOGLE APPS SCRIPT (TERMINADA EM /exec)
+        // URL da API do Google Apps Script
         const API_URL = "https://script.google.com/macros/s/AKfycby62vambopzAU-hOp4Och0Qg9_ZOxNCqqo19BFZvUA13OFTYBRMnTnNckq3aBzncXKTJg/exec"; 
 
         let timeoutReset;
         let radarLigado = true;
         let alunoAtualId = ""; 
 
-        // 🚀 ACELERAÇÃO 1: O Radar agora bate a cada 1 segundo (1000ms) em vez de 3
-        window.onload = function() { setInterval(escutarCatraca, 500); };
+        // 🚀 MODO FLASH: Radar a cada 200ms
+        window.onload = function() { setInterval(escutarCatraca, 200); };
 
         function formatarNomeAmigavel(nomeCompleto) {
             if (!nomeCompleto) return "Atleta";
@@ -157,14 +211,17 @@
             if (!radarLigado) return; 
             try {
                 const carimbo = new Date().getTime();
-                const resposta = await fetch(API_URL + "?acao=radar&t=" + carimbo);
+                const controller = new AbortController();
+                const timeoutId = setTimeout(() => controller.abort(), 1500);
+
+                const resposta = await fetch(API_URL + "?acao=radar&t=" + carimbo, { signal: controller.signal });
                 const dados = await resposta.json();
                 
                 if (dados.detectado) {
                     radarLigado = false; 
                     mostrarTelaAluno(dados.nome, dados.idAluno, dados.posicao, dados.foto);
                 }
-            } catch (e) { /* Silenciamos o erro para não travar o radar rápido */ }
+            } catch (e) { /* Requisição cancelada ou erro de rede silencioso */ }
         }
 
         function mostrarTelaAluno(nomeCompleto, idAluno, posicao, urlFoto) {
@@ -203,7 +260,7 @@
             }
             
             clearTimeout(timeoutReset);
-            // 🚀 ACELERAÇÃO 2: A tela some em 6 segundos se ele não clicar em nada!
+            // 🚀 LIMPEZA TURBO: 4 segundos se o aluno apenas passar
             timeoutReset = setTimeout(resetarTela, 4000);
         }
 
@@ -218,7 +275,7 @@
             document.getElementById('txt-instrucao').innerText = "PARA QUAL DIA?";
             
             clearTimeout(timeoutReset);
-            // Se ele clicou em "Treino Max IA", damos 10 segundos extras para ele pensar e escolher o dia
+            // Dá um pouco mais de tempo para escolha do dia (10s)
             timeoutReset = setTimeout(resetarTela, 10000); 
         }
 
@@ -228,7 +285,7 @@
             document.getElementById('txt-instrucao').innerText = "QUAL É A MISSÃO DE HOJE?";
             
             clearTimeout(timeoutReset);
-            timeoutReset = setTimeout(resetarTela, 6000);
+            timeoutReset = setTimeout(resetarTela, 4000);
         }
 
         async function gerarTreinoIA(dia) {

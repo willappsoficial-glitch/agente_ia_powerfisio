@@ -29,60 +29,71 @@
 
         .header {
             text-align: center;
-            padding: 30px;
+            padding: 15px;
             background: linear-gradient(180deg, rgba(255,85,0,0.1) 0%, rgba(11,12,16,1) 100%);
             border-bottom: 2px solid rgba(255, 85, 0, 0.2);
         }
 
-        .header h1 { font-size: 4rem; font-weight: 900; letter-spacing: -2px; }
+        .header h1 { font-size: 3.2rem; font-weight: 900; letter-spacing: -2px; }
         .header h1 span { color: var(--primary); }
-        .header p { font-size: 1.5rem; color: #8B92A5; text-transform: uppercase; font-weight: 700; letter-spacing: 5px; margin-top: 10px; }
+        .header p { font-size: 1.2rem; color: #8B92A5; text-transform: uppercase; font-weight: 700; letter-spacing: 5px; margin-top: 5px; }
 
+        /* 🌟 NOVA ESTRUTURA EM 2 COLUNAS */
         .container {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
+            display: grid;
+            grid-template-columns: 1fr 1fr; /* 2 colunas iguais */
+            grid-template-rows: repeat(5, 1fr); /* 5 linhas */
+            grid-auto-flow: column; /* Preenche do 1 ao 5 na esquerda, 6 ao 10 na direita */
+            gap: 15px 40px; /* 15px de distância vertical, 40px horizontal */
+            width: 95%;
+            max-width: 1700px; /* Mais largo para aproveitar a TV */
+            margin: 20px auto;
             flex: 1;
-            padding: 20px;
-            gap: 15px;
-            width: 90%;
-            max-width: 1200px;
-            margin: 0 auto;
+            padding-bottom: 50px; /* Impede de sobrepor o selo piscante do rodapé */
         }
 
         .rank-row {
             display: flex;
             align-items: center;
-            width: 100%;
             background: var(--bg-card);
-            padding: 15px 40px;
-            border-radius: 20px;
-            box-shadow: 0 10px 20px rgba(0,0,0,0.3);
+            padding: 10px 30px;
+            border-radius: 16px;
+            box-shadow: 0 8px 15px rgba(0,0,0,0.3);
             border-left: 6px solid #2A2F3A;
             transition: transform 0.5s ease;
             animation: fadeIn 0.5s ease forwards;
             opacity: 0;
+            height: 100%;
         }
 
-        .rank-row:nth-child(1) { animation-delay: 0.1s; border-color: var(--gold); background: linear-gradient(90deg, rgba(255, 215, 0, 0.1) 0%, var(--bg-card) 50%); transform: scale(1.05); z-index: 10; margin-bottom: 10px;}
-        .rank-row:nth-child(2) { animation-delay: 0.2s; border-color: var(--silver); background: linear-gradient(90deg, rgba(192, 192, 192, 0.1) 0%, var(--bg-card) 50%); transform: scale(1.02); z-index: 9; margin-bottom: 5px;}
-        .rank-row:nth-child(3) { animation-delay: 0.3s; border-color: var(--bronze); background: linear-gradient(90deg, rgba(205, 127, 50, 0.1) 0%, var(--bg-card) 50%); transform: scale(1.01); z-index: 8; margin-bottom: 15px;}
+        .rank-row:nth-child(1) { animation-delay: 0.1s; border-color: var(--gold); background: linear-gradient(90deg, rgba(255, 215, 0, 0.1) 0%, var(--bg-card) 50%); transform: scale(1.02); z-index: 10;}
+        .rank-row:nth-child(2) { animation-delay: 0.2s; border-color: var(--silver); background: linear-gradient(90deg, rgba(192, 192, 192, 0.1) 0%, var(--bg-card) 50%); transform: scale(1.01); z-index: 9;}
+        .rank-row:nth-child(3) { animation-delay: 0.3s; border-color: var(--bronze); background: linear-gradient(90deg, rgba(205, 127, 50, 0.1) 0%, var(--bg-card) 50%); transform: scale(1.00); z-index: 8;}
         
         @keyframes fadeIn { to { opacity: 1; } }
 
-        .pos { font-size: 3rem; font-weight: 900; width: 100px; color: #555; }
+        .pos { font-size: 2.5rem; font-weight: 900; width: 80px; color: #555; }
         .rank-row:nth-child(1) .pos { color: var(--gold); }
         .rank-row:nth-child(2) .pos { color: var(--silver); }
         .rank-row:nth-child(3) .pos { color: var(--bronze); }
 
-        .nome { font-size: 2.5rem; font-weight: 800; flex: 1; text-align: left; }
+        /* Proteção para nomes gigantes não quebrarem o layout */
+        .nome { 
+            font-size: 2.2rem; 
+            font-weight: 800; 
+            flex: 1; 
+            text-align: left; 
+            white-space: nowrap; 
+            overflow: hidden; 
+            text-overflow: ellipsis;
+            padding-right: 15px;
+        }
         
-        .pontos-container { display: flex; align-items: center; gap: 15px; }
-        .pontos { font-size: 3.5rem; font-weight: 900; color: var(--primary); }
-        .label { font-size: 1.2rem; color: #8B92A5; text-transform: uppercase; font-weight: 700; margin-top: 5px;}
+        .pontos-container { display: flex; align-items: center; gap: 10px; }
+        .pontos { font-size: 2.8rem; font-weight: 900; color: var(--primary); }
+        .label { font-size: 1rem; color: #8B92A5; text-transform: uppercase; font-weight: 700; margin-top: 5px;}
 
-        .max-badge { position: absolute; bottom: 20px; right: 20px; font-size: 1rem; color: #444; font-weight: bold; display: flex; align-items: center; gap: 10px;}
+        .max-badge { position: absolute; bottom: 15px; right: 25px; font-size: 1rem; color: #444; font-weight: bold; display: flex; align-items: center; gap: 10px;}
         .max-badge span { display: inline-block; width: 12px; height: 12px; background: #00FF88; border-radius: 50%; box-shadow: 0 0 10px #00FF88; animation: pulse 2s infinite;}
 
         @keyframes pulse { 0% { opacity: 0.5; } 50% { opacity: 1; box-shadow: 0 0 20px #00FF88; } 100% { opacity: 0.5; } }
@@ -96,7 +107,7 @@
     </div>
 
     <div class="container" id="board">
-        <h2 style="color: var(--primary); margin-top: 20vh;">A carregar dados do Cérebro Max...</h2>
+        <h2 style="color: var(--primary); margin-top: 20vh; grid-column: span 2; text-align: center;">A carregar dados do Cérebro Max...</h2>
     </div>
 
     <div class="max-badge">
@@ -115,7 +126,7 @@
                 const board = document.getElementById('board');
                 
                 if(dados.length === 0) {
-                    board.innerHTML = `<h2 style="color: #8B92A5; margin-top: 20vh;">Nenhum treino concluído este mês ainda.</h2>`;
+                    board.innerHTML = `<h2 style="color: #8B92A5; margin-top: 20vh; grid-column: span 2; text-align: center;">Nenhum treino concluído este mês ainda.</h2>`;
                     return;
                 }
 
@@ -139,10 +150,7 @@
             }
         }
 
-        // Carrega logo que abre
         carregarRanking();
-
-        // Atualiza a cada 15 segundos
         setInterval(carregarRanking, 15000);
     </script>
 </body>

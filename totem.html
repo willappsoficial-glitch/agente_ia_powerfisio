@@ -210,16 +210,22 @@
         async function escutarCatraca() {
             if (!radarLigado) return; 
             try {
-                // Adicionamos um pequeno carimbo de tempo para evitar que o navegador use o "cache antigo"
                 const resposta = await fetch(API_URL + "?acao=radar&t=" + Date.now());
                 const dados = await resposta.json();
                 
-                if (dados && dados.detectado) {
+                // 🌟 A MÁGICA: Só mostra se detectou alguém E se o ID for diferente do último
+                if (dados && dados.detectado && String(dados.idAluno) !== ultimoIdProcessado) {
+                    
                     radarLigado = false; 
+                    ultimoIdProcessado = String(dados.idAluno); // Grava quem acabou de passar
+                    
                     mostrarTelaAluno(dados.nome, dados.idAluno, dados.posicao, dados.foto);
+                    
+                    // Limpa a memória após 10 segundos, para caso o MESMO aluno passe a digital de novo sem querer
+                    setTimeout(() => { ultimoIdProcessado = ""; }, 10000);
                 }
             } catch (e) { 
-                // Erros de rede são ignorados para manter o radar fluido
+                // Ignora falhas rápidas de rede
             }
         }
         function mostrarTelaAluno(nomeCompleto, idAluno, posicao, urlFoto) {

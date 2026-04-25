@@ -190,7 +190,7 @@
         let alunoAtualId = ""; 
 
         // 🚀 MODO FLASH: Radar a cada 200ms
-        window.onload = function() { setInterval(escutarCatraca, 300); };
+        window.onload = function() { setInterval(escutarCatraca, 250); };
 
         function formatarNomeAmigavel(nomeCompleto) {
             if (!nomeCompleto) return "Atleta";
@@ -210,20 +210,18 @@
         async function escutarCatraca() {
             if (!radarLigado) return; 
             try {
-                const carimbo = new Date().getTime();
-                const controller = new AbortController();
-                const timeoutId = setTimeout(() => controller.abort(), 1500);
-
-                const resposta = await fetch(API_URL + "?acao=radar&t=" + carimbo, { signal: controller.signal });
+                // Adicionamos um pequeno carimbo de tempo para evitar que o navegador use o "cache antigo"
+                const resposta = await fetch(API_URL + "?acao=radar&t=" + Date.now());
                 const dados = await resposta.json();
                 
-                if (dados.detectado) {
+                if (dados && dados.detectado) {
                     radarLigado = false; 
                     mostrarTelaAluno(dados.nome, dados.idAluno, dados.posicao, dados.foto);
                 }
-            } catch (e) { /* Requisição cancelada ou erro de rede silencioso */ }
+            } catch (e) { 
+                // Erros de rede são ignorados para manter o radar fluido
+            }
         }
-
         function mostrarTelaAluno(nomeCompleto, idAluno, posicao, urlFoto) {
             const nomeCurto = formatarNomeAmigavel(nomeCompleto);
             alunoAtualId = idAluno; 

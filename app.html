@@ -248,10 +248,18 @@
                 btn.innerText = "A GUARDAR..."; btn.disabled = true;
                 
                 try {
-                    // Tranca a catraca de novo e passa o CPF para o ranking subir!
-                    // Adicionámos o &nome= para a planilha gravar o nome caso seja a primeira vez no mês!
-                    await fetch(`${API_URL}?acao=concluirTreinoApp&idAluno=${AlunoLogado.id}&cpf=${AlunoLogado.cpf}&nome=${AlunoLogado.nome}`);
-                    alert("BOA! +1 Ponto no Ranking! 🎉💪");
+                    // 🌟 AGORA O APP ESCUTA O QUE O SERVIDOR RESPONDEU
+                    const res = await fetch(`${API_URL}?acao=concluirTreinoApp&idAluno=${AlunoLogado.id}&cpf=${AlunoLogado.cpf}&nome=${AlunoLogado.nome}`);
+                    const respostaServidor = await res.json(); 
+
+                    // Verifica se o backend validou o ponto ou barrou a fraude
+                    if (respostaServidor.sucesso) {
+                        alert("BOA! +1 Ponto no Ranking! 🎉💪\n\n" + respostaServidor.mensagem);
+                    } else {
+                        // 🛑 O CAÇADOR DE FRAUDES: Mostra o alerta de que já treinou hoje!
+                        alert("🛑 AVISO DO MAX:\n\n" + respostaServidor.mensagem);
+                    }
+                    
                     location.reload(); 
                 } catch(e) {
                     alert("Erro ao gravar. Verifique a internet.");

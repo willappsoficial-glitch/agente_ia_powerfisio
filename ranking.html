@@ -43,26 +43,22 @@
 
         .container {
             display: grid;
-            /* 🌟 O SEGREDO: Força as colunas a terem exatamente o mesmo tamanho (50/50) */
             grid-template-columns: repeat(2, minmax(0, 1fr)); 
             grid-template-rows: repeat(5, 1fr); 
             grid-auto-flow: column; 
-            gap: 15px 40px; 
-            
-            /* 🌟 CENTRALIZAÇÃO ABSOLUTA */
-            width: 96%; /* Deixa uma pequena folga natural */
-            max-width: 1800px; /* Protege contra TVs gigantescas */
-            margin: 20px auto; /* O 'auto' garante que a margem esquerda e direita sejam idênticas */
-            
+            gap: 10px 40px; /* 🌟 AJUSTE: Reduzimos de 15px para 10px o espaço vertical */
+            width: 96%; 
+            max-width: 1800px; 
+            margin: 20px auto 40px auto; /* 🌟 AJUSTE: Aumentamos a margem inferior para empurrar a grelha para cima */
             flex: 1;
-            padding-bottom: 40px; 
+            min-height: 0; /* 🌟 O SEGREDO: Impede que a grelha force o ecrã a esticar */
         }
 
         .rank-row {
             display: flex;
             align-items: center;
             background: var(--bg-card);
-            padding: 10px 25px; /* Reduzido levemente para TVs menores */
+            padding: 6px 15px; /* 🌟 AJUSTE: Passou de 10px para 6px na vertical */
             border-radius: 16px;
             box-shadow: 0 8px 15px rgba(0,0,0,0.3);
             border-left: 6px solid #2A2F3A;
@@ -84,22 +80,40 @@
         .rank-row:nth-child(3) .pos { color: var(--bronze); }
 
         .nome { 
-            font-size: 2.2rem; 
+            font-size: 1.8rem; /* 🌟 AJUSTE: Letra ligeiramente menor (era 2.2rem) */
             font-weight: 800; 
             flex: 1; 
             text-align: left; 
-            white-space: nowrap; 
-            overflow: hidden; 
-            text-overflow: ellipsis;
-            padding-right: 15px;
-            min-width: 0; /* 🛡️ SEGREDO DO FLEXBOX: Impede o texto de "estourar" a grelha */
+            padding-right: 10px;
+            
+            /* 🌟 A MÁGICA: Removemos a tesoura (ellipsis). O nome agora fica sempre inteiro! */
+            white-space: normal; 
+            line-height: 1.1; /* Se precisar de uma 2ª linha, fica elegante e sem buracos */
+            display: -webkit-box;
+            -webkit-line-clamp: 2; /* Blindagem extra: no máximo 2 linhas */
+            -webkit-box-orient: vertical;
+            overflow: hidden;
         }
         
         .pontos-container { display: flex; align-items: center; gap: 10px; }
         .pontos { font-size: 2.8rem; font-weight: 900; color: var(--primary); }
         .label { font-size: 1rem; color: #8B92A5; text-transform: uppercase; font-weight: 700; margin-top: 5px;}
 
-        .max-badge { position: absolute; bottom: 15px; right: 25px; font-size: 1rem; color: #444; font-weight: bold; display: flex; align-items: center; gap: 10px;}
+        .max-badge { 
+            position: absolute; 
+            bottom: 25px; /* 🌟 AJUSTE: Levantámos o selo do chão da TV */
+            right: 3vw; /* 🌟 AJUSTE: Acompanha a margem segura da TV */
+            font-size: 1rem; 
+            color: #666; 
+            font-weight: bold; 
+            display: flex; 
+            align-items: center; 
+            gap: 10px;
+            background-color: var(--bg-dark); /* 🌟 AJUSTE: Fundo escuro para leitura perfeita */
+            padding: 4px 12px;
+            border-radius: 20px;
+            z-index: 100;
+        }
         .max-badge span { display: inline-block; width: 12px; height: 12px; background: #00FF88; border-radius: 50%; box-shadow: 0 0 10px #00FF88; animation: pulse 2s infinite;}
 
         @keyframes pulse { 0% { opacity: 0.5; } 50% { opacity: 1; box-shadow: 0 0 20px #00FF88; } 100% { opacity: 0.5; } }

@@ -30,8 +30,8 @@
             height: 100vh;
             display: flex;
             flex-direction: column;
-            overflow: hidden; /* Fixo e sem rolagem */
-            padding: 3vh 3vw; /* 🛡️ ZONA SEGURA ANTI-CORTES DA TV */
+            overflow: hidden; /* Fixo na TV */
+            padding: 3vh 3vw; 
         }
 
         .header {
@@ -39,7 +39,8 @@
             padding: 15px;
             background: linear-gradient(180deg, rgba(255,85,0,0.1) 0%, rgba(11,12,16,1) 100%);
             border-bottom: 2px solid rgba(255, 85, 0, 0.2);
-            border-radius: 16px; /* Deixa o topo com bordas suaves */
+            border-radius: 16px; 
+            flex-shrink: 0;
         }
 
         .header h1 { font-size: 3.2rem; font-weight: 900; letter-spacing: -2px; }
@@ -103,7 +104,7 @@
         .label { font-size: 1rem; color: #8B92A5; text-transform: uppercase; font-weight: 700; margin-top: 5px;}
 
         .max-badge { 
-            position: absolute; 
+            position: fixed; 
             bottom: 25px; 
             right: 3vw; 
             font-size: 1rem; 
@@ -120,12 +121,66 @@
         .max-badge span { display: inline-block; width: 12px; height: 12px; background: #00FF88; border-radius: 50%; box-shadow: 0 0 10px #00FF88; animation: pulse 2s infinite;}
 
         @keyframes pulse { 0% { opacity: 0.5; } 50% { opacity: 1; box-shadow: 0 0 20px #00FF88; } 100% { opacity: 0.5; } }
+
+        /* ==========================================
+           🌟 MÓDULO RESPONSIVO (Tablets e Celulares)
+           ========================================== */
+        
+        /* Telas médias (Tablets e iPads) */
+        @media (max-width: 1024px) {
+            .header h1 { font-size: 2.5rem; }
+            .header p { font-size: 1rem; }
+            .pos { font-size: 2rem; width: 60px; }
+            .nome { font-size: 1.4rem; }
+            .pontos { font-size: 2.2rem; }
+            .container { gap: 10px 20px; }
+        }
+
+        /* Telas pequenas (Celulares) */
+        @media (max-width: 800px) {
+            body {
+                overflow-y: auto; /* Desbloqueia a rolagem no celular */
+                height: auto;
+                min-height: 100vh;
+                padding: 2vh 4vw;
+            }
+            .header img { max-width: 100px !important; }
+            .header h1 { font-size: 2rem; }
+            .header p { font-size: 0.8rem; letter-spacing: 2px; }
+            
+            .container {
+                display: flex; /* Muda de Grid para Flexbox no celular */
+                flex-direction: column;
+                gap: 10px;
+                width: 100%;
+                margin: 20px auto 70px auto; /* Margem inferior para o selo não cobrir os dados */
+            }
+            
+            .rank-row {
+                height: 80px; /* Altura fixa para ficar bonito na rolagem */
+                padding: 10px 15px;
+            }
+
+            .pos { font-size: 1.8rem; width: 50px; }
+            .nome { font-size: 1.2rem; -webkit-line-clamp: 2; }
+            .pontos { font-size: 2rem; }
+            .label { font-size: 0.8rem; }
+
+            .max-badge {
+                bottom: 10px;
+                right: 50%;
+                transform: translateX(50%); /* Centraliza perfeitamente no rodapé */
+                width: 90%;
+                justify-content: center;
+                box-shadow: 0 -5px 15px rgba(0,0,0,0.5); /* Sombra para destacar do fundo */
+            }
+        }
     </style>
 </head>
 <body>
 
     <div class="header">
-        <img src="pflogo.png" alt="Logo Powerfisio" onclick="toggleFullScreen()" style="max-width: 150px; margin-bottom: 5px; border-radius: 12px; box-shadow: 0 5px 15px rgba(255, 85, 0, 0.2); cursor: pointer;">
+        <img src="logo.jpeg" alt="Logo Powerfisio" onclick="toggleFullScreen()" style="max-width: 150px; margin-bottom: 5px; border-radius: 12px; box-shadow: 0 5px 15px rgba(255, 85, 0, 0.2); cursor: pointer;">
         <h1>POWER<span>FISIO</span></h1>
         <p>RANKING DE FREQUÊNCIA E TREINOS - TOP 10 DO MÊS</p>
     </div>
@@ -150,7 +205,7 @@
                 const board = document.getElementById('board');
                 
                 if(dados.length === 0) {
-                    board.innerHTML = `<h2 style="color: #8B92A5; margin-top: 20vh; grid-column: span 2; text-align: center;">Nenhum treino concluído este mês ainda.</h2>`;
+                    board.innerHTML = `<h2 style="color: #8B92A5; margin-top: 20vh; grid-column: span 2; text-align: center; width: 100%;">Nenhum treino concluído este mês ainda.</h2>`;
                     return;
                 }
 
@@ -181,7 +236,6 @@
         // 🌟 MÓDULO PWA E TELA CHEIA PARA A TV
         // ==========================================
 
-        // 1. Registra o Service Worker (Habilita o botão "Instalar")
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
                 navigator.serviceWorker.register('sw.js').then((registration) => {
@@ -192,7 +246,6 @@
             });
         }
 
-        // 2. Função acionada ao clicar na Logo (Esconde a barra do navegador)
         function toggleFullScreen() {
             if (!document.fullscreenElement) {
                 document.documentElement.requestFullscreen().catch(err => {

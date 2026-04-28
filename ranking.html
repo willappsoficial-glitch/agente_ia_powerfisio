@@ -178,7 +178,7 @@
     <div class="header">
         <img src="logo.jpeg" alt="Logo Powerfisio" onclick="toggleFullScreen()" style="max-width: 150px; margin-bottom: 5px; border-radius: 12px; box-shadow: 0 5px 15px rgba(255, 85, 0, 0.2); cursor: pointer;">
         <h1>POWER<span>FISIO</span></h1>
-        <p>RANKING DE FREQUÊNCIA E TREINOS - TOP 10 DO MÊS</p>
+        <p>RANKING DE FREQUÊNCIA E PONTOS - TOP 10 DO MÊS</p>
     </div>
 
     <div class="container" id="board">
@@ -201,7 +201,8 @@
                 const board = document.getElementById('board');
                 
                 if(dados.length === 0) {
-                    board.innerHTML = `<h2 style="color: #8B92A5; margin-top: 20vh; grid-column: span 2; text-align: center; width: 100%;">Nenhum treino concluído este mês ainda.</h2>`;
+                    // 🌟 ATUALIZADO: "Ponto acumulado"
+                    board.innerHTML = `<h2 style="color: #8B92A5; margin-top: 20vh; grid-column: span 2; text-align: center; width: 100%;">Nenhum ponto acumulado este mês ainda.</h2>`;
                     return;
                 }
 
@@ -213,7 +214,7 @@
                         <div class="nome">${aluno.nome}</div>
                         <div class="pontos-container">
                             <div class="pontos">${aluno.pontos}</div>
-                            <div class="label">Treinos</div>
+                            <div class="label">Pontos</div>
                         </div>
                     </div>`;
                 });

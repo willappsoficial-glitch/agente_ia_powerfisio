@@ -1,0 +1,21 @@
+{
+  "name": "Powerfisio TV Ranking",
+  "short_name": "Ranking TV",
+  "start_url": "./ranking.html",
+  "display": "fullscreen",
+  "orientation": "landscape",
+  "background_color": "#0B0C10",
+  "theme_color": "#FF5500",
+  "icons": [
+    {
+      "src": "pflogo.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "pflogo.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

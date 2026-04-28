@@ -233,6 +233,14 @@
 
             try {
                 const res = await fetch(`${API_URL}?acao=gerarTreinoMax&idAluno=${AlunoLogado.id}&dia=${diaHoje}`);
+                
+                // 🕵️‍♂️ DETETIVE: Verifica se o Google devolveu uma página de erro em vez de dados
+                const contentType = res.headers.get("content-type");
+                if (!contentType || !contentType.includes("application/json")) {
+                    const textoErro = await res.text();
+                    throw new Error("O Google Script falhou e devolveu texto. Verifique se há erros no Código.gs ou se a API_URL está correta.");
+                }
+
                 const treino = await res.json();
 
                 if (treino.sucesso) {
@@ -255,10 +263,8 @@
                                 let exID = match[2];
                                 let exResto = match[3];
 
-                                // Transforma o "3x12" em etiqueta
                                 exResto = exResto.replace(/(\d+\s*[xX]\s*\d+(?:\s*(?:a|-)\s*\d+)?)/g, '<span class="tag-series">$1</span>');
                                 
-                                // Transforma técnicas em etiquetas clicáveis
                                 exResto = exResto.replace(/\(([^)]+)\)/g, (match, p1) => {
                                     return `<span class="tag-tech" onclick="abrirModalTecnica('${p1}')">${p1}</span>`;
                                 });
@@ -282,10 +288,22 @@
                         }
                     });
                     listaDiv.innerHTML = HTML;
+                } else {
+                    // 🌟 SE O MAX REPORTAR UM ERRO DE LÓGICA (ex: IA fora do ar)
+                    listaDiv.innerHTML = `<div style="padding: 15px; border-radius: 12px; background: rgba(255,0,0,0.1); border: 1px solid red;">
+                        <h4 style="color: red; margin-bottom: 10px;">⚠️ O Max encontrou um problema:</h4>
+                        <p style="font-size: 0.9rem;">${treino.conteudo}</p>
+                    </div>`;
                 }
-            } catch(e) { listaDiv.innerHTML = `<p>Erro ao ligar ao Max.</p>`; }
+            } catch(e) { 
+                // 🌟 MOSTRA O ERRO REAL NA TELA EM VEZ DA MENSAGEM GENÉRICA
+                listaDiv.innerHTML = `<div style="padding: 15px; border-radius: 12px; background: rgba(255,85,0,0.1); border: 1px solid var(--primary);">
+                    <h4 style="color: var(--primary); margin-bottom: 10px;">🛠️ Falha Técnica</h4>
+                    <p style="font-size: 0.85rem; word-break: break-all;"><strong>Detalhe:</strong> ${e.message}</p>
+                </div>`; 
+                console.error(e);
+            }
         }
-
         // FUNÇÃO PARA MARCAR EXERCÍCIOS (FIXED)
         function iniciarTreinoInterativo() {
             document.getElementById('btn-iniciar-treino').style.display = 'none';

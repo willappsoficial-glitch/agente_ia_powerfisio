@@ -58,24 +58,56 @@
         .user-badge { display: flex; align-items: center; gap: 10px; }
         .user-badge .avatar { width: 45px; height: 45px; background: var(--primary); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 900; }
 
-        .workout-card { background: var(--bg-card); border-radius: 24px; padding: 25px; margin-bottom: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.3); }
+        .workout-card { background: var(--bg-card); border-radius: 24px; padding: 20px; margin-bottom: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.3); }
 
-        /* Estilos dos Exercícios Interativos */
+        /* =========================================
+           🌟 NOVOS ESTILOS PARA AS ETIQUETAS (BADGES)
+           ========================================= */
         .exercise-item {
-            display: flex; align-items: center; padding: 15px; border-bottom: 1px solid #2A2F3A;
-            border-radius: 12px; transition: all 0.3s ease; margin-bottom: 8px;
+            display: flex; align-items: flex-start; padding: 15px; border-bottom: 1px solid #2A2F3A;
+            border-radius: 12px; transition: all 0.3s ease; margin-bottom: 10px;
         }
         
-        .exercise-info { flex: 1; }
-        .exercise-info h4 { font-size: 0.95rem; margin-bottom: 2px; }
+        .exercise-info { flex: 1; display: flex; flex-direction: column; gap: 6px; }
         
+        /* Cabeçalho do exercício (Nome e ID) */
+        .ex-header { display: flex; justify-content: space-between; align-items: flex-start; gap: 10px; }
+        .ex-header h4 { font-size: 0.95rem; margin: 0; line-height: 1.3; font-weight: 700; color: #FFF; }
+        
+        /* Corpo do exercício (Séries, Repetições e Técnicas) */
+        .ex-body { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin-top: 4px; }
+
+        /* Etiqueta ID (Discreta) */
+        .tag-id { 
+            background: #2A2F3A; color: #8B92A5; font-size: 0.65rem; 
+            padding: 3px 6px; border-radius: 6px; font-weight: 900; 
+            white-space: nowrap; border: 1px solid #3A404D;
+        }
+
+        /* Etiqueta SÉRIES/REPS (Destacada e Laranja) */
+        .tag-series { 
+            background: rgba(255, 85, 0, 0.15); color: var(--primary); 
+            font-weight: 900; padding: 4px 10px; border-radius: 8px; 
+            font-size: 0.9rem; border: 1px solid rgba(255, 85, 0, 0.3);
+            letter-spacing: 0.5px;
+        }
+
+        /* Etiqueta TÉCNICA (Verde e pequena) */
+        .tag-tech { 
+            background: rgba(0, 255, 136, 0.1); color: var(--success); 
+            font-size: 0.75rem; font-weight: 800; padding: 3px 8px; 
+            border-radius: 6px; border: 1px dashed rgba(0, 255, 136, 0.3); 
+            text-transform: uppercase;
+        }
+
         /* Estado 1: Pendente (Laranja) */
         .exercise-item.pendente { border: 1px solid rgba(255, 85, 0, 0.4); background: rgba(255, 85, 0, 0.05); cursor: pointer; }
         
         /* Estado 2: Concluído (Verde e Riscado) */
-        .exercise-item.concluido { opacity: 0.5; text-decoration: line-through; border-color: var(--success); background: rgba(0, 255, 136, 0.05); cursor: pointer; }
+        .exercise-item.concluido { opacity: 0.5; border-color: var(--success); background: rgba(0, 255, 136, 0.05); cursor: pointer; }
+        .exercise-item.concluido .ex-header h4 { text-decoration: line-through; color: #8B92A5; }
         
-        .exercise-checkbox { width: 22px; height: 22px; border-radius: 50%; border: 2px solid #555; margin-right: 15px; display: none; align-items: center; justify-content: center; transition: 0.3s; }
+        .exercise-checkbox { width: 24px; height: 24px; min-width: 24px; border-radius: 50%; border: 2px solid #555; margin-right: 15px; margin-top: 2px; display: none; align-items: center; justify-content: center; transition: 0.3s; }
         .exercise-item.pendente .exercise-checkbox { display: flex; border-color: var(--primary); }
         .exercise-item.concluido .exercise-checkbox { display: flex; background: var(--success); border-color: var(--success); }
         .exercise-item.concluido .exercise-checkbox::after { content: '✓'; color: black; font-weight: bold; font-size: 14px; }
@@ -110,7 +142,7 @@
         </div>
         <div class="status-card">
             <div class="lock-icon">🔒</div><h2 style="margin-bottom: 10px;">MISSÃO BLOQUEADA</h2>
-            <p style="color: var(--text-muted)">O Max já preparou tudo. Passe na catraca para liberar o seu treino!</p>
+            <p style="color: var(--text-muted)">O Max já preparou tudo. Passe a digital na catraca para liberar o seu treino!</p>
         </div>
         <div class="ranking-bar" id="txt-ranking">Carregando posição...</div>
     </div>
@@ -132,7 +164,7 @@
     </div>
 
     <script>
-        // 🚨 COLE AQUI A SUA URL DA API DO GOOGLE APPS SCRIPT (TERMINADA EM /exec)
+        // 🚨 MANTENHA A SUA URL AQUI
         const API_URL = "https://script.google.com/macros/s/AKfycby62vambopzAU-hOp4Och0Qg9_ZOxNCqqo19BFZvUA13OFTYBRMnTnNckq3aBzncXKTJg/exec";
         
         let AlunoLogado = { id: "", nome: "", cpf: "", posicao: "" };
@@ -195,18 +227,54 @@
                     const linhas = treino.conteudo.split('\n');
                     
                     linhas.forEach(linha => {
-                        if(linha.trim() === "") return;
-                        if(linha.toLowerCase().includes("como executar") || linha.toLowerCase().includes("nota clínica")) {
-                            HTML += `<h4 style="color: var(--text-muted); margin-top: 20px; font-size: 0.8rem;">${linha}</h4>`;
-                        } else if (/^\d/.test(linha.trim())) {
-                            // Envolve os exercícios num DIV especial (sem classes laranja ainda)
-                            HTML += `
-                            <div class="exercise-item unstarted">
-                                <div class="exercise-checkbox"></div>
-                                <div class="exercise-info"><h4>${linha.replace(/\*\*/g, '')}</h4></div>
-                            </div>`;
+                        let textoLimpo = linha.replace(/\*\*/g, '').trim();
+                        if(textoLimpo === "") return;
+                        
+                        if(textoLimpo.toLowerCase().includes("como executar") || textoLimpo.toLowerCase().includes("nota clínica")) {
+                            HTML += `<h4 style="color: var(--text-muted); margin-top: 25px; margin-bottom: 5px; font-size: 0.8rem;">${textoLimpo}</h4>`;
+                        } 
+                        else if (/^\d/.test(textoLimpo)) {
+                            // ==========================================
+                            // 🌟 A MÁGICA DA SEPARAÇÃO VISUAL (REGEX)
+                            // ==========================================
+                            // Procura o padrão: "1. Nome do Exercicio [ID: 123] - 3x12 (Técnica)"
+                            const regexTreino = /^\d+\.\s*(.+?)\s*\[ID:\s*(\d+)\]\s*-\s*(.+)/i;
+                            const match = textoLimpo.match(regexTreino);
+
+                            if (match) {
+                                let exNome = match[1];
+                                let exID = match[2];
+                                let exResto = match[3];
+
+                                // 1. Transforma o "3x12" ou "4x10 a 12" numa etiqueta Laranja
+                                exResto = exResto.replace(/(\d+\s*[xX]\s*\d+(?:\s*(?:a|-)\s*\d+)?)/g, '<span class="tag-series">$1</span>');
+                                
+                                // 2. Transforma as técnicas "(Drop-set)" numa etiqueta Verde
+                                exResto = exResto.replace(/\(([^)]+)\)/g, '<span class="tag-tech">$1</span>');
+
+                                HTML += `
+                                <div class="exercise-item unstarted">
+                                    <div class="exercise-checkbox"></div>
+                                    <div class="exercise-info">
+                                        <div class="ex-header">
+                                            <h4>${exNome}</h4>
+                                            <span class="tag-id">ID: ${exID}</span>
+                                        </div>
+                                        <div class="ex-body">
+                                            ${exResto}
+                                        </div>
+                                    </div>
+                                </div>`;
+                            } else {
+                                // Caso a IA mande fora do formato, renderiza normal para não bugar
+                                HTML += `
+                                <div class="exercise-item unstarted">
+                                    <div class="exercise-checkbox"></div>
+                                    <div class="exercise-info"><h4>${textoLimpo}</h4></div>
+                                </div>`;
+                            }
                         } else {
-                            HTML += `<p style="font-size: 0.8rem; color: #CCC; margin-bottom: 5px;">${linha}</p>`;
+                            HTML += `<p style="font-size: 0.85rem; color: #CCC; margin-bottom: 5px; line-height: 1.4;">${textoLimpo}</p>`;
                         }
                     });
                     listaDiv.innerHTML = HTML;
@@ -215,12 +283,10 @@
         }
 
         function iniciarTreinoInterativo() {
-            // Esconde o botão de começar e mostra o cronómetro e botão de concluir
             document.getElementById('btn-iniciar-treino').style.display = 'none';
             document.getElementById('painel-treino-ativo').style.display = 'block';
             document.getElementById('btn-concluir-treino').style.display = 'block';
 
-            // Dá cor laranja e ativa o clique em todos os exercícios
             document.querySelectorAll('.exercise-item.unstarted').forEach(item => {
                 item.classList.remove('unstarted');
                 item.classList.add('pendente');
@@ -231,7 +297,6 @@
                 };
             });
 
-            // Inicia o cronómetro
             tempoSegundos = 0;
             timerId = setInterval(() => {
                 tempoSegundos++;
@@ -243,20 +308,17 @@
 
         async function concluirMissao() {
             if(confirm("Parabéns! Missão cumprida por hoje?")) {
-                clearInterval(timerId); // Pára o relógio
+                clearInterval(timerId); 
                 const btn = document.getElementById('btn-concluir-treino');
                 btn.innerText = "A GUARDAR..."; btn.disabled = true;
                 
                 try {
-                    // 🌟 AGORA O APP ESCUTA O QUE O SERVIDOR RESPONDEU
                     const res = await fetch(`${API_URL}?acao=concluirTreinoApp&idAluno=${AlunoLogado.id}&cpf=${AlunoLogado.cpf}&nome=${AlunoLogado.nome}`);
                     const respostaServidor = await res.json(); 
 
-                    // Verifica se o backend validou o ponto ou barrou a fraude
                     if (respostaServidor.sucesso) {
                         alert("BOA! +1 Ponto no Ranking! 🎉💪\n\n" + respostaServidor.mensagem);
                     } else {
-                        // 🛑 O CAÇADOR DE FRAUDES: Mostra o alerta de que já treinou hoje!
                         alert("🛑 AVISO DO MAX:\n\n" + respostaServidor.mensagem);
                     }
                     

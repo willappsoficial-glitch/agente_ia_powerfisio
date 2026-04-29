@@ -5,6 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Powerfisio - Max Mobile</title>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;800;900&display=swap" rel="stylesheet">
+    
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
     <style>
         :root {
             --primary: #FF5500;
@@ -26,6 +29,19 @@
             flex-direction: column;
             min-height: 100vh;
         }
+
+        /* --- Customização do SweetAlert para combinar com o app --- */
+        .swal2-popup {
+            background-color: var(--bg-card) !important;
+            color: var(--text-main) !important;
+            border-radius: 20px !important;
+            border: 1px solid #2A2F3A !important;
+            font-family: 'Montserrat', sans-serif !important;
+        }
+        .swal2-title { color: var(--text-main) !important; font-weight: 900 !important; font-size: 1.5rem !important;}
+        .swal2-html-container { color: var(--text-muted) !important; }
+        .swal2-confirm { border-radius: 12px !important; font-weight: bold !important; padding: 12px 24px !important; text-transform: uppercase !important;}
+        .swal2-cancel { border-radius: 12px !important; font-weight: bold !important; padding: 12px 24px !important; text-transform: uppercase !important;}
 
         .screen { display: none; flex-direction: column; padding: 30px 20px; animation: slideUp 0.4s ease-out; flex: 1; }
         .screen.active { display: flex; }
@@ -177,7 +193,6 @@
         let tempoSegundos = 0;
         let timerId;
 
-        // DICIONÁRIO DE TÉCNICAS (BALÃOZINHO)
         const TECNICAS = {
             "DROP-SET": "Realize o exercício até a falha, diminua o peso (aprox. 20%) e continue imediatamente sem descanso até a nova falha.",
             "BI-SET": "Realize dois exercícios diferentes para o mesmo músculo (ou antagonistas) sem descanso entre eles.",
@@ -191,7 +206,16 @@
             const cpfInput = document.getElementById('alunoCpf');
             const btn = document.querySelector('#screen-login .btn-main');
             const cpf = cpfInput.value.replace(/\D/g, '');
-            if(cpf.length < 11) return alert("Digite um CPF válido.");
+            
+            if(cpf.length < 11) {
+                return Swal.fire({
+                    title: 'CPF Inválido',
+                    text: 'Digite apenas os 11 números do seu CPF.',
+                    icon: 'warning',
+                    confirmButtonColor: '#FF5500'
+                });
+            }
+            
             btn.innerText = "⏳ AUTENTICANDO..."; btn.disabled = true;
 
             try {
@@ -204,8 +228,22 @@
                     document.getElementById('txt-ranking').innerHTML = `Você está em <strong>${dados.posicao}º lugar</strong> no ranking! 🔥`;
                     trocarTela('screen-locked');
                     radarAppInterval = setInterval(checarDesbloqueio, 5000);
-                } else { alert("❌ CPF não encontrado."); }
-            } catch(e) { alert("Erro de ligação."); } 
+                } else { 
+                    Swal.fire({
+                        title: 'Acesso Negado',
+                        text: 'CPF não encontrado na nossa base de dados. Fale com a receção!',
+                        icon: 'error',
+                        confirmButtonColor: '#FF5500'
+                    });
+                }
+            } catch(e) { 
+                Swal.fire({
+                    title: 'Falha de Conexão',
+                    text: 'Não foi possível ligar ao servidor do Max.',
+                    icon: 'error',
+                    confirmButtonColor: '#FF5500'
+                });
+            } 
             finally { btn.innerText = "ENTRAR NA ARENA"; btn.disabled = false; }
         }
 
@@ -234,7 +272,6 @@
             try {
                 const res = await fetch(`${API_URL}?acao=gerarTreinoMax&idAluno=${AlunoLogado.id}&dia=${diaHoje}`);
                 
-                // 🕵️‍♂️ DETETIVE: Verifica se o Google devolveu uma página de erro em vez de dados
                 const contentType = res.headers.get("content-type");
                 if (!contentType || !contentType.includes("application/json")) {
                     const textoErro = await res.text();
@@ -289,14 +326,12 @@
                     });
                     listaDiv.innerHTML = HTML;
                 } else {
-                    // 🌟 SE O MAX REPORTAR UM ERRO DE LÓGICA (ex: IA fora do ar)
                     listaDiv.innerHTML = `<div style="padding: 15px; border-radius: 12px; background: rgba(255,0,0,0.1); border: 1px solid red;">
                         <h4 style="color: red; margin-bottom: 10px;">⚠️ O Max encontrou um problema:</h4>
                         <p style="font-size: 0.9rem;">${treino.conteudo}</p>
                     </div>`;
                 }
             } catch(e) { 
-                // 🌟 MOSTRA O ERRO REAL NA TELA EM VEZ DA MENSAGEM GENÉRICA
                 listaDiv.innerHTML = `<div style="padding: 15px; border-radius: 12px; background: rgba(255,85,0,0.1); border: 1px solid var(--primary);">
                     <h4 style="color: var(--primary); margin-bottom: 10px;">🛠️ Falha Técnica</h4>
                     <p style="font-size: 0.85rem; word-break: break-all;"><strong>Detalhe:</strong> ${e.message}</p>
@@ -304,20 +339,18 @@
                 console.error(e);
             }
         }
-        // FUNÇÃO PARA MARCAR EXERCÍCIOS (FIXED)
+        
         function iniciarTreinoInterativo() {
             document.getElementById('btn-iniciar-treino').style.display = 'none';
             document.getElementById('painel-treino-ativo').style.display = 'block';
             document.getElementById('btn-concluir-treino').style.display = 'block';
 
-            // Seleciona todos os itens e anexa o clique
             const itens = document.querySelectorAll('.exercise-item');
             itens.forEach(item => {
                 item.classList.remove('unstarted');
                 item.classList.add('pendente');
                 
                 item.onclick = function(e) {
-                    // Evita marcar se clicar na etiqueta de técnica
                     if(e.target.classList.contains('tag-tech')) return;
                     
                     this.classList.toggle('pendente');
@@ -334,7 +367,6 @@
             }, 1000);
         }
 
-        // FUNÇÕES DO MODAL
         function abrirModalTecnica(nome) {
             const nomeFormatado = nome.toUpperCase();
             document.getElementById('modal-titulo').innerText = nomeFormatado;
@@ -347,20 +379,59 @@
         }
 
         async function concluirMissao() {
-            if(confirm("Parabéns! Missão cumprida por hoje?")) {
-                clearInterval(timerId); 
-                const btn = document.getElementById('btn-concluir-treino');
-                btn.innerText = "A GUARDAR..."; btn.disabled = true;
-                try {
-                    const res = await fetch(`${API_URL}?acao=concluirTreinoApp&idAluno=${AlunoLogado.id}&cpf=${AlunoLogado.cpf}&nome=${AlunoLogado.nome}`);
-                    const resp = await res.json(); 
-                    alert(resp.sucesso ? "BOA! +1 Ponto! 🎉💪" : "🛑 " + resp.mensagem);
-                    location.reload(); 
-                } catch(e) {
-                    alert("Erro ao gravar.");
-                    btn.innerText = "CONCLUIR MISSÃO ✅"; btn.disabled = false;
+            Swal.fire({
+                title: 'CONCLUIR MISSÃO?',
+                text: "Tem certeza de que terminou o treino de hoje, guerreiro?",
+                icon: 'question',
+                showCancelButton: true,
+                confirmButtonColor: '#00FF88',
+                cancelButtonColor: '#2A2F3A',
+                confirmButtonText: 'SIM, TERMINEI!',
+                cancelButtonText: 'AINDA NÃO'
+            }).then(async (result) => {
+                if (result.isConfirmed) {
+                    clearInterval(timerId); 
+                    const btn = document.getElementById('btn-concluir-treino');
+                    btn.innerText = "A GUARDAR..."; btn.disabled = true;
+                    
+                    try {
+                        const res = await fetch(`${API_URL}?acao=concluirTreinoApp&idAluno=${AlunoLogado.id}&cpf=${AlunoLogado.cpf}&nome=${AlunoLogado.nome}`);
+                        const resp = await res.json(); 
+                        
+                        if(resp.sucesso) {
+                            // 🌟 INTELIGÊNCIA DOS PONTOS
+                            const diaSemana = new Date().getDay();
+                            const pontosTreino = (diaSemana === 3 || diaSemana === 5) ? 30 : 15;
+                            
+                            Swal.fire({
+                                title: 'TREINO CONCLUÍDO! 💪',
+                                text: `Parabéns, guerreiro! A sua dedicação é inspiradora. Faturou +${pontosTreino} pontos no ranking!`,
+                                icon: 'success',
+                                confirmButtonColor: '#FF5500',
+                                confirmButtonText: 'FECHAR'
+                            }).then(() => {
+                                location.reload();
+                            });
+                        } else {
+                            Swal.fire({
+                                title: 'Calma, atleta!',
+                                text: "Já cumpriu a sua missão e garantiu os pontos hoje. O descanso também faz parte da evolução. Volte amanhã!",
+                                icon: 'info',
+                                confirmButtonColor: '#FF5500'
+                            });
+                            btn.innerText = "CONCLUIR MISSÃO ✅"; btn.disabled = false;
+                        }
+                    } catch(e) {
+                        Swal.fire({
+                            title: 'Erro',
+                            text: 'Ocorreu um problema ao guardar o seu treino.',
+                            icon: 'error',
+                            confirmButtonColor: '#FF5500'
+                        });
+                        btn.innerText = "CONCLUIR MISSÃO ✅"; btn.disabled = false;
+                    }
                 }
-            }
+            });
         }
     </script>
 </body>

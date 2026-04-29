@@ -88,6 +88,9 @@
     </div>
 
     <div id="tela-aluno">
+        <img id="foto-aluno" class="foto-perfil" style="display: none;" src="">
+        <div id="foto-placeholder" class="foto-placeholder" style="display: none;"></div>
+
         <h2 class="saudacao">FALA, <span id="nome-aluno">ALUNO</span>!</h2>
         <p class="pergunta" id="txt-instrucao">QUAL É A MISSÃO DE HOJE?</p>
 
@@ -101,7 +104,7 @@
                 TREINO B
             </button>
             <button class="btn-treino destaque" onclick="abrirSeletorDias()">
-                <svg class="icon" viewBox="0 0 24 24"><path d="M12 2a2 2 0 0 1 2 2c0 .74-.4 1.39-1 1.73V7h1a7 7 0 0 1 7 7h1v4h-1c0 2.21-1.79 4-4 4H7c-2.21 0-4-1.79-4-4H2v-4h1a7 7 0 0 1 7-7h1V5.73c-.6-.34-1-.99-1-1.73a2 2 0 0 1 2-2M7 20h10c1.1 0 2-.9 2-2H5c0 1.1.9 2 2 2m5-11c-2.76 0-5 2.24-5 5h10c0-2.76-2.24-5-5-5m-2 4a1 1 0 0 0-1-1 1 1 0 0 0-1 1 1 1 0 0 0 1 1 1 1 0 0 0 1-1m6 0a1 1 0 0 0-1-1 1 1 0 0 0-1 1 1 1 0 0 0 1-1z"/></svg>
+                <svg class="icon" viewBox="0 0 24 24"><path d="M12 2a2 2 0 0 1 2 2c0 .74-.4 1.39-1 1.73V7h1a7 7 0 0 1 7 7h1v4h-1c0 2.21-1.79 4-4 4H7c-2.21 0-4-1.79-4-4H2v-4h1a7 7 0 0 1 7-7h1V5.73c-.6-.34-1-.99-1-1.73a2 2 0 0 1 2-2M7 20h10c1.1 0 2-.9 2-2H5c0 1.1.9 2 2 2m5-11c-2.76 0-5 2.24-5 5h10c0-2.76-2.24-5-5-5m-2 4a1 1 0 0 0-1-1 1 1 0 0 0-1 1 1 1 0 0 0 1-1m6 0a1 1 0 0 0-1-1 1 1 0 0 0-1 1 1 1 0 0 0 1-1z"/></svg>
                 TREINO MAX IA
             </button>
         </div>
@@ -142,7 +145,7 @@
         let alunoAtualId = ""; 
 
         window.onload = function() {
-            // 🚀 ACELERADO: O Totem agora "escuta" a catraca a cada 2 segundos!
+            // 🚀 ACELERADO: O Totem agora "escuta" a catraca a cada 1 segundo!
             setInterval(escutarCatraca, 1000);
         };
 
@@ -170,19 +173,33 @@
                 
                 if (dados.detectado) {
                     radarLigado = false; 
-                    // 🔴 Agora passamos a posição!
-                    mostrarTelaAluno(dados.nome, dados.idAluno, dados.posicao);
+                    // 🔴 Agora recebemos e repassamos a foto!
+                    mostrarTelaAluno(dados.nome, dados.idAluno, dados.posicao, dados.foto);
                 }
             } catch (e) { console.log("Erro no radar", e); }
         }
 
-        function mostrarTelaAluno(nomeCompleto, idAluno, posicao) {
+        function mostrarTelaAluno(nomeCompleto, idAluno, posicao, foto) {
             const nomeCurto = formatarNomeAmigavel(nomeCompleto);
             alunoAtualId = idAluno; 
 
             document.getElementById('tela-espera').style.display = 'none';
             document.getElementById('tela-aluno').style.display = 'flex';
             
+            // 🌟 CONTROLE DA FOTO NO ECRÃ
+            const imgEl = document.getElementById('foto-aluno');
+            const placeholderEl = document.getElementById('foto-placeholder');
+            
+            if (foto && foto.trim() !== "") {
+                imgEl.src = foto;
+                imgEl.style.display = 'block';
+                placeholderEl.style.display = 'none';
+            } else {
+                imgEl.style.display = 'none';
+                placeholderEl.innerText = nomeCurto.charAt(0); // Coloca a 1ª letra do nome se não houver foto
+                placeholderEl.style.display = 'flex';
+            }
+
             document.getElementById('nome-aluno').innerText = nomeCurto;
             document.getElementById('print-nome').innerText = nomeCurto;
 
@@ -205,7 +222,8 @@
 
         function simularPassagemCatraca(nome, idAluno, posFicticia = 5) {
             radarLigado = false;
-            mostrarTelaAluno(nome, idAluno, posFicticia);
+            // Para testar, envia uma string vazia na foto (mostra a Letra)
+            mostrarTelaAluno(nome, idAluno, posFicticia, "");
         }
 
         function abrirSeletorDias() {

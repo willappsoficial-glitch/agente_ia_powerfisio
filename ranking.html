@@ -54,7 +54,7 @@
             gap: 8px 30px; 
             width: 96%; 
             max-width: 1800px; 
-            margin: 15px auto 90px auto; /* 🌟 Margem fundo aumentada para a barra de rolar não sobrepor */
+            margin: 15px auto 90px auto; 
             flex: 1;
             min-height: 0; 
         }
@@ -84,10 +84,9 @@
 
         /* --- FOTOS DO RANKING --- */
         .foto-ranking { width: 50px; height: 50px; border-radius: 50%; object-fit: cover; border: 2px solid #555; margin-right: 15px; }
-        .foto-ranking-placeholder { width: 50px; height: 50px; border-radius: 50%; background: #2A2F3A; color: #FFF; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 1.5rem; margin-right: 15px; border: 2px solid #555; }
-        .rank-row:nth-child(1) .foto-ranking, .rank-row:nth-child(1) .foto-ranking-placeholder { border-color: var(--gold); }
-        .rank-row:nth-child(2) .foto-ranking, .rank-row:nth-child(2) .foto-ranking-placeholder { border-color: var(--silver); }
-        .rank-row:nth-child(3) .foto-ranking, .rank-row:nth-child(3) .foto-ranking-placeholder { border-color: var(--bronze); }
+        .rank-row:nth-child(1) .foto-ranking { border-color: var(--gold); }
+        .rank-row:nth-child(2) .foto-ranking { border-color: var(--silver); }
+        .rank-row:nth-child(3) .foto-ranking { border-color: var(--bronze); }
 
         .nome { font-size: 1.5rem; font-weight: 800; flex: 1; text-align: left; padding-right: 10px; white-space: normal; line-height: 1.1; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
         .pontos-container { display: flex; align-items: center; gap: 10px; }
@@ -96,7 +95,7 @@
         
         .max-badge { 
             position: fixed; 
-            bottom: 75px; /* 🌟 Subimos para não bater na barra de rolagem */
+            bottom: 75px; 
             right: 3vw; 
             font-size: 0.9rem; color: #666; font-weight: bold; display: flex; align-items: center; gap: 10px;
             background-color: var(--bg-dark); padding: 4px 12px; border-radius: 20px; z-index: 100;
@@ -106,7 +105,7 @@
         @keyframes pulse { 0% { opacity: 0.5; } 50% { opacity: 1; box-shadow: 0 0 20px #00FF88; } 100% { opacity: 0.5; } }
 
         /* ==========================================
-            🌟 BARRA DE ROLAGEM (MARQUEE) 
+            🌟 BARRA DE ROLAGEM (MARQUEE) LIMPA
             ========================================== */
         #scrolling-wrapper {
             position: fixed;
@@ -127,7 +126,7 @@
             display: inline-flex;
             align-items: center;
             white-space: nowrap;
-            padding-left: 100vw; /* Começa escondido à direita */
+            padding-left: 100vw; 
             animation: scrollLeft linear infinite;
         }
 
@@ -139,15 +138,13 @@
         .scroll-item {
             display: inline-flex;
             align-items: center;
-            margin-right: 60px; /* Espaço entre alunos */
+            margin-right: 120px; /* 🌟 ESPAÇAMENTO GIGANTE: Muito mais limpo e legível */
             color: #FFF;
         }
 
-        .scroll-item .pos { font-size: 1.3rem; font-weight: 900; color: #8B92A5; width: auto; margin-right: 10px; }
-        .scroll-item .foto-scroll { width: 40px; height: 40px; border-radius: 50%; object-fit: cover; border: 2px solid var(--primary); margin-right: 10px; }
-        .scroll-item .foto-scroll-placeholder { width: 40px; height: 40px; border-radius: 50%; background: #2A2F3A; color: #FFF; display: inline-flex; align-items: center; justify-content: center; font-weight: bold; font-size: 1.2rem; border: 2px solid var(--primary); margin-right: 10px; }
-        .scroll-item .nome { font-size: 1.3rem; font-weight: 800; margin-right: 15px; display: inline-block; flex: none; }
-        .scroll-item .pontos { font-size: 1.3rem; font-weight: 900; color: var(--primary); background: rgba(255, 85, 0, 0.1); padding: 5px 10px; border-radius: 8px;}
+        .scroll-item .pos { font-size: 1.5rem; font-weight: 900; color: #8B92A5; width: auto; margin-right: 15px; }
+        .scroll-item .foto-scroll { width: 45px; height: 45px; border-radius: 50%; object-fit: cover; border: 2px solid var(--primary); margin-right: 15px; }
+        .scroll-item .nome { font-size: 1.5rem; font-weight: 800; display: inline-block; flex: none; white-space: nowrap; }
 
         /* ==========================================
             🌟 MÓDULO RESPONSIVO
@@ -172,7 +169,7 @@
             .nome { font-size: 1.2rem; -webkit-line-clamp: 2; }
             .pontos { font-size: 2rem; }
             .label { font-size: 0.8rem; }
-            .foto-ranking, .foto-ranking-placeholder { width: 40px; height: 40px; font-size: 1rem; }
+            .foto-ranking { width: 40px; height: 40px; }
 
             .max-badge { bottom: 75px; right: 50%; transform: translateX(50%); width: 90%; justify-content: center; box-shadow: 0 -5px 15px rgba(0,0,0,0.5); }
         }
@@ -218,18 +215,15 @@
                     return;
                 }
 
-                // 🌟 DIVIDE A LISTA: Os primeiros 10 vão para o quadro, o resto para a rodapé
                 const top10 = dados.slice(0, 10);
                 const restantes = dados.slice(10);
 
-                // 1. MONTA O QUADRO TOP 10
+                // 1. MONTA O QUADRO TOP 10 (SEM INICIAIS)
                 let htmlTop = '';
                 top10.forEach(aluno => {
                     let fotoHtml = '';
                     if (aluno.foto && aluno.foto.trim() !== "") {
                         fotoHtml = `<img src="${aluno.foto}" class="foto-ranking" alt="${aluno.nome}">`;
-                    } else {
-                        fotoHtml = `<div class="foto-ranking-placeholder">${aluno.nome.charAt(0)}</div>`;
                     }
 
                     htmlTop += `
@@ -245,15 +239,13 @@
                 });
                 board.innerHTML = htmlTop;
 
-                // 2. MONTA A BARRA DE ROLAGEM PARA O RESTO (DO 11º EM DIANTE)
+                // 2. MONTA A BARRA DE ROLAGEM (ESPAÇADA E APENAS COM POSIÇÃO, FOTO E NOME)
                 if (restantes.length > 0) {
                     let htmlScroll = '';
                     restantes.forEach(aluno => {
                         let fotoHtml = '';
                         if (aluno.foto && aluno.foto.trim() !== "") {
                             fotoHtml = `<img src="${aluno.foto}" class="foto-scroll" alt="${aluno.nome}">`;
-                        } else {
-                            fotoHtml = `<div class="foto-scroll-placeholder">${aluno.nome.charAt(0)}</div>`;
                         }
 
                         htmlScroll += `
@@ -261,19 +253,17 @@
                             <div class="pos">${aluno.posicao}º</div>
                             ${fotoHtml}
                             <div class="nome">${aluno.nome}</div>
-                            <div class="pontos">${aluno.pontos} Pts</div>
                         </div>`;
                     });
 
                     scrollContent.innerHTML = htmlScroll;
                     
-                    // Cálculo inteligente de velocidade: aprox 3.5 segundos por pessoa a rolar
+                    // Velocidade baseada na quantidade de pessoas (aprox. 3.5 seg por pessoa)
                     let tempoAnimacao = Math.max(30, restantes.length * 3.5);
                     scrollContent.style.animationDuration = `${tempoAnimacao}s`;
                     
                     scrollWrapper.style.display = 'flex';
                 } else {
-                    // Se não houver mais do que 10 alunos ainda, esconde a barra
                     scrollWrapper.style.display = 'none';
                 }
 
@@ -283,7 +273,6 @@
         }
 
         carregarRanking();
-        // Atualiza a cada 15 segundos
         setInterval(carregarRanking, 15000);
 
         // ==========================================

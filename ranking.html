@@ -31,18 +31,18 @@
             display: flex;
             flex-direction: column;
             overflow: hidden; 
-            padding: 2vh 2vw; /* 🌟 AJUSTE: Reduzimos a margem para caber mais coisa */
+            padding: 2vh 2vw; 
         }
 
         .header {
             text-align: center;
-            padding: 10px; /* 🌟 AJUSTE: Cabeçalho mais fino */
+            padding: 10px; 
             background: linear-gradient(180deg, rgba(255,85,0,0.1) 0%, rgba(11,12,16,1) 100%);
             border-bottom: 2px solid rgba(255, 85, 0, 0.2);
             border-radius: 16px; 
             flex-shrink: 0;
         }
-        .header h1 { font-size: 2.6rem; font-weight: 900; letter-spacing: -2px; } /* 🌟 AJUSTE: Letra menor */
+        .header h1 { font-size: 2.6rem; font-weight: 900; letter-spacing: -2px; } 
         .header h1 span { color: var(--primary); }
         .header p { font-size: 1rem; color: #8B92A5; text-transform: uppercase; font-weight: 700; letter-spacing: 5px; margin-top: 5px; }
 
@@ -51,10 +51,10 @@
             grid-template-columns: repeat(2, minmax(0, 1fr)); 
             grid-template-rows: repeat(5, 1fr); 
             grid-auto-flow: column; 
-            gap: 8px 30px; /* 🌟 AJUSTE: Menos espaço entre as caixas */
+            gap: 8px 30px; 
             width: 96%; 
             max-width: 1800px; 
-            margin: 15px auto 30px auto; /* 🌟 AJUSTE: Empurra menos para baixo */
+            margin: 15px auto 30px auto; 
             flex: 1;
             min-height: 0; 
         }
@@ -62,7 +62,7 @@
             display: flex;
             align-items: center;
             background: var(--bg-card);
-            padding: 4px 12px; /* 🌟 AJUSTE: Caixas ligeiramente mais finas */
+            padding: 4px 12px; 
             border-radius: 16px;
             box-shadow: 0 8px 15px rgba(0,0,0,0.3);
             border-left: 6px solid #2A2F3A;
@@ -82,8 +82,23 @@
         .rank-row:nth-child(2) .pos { color: var(--silver); }
         .rank-row:nth-child(3) .pos { color: var(--bronze); }
 
+        /* --- FOTOS DO RANKING --- */
+        .foto-ranking { 
+            width: 50px; height: 50px; border-radius: 50%; object-fit: cover; 
+            border: 2px solid #555; margin-right: 15px; 
+        }
+        .foto-ranking-placeholder { 
+            width: 50px; height: 50px; border-radius: 50%; background: #2A2F3A; 
+            color: #FFF; display: flex; align-items: center; justify-content: center; 
+            font-weight: bold; font-size: 1.5rem; margin-right: 15px; border: 2px solid #555; 
+        }
+        .rank-row:nth-child(1) .foto-ranking, .rank-row:nth-child(1) .foto-ranking-placeholder { border-color: var(--gold); }
+        .rank-row:nth-child(2) .foto-ranking, .rank-row:nth-child(2) .foto-ranking-placeholder { border-color: var(--silver); }
+        .rank-row:nth-child(3) .foto-ranking, .rank-row:nth-child(3) .foto-ranking-placeholder { border-color: var(--bronze); }
+
+
         .nome { 
-            font-size: 1.5rem; /* 🌟 AJUSTE: Nome um pouco menor para caber em TVs HD */
+            font-size: 1.5rem; 
             font-weight: 800; 
             flex: 1; 
             text-align: left; 
@@ -101,7 +116,7 @@
         .label { font-size: 0.9rem; color: #8B92A5; text-transform: uppercase; font-weight: 700; margin-top: 5px;}
         .max-badge { 
             position: fixed; 
-            bottom: 10px; /* 🌟 AJUSTE: Colado mais ao fundo */
+            bottom: 10px; 
             right: 3vw; 
             font-size: 0.9rem; 
             color: #666; 
@@ -119,10 +134,9 @@
         @keyframes pulse { 0% { opacity: 0.5; } 50% { opacity: 1; box-shadow: 0 0 20px #00FF88; } 100% { opacity: 0.5; } }
 
         /* ==========================================
-           🌟 MÓDULO RESPONSIVO (Tablets e Celulares)
-           ========================================== */
+            🌟 MÓDULO RESPONSIVO (Tablets e Celulares)
+            ========================================== */
         
-        /* Telas médias (Tablets e iPads) */
         @media (max-width: 1024px) {
             .header h1 { font-size: 2.5rem; }
             .header p { font-size: 1rem; }
@@ -132,10 +146,9 @@
             .container { gap: 10px 20px; }
         }
 
-        /* Telas pequenas (Celulares) */
         @media (max-width: 800px) {
             body {
-                overflow-y: auto; /* Desbloqueia a rolagem no celular */
+                overflow-y: auto; 
                 height: auto;
                 min-height: 100vh;
                 padding: 2vh 4vw;
@@ -145,15 +158,15 @@
             .header p { font-size: 0.8rem; letter-spacing: 2px; }
             
             .container {
-                display: flex; /* Muda de Grid para Flexbox no celular */
+                display: flex; 
                 flex-direction: column;
                 gap: 10px;
                 width: 100%;
-                margin: 20px auto 70px auto; /* Margem inferior para o selo não cobrir os dados */
+                margin: 20px auto 70px auto; 
             }
             
             .rank-row {
-                height: 80px; /* Altura fixa para ficar bonito na rolagem */
+                height: 80px; 
                 padding: 10px 15px;
             }
 
@@ -161,14 +174,15 @@
             .nome { font-size: 1.2rem; -webkit-line-clamp: 2; }
             .pontos { font-size: 2rem; }
             .label { font-size: 0.8rem; }
+            .foto-ranking, .foto-ranking-placeholder { width: 40px; height: 40px; font-size: 1rem; }
 
             .max-badge {
                 bottom: 10px;
                 right: 50%;
-                transform: translateX(50%); /* Centraliza perfeitamente no rodapé */
+                transform: translateX(50%); 
                 width: 90%;
                 justify-content: center;
-                box-shadow: 0 -5px 15px rgba(0,0,0,0.5); /* Sombra para destacar do fundo */
+                box-shadow: 0 -5px 15px rgba(0,0,0,0.5); 
             }
         }
     </style>
@@ -201,16 +215,24 @@
                 const board = document.getElementById('board');
                 
                 if(dados.length === 0) {
-                    // 🌟 ATUALIZADO: "Ponto acumulado"
                     board.innerHTML = `<h2 style="color: #8B92A5; margin-top: 20vh; grid-column: span 2; text-align: center; width: 100%;">Nenhum ponto acumulado este mês ainda.</h2>`;
                     return;
                 }
 
                 let html = '';
                 dados.forEach(aluno => {
+                    // 🌟 LÓGICA DA FOTO
+                    let fotoHtml = '';
+                    if (aluno.foto && aluno.foto.trim() !== "") {
+                        fotoHtml = `<img src="${aluno.foto}" class="foto-ranking" alt="${aluno.nome}">`;
+                    } else {
+                        fotoHtml = `<div class="foto-ranking-placeholder">${aluno.nome.charAt(0)}</div>`;
+                    }
+
                     html += `
                     <div class="rank-row">
                         <div class="pos">${aluno.posicao}º</div>
+                        ${fotoHtml}
                         <div class="nome">${aluno.nome}</div>
                         <div class="pontos-container">
                             <div class="pontos">${aluno.pontos}</div>

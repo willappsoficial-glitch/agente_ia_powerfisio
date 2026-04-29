@@ -193,13 +193,26 @@
         let tempoSegundos = 0;
         let timerId;
 
+        // 🌟 DICIONÁRIO DE TÉCNICAS E NÍVEIS (BALÃOZINHO)
         const TECNICAS = {
             "DROP-SET": "Realize o exercício até a falha, diminua o peso (aprox. 20%) e continue imediatamente sem descanso até a nova falha.",
             "BI-SET": "Realize dois exercícios diferentes para o mesmo músculo (ou antagonistas) sem descanso entre eles.",
             "TRI-SET": "Combine três exercícios diferentes sem descanso entre as séries. Alta intensidade metabólica!",
             "REST-PAUSE": "Treine até a falha, descanse apenas 15 segundos e faça mais algumas repetições com o mesmo peso.",
             "CLUSTER": "Divida a série em pequenos blocos (ex: 4+4+4) com 10-15s de pausa entre eles para manter a carga máxima.",
-            "ISOMETRIA": "Mantenha o músculo contraído na posição de maior esforço pelo tempo indicado, sem se mover."
+            "ISOMETRIA": "Mantenha o músculo contraído na posição de maior esforço pelo tempo indicado, sem se mover.",
+            
+            // Explicando os Níveis
+            "NÍVEL 1": "Fase inicial de adaptação. Foque em aprender o movimento correto com cargas leves a moderadas. Velocidade controlada.",
+            "NÍVEL 2": "Fase de transição. Cargas moderadas, mantendo o controle total do movimento para criar resistência.",
+            "NÍVEL 3": "Fim da fase iniciante. Maior volume de treino para preparar os músculos para cargas mais pesadas.",
+            "NÍVEL 4": "Início da fase intermediária. Introdução de técnicas básicas para aumentar o tempo do músculo sob tensão.",
+            "NÍVEL 5": "Intermediário pleno. O treino começa a exigir mais resistência e recuperação muscular rápida.",
+            "NÍVEL 6": "Fim da fase intermediária. Volume e intensidade altos. Exige bastante foco e nutrição adequada.",
+            "NÍVEL 7": "Avançado inicial. Uso de técnicas intensas para forçar o músculo além do limite normal.",
+            "NÍVEL 8": "Avançado pleno. Treinos densos com grande desgaste metabólico e recrutamento máximo de fibras.",
+            "NÍVEL 9": "Avançado experiente. Combinação de técnicas intensas. O tempo de descanso e a técnica devem ser perfeitos.",
+            "NÍVEL 10": "Nível Power! Elite da academia. Exige força extrema, resistência máxima e supervisão atenta para evitar lesões."
         };
 
         async function fazerLogin() {
@@ -367,10 +380,22 @@
             }, 1000);
         }
 
+        // 🌟 FUNÇÃO ATUALIZADA PARA TRATAR NÍVEIS COM INTELIGÊNCIA
         function abrirModalTecnica(nome) {
-            const nomeFormatado = nome.toUpperCase();
+            const nomeFormatado = nome.toUpperCase().trim();
             document.getElementById('modal-titulo').innerText = nomeFormatado;
-            document.getElementById('modal-desc').innerText = TECNICAS[nomeFormatado] || "Técnica avançada para aumentar a intensidade do treino. Consulte o professor para detalhes de execução.";
+            
+            let descricao = TECNICAS[nomeFormatado];
+            
+            if (!descricao) {
+                if (nomeFormatado.includes("NÍVEL") || nomeFormatado.includes("NIVEL")) {
+                    descricao = "Indicador de dificuldade e volume do seu treino atual. Mantenha a consistência para evoluir e subir de nível!";
+                } else {
+                    descricao = "Técnica para aumentar a intensidade do treino. Consulte o professor para detalhes da execução correta.";
+                }
+            }
+
+            document.getElementById('modal-desc').innerText = descricao;
             document.getElementById('modal-tecnica').style.display = 'flex';
         }
 
@@ -399,7 +424,6 @@
                         const resp = await res.json(); 
                         
                         if(resp.sucesso) {
-                            // 🌟 INTELIGÊNCIA DOS PONTOS
                             const diaSemana = new Date().getDay();
                             const pontosTreino = (diaSemana === 3 || diaSemana === 5) ? 30 : 15;
                             

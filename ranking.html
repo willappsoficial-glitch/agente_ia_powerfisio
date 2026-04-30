@@ -3,18 +3,19 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Powerfisio - TV Ranking</title>
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;900&display=swap" rel="stylesheet">
+    <title>Powerfisio - TV Ranking Pro</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;800;900&display=swap" rel="stylesheet">
     
     <link rel="manifest" href="manifest-tv.json">
-    <meta name="theme-color" content="#0B0C10">
+    <meta name="theme-color" content="#08090C">
     <meta name="apple-mobile-web-app-capable" content="yes">
     
     <style>
         :root {
             --primary: #FF5500;
-            --bg-dark: #0B0C10;
-            --bg-card: #1A1D24;
+            --primary-glow: rgba(255, 85, 0, 0.4);
+            --bg-dark: #08090C;
+            --bg-card: rgba(26, 29, 36, 0.6);
             --gold: #FFD700;
             --silver: #C0C0C0;
             --bronze: #CD7F32;
@@ -24,6 +25,8 @@
 
         body {
             font-family: 'Montserrat', sans-serif;
+            /* Fundo com gradiente radial para profundidade */
+            background: radial-gradient(circle at 50% -20%, rgba(255,85,0,0.15) 0%, var(--bg-dark) 70%);
             background-color: var(--bg-dark);
             color: #FFF;
             width: 100vw;
@@ -34,92 +37,201 @@
             padding: 2vh 2vw; 
         }
 
+        /* --- CABEÇALHO --- */
         .header {
             text-align: center;
-            padding: 10px; 
-            background: linear-gradient(180deg, rgba(255,85,0,0.1) 0%, rgba(11,12,16,1) 100%);
-            border-bottom: 2px solid rgba(255, 85, 0, 0.2);
-            border-radius: 16px; 
+            padding: 10px 20px; 
+            margin-bottom: 10px;
             flex-shrink: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            position: relative;
         }
-        .header h1 { font-size: 2.6rem; font-weight: 900; letter-spacing: -2px; } 
+        .header img {
+            max-width: 120px;
+            border-radius: 16px;
+            box-shadow: 0 8px 25px rgba(255, 85, 0, 0.2);
+            cursor: pointer;
+            margin-bottom: 5px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+        .header h1 { 
+            font-size: 2.4rem; 
+            font-weight: 900; 
+            letter-spacing: -1px; 
+            text-shadow: 0 4px 10px rgba(0,0,0,0.5);
+        } 
         .header h1 span { color: var(--primary); }
-        .header p { font-size: 1rem; color: #8B92A5; text-transform: uppercase; font-weight: 700; letter-spacing: 5px; margin-top: 5px; }
+        .header p { 
+            font-size: 0.9rem; 
+            color: #A0A5B5; 
+            text-transform: uppercase; 
+            font-weight: 800; 
+            letter-spacing: 6px; 
+            margin-top: 5px; 
+        }
 
+        /* --- GRID DOS CARDS --- */
         .container {
             display: grid;
             grid-template-columns: repeat(2, minmax(0, 1fr)); 
             grid-template-rows: repeat(5, 1fr); 
             grid-auto-flow: column; 
-            gap: 8px 30px; 
+            gap: 12px 40px; 
             width: 96%; 
             max-width: 1800px; 
-            margin: 15px auto 90px auto; 
+            margin: 0 auto 80px auto; 
             flex: 1;
             min-height: 0; 
         }
+
+        /* --- ESTILO DOS CARDS (GLASSMORPHISM) --- */
         .rank-row {
             display: flex;
             align-items: center;
             background: var(--bg-card);
-            padding: 4px 12px; 
-            border-radius: 16px;
-            box-shadow: 0 8px 15px rgba(0,0,0,0.3);
-            border-left: 6px solid #2A2F3A;
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            padding: 6px 15px; 
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.4);
             transition: transform 0.5s ease;
             animation: fadeIn 0.5s ease forwards;
             opacity: 0;
             height: 100%;
         }
-        .rank-row:nth-child(1) { animation-delay: 0.1s; border-color: var(--gold); background: linear-gradient(90deg, rgba(255, 215, 0, 0.1) 0%, var(--bg-card) 50%); transform: scale(1.02); z-index: 10;}
-        .rank-row:nth-child(2) { animation-delay: 0.2s; border-color: var(--silver); background: linear-gradient(90deg, rgba(192, 192, 192, 0.1) 0%, var(--bg-card) 50%); transform: scale(1.01); z-index: 9;}
-        .rank-row:nth-child(3) { animation-delay: 0.3s; border-color: var(--bronze); background: linear-gradient(90deg, rgba(205, 127, 50, 0.1) 0%, var(--bg-card) 50%); transform: scale(1.00); z-index: 8;}
-        
-        @keyframes fadeIn { to { opacity: 1; } }
 
-        .pos { font-size: 2rem; font-weight: 900; width: 60px; color: #555; }
-        .rank-row:nth-child(1) .pos { color: var(--gold); }
-        .rank-row:nth-child(2) .pos { color: var(--silver); }
-        .rank-row:nth-child(3) .pos { color: var(--bronze); }
+        /* ANIMAÇÃO DE ENTRADA */
+        @keyframes fadeIn { 
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); } 
+        }
 
-        /* --- FOTOS DO RANKING --- */
-        .foto-ranking { width: 50px; height: 50px; border-radius: 50%; object-fit: cover; border: 2px solid #555; margin-right: 15px; }
+        /* --- DESTAQUES TOP 3 (NEON GLOW) --- */
+        .rank-row:nth-child(1) { 
+            animation-delay: 0.1s; 
+            background: linear-gradient(90deg, rgba(255, 215, 0, 0.15) 0%, var(--bg-card) 60%);
+            border-left: 6px solid var(--gold);
+            box-shadow: 0 0 20px rgba(255, 215, 0, 0.15), 0 10px 30px rgba(0,0,0,0.5);
+            border-top: 1px solid rgba(255, 215, 0, 0.3);
+            border-bottom: 1px solid rgba(255, 215, 0, 0.3);
+        }
+        .rank-row:nth-child(2) { 
+            animation-delay: 0.2s; 
+            background: linear-gradient(90deg, rgba(192, 192, 192, 0.1) 0%, var(--bg-card) 60%);
+            border-left: 6px solid var(--silver);
+            box-shadow: 0 0 20px rgba(192, 192, 192, 0.1), 0 10px 30px rgba(0,0,0,0.5);
+            border-top: 1px solid rgba(192, 192, 192, 0.3);
+            border-bottom: 1px solid rgba(192, 192, 192, 0.3);
+        }
+        .rank-row:nth-child(3) { 
+            animation-delay: 0.3s; 
+            background: linear-gradient(90deg, rgba(205, 127, 50, 0.1) 0%, var(--bg-card) 60%);
+            border-left: 6px solid var(--bronze);
+            box-shadow: 0 0 20px rgba(205, 127, 50, 0.1), 0 10px 30px rgba(0,0,0,0.5);
+            border-top: 1px solid rgba(205, 127, 50, 0.3);
+            border-bottom: 1px solid rgba(205, 127, 50, 0.3);
+        }
+        .rank-row:nth-child(n+4) {
+            border-left: 6px solid rgba(255, 255, 255, 0.1);
+        }
+
+        /* --- POSIÇÃO & FOTO --- */
+        .pos { font-size: 2.2rem; font-weight: 900; width: 65px; color: #4A5060; text-align: center; }
+        .rank-row:nth-child(1) .pos { color: var(--gold); text-shadow: 0 0 15px rgba(255,215,0,0.5); }
+        .rank-row:nth-child(2) .pos { color: var(--silver); text-shadow: 0 0 15px rgba(192,192,192,0.5); }
+        .rank-row:nth-child(3) .pos { color: var(--bronze); text-shadow: 0 0 15px rgba(205,127,50,0.5); }
+
+        .foto-ranking { 
+            width: 55px; height: 55px; 
+            border-radius: 50%; 
+            object-fit: cover; 
+            margin-right: 15px; 
+            border: 3px solid #2A2F3A;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.5);
+        }
         .rank-row:nth-child(1) .foto-ranking { border-color: var(--gold); }
         .rank-row:nth-child(2) .foto-ranking { border-color: var(--silver); }
         .rank-row:nth-child(3) .foto-ranking { border-color: var(--bronze); }
 
-        .nome { font-size: 1.5rem; font-weight: 800; flex: 1; text-align: left; padding-right: 10px; white-space: normal; line-height: 1.1; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
-        .pontos-container { display: flex; align-items: center; gap: 10px; }
-        .pontos { font-size: 2.4rem; font-weight: 900; color: var(--primary); }
-        .label { font-size: 0.9rem; color: #8B92A5; text-transform: uppercase; font-weight: 700; margin-top: 5px;}
+        /* --- NOME --- */
+        .nome { 
+            font-size: 1.3rem; 
+            font-weight: 800; 
+            flex: 1; 
+            text-align: left; 
+            padding-right: 15px; 
+            white-space: normal; 
+            line-height: 1.2; 
+            display: -webkit-box; 
+            -webkit-line-clamp: 2; 
+            -webkit-box-orient: vertical; 
+            overflow: hidden;
+            text-transform: uppercase;
+            color: #E2E8F0;
+        }
+
+        /* --- BADGE DE PONTOS --- */
+        .badge-pontos { 
+            display: flex; 
+            flex-direction: column;
+            align-items: center; 
+            justify-content: center;
+            background: rgba(255, 85, 0, 0.1);
+            border: 1px solid rgba(255, 85, 0, 0.2);
+            padding: 8px 15px;
+            border-radius: 14px;
+            min-width: 90px;
+            box-shadow: inset 0 0 10px rgba(255,85,0,0.05);
+        }
+        .pontos { font-size: 2.2rem; font-weight: 900; color: var(--primary); line-height: 1; text-shadow: 0 0 10px rgba(255,85,0,0.3);}
+        .label { font-size: 0.7rem; color: #FFAA88; text-transform: uppercase; font-weight: 800; margin-top: 2px; letter-spacing: 1px;}
         
+        /* --- STATUS EM TEMPO REAL --- */
         .max-badge { 
             position: fixed; 
-            bottom: 75px; 
+            bottom: 80px; 
             right: 3vw; 
-            font-size: 0.9rem; color: #666; font-weight: bold; display: flex; align-items: center; gap: 10px;
-            background-color: var(--bg-dark); padding: 4px 12px; border-radius: 20px; z-index: 100;
+            font-size: 0.85rem; 
+            color: #8B92A5; 
+            font-weight: 800; 
+            display: flex; 
+            align-items: center; 
+            gap: 8px;
+            background-color: rgba(0,0,0,0.6); 
+            backdrop-filter: blur(5px);
+            padding: 6px 16px; 
+            border-radius: 30px; 
+            z-index: 100;
+            border: 1px solid rgba(255,255,255,0.05);
         }
-        .max-badge span { display: inline-block; width: 12px; height: 12px; background: #00FF88; border-radius: 50%; box-shadow: 0 0 10px #00FF88; animation: pulse 2s infinite;}
+        .max-badge span { 
+            display: inline-block; width: 10px; height: 10px; background: #00FF88; border-radius: 50%; 
+            box-shadow: 0 0 10px #00FF88; animation: pulse 2s infinite;
+        }
 
-        @keyframes pulse { 0% { opacity: 0.5; } 50% { opacity: 1; box-shadow: 0 0 20px #00FF88; } 100% { opacity: 0.5; } }
+        @keyframes pulse { 0% { opacity: 0.4; } 50% { opacity: 1; box-shadow: 0 0 15px #00FF88; } 100% { opacity: 0.4; } }
 
         /* ==========================================
-            🌟 BARRA DE ROLAGEM (MARQUEE) LIMPA
+            🌟 BARRA DE ROLAGEM (MARQUEE)
             ========================================== */
         #scrolling-wrapper {
             position: fixed;
             bottom: 0;
             left: 0;
             width: 100vw;
-            height: 65px;
-            background: linear-gradient(90deg, rgba(11,12,16,1) 0%, rgba(26,29,36,1) 50%, rgba(11,12,16,1) 100%);
-            border-top: 2px solid rgba(255, 85, 0, 0.4);
+            height: 60px;
+            background: rgba(11, 12, 16, 0.95);
+            backdrop-filter: blur(15px);
+            border-top: 1px solid rgba(255, 85, 0, 0.3);
             display: flex;
             align-items: center;
             overflow: hidden;
             z-index: 100;
-            box-shadow: 0 -5px 20px rgba(0,0,0,0.5);
+            box-shadow: 0 -5px 20px rgba(0,0,0,0.8);
         }
 
         #scrolling-content {
@@ -138,49 +250,44 @@
         .scroll-item {
             display: inline-flex;
             align-items: center;
-            margin-right: 120px; /* 🌟 ESPAÇAMENTO GIGANTE: Muito mais limpo e legível */
+            margin-right: 150px; 
             color: #FFF;
         }
 
-        .scroll-item .pos { font-size: 1.5rem; font-weight: 900; color: #8B92A5; width: auto; margin-right: 15px; }
-        .scroll-item .foto-scroll { width: 45px; height: 45px; border-radius: 50%; object-fit: cover; border: 2px solid var(--primary); margin-right: 15px; }
-        .scroll-item .nome { font-size: 1.5rem; font-weight: 800; display: inline-block; flex: none; white-space: nowrap; }
+        .scroll-item .pos { font-size: 1.5rem; font-weight: 900; color: #6A7285; width: auto; margin-right: 15px; }
+        .scroll-item .foto-scroll { width: 40px; height: 40px; border-radius: 50%; object-fit: cover; border: 2px solid #4A5060; margin-right: 15px; }
+        
+        /* 🔥 Correção aplicada aqui: Impede que o nome quebre em duas linhas */
+        .scroll-item .nome { 
+            font-size: 1.3rem; 
+            font-weight: 800; 
+            text-transform: uppercase; 
+            display: inline-block; 
+            color: #A0A5B5;
+            white-space: nowrap; 
+            flex: none; 
+        }
 
         /* ==========================================
-            🌟 MÓDULO RESPONSIVO
+            🌟 RESPONSIVIDADE
             ========================================== */
         @media (max-width: 1024px) {
-            .header h1 { font-size: 2.5rem; }
-            .header p { font-size: 1rem; }
-            .pos { font-size: 2rem; width: 60px; }
-            .nome { font-size: 1.4rem; }
-            .pontos { font-size: 2.2rem; }
-            .container { gap: 10px 20px; }
-        }
-
-        @media (max-width: 800px) {
-            body { overflow-y: auto; height: auto; min-height: 100vh; padding: 2vh 4vw; }
-            .header img { max-width: 100px !important; }
-            .header h1 { font-size: 2rem; }
-            .header p { font-size: 0.8rem; letter-spacing: 2px; }
-            .container { display: flex; flex-direction: column; gap: 10px; width: 100%; margin: 20px auto 120px auto; }
-            .rank-row { height: 80px; padding: 10px 15px; }
+            .header h1 { font-size: 2.2rem; }
             .pos { font-size: 1.8rem; width: 50px; }
-            .nome { font-size: 1.2rem; -webkit-line-clamp: 2; }
-            .pontos { font-size: 2rem; }
-            .label { font-size: 0.8rem; }
-            .foto-ranking { width: 40px; height: 40px; }
-
-            .max-badge { bottom: 75px; right: 50%; transform: translateX(50%); width: 90%; justify-content: center; box-shadow: 0 -5px 15px rgba(0,0,0,0.5); }
+            .nome { font-size: 1.1rem; }
+            .pontos { font-size: 1.8rem; }
+            .badge-pontos { min-width: 75px; padding: 5px 10px; }
+            .container { gap: 10px 20px; margin-bottom: 70px;}
         }
+
     </style>
 </head>
 <body>
 
     <div class="header">
-        <img src="logo.jpeg" alt="Logo Powerfisio" onclick="toggleFullScreen()" style="max-width: 150px; margin-bottom: 5px; border-radius: 12px; box-shadow: 0 5px 15px rgba(255, 85, 0, 0.2); cursor: pointer;">
+        <img src="logo.jpeg" alt="Logo Powerfisio" onclick="toggleFullScreen()">
         <h1>POWER<span>FISIO</span></h1>
-        <p>RANKING DE FREQUÊNCIA E PONTOS - TOP 10 DO MÊS</p>
+        <p>Ranking de Frequência - Top 10 do Mês</p>
     </div>
 
     <div class="container" id="board">
@@ -218,7 +325,7 @@
                 const top10 = dados.slice(0, 10);
                 const restantes = dados.slice(10);
 
-                // 1. MONTA O QUADRO TOP 10 (SEM INICIAIS)
+                // 1. MONTA O QUADRO TOP 10
                 let htmlTop = '';
                 top10.forEach(aluno => {
                     let fotoHtml = '';
@@ -231,15 +338,15 @@
                         <div class="pos">${aluno.posicao}º</div>
                         ${fotoHtml}
                         <div class="nome">${aluno.nome}</div>
-                        <div class="pontos-container">
-                            <div class="pontos">${aluno.pontos}</div>
-                            <div class="label">Pontos</div>
+                        <div class="badge-pontos">
+                            <span class="pontos">${aluno.pontos}</span>
+                            <span class="label">Pontos</span>
                         </div>
                     </div>`;
                 });
                 board.innerHTML = htmlTop;
 
-                // 2. MONTA A BARRA DE ROLAGEM (ESPAÇADA E APENAS COM POSIÇÃO, FOTO E NOME)
+                // 2. MONTA A BARRA DE ROLAGEM
                 if (restantes.length > 0) {
                     let htmlScroll = '';
                     restantes.forEach(aluno => {
@@ -258,7 +365,6 @@
 
                     scrollContent.innerHTML = htmlScroll;
                     
-                    // Velocidade baseada na quantidade de pessoas (aprox. 3.5 seg por pessoa)
                     let tempoAnimacao = Math.max(30, restantes.length * 3.5);
                     scrollContent.style.animationDuration = `${tempoAnimacao}s`;
                     
@@ -275,16 +381,9 @@
         carregarRanking();
         setInterval(carregarRanking, 15000);
 
-        // ==========================================
-        // 🌟 MÓDULO PWA E TELA CHEIA PARA A TV
-        // ==========================================
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
-                navigator.serviceWorker.register('sw.js').then((registration) => {
-                    console.log('Service Worker Registrado com sucesso:', registration.scope);
-                }).catch((error) => {
-                    console.log('Falha ao registrar o Service Worker:', error);
-                });
+                navigator.serviceWorker.register('sw.js').catch(()=>{});
             });
         }
 

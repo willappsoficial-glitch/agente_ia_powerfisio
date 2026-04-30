@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Master App - WillWeb</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <style>
+        :root { 
+            --p: #FF5500; 
+            --bg: #0B0D14; 
+            --card: #1A1D2A; 
+            --txt: #ffffff; 
+            --muted: #8B92A5;
+        }
+        
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        
+        body { 
+            font-family: 'Inter', sans-serif; 
+            background: var(--bg); 
+            color: var(--txt); 
+            display: flex; 
+            flex-direction: column; 
+            height: 100vh; 
+            overflow: hidden; 
+        }
+        
+        /* HEADER APP */
+        .app-header { 
+            background: var(--card); 
+            padding: 15px 20px; 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+            z-index: 10;
+        }
+        .logo { font-weight: 900; font-size: 1.2rem; color: var(--txt); letter-spacing: -0.5px; }
+        .logo span { color: var(--p); }
+        .btn-add { 
+            background: var(--p); 
+            color: #fff; 
+            border: none; 
+            padding: 8px 16px; 
+            border-radius: 20px; 
+            font-weight: 700; 
+            font-size: 0.8rem;
+            cursor: pointer; 
+            box-shadow: 0 4px 15px rgba(255,85,0,0.3);
+        }
+
+        /* ÁREA DE CONTEÚDO */
+        .content-area { 
+            flex: 1; 
+            overflow-y: auto; 
+            padding: 20px; 
+            padding-bottom: 90px; /* Espaço para o menu inferior */
+        }
+        .titulo-secao { font-size: 1.1rem; color: var(--muted); margin-bottom: 15px; text-transform: uppercase; font-weight: 800; letter-spacing: 1px;}
+
+        /* TABELA COM SCROLL LIMPO */
+        .table-wrapper {
+            background: var(--card);
+            border-radius: 12px;
+            overflow-x: auto;
+            border: 1px solid rgba(255,255,255,0.05);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+        table { width: 100%; border-collapse: collapse; white-space: nowrap; }
+        th { background: rgba(0,0,0,0.2); padding: 15px; text-align: left; font-size: 0.75rem; text-transform: uppercase; color: var(--muted); }
+        td { padding: 12px 15px; border-bottom: 1px solid rgba(255,255,255,0.05); font-size: 0.85rem; }
+        tr:last-child td { border-bottom: none; }
+        
+        .action-btn { background: none; border: none; cursor: pointer; color: var(--muted); margin-right: 10px; transition: 0.2s; }
+        .btn-edit:hover, .btn-edit:active { color: #00E676; }
+        .btn-del:hover, .btn-del:active { color: #FF3D00; }
+
+        /* MENU INFERIOR (BOTTOM NAV BAR) */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background: rgba(26, 29, 42, 0.95);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            display: flex;
+            justify-content: space-around;
+            padding: 10px 5px 20px 5px; /* Padding extra em baixo para o iPhone/Android swiper */
+            border-top: 1px solid rgba(255,255,255,0.05);
+            z-index: 100;
+        }
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            color: var(--muted);
+            cursor: pointer;
+            transition: 0.3s;
+            width: 20%;
+        }
+        .nav-item .material-icons { font-size: 1.5rem; margin-bottom: 4px; transition: 0.3s; }
+        .nav-item span { font-size: 0.65rem; font-weight: 600; }
+        
+        .nav-item.active { color: var(--p); }
+        .nav-item.active .material-icons { transform: translateY(-3px); text-shadow: 0 4px 10px rgba(255,85,0,0.4); }
+
+        /* MODAL DE EDIÇÃO (DINÂMICO) */
+        #modal { display: none; position: fixed; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.85); z-index: 1000; justify-content: center; align-items: center; padding: 15px; backdrop-filter: blur(5px); }
+        .modal-content { background: var(--card); padding: 25px; border-radius: 16px; width: 100%; max-width: 500px; max-height: 85vh; overflow-y: auto; border: 1px solid rgba(255,255,255,0.1); }
+        .modal-content h3 { margin-bottom: 20px; font-size: 1.2rem; }
+        .field { margin-bottom: 15px; }
+        .field label { display: block; margin-bottom: 6px; font-size: 0.75rem; color: var(--muted); text-transform: uppercase; font-weight: 700; }
+        .field input { width: 100%; padding: 12px; background: var(--bg); border: 1px solid #333; color: #fff; border-radius: 8px; font-family: 'Inter'; font-size: 0.9rem; }
+        .field input:focus { outline: none; border-color: var(--p); }
+        
+        .modal-actions { display: flex; gap: 10px; margin-top: 25px; }
+        .btn-salvar { flex: 2; background: var(--p); color: #fff; border: none; padding: 14px; border-radius: 8px; font-weight: 800; cursor: pointer; }
+        .btn-cancelar { flex: 1; background: #2A2F42; color: #fff; border: none; padding: 14px; border-radius: 8px; font-weight: 700; cursor: pointer; }
+
+        .loading-text { text-align: center; padding: 40px; color: var(--muted); font-size: 0.9rem; display: flex; flex-direction: column; align-items: center; gap: 10px; }
+        .spin { animation: rodar 1s linear infinite; }
+        @keyframes rodar { to { transform: rotate(360deg); } }
+    </style>
+</head>
+<body>
+
+    <header class="app-header">
+        <div class="logo">WILLWEB <span>ERP</span></div>
+        <button class="btn-add" onclick="abrirForm()">+ NOVO</button>
+    </header>
+
+    <main class="content-area">
+        <h2 id="titulo-aba" class="titulo-secao">ALUNOS_MAX</h2>
+        
+        <div class="table-wrapper">
+            <table id="tabela-master">
+                <thead id="thead"></thead>
+                <tbody id="tbody"></tbody>
+            </table>
+        </div>
+    </main>
+
+    <nav class="bottom-nav">
+        <div class="nav-item active" onclick="mudarAba('Alunos_Max', this)">
+            <span class="material-icons">groups</span>
+            <span>Alunos</span>
+        </div>
+        <div class="nav-item" onclick="mudarAba('Exercicios', this)">
+            <span class="material-icons">fitness_center</span>
+            <span>Exercícios</span>
+        </div>
+        <div class="nav-item" onclick="mudarAba('Saude', this)">
+            <span class="material-icons">favorite</span>
+            <span>Saúde</span>
+        </div>
+        <div class="nav-item" onclick="mudarAba('MemoriaTreinos', this)">
+            <span class="material-icons">psychology</span>
+            <span>Treinos</span>
+        </div>
+        <div class="nav-item" onclick="mudarAba('Log_Webhook', this)">
+            <span class="material-icons">data_array</span>
+            <span>Logs</span>
+        </div>
+    </nav>
+
+    <div id="modal">
+        <div class="modal-content">
+            <h3 id="modal-titulo">Editar Registro</h3>
+            <form id="form-universal">
+                <input type="hidden" id="field-rowIdx">
+                <div id="form-fields"></div>
+                <div class="modal-actions">
+                    <button type="button" class="btn-cancelar" onclick="fecharModal()">CANCELAR</button>
+                    <button type="button" class="btn-salvar" onclick="salvar()">SALVAR</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // 🚨 COLOQUE A SUA URL AQUI
+        const API = "URL_DO_SEU_APPS_SCRIPT_AQUI"; 
+        
+        let abaAtual = "Alunos_Max";
+        let colunasAtuais = [];
+
+        async function mudarAba(nome, elemento) {
+            document.querySelectorAll('.nav-item').forEach(b => b.classList.remove('active'));
+            elemento.classList.add('active');
+            abaAtual = nome;
+            document.getElementById('titulo-aba').innerText = nome.replace('_', ' ');
+            carregarDados();
+        }
+
+        async function carregarDados() {
+            document.getElementById('thead').innerHTML = "";
+            document.getElementById('tbody').innerHTML = `<tr><td colspan="10" class="loading-text"><span class="material-icons spin">sync</span> Sincronizando com o Cérebro...</td></tr>`;
+            
+            try {
+                const res = await fetch(`${API}?acao=getDadosAba&aba=${abaAtual}`);
+                const data = await res.json();
+                
+                if(data.erro) {
+                    document.getElementById('tbody').innerHTML = `<tr><td colspan="10" class="loading-text" style="color:#ff4444">${data.erro}</td></tr>`;
+                    return;
+                }
+
+                colunasAtuais = data.cabecalho;
+                
+                // Monta o Cabeçalho
+                let theadHTML = '<tr><th>AÇÕES</th>';
+                colunasAtuais.forEach(coluna => theadHTML += `<th>${coluna}</th>`);
+                theadHTML += '</tr>';
+                document.getElementById('thead').innerHTML = theadHTML;
+
+                // Monta as Linhas
+                let tbodyHTML = '';
+                data.linhas.forEach(linha => {
+                    tbodyHTML += `<tr>`;
+                    // Coluna de ações fixada no início para facilitar no celular
+                    tbodyHTML += `<td>
+                        <button class="action-btn btn-edit" onclick='abrirForm(${JSON.stringify(linha)})'><span class="material-icons">edit</span></button>
+                        <button class="action-btn btn-del" onclick="excluir(${linha.rowIdx})"><span class="material-icons">delete</span></button>
+                    </td>`;
+                    
+                    colunasAtuais.forEach(coluna => {
+                        let valor = linha[coluna] || "";
+                        // Se for um link de imagem ou site, cria um botãozinho em vez de texto gigante
+                        if(String(valor).startsWith("http")) valor = `<a href="${valor}" target="_blank" style="color:var(--p); text-decoration:none;">🔗 Abrir Link</a>`;
+                        tbodyHTML += `<td>${valor}</td>`;
+                    });
+                    tbodyHTML += `</tr>`;
+                });
+                document.getElementById('tbody').innerHTML = tbodyHTML;
+
+            } catch(e) { 
+                document.getElementById('tbody').innerHTML = `<tr><td colspan="10" class="loading-text" style="color:#ff4444">Falha na conexão.</td></tr>`;
+            }
+        }
+
+        function abrirForm(dados = null) {
+            document.getElementById('modal').style.display = 'flex';
+            document.getElementById('modal-titulo').innerText = dados ? "Editar Registro" : "Novo Registro";
+            document.getElementById('field-rowIdx').value = dados ? dados.rowIdx : "";
+            
+            let fieldsHtml = '';
+            colunasAtuais.forEach(coluna => {
+                let valor = dados ? dados[coluna] : "";
+                fieldsHtml += `
+                    <div class="field">
+                        <label>${coluna}</label>
+                        <input type="text" name="${coluna}" value="${valor}">
+                    </div>`;
+            });
+            document.getElementById('form-fields').innerHTML = fieldsHtml;
+        }
+
+        async function salvar() {
+            const btn = document.querySelector('.btn-salvar');
+            btn.innerHTML = "SALVANDO...";
+            
+            const formData = new FormData(document.getElementById('form-universal'));
+            const payload = {
+                acao: 'salvarLinha',
+                aba: abaAtual,
+                rowIdx: document.getElementById('field-rowIdx').value,
+                dados: Object.fromEntries(formData)
+            };
+
+            await fetch(API, { method: 'POST', body: JSON.stringify(payload) });
+            btn.innerHTML = "SALVAR";
+            fecharModal();
+            carregarDados();
+        }
+
+        async function excluir(idx) {
+            if(!confirm("Atenção! Deseja apagar permanentemente este registro da planilha?")) return;
+            const payload = { acao: 'excluirLinha', aba: abaAtual, rowIdx: idx };
+            await fetch(API, { method: 'POST', body: JSON.stringify(payload) });
+            carregarDados();
+        }
+
+        function fecharModal() { 
+            document.getElementById('modal').style.display = 'none'; 
+        }
+        
+        // Inicia a primeira aba ao abrir
+        carregarDados();
+    </script>
+</body>
+</html>

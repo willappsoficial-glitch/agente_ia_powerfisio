@@ -4,229 +4,352 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Powerfisio - Admin Max</title>
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;700;900&family=Barlow:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
         :root {
             --primary: #FF5500;
-            --primary-hover: #e64d00;
-            --bg-dark: #0F1115;
-            --bg-card: #1A1D24;
-            --text-main: #FFFFFF;
-            --text-muted: #8B92A5;
-            --glass: rgba(255, 255, 255, 0.03);
+            --primary-dim: rgba(255,85,0,0.12);
+            --bg: #080A0F;
+            --bg-card: #0F1219;
+            --bg-surface: #161923;
+            --border: rgba(255,255,255,0.07);
+            --text: #FFFFFF;
+            --muted: #6B7280;
+            --success: #00E676;
         }
 
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
         body {
-            font-family: 'Montserrat', sans-serif;
-            background-color: var(--bg-dark);
-            color: var(--text-main);
-            display: flex;
-            justify-content: center;
-            align-items: center;
+            font-family: 'Barlow', sans-serif;
+            background: var(--bg);
+            color: var(--text);
             min-height: 100vh;
-            margin: 0;
-            background-image: radial-gradient(circle at 20% 30%, rgba(255, 85, 0, 0.05) 0%, transparent 40%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 24px;
+            background-image: radial-gradient(ellipse at 20% 50%, rgba(255,85,0,0.04) 0%, transparent 50%);
         }
 
         .container {
-            width: 90%;
-            max-width: 500px;
-            background: var(--bg-card);
-            padding: 40px;
-            border-radius: 24px;
-            border: 1px solid rgba(255, 255, 255, 0.05);
-            box-shadow: 0 20px 50px rgba(0,0,0,0.4);
-            animation: fadeIn 0.6s ease-out;
+            width: 100%;
+            max-width: 480px;
+        }
+
+        /* Header */
+        .header {
+            text-align: center;
+            margin-bottom: 28px;
+            animation: fadeIn 0.5s ease-out;
         }
 
         @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
+            from { opacity: 0; transform: translateY(12px); }
             to { opacity: 1; transform: translateY(0); }
         }
 
-        .header { text-align: center; margin-bottom: 30px; }
-        .header h1 { font-weight: 800; letter-spacing: -1px; margin-bottom: 5px; }
+        .header-logo {
+            width: 72px;
+            height: 72px;
+            border-radius: 20px;
+            margin-bottom: 14px;
+            box-shadow: 0 8px 28px rgba(255,85,0,0.25);
+        }
+
+        .header h1 {
+            font-family: 'Barlow Condensed', sans-serif;
+            font-size: 2.4rem;
+            font-weight: 900;
+            letter-spacing: -1px;
+            margin-bottom: 4px;
+        }
+
         .header h1 span { color: var(--primary); }
-        .header p { color: var(--text-muted); font-size: 0.9rem; }
 
-        .search-box {
+        .header p {
+            font-size: 0.75rem;
+            color: var(--muted);
+            letter-spacing: 3px;
+            text-transform: uppercase;
+        }
+
+        /* Card */
+        .card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 24px;
+            padding: 28px;
+            animation: fadeIn 0.5s ease-out 0.1s both;
+        }
+
+        /* Search */
+        .search-row {
             display: flex;
-            gap: 10px;
-            margin-bottom: 30px;
-        }
-
-        input {
-            flex: 1;
-            background: var(--glass);
-            border: 1px solid #2A2F3A;
-            padding: 15px 20px;
-            border-radius: 12px;
-            color: white;
-            font-family: inherit;
-            outline: none;
-            transition: 0.3s;
-        }
-
-        input:focus { border-color: var(--primary); box-shadow: 0 0 0 4px rgba(255, 85, 0, 0.1); }
-
-        button {
-            background: var(--primary);
-            color: white;
-            border: none;
-            padding: 15px 25px;
-            border-radius: 12px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: 0.3s;
-        }
-
-        button:hover { background: var(--primary-hover); transform: translateY(-2px); }
-
-        /* --- Resultado da Busca --- */
-        #resultado-busca {
-            background: var(--glass);
-            border-radius: 16px;
-            padding: 20px;
-            margin-bottom: 25px;
-            display: none;
-            border: 1px solid rgba(255, 85, 0, 0.2);
-        }
-
-        .aluno-info h3 { font-size: 1.2rem; margin-bottom: 5px; }
-        .aluno-info p { color: var(--primary); font-weight: 600; font-size: 0.8rem; }
-
-        /* --- Grid de Tags --- */
-        .tags-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
             gap: 10px;
             margin-bottom: 20px;
         }
 
-        .tag {
-            background: #2A2F3A;
-            padding: 12px;
-            border-radius: 10px;
-            text-align: center;
-            font-size: 0.85rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: 0.2s;
-            border: 1px solid transparent;
-            user-select: none;
+        .input-field {
+            flex: 1;
+            background: var(--bg-surface);
+            border: 1.5px solid var(--border);
+            border-radius: 12px;
+            padding: 14px 16px;
+            color: var(--text);
+            font-family: 'Barlow', sans-serif;
+            font-size: 0.95rem;
+            outline: none;
+            transition: border-color 0.2s;
         }
 
-        .tag.active {
-            background: rgba(255, 85, 0, 0.1);
+        .input-field:focus { border-color: var(--primary); }
+        .input-field::placeholder { color: #333; }
+
+        .btn {
+            border: none;
+            border-radius: 12px;
+            font-family: 'Barlow Condensed', sans-serif;
+            font-weight: 700;
+            font-size: 0.95rem;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn:active { transform: scale(0.97); }
+        .btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+            padding: 14px 20px;
+            box-shadow: 0 6px 20px rgba(255,85,0,0.25);
+        }
+
+        .btn-primary:hover:not(:disabled) { background: #ff6620; }
+
+        .btn-full {
+            width: 100%;
+            padding: 17px;
+            font-size: 1rem;
+            letter-spacing: 2px;
+            margin-top: 4px;
+        }
+
+        /* Aluno encontrado */
+        .aluno-box {
+            background: var(--bg-surface);
+            border: 1px solid rgba(255,85,0,0.2);
+            border-radius: 14px;
+            padding: 16px;
+            margin-bottom: 20px;
+            display: none;
+            animation: fadeIn 0.3s ease-out;
+        }
+
+        .aluno-nome {
+            font-family: 'Barlow Condensed', sans-serif;
+            font-size: 1.3rem;
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+
+        .aluno-id {
+            font-size: 0.75rem;
+            color: var(--primary);
+            font-weight: 700;
+            letter-spacing: 2px;
+        }
+
+        /* Form section */
+        .form-section { display: none; }
+        .form-section.visible { display: block; animation: fadeIn 0.4s ease-out; }
+
+        .section-label {
+            font-size: 0.7rem;
+            font-weight: 700;
+            letter-spacing: 2px;
+            color: var(--muted);
+            text-transform: uppercase;
+            margin-bottom: 12px;
+            display: block;
+        }
+
+        /* Tags grid */
+        .tags-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px;
+            margin-bottom: 20px;
+        }
+
+        .tag-item {
+            background: var(--bg-surface);
+            border: 1.5px solid var(--border);
+            border-radius: 10px;
+            padding: 12px;
+            text-align: center;
+            font-size: 0.82rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s;
+            user-select: none;
+            color: var(--muted);
+        }
+
+        .tag-item:hover { border-color: rgba(255,255,255,0.15); color: var(--text); }
+
+        .tag-item.active {
+            background: var(--primary-dim);
             border-color: var(--primary);
             color: var(--primary);
         }
 
-        textarea {
+        /* Obs textarea */
+        .obs-field {
             width: 100%;
-            background: var(--glass);
-            border: 1px solid #2A2F3A;
-            padding: 15px;
+            background: var(--bg-surface);
+            border: 1.5px solid var(--border);
             border-radius: 12px;
-            color: white;
+            padding: 14px;
+            color: var(--text);
+            font-family: 'Barlow', sans-serif;
+            font-size: 0.9rem;
             resize: none;
-            margin-bottom: 25px;
-            font-family: inherit;
+            outline: none;
+            margin-bottom: 16px;
+            transition: border-color 0.2s;
+            display: block;
         }
 
-        #msg { text-align: center; font-size: 0.9rem; font-weight: 600; min-height: 20px; }
+        .obs-field:focus { border-color: var(--primary); }
+        .obs-field::placeholder { color: #333; }
 
-        .btn-salvar { width: 100%; padding: 18px; font-size: 1rem; text-transform: uppercase; letter-spacing: 1px; }
-
+        /* Message */
+        .msg {
+            text-align: center;
+            font-size: 0.88rem;
+            font-weight: 700;
+            min-height: 22px;
+            letter-spacing: 0.5px;
+        }
     </style>
 </head>
 <body>
 
 <div class="container">
     <div class="header">
-        <img src="logo.jpeg" alt="Logo Powerfisio" style="max-width: 180px; margin-bottom: 10px; border-radius: 12px; box-shadow: 0 5px 15px rgba(255, 85, 0, 0.2);">
+        <img src="logo.jpeg" alt="Logo Powerfisio" class="header-logo" onerror="this.style.display='none'">
         <h1>POWER<span>FISIO</span></h1>
-        <p>Prontuário Clínico - Max IA</p>
+        <p>Prontuário Clínico — Max IA</p>
     </div>
 
-    <div class="search-box">
-        <input type="text" id="inputBusca" placeholder="ID ou Nome do Aluno...">
-        <button onclick="buscarAluno()">BUSCAR</button>
-    </div>
-
-    <div id="resultado-busca">
-        <div class="aluno-info">
-            <h3 id="nomeAluno">---</h3>
-            <p>ID EVO: <span id="idAluno">---</span></p>
-        </div>
-    </div>
-
-    <div id="formulario" style="display: none;">
-        <label style="display:block; margin-bottom:10px; font-size: 0.8rem; color: var(--text-muted);">CONDIÇÕES DE SAÚDE:</label>
-        <div class="tags-grid">
-            <div class="tag" onclick="toggleTag(this)">Hérnia de Disco</div>
-            <div class="tag" onclick="toggleTag(this)">Escoliose</div>
-            <div class="tag" onclick="toggleTag(this)">Hipertensão</div>
-            <div class="tag" onclick="toggleTag(this)">Condromalácia</div>
-            <div class="tag" onclick="toggleTag(this)">Labirintite</div>
-            <div class="tag" onclick="toggleTag(this)">Gestante</div>
-            <div class="tag" onclick="toggleTag(this)">Pós-Cirúrgico</div>
-            <div class="tag" onclick="toggleTag(this)">Diabetes</div>
+    <div class="card">
+        <span class="section-label">Buscar Aluno</span>
+        <div class="search-row">
+            <input
+                type="text"
+                id="inputBusca"
+                class="input-field"
+                placeholder="ID ou nome do aluno..."
+                onkeydown="if(event.key==='Enter') buscarAluno()"
+            >
+            <button class="btn btn-primary" onclick="buscarAluno()">BUSCAR</button>
         </div>
 
-        <label style="display:block; margin-bottom:10px; font-size: 0.8rem; color: var(--text-muted);">OBSERVAÇÕES ADICIONAIS:</label>
-        <textarea id="obs" rows="3" placeholder="Ex: Limitação de carga no agachamento..."></textarea>
+        <!-- Resultado da busca -->
+        <div id="resultado-busca" class="aluno-box">
+            <div class="aluno-nome" id="nomeAluno">—</div>
+            <div class="aluno-id">ID EVO: <span id="idAluno">—</span></div>
+        </div>
 
-        <button class="btn-salvar" id="btnSalvar" onclick="salvarProntuario()">SALVAR NO MAX</button>
+        <!-- Formulário de saúde -->
+        <div id="formulario" class="form-section">
+            <span class="section-label">Condições de Saúde</span>
+            <div class="tags-grid">
+                <div class="tag-item" onclick="toggleTag(this)">Hérnia de Disco</div>
+                <div class="tag-item" onclick="toggleTag(this)">Escoliose</div>
+                <div class="tag-item" onclick="toggleTag(this)">Hipertensão</div>
+                <div class="tag-item" onclick="toggleTag(this)">Condromalácia</div>
+                <div class="tag-item" onclick="toggleTag(this)">Labirintite</div>
+                <div class="tag-item" onclick="toggleTag(this)">Gestante</div>
+                <div class="tag-item" onclick="toggleTag(this)">Pós-Cirúrgico</div>
+                <div class="tag-item" onclick="toggleTag(this)">Diabetes</div>
+            </div>
+
+            <span class="section-label">Observações Adicionais</span>
+            <textarea
+                id="obs"
+                class="obs-field"
+                rows="3"
+                placeholder="Ex: Limitação de carga no agachamento, evitar impacto no joelho esquerdo..."
+            ></textarea>
+
+            <button class="btn btn-primary btn-full" id="btnSalvar" onclick="salvarProntuario()">
+                SALVAR PRONTUÁRIO
+            </button>
+        </div>
+
+        <div class="msg" id="msg"></div>
     </div>
-
-    <div id="msg"></div>
 </div>
 
 <script>
-    // URL DA SUA API (GOOGLE APPS SCRIPT)
-    const GOOGLE_API_URL = "https://script.google.com/macros/s/AKfycby62vambopzAU-hOp4Och0Qg9_ZOxNCqqo19BFZvUA13OFTYBRMnTnNckq3aBzncXKTJg/exec"; 
-    
+    const GOOGLE_API_URL = "https://script.google.com/macros/s/AKfycby62vambopzAU-hOp4Och0Qg9_ZOxNCqqo19BFZvUA13OFTYBRMnTnNckq3aBzncXKTJg/exec";
+
     let alunoSelecionado = null;
 
-    function toggleTag(el) { el.classList.toggle('active'); }
+    function toggleTag(el) {
+        el.classList.toggle('active');
+    }
+
+    function setMsg(texto, cor = 'var(--muted)') {
+        const msg = document.getElementById('msg');
+        msg.textContent = texto;
+        msg.style.color = cor;
+    }
 
     async function buscarAluno() {
-        const query = document.getElementById('inputBusca').value;
+        const query = document.getElementById('inputBusca').value.trim();
         if (!query) return;
-        
-        const msg = document.getElementById('msg');
-        msg.innerText = "🔍 Localizando na EVO...";
-        msg.style.color = "var(--text-muted)";
-        
+
+        setMsg('🔍 Localizando na EVO...', 'var(--muted)');
+
         try {
             const res = await fetch(`${GOOGLE_API_URL}?acao=buscar&query=${encodeURIComponent(query)}`);
             const aluno = await res.json();
-            
+
             if (aluno && aluno.id) {
                 alunoSelecionado = aluno;
-                document.getElementById('nomeAluno').innerText = aluno.nome;
-                document.getElementById('idAluno').innerText = aluno.id;
+                document.getElementById('nomeAluno').textContent = aluno.nome;
+                document.getElementById('idAluno').textContent = aluno.id;
                 document.getElementById('resultado-busca').style.display = 'block';
-                document.getElementById('formulario').style.display = 'block';
-                msg.innerText = "";
+                document.getElementById('formulario').classList.add('visible');
+                setMsg('');
+
+                // Reset form
+                document.querySelectorAll('.tag-item').forEach(t => t.classList.remove('active'));
+                document.getElementById('obs').value = '';
             } else {
-                msg.innerText = "❌ Aluno não encontrado.";
-                msg.style.color = "#ff4444";
+                setMsg('❌ Aluno não encontrado.', '#ff6b6b');
+                document.getElementById('resultado-busca').style.display = 'none';
+                document.getElementById('formulario').classList.remove('visible');
             }
-        } catch (err) {
-            msg.innerText = "⚠️ Erro de conexão com a API.";
+        } catch(e) {
+            setMsg('⚠️ Erro de conexão com a API.', '#ff6b6b');
         }
     }
 
     async function salvarProntuario() {
-        const tags = Array.from(document.querySelectorAll('.tag.active')).map(t => t.innerText);
+        const tags = Array.from(document.querySelectorAll('.tag-item.active')).map(t => t.textContent.trim());
         const obs = document.getElementById('obs').value;
         const btn = document.getElementById('btnSalvar');
-        const msg = document.getElementById('msg');
-        
+
         btn.disabled = true;
-        msg.innerText = "💾 Gravando prontuário...";
+        btn.textContent = "SALVANDO...";
+        setMsg('💾 Gravando prontuário...', 'var(--muted)');
 
         try {
             const res = await fetch(GOOGLE_API_URL, {
@@ -239,22 +362,25 @@
                     observacoes: obs
                 })
             });
-            
+
             const resposta = await res.text();
             if (resposta === "Sucesso") {
-                msg.style.color = "#00ff88";
-                msg.innerText = "✅ PRONTUÁRIO ATUALIZADO!";
-                setTimeout(() => location.reload(), 2000);
+                setMsg('✅ PRONTUÁRIO ATUALIZADO!', 'var(--success)');
+                btn.textContent = "SALVO ✓";
+                setTimeout(() => {
+                    btn.textContent = "SALVAR PRONTUÁRIO";
+                    btn.disabled = false;
+                    setMsg('');
+                }, 3000);
             } else {
                 throw new Error();
             }
-        } catch (err) {
-            msg.style.color = "#ff4444";
-            msg.innerText = "❌ Erro ao salvar.";
+        } catch(e) {
+            setMsg('❌ Erro ao salvar. Tente novamente.', '#ff6b6b');
+            btn.textContent = "SALVAR PRONTUÁRIO";
             btn.disabled = false;
         }
     }
 </script>
-
 </body>
 </html>

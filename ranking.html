@@ -3,19 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Powerfisio - TV Ranking Pro</title>
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;800;900&display=swap" rel="stylesheet">
-    
+    <title>Powerfisio - TV Ranking</title>
+    <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;700;900&family=Barlow:wght@400;600;700&display=swap" rel="stylesheet">
     <link rel="manifest" href="manifest-tv.json">
-    <meta name="theme-color" content="#08090C">
+    <meta name="theme-color" content="#060709">
     <meta name="apple-mobile-web-app-capable" content="yes">
-    
     <style>
         :root {
             --primary: #FF5500;
-            --primary-glow: rgba(255, 85, 0, 0.4);
-            --bg-dark: #08090C;
-            --bg-card: rgba(26, 29, 36, 0.6);
+            --bg: #060709;
+            --bg-card: rgba(13,15,20,0.8);
+            --border: rgba(255,255,255,0.05);
             --gold: #FFD700;
             --silver: #C0C0C0;
             --bronze: #CD7F32;
@@ -24,379 +22,438 @@
         * { margin: 0; padding: 0; box-sizing: border-box; }
 
         body {
-            font-family: 'Montserrat', sans-serif;
-            /* Fundo com gradiente radial para profundidade */
-            background: radial-gradient(circle at 50% -20%, rgba(255,85,0,0.15) 0%, var(--bg-dark) 70%);
-            background-color: var(--bg-dark);
-            color: #FFF;
+            font-family: 'Barlow', sans-serif;
+            background: var(--bg);
+            color: #fff;
             width: 100vw;
             height: 100vh;
             display: flex;
             flex-direction: column;
-            overflow: hidden; 
-            padding: 2vh 2vw; 
-        }
-
-        /* --- CABEÇALHO --- */
-        .header {
-            text-align: center;
-            padding: 10px 20px; 
-            margin-bottom: 10px;
-            flex-shrink: 0;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
+            overflow: hidden;
             position: relative;
         }
-        .header img {
-            max-width: 120px;
-            border-radius: 16px;
-            box-shadow: 0 8px 25px rgba(255, 85, 0, 0.2);
-            cursor: pointer;
-            margin-bottom: 5px;
-            border: 1px solid rgba(255, 255, 255, 0.05);
-        }
-        .header h1 { 
-            font-size: 2.4rem; 
-            font-weight: 900; 
-            letter-spacing: -1px; 
-            text-shadow: 0 4px 10px rgba(0,0,0,0.5);
-        } 
-        .header h1 span { color: var(--primary); }
-        .header p { 
-            font-size: 0.9rem; 
-            color: #A0A5B5; 
-            text-transform: uppercase; 
-            font-weight: 800; 
-            letter-spacing: 6px; 
-            margin-top: 5px; 
+
+        /* Atmospheric background */
+        body::before {
+            content: '';
+            position: fixed;
+            top: -30%;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80vw;
+            height: 80vw;
+            background: radial-gradient(circle, rgba(255,85,0,0.07) 0%, transparent 60%);
+            pointer-events: none;
         }
 
-        /* --- GRID DOS CARDS --- */
-        .container {
-            display: grid;
-            grid-template-columns: repeat(2, minmax(0, 1fr)); 
-            grid-template-rows: repeat(5, 1fr); 
-            grid-auto-flow: column; 
-            gap: 12px 40px; 
-            width: 96%; 
-            max-width: 1800px; 
-            margin: 0 auto 80px auto; 
-            flex: 1;
-            min-height: 0; 
+        /* Noise overlay */
+        body::after {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
+            pointer-events: none;
+            opacity: 0.5;
         }
 
-        /* --- ESTILO DOS CARDS (GLASSMORPHISM) --- */
-        .rank-row {
+        /* ======= HEADER ======= */
+        .header {
             display: flex;
             align-items: center;
+            justify-content: center;
+            gap: 24px;
+            padding: 16px 3vw 12px;
+            flex-shrink: 0;
+            position: relative;
+        }
+
+        .header-logo {
+            width: 64px;
+            height: 64px;
+            border-radius: 18px;
+            box-shadow: 0 8px 24px rgba(255,85,0,0.25);
+            cursor: pointer;
+        }
+
+        .header-title {
+            font-family: 'Barlow Condensed', sans-serif;
+            font-size: 3.2rem;
+            font-weight: 900;
+            letter-spacing: -1px;
+            line-height: 1;
+        }
+
+        .header-title span { color: var(--primary); }
+
+        .header-subtitle {
+            font-size: 0.7rem;
+            color: rgba(255,255,255,0.4);
+            letter-spacing: 4px;
+            text-transform: uppercase;
+            margin-top: 4px;
+        }
+
+        /* Live badge */
+        .live-badge {
+            position: absolute;
+            right: 3vw;
+            top: 50%;
+            transform: translateY(-50%);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(0,0,0,0.5);
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 50px;
+            padding: 8px 16px;
+            font-size: 0.75rem;
+            color: rgba(255,255,255,0.5);
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            font-weight: 700;
+        }
+
+        .live-dot {
+            width: 8px;
+            height: 8px;
+            background: #00FF88;
+            border-radius: 50%;
+            box-shadow: 0 0 8px #00FF88;
+            animation: livePulse 2s ease-in-out infinite;
+        }
+
+        @keyframes livePulse {
+            0%, 100% { opacity: 0.4; }
+            50% { opacity: 1; box-shadow: 0 0 14px #00FF88; }
+        }
+
+        /* ======= DIVIDER ======= */
+        .header-divider {
+            height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(255,85,0,0.3), transparent);
+            margin: 0 3vw;
+            flex-shrink: 0;
+        }
+
+        /* ======= GRID ======= */
+        .ranking-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            grid-template-rows: repeat(5, 1fr);
+            grid-auto-flow: column;
+            gap: 10px 40px;
+            padding: 14px 3vw 80px;
+            flex: 1;
+            min-height: 0;
+        }
+
+        /* ======= RANK CARD ======= */
+        .rank-card {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 8px 18px 8px 12px;
+            border-radius: 16px;
             background: var(--bg-card);
             backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
-            padding: 6px 15px; 
-            border-radius: 20px;
-            border: 1px solid rgba(255, 255, 255, 0.05);
-            box-shadow: 0 10px 30px rgba(0,0,0,0.4);
-            transition: transform 0.5s ease;
-            animation: fadeIn 0.5s ease forwards;
-            opacity: 0;
+            border: 1px solid var(--border);
+            border-left: 5px solid transparent;
+            animation: cardIn 0.5s ease-out both;
             height: 100%;
         }
 
-        /* ANIMAÇÃO DE ENTRADA */
-        @keyframes fadeIn { 
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); } 
+        @keyframes cardIn {
+            from { opacity: 0; transform: translateX(-10px); }
+            to { opacity: 1; transform: translateX(0); }
         }
 
-        /* --- DESTAQUES TOP 3 (NEON GLOW) --- */
-        .rank-row:nth-child(1) { 
-            animation-delay: 0.1s; 
-            background: linear-gradient(90deg, rgba(255, 215, 0, 0.15) 0%, var(--bg-card) 60%);
-            border-left: 6px solid var(--gold);
-            box-shadow: 0 0 20px rgba(255, 215, 0, 0.15), 0 10px 30px rgba(0,0,0,0.5);
-            border-top: 1px solid rgba(255, 215, 0, 0.3);
-            border-bottom: 1px solid rgba(255, 215, 0, 0.3);
-        }
-        .rank-row:nth-child(2) { 
-            animation-delay: 0.2s; 
-            background: linear-gradient(90deg, rgba(192, 192, 192, 0.1) 0%, var(--bg-card) 60%);
-            border-left: 6px solid var(--silver);
-            box-shadow: 0 0 20px rgba(192, 192, 192, 0.1), 0 10px 30px rgba(0,0,0,0.5);
-            border-top: 1px solid rgba(192, 192, 192, 0.3);
-            border-bottom: 1px solid rgba(192, 192, 192, 0.3);
-        }
-        .rank-row:nth-child(3) { 
-            animation-delay: 0.3s; 
-            background: linear-gradient(90deg, rgba(205, 127, 50, 0.1) 0%, var(--bg-card) 60%);
-            border-left: 6px solid var(--bronze);
-            box-shadow: 0 0 20px rgba(205, 127, 50, 0.1), 0 10px 30px rgba(0,0,0,0.5);
-            border-top: 1px solid rgba(205, 127, 50, 0.3);
-            border-bottom: 1px solid rgba(205, 127, 50, 0.3);
-        }
-        .rank-row:nth-child(n+4) {
-            border-left: 6px solid rgba(255, 255, 255, 0.1);
+        /* Medal borders */
+        .rank-card.gold { border-left-color: var(--gold); background: linear-gradient(90deg, rgba(255,215,0,0.08), var(--bg-card) 50%); }
+        .rank-card.silver { border-left-color: var(--silver); background: linear-gradient(90deg, rgba(192,192,192,0.06), var(--bg-card) 50%); }
+        .rank-card.bronze { border-left-color: var(--bronze); background: linear-gradient(90deg, rgba(205,127,50,0.06), var(--bg-card) 50%); }
+        .rank-card.other { border-left-color: rgba(255,255,255,0.08); }
+
+        /* Position number */
+        .pos-num {
+            font-family: 'Barlow Condensed', sans-serif;
+            font-size: 2rem;
+            font-weight: 900;
+            width: 52px;
+            text-align: center;
+            flex-shrink: 0;
+            color: rgba(255,255,255,0.15);
         }
 
-        /* --- POSIÇÃO & FOTO --- */
-        .pos { font-size: 2.2rem; font-weight: 900; width: 65px; color: #4A5060; text-align: center; }
-        .rank-row:nth-child(1) .pos { color: var(--gold); text-shadow: 0 0 15px rgba(255,215,0,0.5); }
-        .rank-row:nth-child(2) .pos { color: var(--silver); text-shadow: 0 0 15px rgba(192,192,192,0.5); }
-        .rank-row:nth-child(3) .pos { color: var(--bronze); text-shadow: 0 0 15px rgba(205,127,50,0.5); }
+        .rank-card.gold .pos-num { color: var(--gold); }
+        .rank-card.silver .pos-num { color: var(--silver); }
+        .rank-card.bronze .pos-num { color: var(--bronze); }
 
-        .foto-ranking { 
-            width: 55px; height: 55px; 
-            border-radius: 50%; 
-            object-fit: cover; 
-            margin-right: 15px; 
-            border: 3px solid #2A2F3A;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.5);
-        }
-        .rank-row:nth-child(1) .foto-ranking { border-color: var(--gold); }
-        .rank-row:nth-child(2) .foto-ranking { border-color: var(--silver); }
-        .rank-row:nth-child(3) .foto-ranking { border-color: var(--bronze); }
-
-        /* --- NOME --- */
-        .nome { 
-            font-size: 1.3rem; 
-            font-weight: 800; 
-            flex: 1; 
-            text-align: left; 
-            padding-right: 15px; 
-            white-space: normal; 
-            line-height: 1.2; 
-            display: -webkit-box; 
-            -webkit-line-clamp: 2; 
-            -webkit-box-orient: vertical; 
-            overflow: hidden;
-            text-transform: uppercase;
-            color: #E2E8F0;
+        /* Avatar */
+        .rank-avatar {
+            width: 52px;
+            height: 52px;
+            border-radius: 50%;
+            object-fit: cover;
+            flex-shrink: 0;
+            border: 2px solid rgba(255,255,255,0.1);
         }
 
-        /* --- BADGE DE PONTOS --- */
-        .badge-pontos { 
-            display: flex; 
-            flex-direction: column;
-            align-items: center; 
+        .rank-card.gold .rank-avatar { border-color: var(--gold); }
+        .rank-card.silver .rank-avatar { border-color: var(--silver); }
+        .rank-card.bronze .rank-avatar { border-color: var(--bronze); }
+
+        .rank-avatar-placeholder {
+            width: 52px;
+            height: 52px;
+            border-radius: 50%;
+            background: rgba(255,85,0,0.15);
+            border: 2px solid rgba(255,85,0,0.2);
+            display: flex;
+            align-items: center;
             justify-content: center;
-            background: rgba(255, 85, 0, 0.1);
-            border: 1px solid rgba(255, 85, 0, 0.2);
-            padding: 8px 15px;
-            border-radius: 14px;
-            min-width: 90px;
-            box-shadow: inset 0 0 10px rgba(255,85,0,0.05);
-        }
-        .pontos { font-size: 2.2rem; font-weight: 900; color: var(--primary); line-height: 1; text-shadow: 0 0 10px rgba(255,85,0,0.3);}
-        .label { font-size: 0.7rem; color: #FFAA88; text-transform: uppercase; font-weight: 800; margin-top: 2px; letter-spacing: 1px;}
-        
-        /* --- STATUS EM TEMPO REAL --- */
-        .max-badge { 
-            position: fixed; 
-            bottom: 80px; 
-            right: 3vw; 
-            font-size: 0.85rem; 
-            color: #8B92A5; 
-            font-weight: 800; 
-            display: flex; 
-            align-items: center; 
-            gap: 8px;
-            background-color: rgba(0,0,0,0.6); 
-            backdrop-filter: blur(5px);
-            padding: 6px 16px; 
-            border-radius: 30px; 
-            z-index: 100;
-            border: 1px solid rgba(255,255,255,0.05);
-        }
-        .max-badge span { 
-            display: inline-block; width: 10px; height: 10px; background: #00FF88; border-radius: 50%; 
-            box-shadow: 0 0 10px #00FF88; animation: pulse 2s infinite;
+            font-family: 'Barlow Condensed', sans-serif;
+            font-size: 1.4rem;
+            font-weight: 900;
+            color: var(--primary);
+            flex-shrink: 0;
         }
 
-        @keyframes pulse { 0% { opacity: 0.4; } 50% { opacity: 1; box-shadow: 0 0 15px #00FF88; } 100% { opacity: 0.4; } }
+        /* Name */
+        .rank-name {
+            flex: 1;
+            font-family: 'Barlow Condensed', sans-serif;
+            font-size: 1.25rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: #E2E8F0;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
 
-        /* ==========================================
-            🌟 BARRA DE ROLAGEM (MARQUEE)
-            ========================================== */
-        #scrolling-wrapper {
+        /* Points */
+        .rank-points {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background: rgba(255,85,0,0.08);
+            border: 1px solid rgba(255,85,0,0.15);
+            border-radius: 12px;
+            padding: 6px 14px;
+            flex-shrink: 0;
+            min-width: 80px;
+        }
+
+        .pts-value {
+            font-family: 'Barlow Condensed', sans-serif;
+            font-size: 1.8rem;
+            font-weight: 900;
+            color: var(--primary);
+            line-height: 1;
+        }
+
+        .pts-label {
+            font-size: 0.6rem;
+            color: rgba(255,170,136,0.7);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: 700;
+        }
+
+        /* ======= SCROLLING BAR ======= */
+        #scroll-bar {
             position: fixed;
             bottom: 0;
             left: 0;
             width: 100vw;
-            height: 60px;
-            background: rgba(11, 12, 16, 0.95);
-            backdrop-filter: blur(15px);
-            border-top: 1px solid rgba(255, 85, 0, 0.3);
-            display: flex;
+            height: 58px;
+            background: rgba(6,7,9,0.97);
+            border-top: 1px solid rgba(255,85,0,0.25);
+            display: none;
             align-items: center;
             overflow: hidden;
             z-index: 100;
-            box-shadow: 0 -5px 20px rgba(0,0,0,0.8);
         }
 
-        #scrolling-content {
+        #scroll-content {
             display: inline-flex;
             align-items: center;
             white-space: nowrap;
-            padding-left: 100vw; 
+            padding-left: 100vw;
             animation: scrollLeft linear infinite;
         }
 
         @keyframes scrollLeft {
             0% { transform: translateX(0); }
-            100% { transform: translateX(-100%); }
+            100% { transform: translateX(-50%); }
         }
 
         .scroll-item {
             display: inline-flex;
             align-items: center;
-            margin-right: 150px; 
-            color: #FFF;
+            gap: 12px;
+            margin-right: 120px;
         }
 
-        .scroll-item .pos { font-size: 1.5rem; font-weight: 900; color: #6A7285; width: auto; margin-right: 15px; }
-        .scroll-item .foto-scroll { width: 40px; height: 40px; border-radius: 50%; object-fit: cover; border: 2px solid #4A5060; margin-right: 15px; }
-        
-        /* 🔥 Correção aplicada aqui: Impede que o nome quebre em duas linhas */
-        .scroll-item .nome { 
-            font-size: 1.3rem; 
-            font-weight: 800; 
-            text-transform: uppercase; 
-            display: inline-block; 
-            color: #A0A5B5;
-            white-space: nowrap; 
-            flex: none; 
+        .scroll-pos {
+            font-family: 'Barlow Condensed', sans-serif;
+            font-size: 1.2rem;
+            font-weight: 900;
+            color: rgba(255,255,255,0.25);
         }
 
-        /* ==========================================
-            🌟 RESPONSIVIDADE
-            ========================================== */
-        @media (max-width: 1024px) {
-            .header h1 { font-size: 2.2rem; }
-            .pos { font-size: 1.8rem; width: 50px; }
-            .nome { font-size: 1.1rem; }
-            .pontos { font-size: 1.8rem; }
-            .badge-pontos { min-width: 75px; padding: 5px 10px; }
-            .container { gap: 10px 20px; margin-bottom: 70px;}
+        .scroll-photo {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid rgba(255,255,255,0.1);
         }
 
+        .scroll-name {
+            font-family: 'Barlow Condensed', sans-serif;
+            font-size: 1.1rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            color: rgba(255,255,255,0.55);
+        }
+
+        .scroll-pts {
+            font-family: 'Barlow Condensed', sans-serif;
+            font-size: 0.9rem;
+            font-weight: 900;
+            color: rgba(255,85,0,0.6);
+        }
+
+        .scroll-sep {
+            color: rgba(255,255,255,0.1);
+            margin: 0 20px;
+        }
     </style>
 </head>
 <body>
 
+    <!-- HEADER -->
     <div class="header">
-        <img src="logo.jpeg" alt="Logo Powerfisio" onclick="toggleFullScreen()">
-        <h1>POWER<span>FISIO</span></h1>
-        <p>Ranking de Frequência - Top 10 do Mês</p>
+        <img src="logo.jpeg" class="header-logo" alt="Logo" onclick="toggleFullScreen()" onerror="this.style.display='none'">
+        <div>
+            <div class="header-title">POWER<span>FISIO</span></div>
+            <div class="header-subtitle">Ranking de Frequência — Top 10 do Mês</div>
+        </div>
+        <div class="live-badge">
+            <div class="live-dot"></div>
+            Ao Vivo
+        </div>
     </div>
 
-    <div class="container" id="board">
-        <h2 style="color: var(--primary); margin-top: 20vh; grid-column: span 2; text-align: center;">A carregar dados do Cérebro Max...</h2>
+    <div class="header-divider"></div>
+
+    <!-- RANKING -->
+    <div class="ranking-grid" id="board">
+        <div style="grid-column:span 2; display:flex; align-items:center; justify-content:center; color:var(--primary); font-family:'Barlow Condensed',sans-serif; font-size:1.5rem; letter-spacing:2px;">
+            SINCRONIZANDO COM O CÉREBRO MAX...
+        </div>
     </div>
 
-    <div class="max-badge">
-        <span></span> ATUALIZAÇÃO EM TEMPO REAL
-    </div>
-
-    <div id="scrolling-wrapper" style="display: none;">
-        <div id="scrolling-content">
-            </div>
+    <!-- SCROLL BAR (11th+) -->
+    <div id="scroll-bar">
+        <div id="scroll-content"></div>
     </div>
 
     <script>
-        // 🚨 MANTENHA A SUA URL AQUI
         const API_URL = "https://script.google.com/macros/s/AKfycby62vambopzAU-hOp4Och0Qg9_ZOxNCqqo19BFZvUA13OFTYBRMnTnNckq3aBzncXKTJg/exec";
 
         async function carregarRanking() {
             try {
-                const res = await fetch(`${API_URL}?acao=getRankingTV`);
+                const res = await fetch(`${API_URL}?acao=getRankingTV&t=${Date.now()}`);
                 const dados = await res.json();
-
                 const board = document.getElementById('board');
-                const scrollWrapper = document.getElementById('scrolling-wrapper');
-                const scrollContent = document.getElementById('scrolling-content');
-                
-                if(dados.length === 0) {
-                    board.innerHTML = `<h2 style="color: #8B92A5; margin-top: 20vh; grid-column: span 2; text-align: center; width: 100%;">Nenhum ponto acumulado este mês ainda.</h2>`;
-                    scrollWrapper.style.display = 'none';
+                const scrollBar = document.getElementById('scroll-bar');
+                const scrollContent = document.getElementById('scroll-content');
+
+                if (!dados.length) {
+                    board.innerHTML = `<div style="grid-column:span 2; display:flex; align-items:center; justify-content:center; color:rgba(255,255,255,0.2); font-family:'Barlow Condensed',sans-serif; font-size:1.5rem; letter-spacing:2px;">NENHUM PONTO ACUMULADO AINDA</div>`;
+                    scrollBar.style.display = 'none';
                     return;
                 }
 
                 const top10 = dados.slice(0, 10);
                 const restantes = dados.slice(10);
+                const medalClasses = ['gold', 'silver', 'bronze'];
 
-                // 1. MONTA O QUADRO TOP 10
-                let htmlTop = '';
-                top10.forEach(aluno => {
-                    let fotoHtml = '';
-                    if (aluno.foto && aluno.foto.trim() !== "") {
-                        fotoHtml = `<img src="${aluno.foto}" class="foto-ranking" alt="${aluno.nome}">`;
-                    }
+                // Build top 10
+                let html = '';
+                top10.forEach((aluno, i) => {
+                    const cls = i < 3 ? medalClasses[i] : 'other';
+                    const delay = (i * 0.05).toFixed(2);
+                    const temFoto = aluno.foto && aluno.foto.trim();
+                    const inicialNome = aluno.nome.charAt(0);
 
-                    htmlTop += `
-                    <div class="rank-row">
-                        <div class="pos">${aluno.posicao}º</div>
+                    const fotoHtml = temFoto
+                        ? `<img src="${aluno.foto}" class="rank-avatar" alt="${aluno.nome}" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                           <div class="rank-avatar-placeholder" style="display:none;">${inicialNome}</div>`
+                        : `<div class="rank-avatar-placeholder">${inicialNome}</div>`;
+
+                    html += `
+                    <div class="rank-card ${cls}" style="animation-delay:${delay}s;">
+                        <div class="pos-num">${aluno.posicao}º</div>
                         ${fotoHtml}
-                        <div class="nome">${aluno.nome}</div>
-                        <div class="badge-pontos">
-                            <span class="pontos">${aluno.pontos}</span>
-                            <span class="label">Pontos</span>
+                        <div class="rank-name">${aluno.nome}</div>
+                        <div class="rank-points">
+                            <div class="pts-value">${aluno.pontos}</div>
+                            <div class="pts-label">pts</div>
                         </div>
                     </div>`;
                 });
-                board.innerHTML = htmlTop;
+                board.innerHTML = html;
 
-                // 2. MONTA A BARRA DE ROLAGEM
+                // Build scroll bar for 11th+
                 if (restantes.length > 0) {
-                    let htmlScroll = '';
-                    restantes.forEach(aluno => {
-                        let fotoHtml = '';
-                        if (aluno.foto && aluno.foto.trim() !== "") {
-                            fotoHtml = `<img src="${aluno.foto}" class="foto-scroll" alt="${aluno.nome}">`;
-                        }
-
-                        htmlScroll += `
-                        <div class="scroll-item">
-                            <div class="pos">${aluno.posicao}º</div>
-                            ${fotoHtml}
-                            <div class="nome">${aluno.nome}</div>
-                        </div>`;
+                    let scrollHtml = '';
+                    // Duplicate for seamless loop
+                    [restantes, restantes].forEach(lista => {
+                        lista.forEach(aluno => {
+                            const fotoEl = aluno.foto ? `<img src="${aluno.foto}" class="scroll-photo" alt="">` : '';
+                            scrollHtml += `
+                            <div class="scroll-item">
+                                <span class="scroll-pos">${aluno.posicao}º</span>
+                                ${fotoEl}
+                                <span class="scroll-name">${aluno.nome}</span>
+                                <span class="scroll-pts">${aluno.pontos} pts</span>
+                            </div>
+                            <span class="scroll-sep">•</span>`;
+                        });
                     });
 
-                    scrollContent.innerHTML = htmlScroll;
-                    
-                    let tempoAnimacao = Math.max(30, restantes.length * 3.5);
-                    scrollContent.style.animationDuration = `${tempoAnimacao}s`;
-                    
-                    scrollWrapper.style.display = 'flex';
+                    scrollContent.innerHTML = scrollHtml;
+                    const dur = Math.max(30, restantes.length * 4);
+                    scrollContent.style.animationDuration = `${dur}s`;
+                    scrollBar.style.display = 'flex';
                 } else {
-                    scrollWrapper.style.display = 'none';
+                    scrollBar.style.display = 'none';
                 }
 
             } catch(e) {
-                console.error("Erro ao puxar o ranking", e);
+                console.error("Erro ao carregar ranking:", e);
             }
         }
 
         carregarRanking();
         setInterval(carregarRanking, 15000);
 
-        if ('serviceWorker' in navigator) {
-            window.addEventListener('load', () => {
-                navigator.serviceWorker.register('sw.js').catch(()=>{});
-            });
-        }
-
         function toggleFullScreen() {
             if (!document.fullscreenElement) {
-                document.documentElement.requestFullscreen().catch(err => {
-                    console.log(`Erro ao tentar tela cheia: ${err.message}`);
-                });
+                document.documentElement.requestFullscreen().catch(() => {});
             } else {
-                if (document.exitFullscreen) {
-                    document.exitFullscreen();
-                }
+                document.exitFullscreen();
             }
+        }
+
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('sw.js').catch(() => {});
+            });
         }
     </script>
 </body>

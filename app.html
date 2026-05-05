@@ -3,983 +3,460 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Powerfisio - App do Aluno</title>
-    <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;700;900&family=Barlow:wght@400;600;700&display=swap" rel="stylesheet">
+    <title>Powerfisio - Max Mobile</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;800;900&display=swap" rel="stylesheet">
+    
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
     <style>
         :root {
             --primary: #FF5500;
-            --primary-dim: rgba(255,85,0,0.15);
-            --success: #00E676;
-            --bg: #080A0F;
-            --bg-card: #111318;
-            --bg-surface: #181C24;
-            --border: rgba(255,255,255,0.07);
-            --text: #FFFFFF;
-            --muted: #6B7280;
-            --gold: #FFD700;
+            --bg-dark: #0F1115;
+            --bg-card: #1A1D24;
+            --text-main: #FFFFFF;
+            --text-muted: #8B92A5;
+            --success: #00FF88;
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
 
         body {
-            font-family: 'Barlow', sans-serif;
-            background: var(--bg);
-            color: var(--text);
-            min-height: 100vh;
+            font-family: 'Montserrat', sans-serif;
+            background-color: var(--bg-dark);
+            color: var(--text-main);
             overflow-x: hidden;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
         }
 
-        /* ======= SWEETALERT THEME ======= */
+        /* --- Customização do SweetAlert para combinar com o app --- */
         .swal2-popup {
-            background: var(--bg-card) !important;
-            color: var(--text) !important;
+            background-color: var(--bg-card) !important;
+            color: var(--text-main) !important;
             border-radius: 20px !important;
-            border: 1px solid var(--border) !important;
-            font-family: 'Barlow', sans-serif !important;
+            border: 1px solid #2A2F3A !important;
+            font-family: 'Montserrat', sans-serif !important;
         }
-        .swal2-title { color: var(--text) !important; font-family: 'Barlow Condensed', sans-serif !important; font-weight: 900 !important; font-size: 1.6rem !important; letter-spacing: 1px; }
-        .swal2-html-container { color: var(--muted) !important; font-size: 0.95rem !important; }
-        .swal2-confirm, .swal2-cancel { border-radius: 10px !important; font-weight: 700 !important; padding: 12px 24px !important; text-transform: uppercase !important; letter-spacing: 1px !important; font-family: 'Barlow Condensed', sans-serif !important; font-size: 1rem !important; }
+        .swal2-title { color: var(--text-main) !important; font-weight: 900 !important; font-size: 1.5rem !important;}
+        .swal2-html-container { color: var(--text-muted) !important; }
+        .swal2-confirm { border-radius: 12px !important; font-weight: bold !important; padding: 12px 24px !important; text-transform: uppercase !important;}
+        .swal2-cancel { border-radius: 12px !important; font-weight: bold !important; padding: 12px 24px !important; text-transform: uppercase !important;}
 
-        /* ======= SCREENS ======= */
-        .screen { display: none; flex-direction: column; min-height: 100vh; animation: slideUp 0.4s ease-out; }
+        .screen { display: none; flex-direction: column; padding: 30px 20px; animation: slideUp 0.4s ease-out; flex: 1; }
         .screen.active { display: flex; }
-        @keyframes slideUp { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
 
-        /* ======= LOGIN ======= */
-        #screen-login {
-            align-items: center;
-            justify-content: center;
-            padding: 30px 24px;
-            background: radial-gradient(ellipse at 50% 0%, rgba(255,85,0,0.12) 0%, transparent 60%);
-            position: relative;
-            overflow: hidden;
+        @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* --- LOGIN --- */
+        .brand { text-align: center; margin-bottom: 40px; margin-top: 15vh; }
+        .brand h1 { font-weight: 900; font-size: 2.5rem; letter-spacing: -2px; }
+        .brand span { color: var(--primary); }
+
+        .input-group { margin-bottom: 20px; }
+        input {
+            width: 100%; background: var(--bg-card); border: 1px solid #2A2F3A; padding: 18px; 
+            border-radius: 16px; color: white; font-size: 1rem; outline: none; text-align: center;
         }
 
-        #screen-login::before {
-            content: '';
-            position: absolute;
-            top: -80px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 400px;
-            height: 400px;
-            background: radial-gradient(circle, rgba(255,85,0,0.08) 0%, transparent 70%);
-            pointer-events: none;
+        .btn-main {
+            background: var(--primary); color: white; border: none; padding: 18px; border-radius: 16px;
+            font-weight: 800; text-transform: uppercase; width: 100%; cursor: pointer; box-shadow: 0 10px 20px rgba(255, 85, 0, 0.2);
+            transition: 0.3s;
         }
 
-        .brand {
-            text-align: center;
-            margin-bottom: 48px;
-            position: relative;
-        }
+        /* --- BLOQUEADO --- */
+        .lock-icon { font-size: 5rem; margin-bottom: 20px; text-align: center; }
+        .status-card { background: var(--bg-card); padding: 30px; border-radius: 24px; text-align: center; border: 1px dashed var(--primary); }
 
-        .brand-logo {
-            width: 80px;
-            height: 80px;
-            border-radius: 22px;
-            margin-bottom: 16px;
-            box-shadow: 0 8px 32px rgba(255,85,0,0.35);
-        }
+        /* --- TREINO --- */
+        .header-app { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+        .user-badge { display: flex; align-items: center; gap: 10px; }
+        .user-badge .avatar { width: 45px; height: 45px; background: var(--primary); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 900; }
 
-        .brand h1 {
-            font-family: 'Barlow Condensed', sans-serif;
-            font-size: 2.8rem;
-            font-weight: 900;
-            letter-spacing: 2px;
-            line-height: 1;
-        }
+        .workout-card { background: var(--bg-card); border-radius: 24px; padding: 15px; margin-bottom: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.3); }
 
-        .brand h1 span { color: var(--primary); }
-        .brand p { color: var(--muted); font-size: 0.85rem; margin-top: 6px; letter-spacing: 2px; text-transform: uppercase; }
-
-        .login-card {
-            width: 100%;
-            max-width: 380px;
-            background: var(--bg-card);
-            border: 1px solid var(--border);
-            border-radius: 24px;
-            padding: 32px 24px;
-        }
-
-        .login-label { font-size: 0.75rem; font-weight: 700; letter-spacing: 2px; color: var(--muted); text-transform: uppercase; margin-bottom: 10px; display: block; }
-
-        .cpf-input {
-            width: 100%;
-            background: var(--bg-surface);
-            border: 2px solid var(--border);
-            border-radius: 14px;
-            padding: 16px 20px;
-            color: white;
-            font-size: 1.1rem;
-            font-family: 'Barlow Condensed', sans-serif;
-            font-weight: 700;
-            letter-spacing: 3px;
-            text-align: center;
-            outline: none;
-            transition: border-color 0.2s;
-            -webkit-appearance: none;
-        }
-
-        .cpf-input:focus { border-color: var(--primary); }
-        .cpf-input::placeholder { color: #333; letter-spacing: 1px; font-size: 0.9rem; }
-
-        .btn-login {
-            width: 100%;
-            margin-top: 16px;
-            background: var(--primary);
-            color: white;
-            border: none;
-            border-radius: 14px;
-            padding: 18px;
-            font-family: 'Barlow Condensed', sans-serif;
-            font-size: 1.2rem;
-            font-weight: 900;
-            letter-spacing: 2px;
-            text-transform: uppercase;
-            cursor: pointer;
-            box-shadow: 0 8px 24px rgba(255,85,0,0.3);
-            transition: all 0.2s;
-        }
-
-        .btn-login:active { transform: scale(0.98); }
-        .btn-login:disabled { opacity: 0.6; }
-
-        /* ======= SCREEN LOCKED ======= */
-        #screen-locked {
-            padding: 24px;
-            background: radial-gradient(ellipse at 50% 100%, rgba(255,85,0,0.06) 0%, transparent 50%);
-        }
-
-        /* ======= SHARED HEADER ======= */
-        .app-header {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 16px 24px;
-            background: var(--bg-card);
-            border-bottom: 1px solid var(--border);
-            position: sticky;
-            top: 0;
-            z-index: 50;
-        }
-
-        .user-pill {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-
-        .avatar {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            background: var(--primary);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-family: 'Barlow Condensed', sans-serif;
-            font-size: 1.3rem;
-            font-weight: 900;
-            flex-shrink: 0;
-        }
-
-        .user-info h3 {
-            font-size: 0.9rem;
-            font-weight: 700;
-        }
-
-        .user-info p {
-            font-size: 0.7rem;
-            color: var(--muted);
-        }
-
-        /* ======= LOCKED CARD ======= */
-        .locked-content {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            padding: 24px;
-            gap: 24px;
-        }
-
-        .lock-visual {
-            width: 100px;
-            height: 100px;
-            background: var(--bg-surface);
-            border: 2px solid var(--border);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 2.8rem;
-            animation: breathe 3s ease-in-out infinite;
-        }
-
-        @keyframes breathe {
-            0%, 100% { box-shadow: 0 0 0 0 rgba(255,85,0,0.2); }
-            50% { box-shadow: 0 0 0 20px rgba(255,85,0,0); }
-        }
-
-        .locked-title {
-            font-family: 'Barlow Condensed', sans-serif;
-            font-size: 2rem;
-            font-weight: 900;
-            letter-spacing: 2px;
-            text-align: center;
-        }
-
-        .locked-text {
-            color: var(--muted);
-            text-align: center;
-            font-size: 0.95rem;
-            line-height: 1.6;
-            max-width: 260px;
-        }
-
-        /* Ranking Badge */
-        .ranking-pill {
-            background: var(--bg-surface);
-            border: 1px solid var(--border);
-            border-radius: 50px;
-            padding: 12px 24px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            font-size: 0.9rem;
-        }
-
-        .ranking-pill strong { color: var(--primary); }
-        .ranking-pill .pos-badge {
-            background: var(--primary-dim);
-            border: 1px solid rgba(255,85,0,0.3);
-            border-radius: 8px;
-            padding: 2px 8px;
-            font-family: 'Barlow Condensed', sans-serif;
-            font-weight: 900;
-            font-size: 1rem;
-            color: var(--primary);
-        }
-
-        .waiting-dots::after {
-            content: '';
-            animation: dots 1.5s steps(4, end) infinite;
-        }
-
-        @keyframes dots {
-            0%   { content: ''; }
-            25%  { content: '.'; }
-            50%  { content: '..'; }
-            75%  { content: '...'; }
-            100% { content: ''; }
-        }
-
-        /* ======= WORKOUT SCREEN ======= */
-        #screen-workout {
-            background: var(--bg);
-        }
-
-        .workout-topbar {
-            padding: 20px 24px 0;
-        }
-
-        .day-label {
-            font-family: 'Barlow Condensed', sans-serif;
-            font-size: 2.2rem;
-            font-weight: 900;
-            letter-spacing: 1px;
-            color: var(--primary);
-        }
-
-        .workout-subtitle {
-            font-size: 0.75rem;
-            color: var(--muted);
-            letter-spacing: 2px;
-            text-transform: uppercase;
-            margin-top: 2px;
-        }
-
-        /* Timer */
-        .timer-bar {
-            margin: 20px 24px 0;
-            background: var(--bg-card);
-            border: 1px solid var(--border);
-            border-radius: 16px;
-            padding: 16px 20px;
-            display: none;
-            align-items: center;
-            justify-content: space-between;
-        }
-
-        .timer-bar.visible { display: flex; }
-
-        .timer-display {
-            font-family: 'Barlow Condensed', sans-serif;
-            font-size: 2.5rem;
-            font-weight: 900;
-            color: var(--primary);
-            letter-spacing: 3px;
-        }
-
-        .timer-label {
-            font-size: 0.65rem;
-            color: var(--muted);
-            letter-spacing: 2px;
-            text-transform: uppercase;
-        }
-
-        /* Progress */
-        .progress-section {
-            margin: 16px 24px 0;
-        }
-
-        .progress-header {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 8px;
-            font-size: 0.75rem;
-            color: var(--muted);
-        }
-
-        .progress-bar {
-            height: 4px;
-            background: var(--bg-surface);
-            border-radius: 2px;
-            overflow: hidden;
-        }
-
-        .progress-fill {
-            height: 100%;
-            background: var(--primary);
-            border-radius: 2px;
-            transition: width 0.5s ease;
-            width: 0%;
-        }
-
-        /* Exercises */
-        .exercises-list {
-            padding: 16px 24px;
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-        }
-
-        .section-label {
-            font-size: 0.7rem;
-            color: var(--muted);
-            letter-spacing: 2px;
-            text-transform: uppercase;
-            padding: 12px 0 4px;
-            font-weight: 700;
-            border-top: 1px solid var(--border);
-            margin-top: 8px;
-        }
-
-        .section-label:first-child { border-top: none; margin-top: 0; }
-
+        /* --- ESTILOS DOS CARDS DE EXERCÍCIO --- */
         .exercise-item {
-            background: var(--bg-card);
-            border: 1px solid var(--border);
-            border-radius: 16px;
-            padding: 14px 16px;
-            display: flex;
-            align-items: center;
-            gap: 14px;
-            transition: all 0.25s ease;
-            cursor: default;
+            display: flex; align-items: flex-start; padding: 15px; border-bottom: 1px solid #2A2F3A;
+            border-radius: 16px; transition: all 0.3s ease; margin-bottom: 12px;
+            border: 1px solid transparent;
+        }
+        
+        .exercise-info { flex: 1; display: flex; flex-direction: column; gap: 6px; }
+        
+        .ex-header { display: flex; justify-content: space-between; align-items: flex-start; gap: 10px; }
+        .ex-header h4 { font-size: 0.95rem; margin: 0; line-height: 1.3; font-weight: 700; color: #FFF; }
+        
+        .ex-body { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin-top: 4px; }
+
+        .tag-id { background: #2A2F3A; color: #8B92A5; font-size: 0.65rem; padding: 3px 6px; border-radius: 6px; font-weight: 900; white-space: nowrap; border: 1px solid #3A404D; }
+
+        .tag-series { background: rgba(255, 85, 0, 0.15); color: var(--primary); font-weight: 900; padding: 4px 10px; border-radius: 8px; font-size: 0.9rem; border: 1px solid rgba(255, 85, 0, 0.3); }
+
+        .tag-tech { 
+            background: rgba(0, 255, 136, 0.1); color: var(--success); 
+            font-size: 0.75rem; font-weight: 800; padding: 3px 8px; 
+            border-radius: 6px; border: 1px dashed rgba(0, 255, 136, 0.3); 
+            text-transform: uppercase; cursor: help;
         }
 
-        .exercise-item.interactive { cursor: pointer; }
+        .exercise-item.pendente { border-color: rgba(255, 85, 0, 0.4); background: rgba(255, 85, 0, 0.05); cursor: pointer; }
+        .exercise-item.concluido { opacity: 0.4; border-color: var(--success); background: rgba(0, 255, 136, 0.05); cursor: pointer; }
+        .exercise-item.concluido .ex-header h4 { text-decoration: line-through; }
+        
+        .exercise-checkbox { width: 24px; height: 24px; min-width: 24px; border-radius: 50%; border: 2px solid #555; margin-right: 15px; margin-top: 2px; display: none; align-items: center; justify-content: center; }
+        .exercise-item.pendente .exercise-checkbox { display: flex; border-color: var(--primary); }
+        .exercise-item.concluido .exercise-checkbox { display: flex; background: var(--success); border-color: var(--success); }
+        .exercise-item.concluido .exercise-checkbox::after { content: '✓'; color: black; font-weight: bold; font-size: 14px; }
 
-        .exercise-item.pendente {
-            border-color: rgba(255,85,0,0.3);
-            background: rgba(255,85,0,0.04);
-        }
-
-        .exercise-item.concluido {
-            opacity: 0.45;
-            border-color: rgba(0,230,118,0.3);
-            background: rgba(0,230,118,0.04);
-        }
-
-        .exercise-item.concluido .ex-name { text-decoration: line-through; }
-
-        .ex-check {
-            width: 28px;
-            height: 28px;
-            border-radius: 50%;
-            border: 2px solid #2A2F3A;
-            flex-shrink: 0;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: all 0.2s;
-        }
-
-        .exercise-item.pendente .ex-check { border-color: var(--primary); }
-
-        .exercise-item.concluido .ex-check {
-            background: var(--success);
-            border-color: var(--success);
-        }
-
-        .ex-check-icon {
-            opacity: 0;
-            transition: 0.2s;
-            font-size: 0.85rem;
-        }
-
-        .exercise-item.concluido .ex-check-icon { opacity: 1; }
-
-        .ex-body {
-            flex: 1;
-            min-width: 0;
-        }
-
-        .ex-name {
-            font-size: 0.92rem;
-            font-weight: 700;
-            line-height: 1.3;
-            color: var(--text);
-        }
-
-        .ex-tags {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 6px;
-            margin-top: 8px;
-        }
-
-        .tag {
-            font-size: 0.7rem;
-            font-weight: 700;
-            border-radius: 6px;
-            padding: 3px 8px;
-            white-space: nowrap;
-        }
-
-        .tag-id { background: rgba(255,255,255,0.06); color: var(--muted); border: 1px solid rgba(255,255,255,0.06); }
-
-        .tag-series {
-            background: var(--primary-dim);
-            color: var(--primary);
-            border: 1px solid rgba(255,85,0,0.25);
-        }
-
-        .tag-tech {
-            background: rgba(0,230,118,0.08);
-            color: var(--success);
-            border: 1px dashed rgba(0,230,118,0.3);
-            cursor: pointer;
-            text-transform: uppercase;
-        }
-
-        /* Bottom Buttons */
-        .workout-cta {
-            padding: 16px 24px 32px;
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-        }
-
-        .btn-cta {
-            width: 100%;
-            padding: 18px;
-            border-radius: 16px;
-            border: none;
-            font-family: 'Barlow Condensed', sans-serif;
-            font-size: 1.2rem;
-            font-weight: 900;
-            letter-spacing: 2px;
-            text-transform: uppercase;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-
-        .btn-cta:active { transform: scale(0.98); }
-
-        .btn-start {
-            background: var(--primary);
-            color: white;
-            box-shadow: 0 8px 24px rgba(255,85,0,0.3);
-        }
-
-        .btn-finish {
-            background: var(--success);
-            color: #000;
-            box-shadow: 0 8px 24px rgba(0,230,118,0.25);
-            display: none;
-        }
-
-        /* ======= MODAL TÉCNICA ======= */
+        /* --- MODAL DE TÉCNICA (BALÃOZINHO) --- */
         #modal-tecnica {
-            display: none;
-            position: fixed;
-            inset: 0;
-            background: rgba(0,0,0,0.85);
-            z-index: 1000;
-            align-items: flex-end;
-            padding: 16px;
-            backdrop-filter: blur(6px);
+            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.8); z-index: 1000; align-items: center; justify-content: center;
+            padding: 20px; backdrop-filter: blur(5px);
         }
-
-        #modal-tecnica.open { display: flex; }
-
-        .modal-sheet {
-            background: var(--bg-card);
-            border-radius: 24px;
-            padding: 28px;
-            width: 100%;
-            border: 1px solid var(--border);
-            animation: slideSheet 0.3s cubic-bezier(0.34,1.56,0.64,1);
+        .modal-content {
+            background: var(--bg-card); padding: 25px; border-radius: 24px;
+            border: 2px solid var(--primary); width: 100%; max-width: 320px;
+            text-align: center; animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
+        @keyframes popIn { from { transform: scale(0.8); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+        
+        .modal-content h3 { color: var(--success); margin-bottom: 10px; text-transform: uppercase; }
+        .modal-content p { font-size: 0.9rem; line-height: 1.5; color: #CCC; margin-bottom: 20px; }
 
-        @keyframes slideSheet { from { transform: translateY(30px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+        /* Cronómetro */
+        #painel-treino-ativo { text-align: center; margin-bottom: 20px; display: none; }
+        #cronometro { font-size: 3rem; font-weight: 900; color: var(--primary); letter-spacing: 2px; }
 
-        .modal-title {
-            font-family: 'Barlow Condensed', sans-serif;
-            font-size: 1.5rem;
-            font-weight: 900;
-            color: var(--success);
-            letter-spacing: 2px;
-            margin-bottom: 12px;
-        }
-
-        .modal-desc {
-            color: var(--muted);
-            font-size: 0.95rem;
-            line-height: 1.6;
-            margin-bottom: 20px;
-        }
-
-        .btn-modal-close {
-            width: 100%;
-            padding: 14px;
-            background: var(--bg-surface);
-            border: 1px solid var(--border);
-            border-radius: 12px;
-            color: var(--text);
-            font-family: 'Barlow Condensed', sans-serif;
-            font-size: 1rem;
-            font-weight: 700;
-            letter-spacing: 1px;
-            cursor: pointer;
-        }
-
-        /* Info text in workout (not exercises) */
-        .info-text {
-            font-size: 0.85rem;
-            color: var(--muted);
-            line-height: 1.6;
-            padding: 4px 0;
-        }
+        .ranking-bar { background: rgba(255, 255, 255, 0.05); padding: 15px; border-radius: 12px; margin-top: 20px; font-size: 0.8rem; text-align: center; }
     </style>
 </head>
 <body>
 
-<!-- MODAL TÉCNICA (BOTTOM SHEET) -->
-<div id="modal-tecnica" onclick="fecharModal()">
-    <div class="modal-sheet" onclick="event.stopPropagation()">
-        <div class="modal-title" id="modal-titulo">TÉCNICA</div>
-        <p class="modal-desc" id="modal-desc">Explicação aqui...</p>
-        <button class="btn-modal-close" onclick="fecharModal()">ENTENDI!</button>
+    <div id="modal-tecnica" onclick="fecharModal()">
+        <div class="modal-content" onclick="event.stopPropagation()">
+            <h3 id="modal-titulo">Técnica</h3>
+            <p id="modal-desc">Explicação aqui...</p>
+            <button class="btn-main" onclick="fecharModal()">ENTENDI!</button>
+        </div>
     </div>
-</div>
 
-<!-- TELA DE LOGIN -->
-<div id="screen-login" class="screen active">
-    <div class="brand">
-        <img src="logo.jpeg" alt="Logo" class="brand-logo" onerror="this.style.display='none'">
-        <h1>POWER<span>FISIO</span></h1>
-        <p>App do Aluno • Max IA</p>
+    <div id="screen-login" class="screen active">
+        <div class="brand">
+            <img src="logo.jpeg" alt="Logo Powerfisio" style="max-width: 120px; margin-bottom: 15px; border-radius: 10px;">
+            <h1>POWER<span>FISIO</span></h1>
+            <p style="color: var(--text-muted)">Portal do Aluno - Max IA</p>
+        </div>
+        <div class="input-group">
+            <input type="tel" id="alunoCpf" placeholder="Digite seu CPF (apenas números)">
+        </div>
+        <button class="btn-main" onclick="fazerLogin()">Entrar na Arena</button>
     </div>
-    <div class="login-card">
-        <label class="login-label" for="alunoCpf">Seu CPF</label>
-        <input
-            type="tel"
-            id="alunoCpf"
-            class="cpf-input"
-            placeholder="000.000.000-00"
-            maxlength="14"
-            inputmode="numeric"
-        >
-        <button class="btn-login" id="btn-login" onclick="fazerLogin()">ENTRAR NA ARENA</button>
-    </div>
-</div>
 
-<!-- TELA BLOQUEADA -->
-<div id="screen-locked" class="screen">
-    <div class="app-header">
-        <div class="user-pill">
-            <div class="avatar" id="avatar-letra">?</div>
-            <div class="user-info">
-                <h3 id="user-welcome">Carregando...</h3>
-                <p>Aguardando liberação</p>
+    <div id="screen-locked" class="screen">
+        <div class="header-app">
+            <div class="user-badge">
+                <div class="avatar" id="avatar-letra">W</div>
+                <div><h3 id="user-welcome">Olá!</h3><p style="font-size: 0.7rem; color: var(--text-muted)">Aguardando...</p></div>
             </div>
         </div>
+        <div class="status-card">
+            <div class="lock-icon">🔒</div><h2 style="margin-bottom: 10px;">MISSÃO BLOQUEADA</h2>
+            <p style="color: var(--text-muted)">O Max já preparou tudo. Passe a digital na catraca para liberar o seu treino!</p>
+        </div>
+        <div class="ranking-bar" id="txt-ranking">Carregando posição...</div>
     </div>
 
-    <div class="locked-content">
-        <div class="lock-visual">🔒</div>
-        <div>
-            <div class="locked-title">MISSÃO BLOQUEADA</div>
-        </div>
-        <p class="locked-text">
-            Passe na <strong>catraca da academia</strong> para desbloquear o treino de hoje!
-        </p>
-        <div class="ranking-pill" id="txt-ranking">
-            <span>Carregando<span class="waiting-dots"></span></span>
-        </div>
-    </div>
-</div>
+    <div id="screen-workout" class="screen">
+        <div class="header-app"><h2 id="dia-titulo" style="color:var(--primary);">TREINO</h2></div>
 
-<!-- TELA TREINO -->
-<div id="screen-workout" class="screen">
-    <div class="app-header">
-        <div class="user-pill">
-            <div class="avatar" id="avatar-workout">?</div>
-            <div class="user-info">
-                <h3 id="header-nome">—</h3>
-                <p id="header-pos">Ranking</p>
-            </div>
+        <div id="painel-treino-ativo">
+            <div id="cronometro">00:00</div>
+            <p style="color: var(--text-muted); font-size: 0.7rem; font-weight: bold; letter-spacing: 1px;">TEMPO DE TREINO</p>
         </div>
+
+        <div class="workout-card">
+            <div id="lista-exercicios"></div>
+        </div>
+
+        <button id="btn-iniciar-treino" class="btn-main" onclick="iniciarTreinoInterativo()">COMEÇAR TREINO 🚀</button>
+        <button id="btn-concluir-treino" class="btn-main" style="background: var(--success); color: black; display: none;" onclick="concluirMissao()">CONCLUIR MISSÃO ✅</button>
     </div>
 
-    <div class="workout-topbar">
-        <div class="day-label" id="dia-titulo">TREINO</div>
-        <div class="workout-subtitle" id="treino-nivel">Gerando missão...</div>
-    </div>
+    <script>
+        const API_URL = "https://script.google.com/macros/s/AKfycby62vambopzAU-hOp4Och0Qg9_ZOxNCqqo19BFZvUA13OFTYBRMnTnNckq3aBzncXKTJg/exec";
+        
+        let AlunoLogado = { id: "", nome: "", cpf: "", posicao: "" };
+        let radarAppInterval;
+        let tempoSegundos = 0;
+        let timerId;
 
-    <!-- Timer -->
-    <div class="timer-bar" id="timer-bar">
-        <div>
-            <div class="timer-label">Tempo de Treino</div>
-            <div class="timer-display" id="cronometro">00:00</div>
-        </div>
-        <div style="text-align:right;">
-            <div class="timer-label">Concluídos</div>
-            <div style="font-family:'Barlow Condensed',sans-serif;font-size:1.8rem;font-weight:900;color:var(--success);" id="contador-ex">0/0</div>
-        </div>
-    </div>
+        // 🌟 DICIONÁRIO DE TÉCNICAS E NÍVEIS (BALÃOZINHO)
+        const TECNICAS = {
+            "DROP-SET": "Realize o exercício até a falha, diminua o peso (aprox. 20%) e continue imediatamente sem descanso até a nova falha.",
+            "BI-SET": "Realize dois exercícios diferentes para o mesmo músculo (ou antagonistas) sem descanso entre eles.",
+            "TRI-SET": "Combine três exercícios diferentes sem descanso entre as séries. Alta intensidade metabólica!",
+            "REST-PAUSE": "Treine até a falha, descanse apenas 15 segundos e faça mais algumas repetições com o mesmo peso.",
+            "CLUSTER": "Divida a série em pequenos blocos (ex: 4+4+4) com 10-15s de pausa entre eles para manter a carga máxima.",
+            "ISOMETRIA": "Mantenha o músculo contraído na posição de maior esforço pelo tempo indicado, sem se mover.",
+            
+            // Explicando os Níveis
+            "NÍVEL 1": "Fase inicial de adaptação. Foque em aprender o movimento correto com cargas leves a moderadas. Velocidade controlada.",
+            "NÍVEL 2": "Fase de transição. Cargas moderadas, mantendo o controle total do movimento para criar resistência.",
+            "NÍVEL 3": "Fim da fase iniciante. Maior volume de treino para preparar os músculos para cargas mais pesadas.",
+            "NÍVEL 4": "Início da fase intermediária. Introdução de técnicas básicas para aumentar o tempo do músculo sob tensão.",
+            "NÍVEL 5": "Intermediário pleno. O treino começa a exigir mais resistência e recuperação muscular rápida.",
+            "NÍVEL 6": "Fim da fase intermediária. Volume e intensidade altos. Exige bastante foco e nutrição adequada.",
+            "NÍVEL 7": "Avançado inicial. Uso de técnicas intensas para forçar o músculo além do limite normal.",
+            "NÍVEL 8": "Avançado pleno. Treinos densos com grande desgaste metabólico e recrutamento máximo de fibras.",
+            "NÍVEL 9": "Avançado experiente. Combinação de técnicas intensas. O tempo de descanso e a técnica devem ser perfeitos.",
+            "NÍVEL 10": "Nível Power! Elite da academia. Exige força extrema, resistência máxima e supervisão atenta para evitar lesões."
+        };
 
-    <!-- Progress -->
-    <div class="progress-section" id="progress-section" style="display:none;">
-        <div class="progress-header">
-            <span>Progresso</span>
-            <span id="progress-pct">0%</span>
-        </div>
-        <div class="progress-bar">
-            <div class="progress-fill" id="progress-fill"></div>
-        </div>
-    </div>
-
-    <!-- Exercise list -->
-    <div class="exercises-list" id="lista-exercicios">
-        <div style="text-align:center; padding: 40px 0; color: var(--primary);">
-            <div style="font-size:2rem; margin-bottom:12px;">🤖</div>
-            <div style="font-family:'Barlow Condensed',sans-serif; font-size:1.2rem; letter-spacing:1px;">Max gerando missão<span class="waiting-dots"></span></div>
-        </div>
-    </div>
-
-    <!-- CTAs -->
-    <div class="workout-cta">
-        <button class="btn-cta btn-start" id="btn-iniciar-treino" onclick="iniciarTreinoInterativo()">COMEÇAR TREINO 🚀</button>
-        <button class="btn-cta btn-finish" id="btn-concluir-treino" onclick="concluirMissao()">CONCLUIR MISSÃO ✅</button>
-    </div>
-</div>
-
-<script>
-    const API_URL = "https://script.google.com/macros/s/AKfycby62vambopzAU-hOp4Och0Qg9_ZOxNCqqo19BFZvUA13OFTYBRMnTnNckq3aBzncXKTJg/exec";
-
-    let AlunoLogado = { id: "", nome: "", cpf: "", posicao: "" };
-    let radarInterval;
-    let tempoSegundos = 0;
-    let timerId;
-    let totalEx = 0;
-
-    // Máscar CPF ao digitar
-    document.getElementById('alunoCpf').addEventListener('input', function(e) {
-        let v = e.target.value.replace(/\D/g, '');
-        if (v.length > 11) v = v.slice(0,11);
-        v = v.replace(/(\d{3})(\d)/, '$1.$2');
-        v = v.replace(/(\d{3})\.(\d{3})(\d)/, '$1.$2.$3');
-        v = v.replace(/(\d{3})\.(\d{3})\.(\d{3})(\d)/, '$1.$2.$3-$4');
-        e.target.value = v;
-    });
-
-    document.getElementById('alunoCpf').addEventListener('keydown', function(e) {
-        if (e.key === 'Enter') fazerLogin();
-    });
-
-    const TECNICAS = {
-        "DROP-SET": "Realize o exercício até a falha, diminua o peso (aprox. 20%) e continue imediatamente sem descanso até a nova falha.",
-        "BI-SET": "Realize dois exercícios diferentes para o mesmo músculo sem descanso entre eles. Maximiza o volume num menor tempo.",
-        "TRI-SET": "Combine três exercícios diferentes sem descanso entre as séries. Alta intensidade metabólica!",
-        "REST-PAUSE": "Treine até a falha, descanse apenas 15 segundos e faça mais algumas repetições com o mesmo peso.",
-        "CLUSTER": "Divida a série em blocos (ex: 4+4+4) com 10-15s de pausa entre eles para manter a carga máxima.",
-        "ISOMETRIA": "Mantenha o músculo contraído na posição de maior esforço pelo tempo indicado, sem se mover.",
-    };
-
-    async function fazerLogin() {
-        const input = document.getElementById('alunoCpf');
-        const btn = document.getElementById('btn-login');
-        const cpf = input.value.replace(/\D/g, '');
-
-        if (cpf.length < 11) {
-            return Swal.fire({ title: 'CPF Inválido', text: 'Digite os 11 dígitos do seu CPF.', icon: 'warning', confirmButtonColor: '#FF5500' });
-        }
-
-        btn.textContent = "AUTENTICANDO...";
-        btn.disabled = true;
-
-        try {
-            const res = await fetch(`${API_URL}?acao=loginApp&cpf=${cpf}`);
-            const dados = await res.json();
-
-            if (dados.sucesso) {
-                AlunoLogado = { id: dados.id, nome: dados.nome, cpf, posicao: dados.posicao };
-                const primeiroNome = dados.nome.split(' ')[0];
-
-                document.getElementById('user-welcome').textContent = `Olá, ${primeiroNome}!`;
-                document.getElementById('avatar-letra').textContent = primeiroNome.charAt(0).toUpperCase();
-
-                const posStr = dados.posicao ? `<span class="pos-badge">${dados.posicao}º</span> no ranking` : 'Bem-vindo!';
-                document.getElementById('txt-ranking').innerHTML = `🔥 Você está em ${posStr}`;
-
-                trocarTela('screen-locked');
-                radarInterval = setInterval(checarDesbloqueio, 5000);
-            } else {
-                Swal.fire({ title: 'Acesso Negado', text: 'CPF não encontrado. Fale com a recepção!', icon: 'error', confirmButtonColor: '#FF5500' });
-            }
-        } catch (e) {
-            Swal.fire({ title: 'Sem Conexão', text: 'Não foi possível conectar ao servidor.', icon: 'error', confirmButtonColor: '#FF5500' });
-        } finally {
-            btn.textContent = "ENTRAR NA ARENA";
-            btn.disabled = false;
-        }
-    }
-
-    function trocarTela(id) {
-        document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-        document.getElementById(id).classList.add('active');
-        window.scrollTo(0,0);
-    }
-
-    async function checarDesbloqueio() {
-        try {
-            const res = await fetch(`${API_URL}?acao=checkCatracaApp&idAluno=${AlunoLogado.id}`);
-            const dados = await res.json();
-            if (dados.desbloqueado) {
-                clearInterval(radarInterval);
-                carregarTreinoDaAPI();
-            }
-        } catch(e) {}
-    }
-
-    async function carregarTreinoDaAPI() {
-        trocarTela('screen-workout');
-
-        const primeiroNome = AlunoLogado.nome.split(' ')[0];
-        document.getElementById('avatar-workout').textContent = primeiroNome.charAt(0).toUpperCase();
-        document.getElementById('header-nome').textContent = primeiroNome;
-        document.getElementById('header-pos').textContent = AlunoLogado.posicao ? `${AlunoLogado.posicao}º no ranking` : 'Powerfisio';
-
-        const diasSemana = ['Domingo', 'Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta', 'Sábado'];
-        const diaHoje = diasSemana[new Date().getDay()];
-        document.getElementById('dia-titulo').textContent = diaHoje.toUpperCase();
-
-        try {
-            const res = await fetch(`${API_URL}?acao=gerarTreinoMax&idAluno=${AlunoLogado.id}&dia=${diaHoje}`);
-            const contentType = res.headers.get("content-type");
-            if (!contentType || !contentType.includes("application/json")) throw new Error("Resposta inválida do servidor.");
-
-            const treino = await res.json();
-
-            if (treino.sucesso) {
-                document.getElementById('treino-nivel').textContent = treino.cabecalho || '';
-                renderizarTreino(treino.conteudo);
-            } else {
-                document.getElementById('lista-exercicios').innerHTML = `
-                    <div style="background:rgba(255,0,0,0.08);border:1px solid rgba(255,0,0,0.3);border-radius:16px;padding:20px;">
-                        <div style="color:#ff6b6b;font-weight:700;margin-bottom:8px;">⚠️ Max encontrou um problema</div>
-                        <p style="font-size:0.85rem;color:var(--muted);">${treino.conteudo}</p>
-                    </div>`;
-            }
-        } catch (e) {
-            document.getElementById('lista-exercicios').innerHTML = `
-                <div style="background:rgba(255,85,0,0.08);border:1px solid rgba(255,85,0,0.3);border-radius:16px;padding:20px;">
-                    <div style="color:var(--primary);font-weight:700;margin-bottom:8px;">🛠️ Falha Técnica</div>
-                    <p style="font-size:0.8rem;color:var(--muted);">${e.message}</p>
-                </div>`;
-        }
-    }
-
-    function renderizarTreino(conteudo) {
-        const linhas = conteudo.split('\n');
-        let html = '';
-        let exCount = 0;
-
-        linhas.forEach(linha => {
-            const texto = linha.replace(/\*\*/g, '').trim();
-            if (!texto) return;
-
-            // Seções (Como Executar, Nota Clínica)
-            if (/^(como executar|nota clínica|nota clinica)/i.test(texto)) {
-                html += `<div class="section-label">${texto}</div>`;
-                return;
-            }
-
-            // Exercícios numerados
-            if (/^\d+\./.test(texto)) {
-                const match = texto.match(/^\d+\.\s*(.+?)\s*\[ID:\s*(\d+)\]\s*-\s*(.+)/i);
-                if (match) {
-                    const nome = match[1];
-                    const id = match[2];
-                    let resto = match[3];
-
-                    // Tags de séries ex: 3x12, 4x10-12
-                    let tagsHtml = `<span class="tag tag-id">ID: ${id}</span>`;
-
-                    resto = resto.replace(/(\d+\s*[xX]\s*\d+(?:\s*(?:a|-)\s*\d+)?)/g, match => {
-                        return `<span class="tag tag-series">${match.trim()}</span>`;
-                    });
-
-                    resto = resto.replace(/\(([^)]+)\)/g, (_, p1) => {
-                        return `<span class="tag tag-tech" onclick="abrirModalTecnica('${p1}')">${p1}</span>`;
-                    });
-
-                    exCount++;
-                    html += `
-                    <div class="exercise-item unstarted" id="ex-${exCount}">
-                        <div class="ex-check"><span class="ex-check-icon">✓</span></div>
-                        <div class="ex-body">
-                            <div class="ex-name">${nome}</div>
-                            <div class="ex-tags">${tagsHtml} ${resto}</div>
-                        </div>
-                    </div>`;
-                } else {
-                    html += `<div class="exercise-item unstarted"><div class="ex-body"><div class="ex-name">${texto}</div></div></div>`;
-                }
-                return;
-            }
-
-            // Texto normal
-            html += `<p class="info-text">${texto}</p>`;
-        });
-
-        totalEx = exCount;
-        document.getElementById('lista-exercicios').innerHTML = html;
-    }
-
-    function iniciarTreinoInterativo() {
-        document.getElementById('btn-iniciar-treino').style.display = 'none';
-        document.getElementById('btn-concluir-treino').style.display = 'block';
-        document.getElementById('timer-bar').classList.add('visible');
-        document.getElementById('progress-section').style.display = 'block';
-
-        document.querySelectorAll('.exercise-item').forEach(item => {
-            item.classList.remove('unstarted');
-            item.classList.add('pendente', 'interactive');
-            item.onclick = function(e) {
-                if (e.target.classList.contains('tag-tech')) return;
-                const wasConcluido = this.classList.contains('concluido');
-                this.classList.toggle('pendente');
-                this.classList.toggle('concluido');
-                atualizarProgresso();
-            };
-        });
-
-        tempoSegundos = 0;
-        timerId = setInterval(() => {
-            tempoSegundos++;
-            const m = String(Math.floor(tempoSegundos / 60)).padStart(2, '0');
-            const s = String(tempoSegundos % 60).padStart(2, '0');
-            document.getElementById('cronometro').textContent = `${m}:${s}`;
-        }, 1000);
-
-        atualizarProgresso();
-    }
-
-    function atualizarProgresso() {
-        const todos = document.querySelectorAll('.exercise-item.interactive').length;
-        const feitos = document.querySelectorAll('.exercise-item.concluido').length;
-        const pct = todos > 0 ? Math.round((feitos / todos) * 100) : 0;
-
-        document.getElementById('progress-fill').style.width = pct + '%';
-        document.getElementById('progress-pct').textContent = pct + '%';
-        document.getElementById('contador-ex').textContent = `${feitos}/${todos}`;
-    }
-
-    function abrirModalTecnica(nome) {
-        const key = nome.toUpperCase().trim();
-        document.getElementById('modal-titulo').textContent = key;
-        document.getElementById('modal-desc').textContent = TECNICAS[key] || 'Técnica para aumentar a intensidade do treino. Consulte o professor para a execução correta.';
-        document.getElementById('modal-tecnica').classList.add('open');
-    }
-
-    function fecharModal() {
-        document.getElementById('modal-tecnica').classList.remove('open');
-    }
-
-    async function concluirMissao() {
-        const feitos = document.querySelectorAll('.exercise-item.concluido').length;
-        const todos = document.querySelectorAll('.exercise-item.interactive').length;
-        const pct = todos > 0 ? Math.round((feitos / todos) * 100) : 0;
-
-        const result = await Swal.fire({
-            title: 'CONCLUIR MISSÃO?',
-            html: `Você completou <strong>${pct}%</strong> dos exercícios hoje.<br>Quer registar o treino?`,
-            icon: 'question',
-            showCancelButton: true,
-            confirmButtonColor: '#00E676',
-            cancelButtonColor: '#2A2F3A',
-            confirmButtonText: 'SIM, FINALIZEI!',
-            cancelButtonText: 'AINDA NÃO'
-        });
-
-        if (!result.isConfirmed) return;
-
-        clearInterval(timerId);
-        const btn = document.getElementById('btn-concluir-treino');
-        btn.textContent = "SALVANDO...";
-        btn.disabled = true;
-
-        try {
-            const res = await fetch(`${API_URL}?acao=concluirTreinoApp&idAluno=${AlunoLogado.id}&cpf=${AlunoLogado.cpf}&nome=${encodeURIComponent(AlunoLogado.nome)}`);
-            const resp = await res.json();
-
-            if (resp.sucesso) {
-                // Calcula pontos: quarta (4) e sexta (6) dobram
-                const dia = new Date().getDay();
-                const pontos = (dia === 3 || dia === 5) ? 30 : 15;
-
-                await Swal.fire({
-                    title: 'MISSÃO CUMPRIDA! 💪',
-                    html: `Guerreiro, você é inspirador!<br><br><strong style="color:#FFD700;font-size:1.5rem;">+${pontos} PONTOS</strong><br><span style="font-size:0.85rem;color:#888;">ganhos no ranking</span>`,
-                    icon: 'success',
-                    confirmButtonColor: '#FF5500',
-                    confirmButtonText: 'FECHAR'
-                });
-                location.reload();
-            } else {
-                await Swal.fire({
-                    title: 'Calma, atleta!',
-                    text: resp.mensagem || 'Você já registou treino hoje. O descanso também é treino!',
-                    icon: 'info',
+        async function fazerLogin() {
+            const cpfInput = document.getElementById('alunoCpf');
+            const btn = document.querySelector('#screen-login .btn-main');
+            const cpf = cpfInput.value.replace(/\D/g, '');
+            
+            if(cpf.length < 11) {
+                return Swal.fire({
+                    title: 'CPF Inválido',
+                    text: 'Digite apenas os 11 números do seu CPF.',
+                    icon: 'warning',
                     confirmButtonColor: '#FF5500'
                 });
-                btn.textContent = "CONCLUIR MISSÃO ✅";
-                btn.disabled = false;
             }
-        } catch (e) {
-            await Swal.fire({ title: 'Erro', text: 'Falha ao guardar o treino.', icon: 'error', confirmButtonColor: '#FF5500' });
-            btn.textContent = "CONCLUIR MISSÃO ✅";
-            btn.disabled = false;
+            
+            btn.innerText = "⏳ AUTENTICANDO..."; btn.disabled = true;
+
+            try {
+                const res = await fetch(`${API_URL}?acao=loginApp&cpf=${cpf}`);
+                const dados = await res.json();
+                if(dados.sucesso) {
+                    AlunoLogado = { id: dados.id, nome: dados.nome, cpf: cpf, posicao: dados.posicao };
+                    document.getElementById('user-welcome').innerText = `Olá, ${dados.nome}!`;
+                    document.getElementById('avatar-letra').innerText = dados.nome.charAt(0);
+                    document.getElementById('txt-ranking').innerHTML = `Você está em <strong>${dados.posicao}º lugar</strong> no ranking! 🔥`;
+                    trocarTela('screen-locked');
+                    radarAppInterval = setInterval(checarDesbloqueio, 5000);
+                } else { 
+                    Swal.fire({
+                        title: 'Acesso Negado',
+                        text: 'CPF não encontrado na nossa base de dados. Fale com a receção!',
+                        icon: 'error',
+                        confirmButtonColor: '#FF5500'
+                    });
+                }
+            } catch(e) { 
+                Swal.fire({
+                    title: 'Falha de Conexão',
+                    text: 'Não foi possível ligar ao servidor do Max.',
+                    icon: 'error',
+                    confirmButtonColor: '#FF5500'
+                });
+            } 
+            finally { btn.innerText = "ENTRAR NA ARENA"; btn.disabled = false; }
         }
-    }
-</script>
+
+        function trocarTela(id) {
+            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+            document.getElementById(id).classList.add('active');
+        }
+
+        async function checarDesbloqueio() {
+            try {
+                const res = await fetch(`${API_URL}?acao=checkCatracaApp&idAluno=${AlunoLogado.id}`);
+                const dados = await res.json();
+                if (dados.desbloqueado) { clearInterval(radarAppInterval); carregarTreinoDaAPI(); }
+            } catch(e) {}
+        }
+
+        async function carregarTreinoDaAPI() {
+            trocarTela('screen-workout');
+            const listaDiv = document.getElementById('lista-exercicios');
+            listaDiv.innerHTML = `<h3 style="text-align:center; color: var(--primary);">🤖 Gerando missão...</h3>`;
+            
+            const diasSemana = ['Domingo', 'Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta', 'Sábado'];
+            const diaHoje = diasSemana[new Date().getDay()];
+            document.getElementById('dia-titulo').innerText = diaHoje.toUpperCase();
+
+            try {
+                const res = await fetch(`${API_URL}?acao=gerarTreinoMax&idAluno=${AlunoLogado.id}&dia=${diaHoje}`);
+                
+                const contentType = res.headers.get("content-type");
+                if (!contentType || !contentType.includes("application/json")) {
+                    const textoErro = await res.text();
+                    throw new Error("O Google Script falhou e devolveu texto. Verifique se há erros no Código.gs ou se a API_URL está correta.");
+                }
+
+                const treino = await res.json();
+
+                if (treino.sucesso) {
+                    let HTML = `<p style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 20px;">${treino.cabecalho}</p>`;
+                    const linhas = treino.conteudo.split('\n');
+                    
+                    linhas.forEach(linha => {
+                        let textoLimpo = linha.replace(/\*\*/g, '').trim();
+                        if(textoLimpo === "") return;
+                        
+                        if(textoLimpo.toLowerCase().includes("como executar") || textoLimpo.toLowerCase().includes("nota clínica")) {
+                            HTML += `<h4 style="color: var(--text-muted); margin-top: 25px; margin-bottom: 10px; font-size: 0.8rem; border-bottom: 1px solid #222;">${textoLimpo}</h4>`;
+                        } 
+                        else if (/^\d/.test(textoLimpo)) {
+                            const regexTreino = /^\d+\.\s*(.+?)\s*\[ID:\s*(\d+)\]\s*-\s*(.+)/i;
+                            const match = textoLimpo.match(regexTreino);
+
+                            if (match) {
+                                let exNome = match[1];
+                                let exID = match[2];
+                                let exResto = match[3];
+
+                                exResto = exResto.replace(/(\d+\s*[xX]\s*\d+(?:\s*(?:a|-)\s*\d+)?)/g, '<span class="tag-series">$1</span>');
+                                
+                                exResto = exResto.replace(/\(([^)]+)\)/g, (match, p1) => {
+                                    return `<span class="tag-tech" onclick="abrirModalTecnica('${p1}')">${p1}</span>`;
+                                });
+
+                                HTML += `
+                                <div class="exercise-item unstarted">
+                                    <div class="exercise-checkbox"></div>
+                                    <div class="exercise-info">
+                                        <div class="ex-header">
+                                            <h4>${exNome}</h4>
+                                            <span class="tag-id">ID: ${exID}</span>
+                                        </div>
+                                        <div class="ex-body">${exResto}</div>
+                                    </div>
+                                </div>`;
+                            } else {
+                                HTML += `<div class="exercise-item unstarted"><div class="exercise-checkbox"></div><div class="exercise-info"><h4>${textoLimpo}</h4></div></div>`;
+                            }
+                        } else {
+                            HTML += `<p style="font-size: 0.85rem; color: #CCC; margin-bottom: 5px; line-height: 1.4;">${textoLimpo}</p>`;
+                        }
+                    });
+                    listaDiv.innerHTML = HTML;
+                } else {
+                    listaDiv.innerHTML = `<div style="padding: 15px; border-radius: 12px; background: rgba(255,0,0,0.1); border: 1px solid red;">
+                        <h4 style="color: red; margin-bottom: 10px;">⚠️ O Max encontrou um problema:</h4>
+                        <p style="font-size: 0.9rem;">${treino.conteudo}</p>
+                    </div>`;
+                }
+            } catch(e) { 
+                listaDiv.innerHTML = `<div style="padding: 15px; border-radius: 12px; background: rgba(255,85,0,0.1); border: 1px solid var(--primary);">
+                    <h4 style="color: var(--primary); margin-bottom: 10px;">🛠️ Falha Técnica</h4>
+                    <p style="font-size: 0.85rem; word-break: break-all;"><strong>Detalhe:</strong> ${e.message}</p>
+                </div>`; 
+                console.error(e);
+            }
+        }
+        
+        function iniciarTreinoInterativo() {
+            document.getElementById('btn-iniciar-treino').style.display = 'none';
+            document.getElementById('painel-treino-ativo').style.display = 'block';
+            document.getElementById('btn-concluir-treino').style.display = 'block';
+
+            const itens = document.querySelectorAll('.exercise-item');
+            itens.forEach(item => {
+                item.classList.remove('unstarted');
+                item.classList.add('pendente');
+                
+                item.onclick = function(e) {
+                    if(e.target.classList.contains('tag-tech')) return;
+                    
+                    this.classList.toggle('pendente');
+                    this.classList.toggle('concluido');
+                };
+            });
+
+            tempoSegundos = 0;
+            timerId = setInterval(() => {
+                tempoSegundos++;
+                let m = String(Math.floor(tempoSegundos / 60)).padStart(2, '0');
+                let s = String(tempoSegundos % 60).padStart(2, '0');
+                document.getElementById('cronometro').innerText = `${m}:${s}`;
+            }, 1000);
+        }
+
+        // 🌟 FUNÇÃO ATUALIZADA PARA TRATAR NÍVEIS COM INTELIGÊNCIA
+        function abrirModalTecnica(nome) {
+            const nomeFormatado = nome.toUpperCase().trim();
+            document.getElementById('modal-titulo').innerText = nomeFormatado;
+            
+            let descricao = TECNICAS[nomeFormatado];
+            
+            if (!descricao) {
+                if (nomeFormatado.includes("NÍVEL") || nomeFormatado.includes("NIVEL")) {
+                    descricao = "Indicador de dificuldade e volume do seu treino atual. Mantenha a consistência para evoluir e subir de nível!";
+                } else {
+                    descricao = "Técnica para aumentar a intensidade do treino. Consulte o professor para detalhes da execução correta.";
+                }
+            }
+
+            document.getElementById('modal-desc').innerText = descricao;
+            document.getElementById('modal-tecnica').style.display = 'flex';
+        }
+
+        function fecharModal() {
+            document.getElementById('modal-tecnica').style.display = 'none';
+        }
+
+        async function concluirMissao() {
+            Swal.fire({
+                title: 'CONCLUIR MISSÃO?',
+                text: "Tem certeza de que terminou o treino de hoje, guerreiro?",
+                icon: 'question',
+                showCancelButton: true,
+                confirmButtonColor: '#00FF88',
+                cancelButtonColor: '#2A2F3A',
+                confirmButtonText: 'SIM, TERMINEI!',
+                cancelButtonText: 'AINDA NÃO'
+            }).then(async (result) => {
+                if (result.isConfirmed) {
+                    clearInterval(timerId); 
+                    const btn = document.getElementById('btn-concluir-treino');
+                    btn.innerText = "A GUARDAR..."; btn.disabled = true;
+                    
+                    try {
+                        const res = await fetch(`${API_URL}?acao=concluirTreinoApp&idAluno=${AlunoLogado.id}&cpf=${AlunoLogado.cpf}&nome=${AlunoLogado.nome}`);
+                        const resp = await res.json(); 
+                        
+                        if(resp.sucesso) {
+                            const diaSemana = new Date().getDay();
+                            const pontosTreino = (diaSemana === 3 || diaSemana === 5) ? 30 : 15;
+                            
+                            Swal.fire({
+                                title: 'TREINO CONCLUÍDO! 💪',
+                                text: `Parabéns, guerreiro! A sua dedicação é inspiradora. Faturou +${pontosTreino} pontos no ranking!`,
+                                icon: 'success',
+                                confirmButtonColor: '#FF5500',
+                                confirmButtonText: 'FECHAR'
+                            }).then(() => {
+                                location.reload();
+                            });
+                        } else {
+                            Swal.fire({
+                                title: 'Calma, atleta!',
+                                text: "Já cumpriu a sua missão e garantiu os pontos hoje. O descanso também faz parte da evolução. Volte amanhã!",
+                                icon: 'info',
+                                confirmButtonColor: '#FF5500'
+                            });
+                            btn.innerText = "CONCLUIR MISSÃO ✅"; btn.disabled = false;
+                        }
+                    } catch(e) {
+                        Swal.fire({
+                            title: 'Erro',
+                            text: 'Ocorreu um problema ao guardar o seu treino.',
+                            icon: 'error',
+                            confirmButtonColor: '#FF5500'
+                        });
+                        btn.innerText = "CONCLUIR MISSÃO ✅"; btn.disabled = false;
+                    }
+                }
+            });
+        }
+    </script>
 </body>
 </html>

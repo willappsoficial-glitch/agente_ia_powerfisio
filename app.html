@@ -994,24 +994,24 @@
 
         clearInterval(timerId);
         const btn = document.getElementById('btn-concluir-treino');
-        btn.textContent = "SALVANDO...";
+        btn.textContent = "VERIFICANDO...";
         btn.disabled = true;
 
+        // 🎰 1. O APLICATIVO FAZ O SORTEIO 100% ALEATÓRIO AGORA!
+        const arraySorteio = [0, 5, 10, 15];
+        const pontosExtras = arraySorteio[Math.floor(Math.random() * arraySorteio.length)];
+        
+        // 🤫 2. CONTRABANDO DE DADOS: Junta o ID com o prêmio (Ex: 6497X15)
+        const idComPremio = AlunoLogado.id + "X" + pontosExtras;
+
         try {
-            const res = await fetch(`${API_URL}?acao=concluirTreinoApp&idAluno=${AlunoLogado.id}&cpf=${AlunoLogado.cpf}&nome=${encodeURIComponent(AlunoLogado.nome)}`);
+            // 3. Envia para o servidor aprovar o treino e gravar os pontos
+            const res = await fetch(`${API_URL}?acao=concluirTreinoApp&idAluno=${idComPremio}&cpf=${AlunoLogado.cpf}&nome=${encodeURIComponent(AlunoLogado.nome)}`);
             const resp = await res.json();
 
             if (resp.sucesso) {
-                const dataHoje = new Date();
-                const diaSemana = dataHoje.getDay();
-                const diaMes = dataHoje.getDate();
+                const diaSemana = new Date().getDay();
                 const base = (diaSemana === 3 || diaSemana === 5) ? 30 : 15;
-                
-                // 🎰 ROLETA SINCRONIZADA COM A MATEMÁTICA DO SERVIDOR
-                const idNumerico = parseInt(String(AlunoLogado.id).replace(/\D/g, '')) || 0;
-                const indiceSorteio = (diaMes + idNumerico) % 4;
-                const valoresRoleta = [0, 5, 10, 15];
-                const pontosExtras = valoresRoleta[indiceSorteio];
                 const totalGanhos = base + pontosExtras;
 
                 const modalRoleta = document.getElementById('modal-roleta');
@@ -1019,11 +1019,11 @@
                 const msgRoleta = document.getElementById('mensagem-roleta');
                 const roletaElement = document.getElementById('roleta');
 
-                // 🛡️ Segurança: se o modal não for encontrado, entrega o prêmio logo
+                // 🛡️ Segurança: se o visual falhar, entrega a recompensa silenciosa
                 if (!modalRoleta || !btnGirar || !roletaElement) {
                     await Swal.fire({
                         title: 'MISSÃO CUMPRIDA! 💪',
-                        html: `Guerreiro, você é inspirador!<br><br><strong style="color:#FFD700;font-size:1.8rem;">+${totalGanhos} PONTOS</strong><br><span style="font-size:0.85rem;color:#888;">(${base} do Treino + ${pontosExtras} da Roleta)</span>`,
+                        html: `Guerreiro, você é inspirador!<br><br><strong style="color:#FFD700;font-size:1.8rem;">+${totalGanhos} PONTOS</strong>`,
                         icon: 'success',
                         confirmButtonColor: '#FF5500',
                         confirmButtonText: 'FECHAR'
@@ -1032,7 +1032,7 @@
                     return;
                 }
 
-                // 🛑 MOSTRA A ROLETA E O BOTÃO E AGUARDA...
+                // 🛑 PREPARA A TELA DA ROLETA
                 modalRoleta.style.display = 'flex';
                 btnGirar.style.display = 'block';
                 msgRoleta.style.display = 'none';
@@ -1047,27 +1047,27 @@
 
                 const rotacaoTotal = (360 * 5) + anguloFinal;
 
-                // 🚀 A MÁGICA VISUAL SÓ COMEÇA QUANDO O ALUNO CLICAR NO BOTÃO
+                // 🚀 A MÁGICA ACONTECE QUANDO O ALUNO CLICA
                 btnGirar.onclick = function() {
-                    btnGirar.style.display = 'none'; // Esconde o botão
-                    msgRoleta.style.display = 'block'; // Mostra o texto "GIRANDO..."
+                    btnGirar.style.display = 'none'; 
+                    msgRoleta.style.display = 'block'; 
                     msgRoleta.innerText = 'GIRANDO...';
                     msgRoleta.style.color = 'white';
 
-                    // Roda a roleta com animação
+                    // Gira a roleta fisicamente na tela
                     roletaElement.style.transition = 'transform 4s cubic-bezier(0.25, 1, 0.5, 1)';
                     void roletaElement.offsetWidth; 
                     roletaElement.style.transform = `rotate(${rotacaoTotal}deg)`;
 
                     setTimeout(async () => {
-                        // Roleta parou! Mostra a mensagem e a cor do prêmio
+                        // Revela o resultado visual
                         msgRoleta.innerText = pontosExtras > 0 ? `+${pontosExtras} PONTOS EXTRA!` : "QUASE! 0 PONTOS EXTRA.";
                         msgRoleta.style.color = pontosExtras > 0 ? "#00E676" : "#e74c3c";
 
                         setTimeout(async () => {
                             modalRoleta.style.display = 'none';
                             
-                            // Tela de sucesso oficial com a soma matemática perfeita
+                            // Celebração oficial com os pontos garantidos
                             await Swal.fire({
                                 title: 'MISSÃO CUMPRIDA! 💪',
                                 html: `Guerreiro, você é inspirador!<br><br><strong style="color:#FFD700;font-size:1.8rem;">+${totalGanhos} PONTOS</strong><br><span style="font-size:0.85rem;color:#888;">(${base} do Treino + ${pontosExtras} da Roleta)</span>`,
@@ -1076,9 +1076,9 @@
                                 confirmButtonText: 'FECHAR'
                             });
                             location.reload();
-                        }, 1500); // Fica 1,5s mostrando o resultado antes de dar o "ok" final
+                        }, 1500); 
 
-                    }, 4000); // 4 segundos é o tempo do giro
+                    }, 4000); 
                 };
 
             } else {

@@ -1002,28 +1002,28 @@
             const resp = await res.json();
 
             if (resp.sucesso) {
-                const dia = new Date().getDay();
-                const base = (dia === 3 || dia === 5) ? 30 : 15;
+                const dataHoje = new Date();
+                const diaSemana = dataHoje.getDay();
+                const diaMes = dataHoje.getDate();
+                const base = (diaSemana === 3 || diaSemana === 5) ? 30 : 15;
                 
-                let totalGanhos = resp.pontos || resp.pontosGanhos || base;
-                let pontosExtras = totalGanhos - base;
-                
-                if (![0, 5, 10, 15].includes(pontosExtras)) {
-                    const arraySorteio = [0, 5, 10, 15];
-                    pontosExtras = arraySorteio[Math.floor(Math.random() * arraySorteio.length)];
-                    totalGanhos = base + pontosExtras;
-                }
+                // 🎰 ROLETA SINCRONIZADA COM A MATEMÁTICA DO SERVIDOR
+                const idNumerico = parseInt(String(AlunoLogado.id).replace(/\D/g, '')) || 0;
+                const indiceSorteio = (diaMes + idNumerico) % 4;
+                const valoresRoleta = [0, 5, 10, 15];
+                const pontosExtras = valoresRoleta[indiceSorteio];
+                const totalGanhos = base + pontosExtras;
 
                 const modalRoleta = document.getElementById('modal-roleta');
                 const btnGirar = document.getElementById('btn-girar-roleta');
                 const msgRoleta = document.getElementById('mensagem-roleta');
                 const roletaElement = document.getElementById('roleta');
 
-                // 🛡️ TRAVA DE SEGURANÇA: Se o botão não existir no HTML, entrega os pontos e sai limpo
-                if (!modalRoleta || !btnGirar || !msgRoleta || !roletaElement) {
+                // 🛡️ Segurança: se o modal não for encontrado, entrega o prêmio logo
+                if (!modalRoleta || !btnGirar || !roletaElement) {
                     await Swal.fire({
                         title: 'MISSÃO CUMPRIDA! 💪',
-                        html: `Guerreiro, você é inspirador!<br><br><strong style="color:#FFD700;font-size:1.8rem;">+${totalGanhos} PONTOS</strong>`,
+                        html: `Guerreiro, você é inspirador!<br><br><strong style="color:#FFD700;font-size:1.8rem;">+${totalGanhos} PONTOS</strong><br><span style="font-size:0.85rem;color:#888;">(${base} do Treino + ${pontosExtras} da Roleta)</span>`,
                         icon: 'success',
                         confirmButtonColor: '#FF5500',
                         confirmButtonText: 'FECHAR'
@@ -1032,14 +1032,10 @@
                     return;
                 }
 
-                // 🛑 MOSTRA A TELA MAS AGUARDA O CLIQUE DO ALUNO
+                // 🛑 MOSTRA A ROLETA E O BOTÃO E AGUARDA...
                 modalRoleta.style.display = 'flex';
                 btnGirar.style.display = 'block';
                 msgRoleta.style.display = 'none';
-                msgRoleta.innerText = 'GIRANDO...';
-                msgRoleta.style.color = 'white';
-
-                // Garante que a roleta começa na posição 0
                 roletaElement.style.transition = 'none';
                 roletaElement.style.transform = `rotate(0deg)`;
 
@@ -1051,24 +1047,27 @@
 
                 const rotacaoTotal = (360 * 5) + anguloFinal;
 
-                // 🚀 AÇÃO DE GIRAR SÓ ACONTECE QUANDO O BOTÃO É CLICADO
+                // 🚀 A MÁGICA VISUAL SÓ COMEÇA QUANDO O ALUNO CLICAR NO BOTÃO
                 btnGirar.onclick = function() {
-                    btnGirar.style.display = 'none';
-                    msgRoleta.style.display = 'block';
+                    btnGirar.style.display = 'none'; // Esconde o botão
+                    msgRoleta.style.display = 'block'; // Mostra o texto "GIRANDO..."
+                    msgRoleta.innerText = 'GIRANDO...';
+                    msgRoleta.style.color = 'white';
 
-                    // Reativa a animação e faz girar por 4 segundos
+                    // Roda a roleta com animação
                     roletaElement.style.transition = 'transform 4s cubic-bezier(0.25, 1, 0.5, 1)';
                     void roletaElement.offsetWidth; 
                     roletaElement.style.transform = `rotate(${rotacaoTotal}deg)`;
 
                     setTimeout(async () => {
+                        // Roleta parou! Mostra a mensagem e a cor do prêmio
                         msgRoleta.innerText = pontosExtras > 0 ? `+${pontosExtras} PONTOS EXTRA!` : "QUASE! 0 PONTOS EXTRA.";
                         msgRoleta.style.color = pontosExtras > 0 ? "#00E676" : "#e74c3c";
 
-                        // Dá 1 segundo e meio para o aluno festejar o prémio
                         setTimeout(async () => {
                             modalRoleta.style.display = 'none';
-
+                            
+                            // Tela de sucesso oficial com a soma matemática perfeita
                             await Swal.fire({
                                 title: 'MISSÃO CUMPRIDA! 💪',
                                 html: `Guerreiro, você é inspirador!<br><br><strong style="color:#FFD700;font-size:1.8rem;">+${totalGanhos} PONTOS</strong><br><span style="font-size:0.85rem;color:#888;">(${base} do Treino + ${pontosExtras} da Roleta)</span>`,
@@ -1077,15 +1076,15 @@
                                 confirmButtonText: 'FECHAR'
                             });
                             location.reload();
-                        }, 1500);
+                        }, 1500); // Fica 1,5s mostrando o resultado antes de dar o "ok" final
 
-                    }, 4000);
+                    }, 4000); // 4 segundos é o tempo do giro
                 };
 
             } else {
                 await Swal.fire({
                     title: 'Calma, atleta!',
-                    text: resp.mensagem || 'Você já registou treino hoje. O descanso também é treino!',
+                    text: resp.mensagem || 'Você já registrou treino hoje. O descanso também é treino!',
                     icon: 'info',
                     confirmButtonColor: '#FF5500'
                 });

@@ -997,16 +997,16 @@
         btn.textContent = "VERIFICANDO...";
         btn.disabled = true;
 
-        // 🎰 1. O APLICATIVO FAZ O SORTEIO 100% ALEATÓRIO AGORA!
+        // 🎰 1. O APLICATIVO FAZ O SORTEIO 100% ALEATÓRIO
         const arraySorteio = [0, 5, 10, 15];
         const pontosExtras = arraySorteio[Math.floor(Math.random() * arraySorteio.length)];
         
-        // 🤫 2. CONTRABANDO DE DADOS: Junta o ID com o prêmio (Ex: 6497X15)
-        const idComPremio = AlunoLogado.id + "X" + pontosExtras;
+        // 🤫 2. CONTRABANDO V3: Junta o NOME com o prêmio (Ex: FRANCISCO MATHEUS@@15)
+        const nomeComPremio = AlunoLogado.nome + "@@" + pontosExtras;
 
         try {
-            // 3. Envia para o servidor aprovar o treino e gravar os pontos
-            const res = await fetch(`${API_URL}?acao=concluirTreinoApp&idAluno=${idComPremio}&cpf=${AlunoLogado.cpf}&nome=${encodeURIComponent(AlunoLogado.nome)}`);
+            // 3. Envia o ID limpo e o Nome "turbinado" com os pontos
+            const res = await fetch(`${API_URL}?acao=concluirTreinoApp&idAluno=${AlunoLogado.id}&cpf=${AlunoLogado.cpf}&nome=${encodeURIComponent(nomeComPremio)}`);
             const resp = await res.json();
 
             if (resp.sucesso) {
@@ -1019,7 +1019,7 @@
                 const msgRoleta = document.getElementById('mensagem-roleta');
                 const roletaElement = document.getElementById('roleta');
 
-                // 🛡️ Segurança: se o visual falhar, entrega a recompensa silenciosa
+                // 🛡️ Segurança de visualização
                 if (!modalRoleta || !btnGirar || !roletaElement) {
                     await Swal.fire({
                         title: 'MISSÃO CUMPRIDA! 💪',
@@ -1067,7 +1067,7 @@
                         setTimeout(async () => {
                             modalRoleta.style.display = 'none';
                             
-                            // Celebração oficial com os pontos garantidos
+                            // Celebração oficial com os pontos garantidos e somados perfeitamente
                             await Swal.fire({
                                 title: 'MISSÃO CUMPRIDA! 💪',
                                 html: `Guerreiro, você é inspirador!<br><br><strong style="color:#FFD700;font-size:1.8rem;">+${totalGanhos} PONTOS</strong><br><span style="font-size:0.85rem;color:#888;">(${base} do Treino + ${pontosExtras} da Roleta)</span>`,

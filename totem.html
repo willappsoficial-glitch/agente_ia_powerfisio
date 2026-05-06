@@ -15,6 +15,7 @@
             --border: rgba(255,255,255,0.06);
             --text: #FFFFFF;
             --muted: #6B7280;
+            --gold: #FFD700;
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -172,17 +173,46 @@
             align-items: center;
             padding: 60px;
             background: radial-gradient(ellipse at 50% 0%, rgba(255,85,0,0.08) 0%, transparent 50%);
+            position: relative;
+        }
+
+        /* Botão Sair Rápido */
+        .btn-fechar {
+            position: absolute;
+            top: 40px;
+            right: 40px;
+            background: transparent;
+            border: 2px solid var(--border);
+            color: var(--muted);
+            padding: 12px 24px;
+            border-radius: 12px;
+            font-family: 'Barlow Condensed', sans-serif;
+            font-size: 1.2rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s;
+            letter-spacing: 1px;
+        }
+
+        .btn-fechar:hover {
+            color: white;
+            border-color: white;
+            background: rgba(255,255,255,0.1);
+        }
+
+        .btn-fechar:active {
+            transform: scale(0.95);
         }
 
         /* Foto / Placeholder */
         .foto-wrapper {
             position: relative;
-            margin-bottom: 32px;
+            margin-bottom: 24px;
         }
 
         .foto-perfil, .foto-placeholder {
-            width: 160px;
-            height: 160px;
+            width: 140px;
+            height: 140px;
             border-radius: 50%;
             border: 3px solid var(--primary);
             box-shadow: 0 0 40px rgba(255,85,0,0.35);
@@ -196,14 +226,14 @@
             align-items: center;
             justify-content: center;
             font-family: 'Barlow Condensed', sans-serif;
-            font-size: 4rem;
+            font-size: 3.5rem;
             font-weight: 900;
             color: var(--primary);
         }
 
         .saudacao {
             font-family: 'Barlow Condensed', sans-serif;
-            font-size: 4rem;
+            font-size: 3.5rem;
             font-weight: 900;
             letter-spacing: -1px;
             text-align: center;
@@ -213,82 +243,124 @@
 
         .saudacao span { color: var(--primary); }
 
-        @keyframes fadeSlideIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
         .subtitulo-aluno {
-            font-size: 1.2rem;
+            font-size: 1.1rem;
             color: var(--muted);
             text-align: center;
-            margin-bottom: 48px;
+            margin-bottom: 32px;
             animation: fadeSlideIn 0.4s ease-out 0.1s both;
         }
 
         .subtitulo-aluno strong { color: var(--text); }
 
-        /* ======= BOTÕES DE TREINO ======= */
-        .grid-treinos {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 24px;
+        /* ======= MENU PRINCIPAL OTIMIZADO ======= */
+        .area-principal {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
             width: 100%;
-            max-width: 900px;
+            max-width: 500px; /* Mais estreito para focar o botão */
             animation: fadeSlideIn 0.4s ease-out 0.2s both;
         }
 
-        .btn-treino {
-            background: var(--bg-card);
-            border: 2px solid var(--border);
-            border-radius: 20px;
-            padding: 36px 20px;
+        .btn-max {
+            width: 100%;
+            background: linear-gradient(135deg, var(--primary), #FF8C00);
+            border: none;
+            border-radius: 24px;
+            padding: 30px 20px;
             font-family: 'Barlow Condensed', sans-serif;
-            font-size: 1.4rem;
+            font-size: 2.2rem;
             font-weight: 900;
-            letter-spacing: 1px;
-            text-transform: uppercase;
-            color: var(--text);
+            letter-spacing: 2px;
+            color: #fff;
             cursor: pointer;
             transition: all 0.2s ease;
             display: flex;
             flex-direction: column;
             align-items: center;
+            gap: 12px;
+            box-shadow: 0 16px 40px rgba(255,85,0,0.4);
+            text-shadow: 0 2px 5px rgba(0,0,0,0.3);
+        }
+
+        .btn-max:hover {
+            transform: translateY(-5px) scale(1.02);
+            box-shadow: 0 20px 50px rgba(255,85,0,0.6);
+        }
+
+        .btn-max:active { transform: scale(0.98); }
+
+        .btn-icon-max {
+            font-size: 3.5rem;
+            line-height: 1;
+            filter: drop-shadow(0 4px 6px rgba(0,0,0,0.3));
+        }
+
+        /* Banner da Roleta */
+        .roleta-banner {
+            width: 100%;
+            background: rgba(255, 215, 0, 0.08);
+            border: 1px solid rgba(255, 215, 0, 0.3);
+            border-radius: 16px;
+            padding: 16px 20px;
+            display: flex;
+            align-items: center;
             gap: 16px;
+            box-shadow: 0 8px 24px rgba(255, 215, 0, 0.05);
         }
 
-        .btn-treino:hover {
-            border-color: rgba(255,255,255,0.2);
-            background: var(--bg-surface);
-            transform: translateY(-4px);
+        .roleta-icone {
+            font-size: 2.2rem;
+            animation: bounce 2s infinite;
         }
 
-        .btn-treino:active { transform: scale(0.97); }
-
-        .btn-treino.destaque {
-            background: var(--primary);
-            border-color: var(--primary);
-            box-shadow: 0 16px 40px rgba(255,85,0,0.3);
+        .roleta-texto {
+            text-align: left;
+            font-size: 0.95rem;
+            line-height: 1.4;
+            color: var(--text);
         }
 
-        .btn-treino.destaque:hover {
-            box-shadow: 0 20px 50px rgba(255,85,0,0.5);
-            background: #ff6620;
+        .roleta-texto strong {
+            color: var(--gold);
+            font-family: 'Barlow Condensed', sans-serif;
+            font-size: 1.2rem;
+            letter-spacing: 1px;
+            text-transform: uppercase;
         }
 
-        .btn-icon {
-            font-size: 2.5rem;
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-5px); }
         }
 
         /* Seletor de dias */
         .grid-dias {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
-            gap: 20px;
+            gap: 16px;
             width: 100%;
-            max-width: 900px;
+            max-width: 600px;
             animation: fadeSlideIn 0.3s ease-out;
         }
+
+        .btn-dia {
+            background: var(--bg-card);
+            border: 2px solid var(--border);
+            border-radius: 16px;
+            padding: 24px 10px;
+            font-family: 'Barlow Condensed', sans-serif;
+            font-size: 1.4rem;
+            font-weight: 900;
+            letter-spacing: 1px;
+            color: var(--text);
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        .btn-dia:hover { border-color: var(--primary); background: rgba(255,85,0,0.05); transform: translateY(-3px); }
+        .btn-dia:active { transform: scale(0.95); }
 
         /* LOADING */
         .loading-container {
@@ -364,38 +436,40 @@
 
     <!-- TELA DO ALUNO -->
     <div id="tela-aluno" class="tela oculta">
+        <!-- Botão Novo de Fechamento Imediato -->
+        <button class="btn-fechar" onclick="resetarTela()">X SAIR</button>
+
         <div class="foto-wrapper">
             <img id="foto-aluno" class="foto-perfil" style="display:none;" src="" alt="">
             <div id="foto-placeholder" class="foto-placeholder" style="display:none;"></div>
         </div>
 
         <div class="saudacao">FALA, <span id="nome-aluno">ATLETA</span>!</div>
-        <div class="subtitulo-aluno" id="txt-instrucao">QUAL É A MISSÃO DE HOJE?</div>
+        <div class="subtitulo-aluno" id="txt-instrucao">A SUA MISSÃO ESTÁ PRONTA</div>
 
-        <!-- Menu Principal -->
-        <div class="grid-treinos" id="menu-principal">
-            <button class="btn-treino" onclick="imprimirTreino('TREINO A', '')">
-                <span class="btn-icon">💪</span>
-                TREINO A
+        <!-- Menu Principal Otimizado (Apenas MAX + Roleta) -->
+        <div class="area-principal" id="menu-principal">
+            <button class="btn-max" onclick="abrirSeletorDias()">
+                <span class="btn-icon-max">🤖</span>
+                IMPRIMIR TREINO MAX
             </button>
-            <button class="btn-treino" onclick="imprimirTreino('TREINO B', '')">
-                <span class="btn-icon">🔥</span>
-                TREINO B
-            </button>
-            <button class="btn-treino destaque" onclick="abrirSeletorDias()">
-                <span class="btn-icon">🤖</span>
-                TREINO MAX IA
-            </button>
+            
+            <div class="roleta-banner">
+                <div class="roleta-icone">🎰</div>
+                <div class="roleta-texto">
+                    Abra o <strong>App Powerfisio</strong> ao final do treino e gire a roleta para ganhar <strong>ATÉ +15 PONTOS EXTRAS!</strong>
+                </div>
+            </div>
         </div>
 
         <!-- Seletor de Dias -->
         <div class="grid-dias" id="seletor-dias" style="display:none;">
-            <button class="btn-treino" onclick="gerarTreinoIA('Segunda')">SEG</button>
-            <button class="btn-treino" onclick="gerarTreinoIA('Terça')">TER</button>
-            <button class="btn-treino" onclick="gerarTreinoIA('Quarta')">QUA</button>
-            <button class="btn-treino" onclick="gerarTreinoIA('Quinta')">QUI</button>
-            <button class="btn-treino" onclick="gerarTreinoIA('Sexta')">SEX</button>
-            <button class="btn-treino" style="border-color:rgba(255,255,255,0.15);" onclick="voltarMenu()">← VOLTAR</button>
+            <button class="btn-dia" onclick="gerarTreinoIA('Segunda')">SEG</button>
+            <button class="btn-dia" onclick="gerarTreinoIA('Terça')">TER</button>
+            <button class="btn-dia" onclick="gerarTreinoIA('Quarta')">QUA</button>
+            <button class="btn-dia" onclick="gerarTreinoIA('Quinta')">QUI</button>
+            <button class="btn-dia" onclick="gerarTreinoIA('Sexta')">SEX</button>
+            <button class="btn-dia" style="border-color:rgba(255,255,255,0.15);" onclick="voltarMenu()">← VOLTAR</button>
         </div>
 
         <!-- Loading -->
@@ -431,10 +505,22 @@
         let timeoutReset;
         let radarAtivo = true;
         let alunoAtualId = "";
+        
+        // NOVO: Tempo cravado em 5 segundos! Super ágil.
+        const TEMPO_LIBERACAO = 5000; 
 
+        // Polling Inteligente
         window.onload = () => {
-            setInterval(escutarCatraca, 1000);
+            iniciarRadarInteligente();
         };
+
+        async function iniciarRadarInteligente() {
+            if (radarAtivo) {
+                await escutarCatraca();
+            }
+            // Só faz a próxima chamada APÓS a anterior ter terminado, evitando gargalos
+            setTimeout(iniciarRadarInteligente, 1200);
+        }
 
         function formatarNome(nomeCompleto) {
             if (!nomeCompleto) return "Atleta";
@@ -456,7 +542,6 @@
         }
 
         async function escutarCatraca() {
-            if (!radarAtivo) return;
             try {
                 const res = await fetch(`${API_URL}?acao=radar&t=${Date.now()}`);
                 const dados = await res.json();
@@ -464,7 +549,9 @@
                     radarAtivo = false;
                     mostrarAluno(dados.nome, dados.idAluno, dados.posicao, dados.foto);
                 }
-            } catch(e) {}
+            } catch(e) {
+                // Falha silenciosa
+            }
         }
 
         function mostrarAluno(nomeCompleto, idAluno, posicao, foto) {
@@ -495,15 +582,16 @@
                 const medalha = medalhas[posicao] || '🏅';
                 instr.innerHTML = `${medalha} VOCÊ É O <strong>${posicao}º</strong> NO RANKING! BORA SUBIR MAIS?`;
             } else {
-                instr.textContent = "QUAL É A MISSÃO DE HOJE?";
+                instr.textContent = "A SUA MISSÃO ESTÁ PRONTA!";
             }
 
             // Transição de telas
             document.getElementById('tela-espera').classList.replace('visivel', 'oculta');
             document.getElementById('tela-aluno').classList.replace('oculta', 'visivel');
 
+            // Timeout ágil de 5s
             clearTimeout(timeoutReset);
-            timeoutReset = setTimeout(resetarTela, 30000);
+            timeoutReset = setTimeout(resetarTela, TEMPO_LIBERACAO);
         }
 
         function simularPassagemCatraca(nome, id, pos = 5) {
@@ -514,17 +602,20 @@
         function abrirSeletorDias() {
             document.getElementById('menu-principal').style.display = 'none';
             document.getElementById('seletor-dias').style.display = 'grid';
-            document.getElementById('txt-instrucao').textContent = "PARA QUAL DIA?";
+            document.getElementById('txt-instrucao').textContent = "IMPRIMIR O TREINO DE QUAL DIA?";
+            
+            // Dá mais 5 segundos para ele escolher o dia
             clearTimeout(timeoutReset);
-            timeoutReset = setTimeout(resetarTela, 30000);
+            timeoutReset = setTimeout(resetarTela, TEMPO_LIBERACAO);
         }
 
         function voltarMenu() {
             document.getElementById('seletor-dias').style.display = 'none';
-            document.getElementById('menu-principal').style.display = 'grid';
-            document.getElementById('txt-instrucao').textContent = "QUAL É A MISSÃO DE HOJE?";
+            document.getElementById('menu-principal').style.display = 'flex';
+            document.getElementById('txt-instrucao').textContent = "A SUA MISSÃO ESTÁ PRONTA!";
+            
             clearTimeout(timeoutReset);
-            timeoutReset = setTimeout(resetarTela, 30000);
+            timeoutReset = setTimeout(resetarTela, TEMPO_LIBERACAO);
         }
 
         async function gerarTreinoIA(dia) {
@@ -569,11 +660,14 @@
         function resetarTela() {
             document.getElementById('tela-aluno').classList.replace('visivel', 'oculta');
             document.getElementById('tela-espera').classList.replace('oculta', 'visivel');
-            document.getElementById('menu-principal').style.display = 'grid';
+            
+            // Restaura o layout padrão para o próximo aluno
+            document.getElementById('menu-principal').style.display = 'flex';
             document.getElementById('seletor-dias').style.display = 'none';
             document.getElementById('loading').style.display = 'none';
-            document.getElementById('txt-instrucao').textContent = "QUAL É A MISSÃO DE HOJE?";
-            radarAtivo = true;
+            document.getElementById('txt-instrucao').textContent = "A SUA MISSÃO ESTÁ PRONTA!";
+            
+            radarAtivo = true; // Libera o totem para ler a próxima catraca
         }
     </script>
 </body>

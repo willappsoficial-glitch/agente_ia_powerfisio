@@ -612,10 +612,9 @@
 </div>
 
 <!-- MODAL ROLETA (POP-UP) -->
-<!-- MODAL ROLETA (POP-UP) -->
 <div id="modal-roleta">
-    <h2 style="color:#FFD700; font-family:'Barlow Condensed', sans-serif; font-size:2.8rem; letter-spacing:2px; text-shadow: 0 2px 10px rgba(255,215,0,0.3);">ROLETA DA SORTE</h2>
-    <p style="color:#FFFFFF; margin-top:5px; font-size:1rem;">Multiplicador de Pontos do Max</p>
+    <h2 style="color:#FFD700; font-family:'Barlow Condensed', sans-serif; font-size:2.8rem; letter-spacing:2px; text-shadow: 0 2px 10px rgba(255,215,0,0.3); text-align:center;">ROLETA DA SORTE</h2>
+    <p style="color:#FFFFFF; margin-top:5px; font-size:1rem; text-align:center;">Multiplicador de Pontos do Max</p>
     
     <div class="roleta-wrapper">
         <div class="ponteiro"></div>
@@ -630,15 +629,17 @@
     </div>
 
     <!-- BOTÃO PARA GIRAR MANUALMENTE -->
-    <button id="btn-girar-roleta" style="margin-top:20px; padding: 15px 30px; font-size: 1.2rem; font-weight: 900; background: #FF5500; color: white; border: none; border-radius: 12px; cursor: pointer; font-family: 'Barlow Condensed', sans-serif; letter-spacing: 2px; box-shadow: 0 4px 15px rgba(255,85,0,0.4); transition: transform 0.2s;">
-        GIRAR ROLETA!
-    </button>
+    <div style="text-align: center; margin-top: 20px;">
+        <button id="btn-girar-roleta" style="padding: 15px 30px; font-size: 1.2rem; font-weight: 900; background: #FF5500; color: white; border: none; border-radius: 12px; cursor: pointer; font-family: 'Barlow Condensed', sans-serif; letter-spacing: 2px; box-shadow: 0 4px 15px rgba(255,85,0,0.4); transition: transform 0.2s;">
+            GIRAR ROLETA!
+        </button>
+    </div>
 
-    <div id="mensagem-roleta" style="margin-top:15px; font-size:1.6rem; font-weight:bold; color:white; font-family:'Barlow Condensed', sans-serif; letter-spacing:2px; height: 30px; display: none;">
+    <div id="mensagem-roleta" style="margin-top:15px; font-size:1.6rem; font-weight:bold; color:white; font-family:'Barlow Condensed', sans-serif; letter-spacing:2px; height: 30px; display: none; text-align:center;">
         GIRANDO...
     </div>
-</div>    
-<!-- TELA DE LOGIN -->
+</div>
+    <!-- TELA DE LOGIN -->
 <div id="screen-login" class="screen active">
     <div class="brand">
         <img src="logo.jpeg" alt="Logo" class="brand-logo" onerror="this.style.display='none'">
@@ -1013,19 +1014,32 @@
                     totalGanhos = base + pontosExtras;
                 }
 
-                // 🛑 MOSTRA A TELA MAS NÃO GIRA AINDA
-                document.getElementById('modal-roleta').style.display = 'flex';
-                
+                const modalRoleta = document.getElementById('modal-roleta');
                 const btnGirar = document.getElementById('btn-girar-roleta');
                 const msgRoleta = document.getElementById('mensagem-roleta');
                 const roletaElement = document.getElementById('roleta');
 
+                // 🛡️ TRAVA DE SEGURANÇA: Se o botão não existir no HTML, entrega os pontos e sai limpo
+                if (!modalRoleta || !btnGirar || !msgRoleta || !roletaElement) {
+                    await Swal.fire({
+                        title: 'MISSÃO CUMPRIDA! 💪',
+                        html: `Guerreiro, você é inspirador!<br><br><strong style="color:#FFD700;font-size:1.8rem;">+${totalGanhos} PONTOS</strong>`,
+                        icon: 'success',
+                        confirmButtonColor: '#FF5500',
+                        confirmButtonText: 'FECHAR'
+                    });
+                    location.reload();
+                    return;
+                }
+
+                // 🛑 MOSTRA A TELA MAS AGUARDA O CLIQUE DO ALUNO
+                modalRoleta.style.display = 'flex';
                 btnGirar.style.display = 'block';
                 msgRoleta.style.display = 'none';
                 msgRoleta.innerText = 'GIRANDO...';
                 msgRoleta.style.color = 'white';
 
-                // Garante que a roleta começa no zero
+                // Garante que a roleta começa na posição 0
                 roletaElement.style.transition = 'none';
                 roletaElement.style.transform = `rotate(0deg)`;
 
@@ -1037,12 +1051,12 @@
 
                 const rotacaoTotal = (360 * 5) + anguloFinal;
 
-                // 🚀 AÇÃO DE GIRAR SÓ ACONTECE NO CLIQUE DO BOTÃO
+                // 🚀 AÇÃO DE GIRAR SÓ ACONTECE QUANDO O BOTÃO É CLICADO
                 btnGirar.onclick = function() {
                     btnGirar.style.display = 'none';
                     msgRoleta.style.display = 'block';
 
-                    // Reativa a animação suave e gira
+                    // Reativa a animação e faz girar por 4 segundos
                     roletaElement.style.transition = 'transform 4s cubic-bezier(0.25, 1, 0.5, 1)';
                     void roletaElement.offsetWidth; 
                     roletaElement.style.transform = `rotate(${rotacaoTotal}deg)`;
@@ -1051,8 +1065,9 @@
                         msgRoleta.innerText = pontosExtras > 0 ? `+${pontosExtras} PONTOS EXTRA!` : "QUASE! 0 PONTOS EXTRA.";
                         msgRoleta.style.color = pontosExtras > 0 ? "#00E676" : "#e74c3c";
 
+                        // Dá 1 segundo e meio para o aluno festejar o prémio
                         setTimeout(async () => {
-                            document.getElementById('modal-roleta').style.display = 'none';
+                            modalRoleta.style.display = 'none';
 
                             await Swal.fire({
                                 title: 'MISSÃO CUMPRIDA! 💪',
@@ -1070,7 +1085,7 @@
             } else {
                 await Swal.fire({
                     title: 'Calma, atleta!',
-                    text: resp.mensagem || 'Você já registrou treino hoje. O descanso também é treino!',
+                    text: resp.mensagem || 'Você já registou treino hoje. O descanso também é treino!',
                     icon: 'info',
                     confirmButtonColor: '#FF5500'
                 });

@@ -30,7 +30,7 @@
             height: 100vh;
             display: flex;
             flex-direction: column;
-            overflow-x: hidden; /* 🔒 MÁGICA 1: Tranca o scroll horizontal de vez */
+            overflow-x: hidden; /* 🔒 IMPEDE QUE A TELA VÁ PARA OS LADOS */
             position: relative;
         }
 
@@ -39,6 +39,7 @@
             width: 80vw; height: 80vw; background: radial-gradient(circle, rgba(255,85,0,0.07) 0%, transparent 60%);
             pointer-events: none;
         }
+
         body::after {
             content: ''; position: fixed; inset: 0;
             background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
@@ -77,8 +78,14 @@
 
         /* ======= GRID DO RANKING (TV) ======= */
         .ranking-grid {
-            display: grid; grid-template-columns: repeat(2, 1fr); grid-auto-flow: row; 
-            gap: 12px 40px; padding: 0 3vw 80px; flex: 1; overflow-y: auto;
+            display: grid; 
+            grid-template-columns: repeat(2, 1fr); 
+            grid-auto-flow: row; 
+            gap: 10px 40px; 
+            padding: 0 3vw 80px; 
+            flex: 1; 
+            overflow-y: auto;
+            align-content: start;
         }
         .ranking-grid::-webkit-scrollbar { display: none; }
 
@@ -87,6 +94,12 @@
             display: flex; align-items: center; gap: 14px; padding: 12px 18px 12px 12px;
             border-radius: 16px; background: var(--bg-card); backdrop-filter: blur(10px);
             border: 1px solid var(--border); border-left: 5px solid transparent; width: 100%;
+            animation: cardIn 0.3s ease-out;
+        }
+
+        @keyframes cardIn {
+            from { opacity: 0; transform: translateX(-10px); }
+            to { opacity: 1; transform: translateX(0); }
         }
 
         .rank-card.gold { border-left-color: var(--gold); background: linear-gradient(90deg, rgba(255,215,0,0.08), var(--bg-card) 50%); }
@@ -106,9 +119,10 @@
         .rank-avatar-placeholder { width: 52px; height: 52px; border-radius: 50%; background: rgba(255,85,0,0.15); border: 2px solid rgba(255,85,0,0.2); display: flex; align-items: center; justify-content: center; font-family: 'Barlow Condensed', sans-serif; font-size: 1.4rem; font-weight: 900; color: var(--primary); flex-shrink: 0; }
 
         .rank-name {
-            flex: 1; font-family: 'Barlow Condensed', sans-serif; font-size: 1.5rem; font-weight: 700;
+            flex: 1; font-family: 'Barlow Condensed', sans-serif; font-size: 1.3rem; font-weight: 700;
             text-transform: uppercase; letter-spacing: 0.5px; color: #E2E8F0;
             white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+            min-width: 0; /* Crucial para o texto não empurrar as divs flexbox */
         }
 
         .rank-points { display: flex; flex-direction: column; align-items: center; background: rgba(255,85,0,0.08); border: 1px solid rgba(255,85,0,0.15); border-radius: 12px; padding: 6px 14px; flex-shrink: 0; min-width: 80px; }
@@ -127,7 +141,7 @@
         .scroll-sep { color: rgba(255,255,255,0.1); margin: 0 20px; }
 
         /* =========================================================
-           📱 MÁGICA CELULAR (ZERO SCROLL HORIZONTAL)
+           📱 MÁGICA CELULAR (RESOLVE A FUGA DA PONTUAÇÃO)
            ========================================================= */
         @media (max-width: 800px) {
             body { overflow-y: auto; overflow-x: hidden; }
@@ -155,8 +169,9 @@
             
             .rank-name { 
                 font-size: 1.1rem; 
-                /* 🔒 MÁGICA 2: Deixa o nome quebrar em 2 linhas se for muito grande, sem empurrar a tela */
+                /* 🔒 MÁGICA: Permite que nomes gigantes ocupem duas linhas! */
                 white-space: normal; 
+                word-break: break-word;
                 line-height: 1.1;
                 display: -webkit-box;
                 -webkit-line-clamp: 2; 
@@ -232,10 +247,21 @@
             let exibirScroll = [];
 
             if (termo === "") {
-                // TV modo normal (10 na tela, resto rodapé) - Celular mostra tudo
-                exibirGrid = window.innerWidth <= 800 ? filtrados : filtrados.slice(0, 10);
-                exibirScroll = window.innerWidth <= 800 ? [] : filtrados.slice(10);
+                if (window.innerWidth > 800) {
+                    // 📺 TV: MÁGICA DAS COLUNAS PERFEITAS (1-5 na Esquerda, 6-10 na Direita)
+                    const top10 = filtrados.slice(0, 10);
+                    for (let i = 0; i < 5; i++) {
+                        if (top10[i]) exibirGrid.push(top10[i]);
+                        if (top10[i + 5]) exibirGrid.push(top10[i + 5]);
+                    }
+                    exibirScroll = filtrados.slice(10);
+                } else {
+                    // 📱 Celular: Mostra todos em uma lista contínua
+                    exibirGrid = filtrados;
+                    exibirScroll = [];
+                }
             } else {
+                // Durante a pesquisa: Mostra os 30 primeiros resultados
                 exibirGrid = filtrados.slice(0, 30);
                 exibirScroll = [];
             }

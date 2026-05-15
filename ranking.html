@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Powerfisio - TV Ranking</title>
     <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;700;900&family=Barlow:wght@400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <link rel="manifest" href="manifest-tv.json">
     <meta name="theme-color" content="#060709">
     <meta name="apple-mobile-web-app-capable" content="yes">
@@ -29,7 +30,7 @@
             height: 100vh;
             display: flex;
             flex-direction: column;
-            overflow: hidden;
+            overflow: hidden; /* Na TV trava o scroll */
             position: relative;
         }
 
@@ -62,14 +63,15 @@
             align-items: center;
             justify-content: center;
             gap: 24px;
-            padding: 16px 3vw 12px;
+            padding: 20px 3vw 15px;
             flex-shrink: 0;
             position: relative;
+            z-index: 10;
         }
 
         .header-logo {
-            width: 64px;
-            height: 64px;
+            width: 70px;
+            height: 70px;
             border-radius: 18px;
             box-shadow: 0 8px 24px rgba(255,85,0,0.25);
             cursor: pointer;
@@ -77,7 +79,7 @@
 
         .header-title {
             font-family: 'Barlow Condensed', sans-serif;
-            font-size: 3.2rem;
+            font-size: 3.6rem;
             font-weight: 900;
             letter-spacing: -1px;
             line-height: 1;
@@ -86,11 +88,12 @@
         .header-title span { color: var(--primary); }
 
         .header-subtitle {
-            font-size: 0.7rem;
+            font-size: 0.8rem;
             color: rgba(255,255,255,0.4);
             letter-spacing: 4px;
             text-transform: uppercase;
             margin-top: 4px;
+            font-weight: 600;
         }
 
         /* Live badge */
@@ -127,6 +130,45 @@
             50% { opacity: 1; box-shadow: 0 0 14px #00FF88; }
         }
 
+        /* ======= BARRA DE PESQUISA ======= */
+        .search-container {
+            padding: 0 3vw 15px;
+            position: relative;
+            z-index: 10;
+        }
+        .search-wrapper {
+            position: relative;
+            width: 100%;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        .search-wrapper .material-icons {
+            position: absolute;
+            left: 18px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--primary);
+            font-size: 1.5rem;
+        }
+        .search-wrapper input {
+            width: 100%;
+            padding: 14px 20px 14px 50px;
+            border-radius: 30px;
+            background: rgba(0,0,0,0.6);
+            border: 1px solid rgba(255,85,0,0.3);
+            color: #fff;
+            font-family: 'Barlow', sans-serif;
+            font-size: 1.1rem;
+            outline: none;
+            transition: 0.3s;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+        }
+        .search-wrapper input:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 20px rgba(255,85,0,0.3);
+            background: rgba(0,0,0,0.8);
+        }
+
         /* ======= DIVIDER ======= */
         .header-divider {
             height: 1px;
@@ -135,29 +177,30 @@
             flex-shrink: 0;
         }
 
-        /* ======= GRID ======= */
+        /* ======= GRID (MODO TV) ======= */
         .ranking-grid {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
             grid-template-rows: repeat(5, 1fr);
             grid-auto-flow: column;
-            gap: 10px 40px;
-            padding: 14px 3vw 80px;
+            gap: 15px 40px; /* Mais espaço entre os cartões */
+            padding: 20px 3vw 80px;
             flex: 1;
             min-height: 0;
+            z-index: 5;
         }
 
         /* ======= RANK CARD ======= */
         .rank-card {
             display: flex;
             align-items: center;
-            gap: 14px;
-            padding: 8px 18px 8px 12px;
+            gap: 16px;
+            padding: 10px 20px 10px 15px;
             border-radius: 16px;
             background: var(--bg-card);
             backdrop-filter: blur(10px);
             border: 1px solid var(--border);
-            border-left: 5px solid transparent;
+            border-left: 6px solid transparent; /* Borda mais grossa */
             animation: cardIn 0.5s ease-out both;
             height: 100%;
         }
@@ -167,18 +210,17 @@
             to { opacity: 1; transform: translateX(0); }
         }
 
-        /* Medal borders */
         .rank-card.gold { border-left-color: var(--gold); background: linear-gradient(90deg, rgba(255,215,0,0.08), var(--bg-card) 50%); }
         .rank-card.silver { border-left-color: var(--silver); background: linear-gradient(90deg, rgba(192,192,192,0.06), var(--bg-card) 50%); }
         .rank-card.bronze { border-left-color: var(--bronze); background: linear-gradient(90deg, rgba(205,127,50,0.06), var(--bg-card) 50%); }
         .rank-card.other { border-left-color: rgba(255,255,255,0.08); }
 
-        /* Position number */
+        /* AUMENTO DAS FONTES PARA LEITURA NA TV */
         .pos-num {
             font-family: 'Barlow Condensed', sans-serif;
-            font-size: 2rem;
+            font-size: 2.6rem; /* Aumentado */
             font-weight: 900;
-            width: 52px;
+            width: 60px;
             text-align: center;
             flex-shrink: 0;
             color: rgba(255,255,255,0.15);
@@ -188,10 +230,9 @@
         .rank-card.silver .pos-num { color: var(--silver); }
         .rank-card.bronze .pos-num { color: var(--bronze); }
 
-        /* Avatar */
-        .rank-avatar {
-            width: 52px;
-            height: 52px;
+        .rank-avatar, .rank-avatar-placeholder {
+            width: 65px; /* Aumentado */
+            height: 65px; /* Aumentado */
             border-radius: 50%;
             object-fit: cover;
             flex-shrink: 0;
@@ -203,26 +244,21 @@
         .rank-card.bronze .rank-avatar { border-color: var(--bronze); }
 
         .rank-avatar-placeholder {
-            width: 52px;
-            height: 52px;
-            border-radius: 50%;
             background: rgba(255,85,0,0.15);
-            border: 2px solid rgba(255,85,0,0.2);
+            border-color: rgba(255,85,0,0.2);
             display: flex;
             align-items: center;
             justify-content: center;
             font-family: 'Barlow Condensed', sans-serif;
-            font-size: 1.4rem;
+            font-size: 2rem; /* Aumentado */
             font-weight: 900;
             color: var(--primary);
-            flex-shrink: 0;
         }
 
-        /* Name */
         .rank-name {
             flex: 1;
             font-family: 'Barlow Condensed', sans-serif;
-            font-size: 1.25rem;
+            font-size: 1.6rem; /* Aumentado */
             font-weight: 700;
             text-transform: uppercase;
             letter-spacing: 0.5px;
@@ -232,7 +268,6 @@
             text-overflow: ellipsis;
         }
 
-        /* Points */
         .rank-points {
             display: flex;
             flex-direction: column;
@@ -240,21 +275,21 @@
             background: rgba(255,85,0,0.08);
             border: 1px solid rgba(255,85,0,0.15);
             border-radius: 12px;
-            padding: 6px 14px;
+            padding: 8px 18px;
             flex-shrink: 0;
-            min-width: 80px;
+            min-width: 90px;
         }
 
         .pts-value {
             font-family: 'Barlow Condensed', sans-serif;
-            font-size: 1.8rem;
+            font-size: 2.4rem; /* Aumentado */
             font-weight: 900;
             color: var(--primary);
             line-height: 1;
         }
 
         .pts-label {
-            font-size: 0.6rem;
+            font-size: 0.75rem;
             color: rgba(255,170,136,0.7);
             text-transform: uppercase;
             letter-spacing: 1px;
@@ -275,71 +310,62 @@
             overflow: hidden;
             z-index: 100;
         }
+        #scroll-content { display: inline-flex; align-items: center; white-space: nowrap; padding-left: 100vw; animation: scrollLeft linear infinite; }
+        @keyframes scrollLeft { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
+        .scroll-item { display: inline-flex; align-items: center; gap: 12px; margin-right: 120px; }
+        .scroll-pos { font-family: 'Barlow Condensed', sans-serif; font-size: 1.2rem; font-weight: 900; color: rgba(255,255,255,0.25); }
+        .scroll-photo { width: 36px; height: 36px; border-radius: 50%; object-fit: cover; border: 2px solid rgba(255,255,255,0.1); }
+        .scroll-name { font-family: 'Barlow Condensed', sans-serif; font-size: 1.1rem; font-weight: 700; text-transform: uppercase; color: rgba(255,255,255,0.55); }
+        .scroll-pts { font-family: 'Barlow Condensed', sans-serif; font-size: 0.9rem; font-weight: 900; color: rgba(255,85,0,0.6); }
+        .scroll-sep { color: rgba(255,255,255,0.1); margin: 0 20px; }
 
-        #scroll-content {
-            display: inline-flex;
-            align-items: center;
-            white-space: nowrap;
-            padding-left: 100vw;
-            animation: scrollLeft linear infinite;
-        }
-
-        @keyframes scrollLeft {
-            0% { transform: translateX(0); }
-            100% { transform: translateX(-50%); }
-        }
-
-        .scroll-item {
-            display: inline-flex;
-            align-items: center;
-            gap: 12px;
-            margin-right: 120px;
-        }
-
-        .scroll-pos {
-            font-family: 'Barlow Condensed', sans-serif;
-            font-size: 1.2rem;
-            font-weight: 900;
-            color: rgba(255,255,255,0.25);
-        }
-
-        .scroll-photo {
-            width: 36px;
-            height: 36px;
-            border-radius: 50%;
-            object-fit: cover;
-            border: 2px solid rgba(255,255,255,0.1);
-        }
-
-        .scroll-name {
-            font-family: 'Barlow Condensed', sans-serif;
-            font-size: 1.1rem;
-            font-weight: 700;
-            text-transform: uppercase;
-            color: rgba(255,255,255,0.55);
-        }
-
-        .scroll-pts {
-            font-family: 'Barlow Condensed', sans-serif;
-            font-size: 0.9rem;
-            font-weight: 900;
-            color: rgba(255,85,0,0.6);
-        }
-
-        .scroll-sep {
-            color: rgba(255,255,255,0.1);
-            margin: 0 20px;
+        /* =======================================
+           📱 RESPONSIVIDADE (CELULAR / MOBILE)
+           ======================================= */
+        @media (max-width: 768px) {
+            body {
+                overflow-y: auto; /* Libera rolagem no celular */
+                height: auto;
+                min-height: 100vh;
+            }
+            .header {
+                flex-direction: column;
+                text-align: center;
+                padding-top: 30px;
+                gap: 15px;
+            }
+            .live-badge {
+                position: static;
+                transform: none;
+                display: inline-flex;
+            }
+            /* Transforma a Grade 2x5 em uma Lista Única */
+            .ranking-grid {
+                display: flex;
+                flex-direction: column;
+                gap: 12px;
+                padding-bottom: 30px;
+            }
+            .rank-card {
+                padding: 12px;
+                height: auto;
+            }
+            .rank-name {
+                white-space: normal; /* Permite quebrar nome muito grande no celular */
+                font-size: 1.4rem;
+            }
+            .pos-num { font-size: 2.2rem; width: 45px; }
+            .pts-value { font-size: 2rem; }
         }
     </style>
 </head>
 <body>
 
-    <!-- HEADER -->
     <div class="header">
         <img src="logo.jpeg" class="header-logo" alt="Logo" onclick="toggleFullScreen()" onerror="this.style.display='none'">
         <div>
             <div class="header-title">POWER<span>FISIO</span></div>
-            <div class="header-subtitle">Ranking de Frequência — Top 10 do Mês</div>
+            <div class="header-subtitle">Ranking de Frequência</div>
         </div>
         <div class="live-badge">
             <div class="live-dot"></div>
@@ -347,71 +373,75 @@
         </div>
     </div>
 
+    <div class="search-container">
+        <div class="search-wrapper">
+            <span class="material-icons">search</span>
+            <input type="text" id="searchInput" placeholder="Pesquisar atleta..." oninput="renderizarTela()">
+        </div>
+    </div>
+
     <div class="header-divider"></div>
 
-    <!-- RANKING -->
     <div class="ranking-grid" id="board">
         <div style="grid-column:span 2; display:flex; align-items:center; justify-content:center; color:var(--primary); font-family:'Barlow Condensed',sans-serif; font-size:1.5rem; letter-spacing:2px;">
             SINCRONIZANDO COM O CÉREBRO MAX...
         </div>
     </div>
 
-    <!-- SCROLL BAR (11th+) -->
     <div id="scroll-bar">
         <div id="scroll-content"></div>
     </div>
 
     <script>
         const API_URL = "https://script.google.com/macros/s/AKfycby62vambopzAU-hOp4Och0Qg9_ZOxNCqqo19BFZvUA13OFTYBRMnTnNckq3aBzncXKTJg/exec";
+        
+        let dadosGlobais = []; // Guarda os dados para a pesquisa funcionar rápido
 
         async function carregarRanking() {
             try {
                 const res = await fetch(`${API_URL}?acao=getRankingTV&t=${Date.now()}`);
-                const dados = await res.json();
-                const board = document.getElementById('board');
-                const scrollBar = document.getElementById('scroll-bar');
-                const scrollContent = document.getElementById('scroll-content');
+                dadosGlobais = await res.json();
+                renderizarTela(); // Chama o motor que decide como desenhar a tela
+            } catch(e) {
+                console.error("Erro ao carregar ranking:", e);
+            }
+        }
 
-                if (!dados.length) {
-                    board.innerHTML = `<div style="grid-column:span 2; display:flex; align-items:center; justify-content:center; color:rgba(255,255,255,0.2); font-family:'Barlow Condensed',sans-serif; font-size:1.5rem; letter-spacing:2px;">NENHUM PONTO ACUMULADO AINDA</div>`;
-                    scrollBar.style.display = 'none';
-                    return;
-                }
+        // MOTOR RESPONSIVO E DE PESQUISA
+        function renderizarTela() {
+            const termoBusca = document.getElementById('searchInput').value.toLowerCase();
+            const isMobile = window.innerWidth <= 768; // Detecta se é celular
+            const board = document.getElementById('board');
+            const scrollBar = document.getElementById('scroll-bar');
+            const scrollContent = document.getElementById('scroll-content');
 
-                const top10 = dados.slice(0, 10);
-                const restantes = dados.slice(10);
-                const medalClasses = ['gold', 'silver', 'bronze'];
+            if (!dadosGlobais.length) {
+                board.innerHTML = `<div style="grid-column:span 2; display:flex; align-items:center; justify-content:center; color:rgba(255,255,255,0.2); font-family:'Barlow Condensed',sans-serif; font-size:1.5rem; letter-spacing:2px;">NENHUM PONTO ACUMULADO AINDA</div>`;
+                scrollBar.style.display = 'none';
+                return;
+            }
 
-                // Build top 10
-                let html = '';
-                top10.forEach((aluno, i) => {
-                    const cls = i < 3 ? medalClasses[i] : 'other';
-                    const delay = (i * 0.05).toFixed(2);
-                    const temFoto = aluno.foto && aluno.foto.trim();
-                    const inicialNome = aluno.nome.charAt(0);
+            // Aplica o filtro da pesquisa
+            let dadosFiltrados = dadosGlobais;
+            if (termoBusca) {
+                dadosFiltrados = dadosGlobais.filter(a => a.nome.toLowerCase().includes(termoBusca));
+            }
 
-                    const fotoHtml = temFoto
-                        ? `<img src="${aluno.foto}" class="rank-avatar" alt="${aluno.nome}" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
-                           <div class="rank-avatar-placeholder" style="display:none;">${inicialNome}</div>`
-                        : `<div class="rank-avatar-placeholder">${inicialNome}</div>`;
+            // DECISÃO DE LAYOUT: 
+            // Se estiver no celular OU se a pessoa estiver pesquisando algo, mostramos TODOS numa lista e escondemos o letreiro rolante.
+            if (isMobile || termoBusca) {
+                desenharGrade(dadosFiltrados);
+                scrollBar.style.display = 'none';
+                document.body.style.overflow = 'auto'; // Libera rolagem no PC se estiver pesquisando
+            } else {
+                // MODO TV (Sem pesquisa): Mostra os top 10 na grade e o resto no letreiro
+                const top10 = dadosFiltrados.slice(0, 10);
+                const restantes = dadosFiltrados.slice(10);
+                desenharGrade(top10);
+                document.body.style.overflow = 'hidden'; // Trava rolagem na TV
 
-                    html += `
-                    <div class="rank-card ${cls}" style="animation-delay:${delay}s;">
-                        <div class="pos-num">${aluno.posicao}º</div>
-                        ${fotoHtml}
-                        <div class="rank-name">${aluno.nome}</div>
-                        <div class="rank-points">
-                            <div class="pts-value">${aluno.pontos}</div>
-                            <div class="pts-label">pts</div>
-                        </div>
-                    </div>`;
-                });
-                board.innerHTML = html;
-
-                // Build scroll bar for 11th+
                 if (restantes.length > 0) {
                     let scrollHtml = '';
-                    // Duplicate for seamless loop
                     [restantes, restantes].forEach(lista => {
                         lista.forEach(aluno => {
                             const fotoEl = aluno.foto ? `<img src="${aluno.foto}" class="scroll-photo" alt="">` : '';
@@ -425,7 +455,6 @@
                             <span class="scroll-sep">•</span>`;
                         });
                     });
-
                     scrollContent.innerHTML = scrollHtml;
                     const dur = Math.max(30, restantes.length * 4);
                     scrollContent.style.animationDuration = `${dur}s`;
@@ -433,14 +462,57 @@
                 } else {
                     scrollBar.style.display = 'none';
                 }
-
-            } catch(e) {
-                console.error("Erro ao carregar ranking:", e);
             }
         }
 
+        function desenharGrade(lista) {
+            const board = document.getElementById('board');
+            const medalClasses = ['gold', 'silver', 'bronze'];
+            let html = '';
+
+            if(lista.length === 0) {
+                board.innerHTML = `<div style="grid-column:span 2; display:flex; align-items:center; justify-content:center; color:rgba(255,255,255,0.4); font-family:'Barlow Condensed',sans-serif; font-size:1.5rem; letter-spacing:2px; margin-top: 50px;">ATLETA NÃO ENCONTRADO</div>`;
+                return;
+            }
+
+            lista.forEach((aluno, i) => {
+                // A cor da medalha é baseada na posição real do aluno, e não na ordem da pesquisa
+                let cls = 'other';
+                if (aluno.posicao == 1) cls = 'gold';
+                else if (aluno.posicao == 2) cls = 'silver';
+                else if (aluno.posicao == 3) cls = 'bronze';
+
+                const delay = (i * 0.05).toFixed(2);
+                const temFoto = aluno.foto && aluno.foto.trim();
+                const inicialNome = aluno.nome.charAt(0);
+
+                const fotoHtml = temFoto
+                    ? `<img src="${aluno.foto}" class="rank-avatar" alt="${aluno.nome}" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                       <div class="rank-avatar-placeholder" style="display:none;">${inicialNome}</div>`
+                    : `<div class="rank-avatar-placeholder">${inicialNome}</div>`;
+
+                html += `
+                <div class="rank-card ${cls}" style="animation-delay:${delay}s;">
+                    <div class="pos-num">${aluno.posicao}º</div>
+                    ${fotoHtml}
+                    <div class="rank-name">${aluno.nome}</div>
+                    <div class="rank-points">
+                        <div class="pts-value">${aluno.pontos}</div>
+                        <div class="pts-label">pts</div>
+                    </div>
+                </div>`;
+            });
+            board.innerHTML = html;
+        }
+
+        // Inicia o sistema
         carregarRanking();
+        
+        // Atualiza a cada 15 segundos (O backend atualiza silenciosamente sem interromper sua pesquisa)
         setInterval(carregarRanking, 15000);
+
+        // Ouve se a tela foi redimensionada para ajustar o layout automaticamente
+        window.addEventListener('resize', renderizarTela);
 
         function toggleFullScreen() {
             if (!document.fullscreenElement) {

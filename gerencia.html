@@ -106,16 +106,17 @@
             font-size: 1.4rem; 
             margin-bottom: 4px; 
             transition: 0.3s; 
-            text-transform: none !important; /* 🐛 MÁGICA AQUI: Impede o ícone de quebrar */
+            text-transform: none !important; 
         }
         .nav-item span:not(.material-icons) { 
-            font-size: 0.50rem; /* Diminui um pouquinho a fonte para caber os 6 botões */
+            font-size: 0.50rem; 
             font-weight: 700; 
             text-transform: uppercase; 
             text-align: center;
         }
         .nav-item.active { color: var(--p); }
         .nav-item.active .material-icons { transform: translateY(-3px); text-shadow: 0 4px 10px rgba(255,85,0,0.4); }
+
         /* MODAL DE EDIÇÃO */
         #modal { display: none; position: fixed; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.85); z-index: 1000; justify-content: center; align-items: center; padding: 15px; backdrop-filter: blur(5px); }
         .modal-content { background: var(--card); padding: 25px; border-radius: 16px; width: 100%; max-width: 500px; max-height: 85vh; overflow-y: auto; border: 1px solid rgba(255,255,255,0.1); }
@@ -209,11 +210,19 @@
     </div>
 
     <script>
-        // 🚨 COLOQUE A SUA URL AQUI - A MESMA QUE JÁ ESTAVA USANDO!
+        // 🚨 COLOQUE A SUA URL AQUI
         const API = "https://script.google.com/macros/s/AKfycby62vambopzAU-hOp4Och0Qg9_ZOxNCqqo19BFZvUA13OFTYBRMnTnNckq3aBzncXKTJg/exec"; 
         
         let abaAtual = "Alunos_Max";
         let colunasAtuais = [];
+
+        // 🔄 TRADUTOR VISUAL DE COLUNAS
+        // Muda apenas o texto que aparece na tela, mantendo o nome real escondido
+        function nomeVisual(coluna) {
+            if (coluna === "CPF") return "ID DO ALUNO";
+            if (coluna === "QTD_TREINOS") return "PONTOS";
+            return coluna;
+        }
 
         async function mudarAba(nome, elemento) {
             document.querySelectorAll('.nav-item').forEach(b => b.classList.remove('active'));
@@ -238,8 +247,9 @@
 
                 colunasAtuais = data.cabecalho;
                 
+                // Aplicando o Tradutor Visual no Cabeçalho (PC)
                 let theadHTML = '<tr><th>AÇÕES</th>';
-                colunasAtuais.forEach(coluna => theadHTML += `<th>${coluna}</th>`);
+                colunasAtuais.forEach(coluna => theadHTML += `<th>${nomeVisual(coluna)}</th>`);
                 theadHTML += '</tr>';
                 document.getElementById('thead').innerHTML = theadHTML;
 
@@ -256,19 +266,17 @@
                         let valor = linha[coluna] || "";
                         let strValor = String(valor).toLowerCase();
                         
-                        // 📸 MÁGICA DA IMAGEM: Verifica se é link e se a coluna é de foto/vídeo/imagem
                         if(strValor.startsWith("http")) {
                             let colUpper = coluna.toUpperCase();
                             if(colUpper.includes("FOTO") || colUpper.includes("VIDEO") || colUpper.includes("GIF") || colUpper.includes("IMAGEM") || strValor.match(/\.(jpeg|jpg|gif|png)/i)) {
-                                // Exibe a imagem/gif direto na tabela!
                                 valor = `<img src="${valor}" style="width: 50px; height: 50px; border-radius: 8px; object-fit: cover; border: 1px solid var(--p); box-shadow: 0 2px 10px rgba(255,85,0,0.2);">`;
                             } else {
-                                // Se for outro tipo de link (ex: site), mantém o botão de Abrir Link
                                 valor = `<a href="${valor}" target="_blank" style="color:var(--p); text-decoration:none;">🔗 Abrir Link</a>`;
                             }
                         }
                         
-                        tbodyHTML += `<td data-label="${coluna}">${valor}</td>`;
+                        // Aplicando o Tradutor Visual no Cartão (Celular)
+                        tbodyHTML += `<td data-label="${nomeVisual(coluna)}">${valor}</td>`;
                     });
                     tbodyHTML += `</tr>`;
                 });
@@ -289,7 +297,7 @@
                 let valor = dados ? (dados[coluna] || "") : "";
                 fieldsHtml += `
                     <div class="field">
-                        <label>${coluna}</label>
+                        <label>${nomeVisual(coluna)}</label>
                         <input type="text" name="${coluna}" value="${valor}">
                     </div>`;
             });

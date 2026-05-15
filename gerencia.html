@@ -56,11 +56,11 @@
             flex: 1; 
             overflow-y: auto; 
             padding: 20px; 
-            padding-bottom: 90px; /* Espaço para o menu inferior */
+            padding-bottom: 90px;
         }
         .titulo-secao { font-size: 1.1rem; color: var(--muted); margin-bottom: 15px; text-transform: uppercase; font-weight: 800; letter-spacing: 1px;}
 
-        /* TABELA COM SCROLL LIMPO */
+        /* TABELA BASE (COMPUTADOR) */
         .table-wrapper {
             background: var(--card);
             border-radius: 12px;
@@ -76,8 +76,9 @@
         .action-btn { background: none; border: none; cursor: pointer; color: var(--muted); margin-right: 10px; transition: 0.2s; }
         .btn-edit:hover, .btn-edit:active { color: #00E676; }
         .btn-del:hover, .btn-del:active { color: #FF3D00; }
+        .td-acoes { white-space: nowrap; }
 
-        /* MENU INFERIOR (BOTTOM NAV BAR) */
+        /* MENU INFERIOR */
         .bottom-nav {
             position: fixed;
             bottom: 0;
@@ -88,7 +89,7 @@
             -webkit-backdrop-filter: blur(10px);
             display: flex;
             justify-content: space-around;
-            padding: 10px 5px 20px 5px; /* Padding extra em baixo para o iPhone/Android swiper */
+            padding: 10px 5px 20px 5px;
             border-top: 1px solid rgba(255,255,255,0.05);
             z-index: 100;
         }
@@ -103,11 +104,10 @@
         }
         .nav-item .material-icons { font-size: 1.5rem; margin-bottom: 4px; transition: 0.3s; }
         .nav-item span { font-size: 0.65rem; font-weight: 600; }
-        
         .nav-item.active { color: var(--p); }
         .nav-item.active .material-icons { transform: translateY(-3px); text-shadow: 0 4px 10px rgba(255,85,0,0.4); }
 
-        /* MODAL DE EDIÇÃO (DINÂMICO) */
+        /* MODAL DE EDIÇÃO */
         #modal { display: none; position: fixed; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.85); z-index: 1000; justify-content: center; align-items: center; padding: 15px; backdrop-filter: blur(5px); }
         .modal-content { background: var(--card); padding: 25px; border-radius: 16px; width: 100%; max-width: 500px; max-height: 85vh; overflow-y: auto; border: 1px solid rgba(255,255,255,0.1); }
         .modal-content h3 { margin-bottom: 20px; font-size: 1.2rem; }
@@ -115,7 +115,6 @@
         .field label { display: block; margin-bottom: 6px; font-size: 0.75rem; color: var(--muted); text-transform: uppercase; font-weight: 700; }
         .field input { width: 100%; padding: 12px; background: var(--bg); border: 1px solid #333; color: #fff; border-radius: 8px; font-family: 'Inter'; font-size: 0.9rem; }
         .field input:focus { outline: none; border-color: var(--p); }
-        
         .modal-actions { display: flex; gap: 10px; margin-top: 25px; }
         .btn-salvar { flex: 2; background: var(--p); color: #fff; border: none; padding: 14px; border-radius: 8px; font-weight: 800; cursor: pointer; }
         .btn-cancelar { flex: 1; background: #2A2F42; color: #fff; border: none; padding: 14px; border-radius: 8px; font-weight: 700; cursor: pointer; }
@@ -123,6 +122,71 @@
         .loading-text { text-align: center; padding: 40px; color: var(--muted); font-size: 0.9rem; display: flex; flex-direction: column; align-items: center; gap: 10px; }
         .spin { animation: rodar 1s linear infinite; }
         @keyframes rodar { to { transform: rotate(360deg); } }
+
+        /* =======================================================
+           🚀 A MÁGICA MOBILE: LAYOUT DE CARTÕES
+           ======================================================= */
+        @media (max-width: 768px) {
+            .table-wrapper {
+                background: transparent;
+                border: none;
+                box-shadow: none;
+                overflow: visible; /* Tira o scroll horizontal */
+            }
+            table, thead, tbody, th, td, tr {
+                display: block; /* Desfaz o comportamento padrão da tabela */
+            }
+            thead tr {
+                display: none; /* Esconde o cabeçalho no celular */
+            }
+            tr {
+                background: var(--card);
+                margin-bottom: 15px;
+                border-radius: 12px;
+                padding: 15px;
+                border: 1px solid rgba(255,255,255,0.05);
+                box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            }
+            td {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                padding: 8px 0;
+                border-bottom: 1px solid rgba(255,255,255,0.05);
+                font-size: 0.85rem;
+                text-align: right;
+                word-break: break-word; /* Evita que links longos quebrem a tela */
+                white-space: normal;
+            }
+            td:last-child {
+                border-bottom: none;
+            }
+            /* O ::before cria o "rótulo" usando a tag data-label do JS */
+            td::before {
+                content: attr(data-label);
+                font-weight: 800;
+                color: var(--muted);
+                text-transform: uppercase;
+                font-size: 0.7rem;
+                margin-right: 15px;
+                text-align: left;
+                flex-shrink: 0;
+            }
+            /* Ajuste dos botões de ação para ficarem no topo do cartão */
+            .td-acoes {
+                justify-content: flex-end;
+                gap: 15px;
+                padding-bottom: 12px;
+                margin-bottom: 5px;
+                border-bottom: 2px solid rgba(255,255,255,0.05);
+            }
+            .td-acoes::before {
+                display: none; /* Esconde a palavra "AÇÕES" */
+            }
+            .action-btn { margin-right: 0; padding: 5px; }
+            .btn-edit { color: #00E676; } /* Deixa os botões sempre coloridos no mobile */
+            .btn-del { color: #FF3D00; }
+        }
     </style>
 </head>
 <body>
@@ -210,7 +274,7 @@
 
                 colunasAtuais = data.cabecalho;
                 
-                // Monta o Cabeçalho
+                // Monta o Cabeçalho (Fica oculto no telemóvel, mas aparece no PC)
                 let theadHTML = '<tr><th>AÇÕES</th>';
                 colunasAtuais.forEach(coluna => theadHTML += `<th>${coluna}</th>`);
                 theadHTML += '</tr>';
@@ -220,17 +284,19 @@
                 let tbodyHTML = '';
                 data.linhas.forEach(linha => {
                     tbodyHTML += `<tr>`;
-                    // Coluna de ações fixada no início para facilitar no celular
-                    tbodyHTML += `<td>
-                        <button class="action-btn btn-edit" onclick='abrirForm(${JSON.stringify(linha)})'><span class="material-icons">edit</span></button>
+                    
+                    // Coluna de ações com a tag data-label para o CSS Mobile ler
+                    tbodyHTML += `<td data-label="AÇÕES" class="td-acoes">
+                        <button class="action-btn btn-edit" onclick='abrirForm(${JSON.stringify(linha).replace(/'/g, "&#39;")})'><span class="material-icons">edit</span></button>
                         <button class="action-btn btn-del" onclick="excluir(${linha.rowIdx})"><span class="material-icons">delete</span></button>
                     </td>`;
                     
                     colunasAtuais.forEach(coluna => {
                         let valor = linha[coluna] || "";
-                        // Se for um link de imagem ou site, cria um botãozinho em vez de texto gigante
                         if(String(valor).startsWith("http")) valor = `<a href="${valor}" target="_blank" style="color:var(--p); text-decoration:none;">🔗 Abrir Link</a>`;
-                        tbodyHTML += `<td>${valor}</td>`;
+                        
+                        // O segredo: o atributo data-label diz ao telemóvel qual é o título daquela célula
+                        tbodyHTML += `<td data-label="${coluna}">${valor}</td>`;
                     });
                     tbodyHTML += `</tr>`;
                 });
@@ -248,7 +314,7 @@
             
             let fieldsHtml = '';
             colunasAtuais.forEach(coluna => {
-                let valor = dados ? dados[coluna] : "";
+                let valor = dados ? (dados[coluna] || "") : "";
                 fieldsHtml += `
                     <div class="field">
                         <label>${coluna}</label>
@@ -287,7 +353,6 @@
             document.getElementById('modal').style.display = 'none'; 
         }
         
-        // Inicia a primeira aba ao abrir
         carregarDados();
     </script>
 </body>

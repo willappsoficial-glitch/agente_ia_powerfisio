@@ -2,7 +2,7 @@
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Powerfisio - TV Ranking</title>
     <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;700;900&family=Barlow:wght@400;600;700&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
@@ -30,11 +30,10 @@
             height: 100vh;
             display: flex;
             flex-direction: column;
-            overflow: hidden;
+            overflow-x: hidden; /* 🔒 MÁGICA 1: Tranca o scroll horizontal de vez */
             position: relative;
         }
 
-        /* Fundo Atmosférico */
         body::before {
             content: ''; position: fixed; top: -30%; left: 50%; transform: translateX(-50%);
             width: 80vw; height: 80vw; background: radial-gradient(circle, rgba(255,85,0,0.07) 0%, transparent 60%);
@@ -67,28 +66,27 @@
         .search-container {
             display: flex; align-items: center; background: var(--bg-card);
             border: 1px solid var(--border); border-radius: 12px; margin: 0 3vw 15px;
-            padding: 0 15px; height: 45px; z-index: 10;
+            padding: 0 15px; height: 45px; z-index: 10; flex-shrink: 0;
         }
         .search-icon { color: var(--primary); font-size: 1.4rem; margin-right: 10px; }
         #input-pesquisa {
             flex: 1; background: transparent; border: none; color: #fff;
-            font-family: 'Barlow', sans-serif; font-size: 1.1rem; outline: none;
+            font-family: 'Barlow', sans-serif; font-size: 1.1rem; outline: none; width: 100%;
         }
         #input-pesquisa::placeholder { color: rgba(255,255,255,0.3); }
 
-        /* ======= GRID DO RANKING ======= */
+        /* ======= GRID DO RANKING (TV) ======= */
         .ranking-grid {
-            display: grid; grid-template-columns: repeat(2, 1fr); grid-template-rows: repeat(5, 1fr);
-            grid-auto-flow: column; gap: 10px 40px; padding: 0 3vw 80px; flex: 1; min-height: 0;
-            overflow-y: auto; /* Permite scroll no PC/Mobile se a lista passar de 10 */
+            display: grid; grid-template-columns: repeat(2, 1fr); grid-auto-flow: row; 
+            gap: 12px 40px; padding: 0 3vw 80px; flex: 1; overflow-y: auto;
         }
         .ranking-grid::-webkit-scrollbar { display: none; }
 
-        /* ======= RANK CARD ======= */
+        /* ======= RANK CARD (TV) ======= */
         .rank-card {
-            display: flex; align-items: center; gap: 14px; padding: 8px 18px 8px 12px;
+            display: flex; align-items: center; gap: 14px; padding: 12px 18px 12px 12px;
             border-radius: 16px; background: var(--bg-card); backdrop-filter: blur(10px);
-            border: 1px solid var(--border); border-left: 5px solid transparent; height: 100%;
+            border: 1px solid var(--border); border-left: 5px solid transparent; width: 100%;
         }
 
         .rank-card.gold { border-left-color: var(--gold); background: linear-gradient(90deg, rgba(255,215,0,0.08), var(--bg-card) 50%); }
@@ -110,8 +108,7 @@
         .rank-name {
             flex: 1; font-family: 'Barlow Condensed', sans-serif; font-size: 1.5rem; font-weight: 700;
             text-transform: uppercase; letter-spacing: 0.5px; color: #E2E8F0;
-            /* 🐛 MÁGICA ANTI-ESMAGAMENTO: */
-            min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+            white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
         }
 
         .rank-points { display: flex; flex-direction: column; align-items: center; background: rgba(255,85,0,0.08); border: 1px solid rgba(255,85,0,0.15); border-radius: 12px; padding: 6px 14px; flex-shrink: 0; min-width: 80px; }
@@ -130,25 +127,46 @@
         .scroll-sep { color: rgba(255,255,255,0.1); margin: 0 20px; }
 
         /* =========================================================
-           📱 MÁGICA RESPONSIVA (CELULAR/TABLET)
+           📱 MÁGICA CELULAR (ZERO SCROLL HORIZONTAL)
            ========================================================= */
         @media (max-width: 800px) {
-            body { overflow-y: auto; }
-            .header { padding: 15px; justify-content: flex-start; }
-            .header-logo { width: 50px; height: 50px; }
+            body { overflow-y: auto; overflow-x: hidden; }
+            .header { padding: 15px; justify-content: flex-start; gap: 15px; }
+            .header-logo { width: 48px; height: 48px; }
             .header-title { font-size: 2.2rem; }
-            .live-badge { display: none; /* Esconde para ganhar espaço */ }
+            .live-badge { display: none; }
+            
+            .search-container { margin: 0 15px 15px; }
             
             .ranking-grid {
-                grid-template-columns: 1fr; /* 🔥 Vira uma lista de coluna única! */
-                grid-auto-flow: row;
-                gap: 12px;
-                padding-bottom: 20px;
+                grid-template-columns: 1fr; /* 🔒 Lista de 1 Coluna */
+                gap: 10px;
+                padding: 0 15px 20px 15px; /* Margens contidas */
             }
-            .rank-name { font-size: 1.2rem; }
-            .pts-value { font-size: 1.8rem; }
-            .rank-card { padding: 12px; }
-            #scroll-bar { display: none !important; /* Esconde a barra passando embaixo no celular */ }
+
+            .rank-card { 
+                padding: 10px; 
+                gap: 10px; 
+                width: 100%; /* Respeita o ecrã */
+            }
+
+            .pos-num { font-size: 1.6rem; width: 35px; }
+            .rank-avatar, .rank-avatar-placeholder { width: 45px; height: 45px; font-size: 1.2rem;}
+            
+            .rank-name { 
+                font-size: 1.1rem; 
+                /* 🔒 MÁGICA 2: Deixa o nome quebrar em 2 linhas se for muito grande, sem empurrar a tela */
+                white-space: normal; 
+                line-height: 1.1;
+                display: -webkit-box;
+                -webkit-line-clamp: 2; 
+                -webkit-box-orient: vertical;
+            }
+            
+            .rank-points { min-width: 65px; padding: 4px 8px; }
+            .pts-value { font-size: 1.6rem; }
+            
+            #scroll-bar { display: none !important; }
         }
     </style>
 </head>
@@ -191,13 +209,10 @@
             try {
                 const res = await fetch(`${API_URL}?acao=getRankingTV&t=${Date.now()}`);
                 dadosGlobais = await res.json();
-                filtrarRanking(); // Puxa a função de renderizar a tela!
-            } catch(e) {
-                console.error("Erro ao carregar ranking:", e);
-            }
+                filtrarRanking();
+            } catch(e) { console.error("Erro ao carregar ranking:", e); }
         }
 
-        // Função mágica que filtra e desenha a tela
         function filtrarRanking() {
             const termo = document.getElementById('input-pesquisa').value.toLowerCase();
             const board = document.getElementById('board');
@@ -205,11 +220,7 @@
             const scrollContent = document.getElementById('scroll-content');
             
             let filtrados = dadosGlobais;
-
-            // Se o usuário digitou algo, filtra a lista
-            if (termo !== "") {
-                filtrados = dadosGlobais.filter(a => a.nome.toLowerCase().includes(termo));
-            }
+            if (termo !== "") filtrados = dadosGlobais.filter(a => a.nome.toLowerCase().includes(termo));
 
             if (!filtrados.length) {
                 board.innerHTML = `<div style="grid-column:1/-1; display:flex; justify-content:center; padding-top: 50px; color:rgba(255,255,255,0.3); font-family:'Barlow Condensed',sans-serif; font-size:1.5rem; letter-spacing:2px;">NENHUM ATLETA ENCONTRADO</div>`;
@@ -217,24 +228,20 @@
                 return;
             }
 
-            // Controle de Exibição
             let exibirGrid = [];
             let exibirScroll = [];
 
             if (termo === "") {
-                // Modo Normal da TV (Top 10 no meio, resto rodando embaixo)
-                exibirGrid = filtrados.slice(0, 10);
-                exibirScroll = filtrados.slice(10);
+                // TV modo normal (10 na tela, resto rodapé) - Celular mostra tudo
+                exibirGrid = window.innerWidth <= 800 ? filtrados : filtrados.slice(0, 10);
+                exibirScroll = window.innerWidth <= 800 ? [] : filtrados.slice(10);
             } else {
-                // Modo Pesquisa (Mostra os resultados direto na tela)
-                exibirGrid = filtrados.slice(0, 30); // Limita a 30 resultados para não travar
+                exibirGrid = filtrados.slice(0, 30);
                 exibirScroll = [];
             }
 
-            // 1. DESENHA OS CARTÕES DA TELA
             let html = '';
             exibirGrid.forEach((aluno, i) => {
-                // Define a medalha real do aluno baseado na posição
                 let cls = 'other';
                 if (aluno.posicao == 1) cls = 'gold';
                 else if (aluno.posicao == 2) cls = 'silver';
@@ -261,7 +268,6 @@
             });
             board.innerHTML = html;
 
-            // 2. DESENHA A BARRA RODANDO (SÓ SE NÃO ESTIVER PESQUISANDO)
             if (exibirScroll.length > 0 && window.innerWidth > 800) {
                 let scrollHtml = '';
                 [exibirScroll, exibirScroll].forEach(lista => {
@@ -286,7 +292,6 @@
             }
         }
 
-        // Inicia e atualiza a cada 15 segundos
         carregarRanking();
         setInterval(carregarRanking, 15000);
 

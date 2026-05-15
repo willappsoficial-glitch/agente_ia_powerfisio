@@ -70,7 +70,7 @@
         }
         table { width: 100%; border-collapse: collapse; white-space: nowrap; }
         th { background: rgba(0,0,0,0.2); padding: 15px; text-align: left; font-size: 0.75rem; text-transform: uppercase; color: var(--muted); }
-        td { padding: 12px 15px; border-bottom: 1px solid rgba(255,255,255,0.05); font-size: 0.85rem; }
+        td { padding: 12px 15px; border-bottom: 1px solid rgba(255,255,255,0.05); font-size: 0.85rem; vertical-align: middle; }
         tr:last-child td { border-bottom: none; }
         
         .action-btn { background: none; border: none; cursor: pointer; color: var(--muted); margin-right: 10px; transition: 0.2s; }
@@ -88,7 +88,7 @@
             backdrop-filter: blur(10px);
             -webkit-backdrop-filter: blur(10px);
             display: flex;
-            justify-content: space-around;
+            justify-content: space-between; /* Distribui os 6 itens */
             padding: 10px 5px 20px 5px;
             border-top: 1px solid rgba(255,255,255,0.05);
             z-index: 100;
@@ -100,10 +100,11 @@
             color: var(--muted);
             cursor: pointer;
             transition: 0.3s;
-            width: 20%;
+            flex: 1; /* Faz todos ocuparem o mesmo espaço */
+            min-width: 50px;
         }
-        .nav-item .material-icons { font-size: 1.5rem; margin-bottom: 4px; transition: 0.3s; }
-        .nav-item span { font-size: 0.65rem; font-weight: 600; }
+        .nav-item .material-icons { font-size: 1.4rem; margin-bottom: 4px; transition: 0.3s; }
+        .nav-item span { font-size: 0.55rem; font-weight: 700; text-transform: uppercase; }
         .nav-item.active { color: var(--p); }
         .nav-item.active .material-icons { transform: translateY(-3px); text-shadow: 0 4px 10px rgba(255,85,0,0.4); }
 
@@ -123,68 +124,19 @@
         .spin { animation: rodar 1s linear infinite; }
         @keyframes rodar { to { transform: rotate(360deg); } }
 
-        /* =======================================================
-           🚀 A MÁGICA MOBILE: LAYOUT DE CARTÕES
-           ======================================================= */
+        /* MÁGICA MOBILE: LAYOUT DE CARTÕES */
         @media (max-width: 768px) {
-            .table-wrapper {
-                background: transparent;
-                border: none;
-                box-shadow: none;
-                overflow: visible; /* Tira o scroll horizontal */
-            }
-            table, thead, tbody, th, td, tr {
-                display: block; /* Desfaz o comportamento padrão da tabela */
-            }
-            thead tr {
-                display: none; /* Esconde o cabeçalho no celular */
-            }
-            tr {
-                background: var(--card);
-                margin-bottom: 15px;
-                border-radius: 12px;
-                padding: 15px;
-                border: 1px solid rgba(255,255,255,0.05);
-                box-shadow: 0 5px 15px rgba(0,0,0,0.3);
-            }
-            td {
-                display: flex;
-                justify-content: space-between;
-                align-items: center;
-                padding: 8px 0;
-                border-bottom: 1px solid rgba(255,255,255,0.05);
-                font-size: 0.85rem;
-                text-align: right;
-                word-break: break-word; /* Evita que links longos quebrem a tela */
-                white-space: normal;
-            }
-            td:last-child {
-                border-bottom: none;
-            }
-            /* O ::before cria o "rótulo" usando a tag data-label do JS */
-            td::before {
-                content: attr(data-label);
-                font-weight: 800;
-                color: var(--muted);
-                text-transform: uppercase;
-                font-size: 0.7rem;
-                margin-right: 15px;
-                text-align: left;
-                flex-shrink: 0;
-            }
-            /* Ajuste dos botões de ação para ficarem no topo do cartão */
-            .td-acoes {
-                justify-content: flex-end;
-                gap: 15px;
-                padding-bottom: 12px;
-                margin-bottom: 5px;
-                border-bottom: 2px solid rgba(255,255,255,0.05);
-            }
-            .td-acoes::before {
-                display: none; /* Esconde a palavra "AÇÕES" */
-            }
+            .table-wrapper { background: transparent; border: none; box-shadow: none; overflow: visible; }
+            table, thead, tbody, th, td, tr { display: block; }
+            thead tr { display: none; }
+            tr { background: var(--card); margin-bottom: 15px; border-radius: 12px; padding: 15px; border: 1px solid rgba(255,255,255,0.05); box-shadow: 0 5px 15px rgba(0,0,0,0.3); }
+            td { display: flex; justify-content: space-between; align-items: center; padding: 8px 0; border-bottom: 1px solid rgba(255,255,255,0.05); font-size: 0.85rem; text-align: right; word-break: break-word; white-space: normal; }
+            td:last-child { border-bottom: none; }
+            td::before { content: attr(data-label); font-weight: 800; color: var(--muted); text-transform: uppercase; font-size: 0.7rem; margin-right: 15px; text-align: left; flex-shrink: 0; }
+            .td-acoes { justify-content: flex-end; gap: 15px; padding-bottom: 12px; margin-bottom: 5px; border-bottom: 2px solid rgba(255,255,255,0.05); }
+            .td-acoes::before { display: none; }
             .action-btn { margin-right: 0; padding: 5px; }
-            .btn-edit { color: #00E676; } /* Deixa os botões sempre coloridos no mobile */
+            .btn-edit { color: #00E676; }
             .btn-del { color: #FF3D00; }
         }
     </style>
@@ -197,7 +149,7 @@
     </header>
 
     <main class="content-area">
-        <h2 id="titulo-aba" class="titulo-secao">ALUNOS_MAX</h2>
+        <h2 id="titulo-aba" class="titulo-secao">ALUNOS MAX</h2>
         
         <div class="table-wrapper">
             <table id="tabela-master">
@@ -215,6 +167,10 @@
         <div class="nav-item" onclick="mudarAba('Exercicios', this)">
             <span class="material-icons">fitness_center</span>
             <span>Exercícios</span>
+        </div>
+        <div class="nav-item" onclick="mudarAba('Ranking', this)">
+            <span class="material-icons">emoji_events</span>
+            <span>Ranking</span>
         </div>
         <div class="nav-item" onclick="mudarAba('Saude', this)">
             <span class="material-icons">favorite</span>
@@ -245,7 +201,7 @@
     </div>
 
     <script>
-        // 🚨 COLOQUE A SUA URL AQUI
+        // 🚨 COLOQUE A SUA URL AQUI - A MESMA QUE JÁ ESTAVA USANDO!
         const API = "https://script.google.com/macros/s/AKfycby62vambopzAU-hOp4Och0Qg9_ZOxNCqqo19BFZvUA13OFTYBRMnTnNckq3aBzncXKTJg/exec"; 
         
         let abaAtual = "Alunos_Max";
@@ -274,18 +230,15 @@
 
                 colunasAtuais = data.cabecalho;
                 
-                // Monta o Cabeçalho (Fica oculto no telemóvel, mas aparece no PC)
                 let theadHTML = '<tr><th>AÇÕES</th>';
                 colunasAtuais.forEach(coluna => theadHTML += `<th>${coluna}</th>`);
                 theadHTML += '</tr>';
                 document.getElementById('thead').innerHTML = theadHTML;
 
-                // Monta as Linhas
                 let tbodyHTML = '';
                 data.linhas.forEach(linha => {
                     tbodyHTML += `<tr>`;
                     
-                    // Coluna de ações com a tag data-label para o CSS Mobile ler
                     tbodyHTML += `<td data-label="AÇÕES" class="td-acoes">
                         <button class="action-btn btn-edit" onclick='abrirForm(${JSON.stringify(linha).replace(/'/g, "&#39;")})'><span class="material-icons">edit</span></button>
                         <button class="action-btn btn-del" onclick="excluir(${linha.rowIdx})"><span class="material-icons">delete</span></button>
@@ -293,9 +246,20 @@
                     
                     colunasAtuais.forEach(coluna => {
                         let valor = linha[coluna] || "";
-                        if(String(valor).startsWith("http")) valor = `<a href="${valor}" target="_blank" style="color:var(--p); text-decoration:none;">🔗 Abrir Link</a>`;
+                        let strValor = String(valor).toLowerCase();
                         
-                        // O segredo: o atributo data-label diz ao telemóvel qual é o título daquela célula
+                        // 📸 MÁGICA DA IMAGEM: Verifica se é link e se a coluna é de foto/vídeo/imagem
+                        if(strValor.startsWith("http")) {
+                            let colUpper = coluna.toUpperCase();
+                            if(colUpper.includes("FOTO") || colUpper.includes("VIDEO") || colUpper.includes("GIF") || colUpper.includes("IMAGEM") || strValor.match(/\.(jpeg|jpg|gif|png)/i)) {
+                                // Exibe a imagem/gif direto na tabela!
+                                valor = `<img src="${valor}" style="width: 50px; height: 50px; border-radius: 8px; object-fit: cover; border: 1px solid var(--p); box-shadow: 0 2px 10px rgba(255,85,0,0.2);">`;
+                            } else {
+                                // Se for outro tipo de link (ex: site), mantém o botão de Abrir Link
+                                valor = `<a href="${valor}" target="_blank" style="color:var(--p); text-decoration:none;">🔗 Abrir Link</a>`;
+                            }
+                        }
+                        
                         tbodyHTML += `<td data-label="${coluna}">${valor}</td>`;
                     });
                     tbodyHTML += `</tr>`;

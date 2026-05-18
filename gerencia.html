@@ -60,6 +60,19 @@
         }
         .titulo-secao { font-size: 1.1rem; color: var(--muted); margin-bottom: 15px; text-transform: uppercase; font-weight: 800; letter-spacing: 1px;}
 
+        /* BARRA DE PESQUISA */
+        .search-container {
+            display: flex; align-items: center; background: var(--card);
+            border: 1px solid rgba(255,255,255,0.05); border-radius: 12px; margin-bottom: 20px;
+            padding: 0 15px; height: 45px;
+        }
+        .search-icon { color: var(--muted); font-size: 1.4rem; margin-right: 10px; }
+        #input-pesquisa {
+            flex: 1; background: transparent; border: none; color: #fff;
+            font-family: 'Inter', sans-serif; font-size: 0.95rem; outline: none; width: 100%;
+        }
+        #input-pesquisa::placeholder { color: rgba(255,255,255,0.3); }
+
         /* TABELA BASE (COMPUTADOR) */
         .table-wrapper {
             background: var(--card);
@@ -158,7 +171,14 @@
     </header>
 
     <main class="content-area">
-        <h2 id="titulo-aba" class="titulo-secao">ALUNOS MAX</h2>
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+            <h2 id="titulo-aba" class="titulo-secao">ALUNOS MAX</h2>
+        </div>
+
+        <div class="search-container">
+            <span class="material-icons search-icon">search</span>
+            <input type="text" id="input-pesquisa" placeholder="Pesquisar registro..." oninput="filtrarTabela()">
+        </div>
         
         <div class="table-wrapper">
             <table id="tabela-master">
@@ -210,14 +230,14 @@
     </div>
 
     <script>
-        // 🚨 COLOQUE A SUA URL AQUI
+        // 🚨 COLOQUE A SUA URL AQUI - A MESMA QUE JÁ ESTAVA USANDO!
         const API = "https://script.google.com/macros/s/AKfycby62vambopzAU-hOp4Och0Qg9_ZOxNCqqo19BFZvUA13OFTYBRMnTnNckq3aBzncXKTJg/exec"; 
         
         let abaAtual = "Alunos_Max";
         let colunasAtuais = [];
+        let linhasAtuais = []; // 💾 Variável para guardar os dados da aba atual
 
         // 🔄 TRADUTOR VISUAL DE COLUNAS
-        // Muda apenas o texto que aparece na tela, mantendo o nome real escondido
         function nomeVisual(coluna) {
             if (coluna === "CPF") return "ID DO ALUNO";
             if (coluna === "QTD_TREINOS") return "PONTOS";
@@ -229,6 +249,7 @@
             elemento.classList.add('active');
             abaAtual = nome;
             document.getElementById('titulo-aba').innerText = nome.replace('_', ' ');
+            document.getElementById('input-pesquisa').value = ""; // Limpa a barra ao trocar de aba
             carregarDados();
         }
 
@@ -246,45 +267,74 @@
                 }
 
                 colunasAtuais = data.cabecalho;
+                linhasAtuais = data.linhas; // Salva as linhas na memória
                 
-                // Aplicando o Tradutor Visual no Cabeçalho (PC)
                 let theadHTML = '<tr><th>AÇÕES</th>';
                 colunasAtuais.forEach(coluna => theadHTML += `<th>${nomeVisual(coluna)}</th>`);
                 theadHTML += '</tr>';
                 document.getElementById('thead').innerHTML = theadHTML;
 
-                let tbodyHTML = '';
-                data.linhas.forEach(linha => {
-                    tbodyHTML += `<tr>`;
-                    
-                    tbodyHTML += `<td data-label="AÇÕES" class="td-acoes">
-                        <button class="action-btn btn-edit" onclick='abrirForm(${JSON.stringify(linha).replace(/'/g, "&#39;")})'><span class="material-icons">edit</span></button>
-                        <button class="action-btn btn-del" onclick="excluir(${linha.rowIdx})"><span class="material-icons">delete</span></button>
-                    </td>`;
-                    
-                    colunasAtuais.forEach(coluna => {
-                        let valor = linha[coluna] || "";
-                        let strValor = String(valor).toLowerCase();
-                        
-                        if(strValor.startsWith("http")) {
-                            let colUpper = coluna.toUpperCase();
-                            if(colUpper.includes("FOTO") || colUpper.includes("VIDEO") || colUpper.includes("GIF") || colUpper.includes("IMAGEM") || strValor.match(/\.(jpeg|jpg|gif|png)/i)) {
-                                valor = `<img src="${valor}" style="width: 50px; height: 50px; border-radius: 8px; object-fit: cover; border: 1px solid var(--p); box-shadow: 0 2px 10px rgba(255,85,0,0.2);">`;
-                            } else {
-                                valor = `<a href="${valor}" target="_blank" style="color:var(--p); text-decoration:none;">🔗 Abrir Link</a>`;
-                            }
-                        }
-                        
-                        // Aplicando o Tradutor Visual no Cartão (Celular)
-                        tbodyHTML += `<td data-label="${nomeVisual(coluna)}">${valor}</td>`;
-                    });
-                    tbodyHTML += `</tr>`;
-                });
-                document.getElementById('tbody').innerHTML = tbodyHTML;
+                renderizarTabela(linhasAtuais); // Chama a função para desenhar a tabela
 
             } catch(e) { 
                 document.getElementById('tbody').innerHTML = `<tr><td colspan="10" class="loading-text" style="color:#ff4444">Falha na conexão.</td></tr>`;
             }
+        }
+
+        // 🎨 FUNÇÃO SEPARADA PARA DESENHAR A TABELA
+        function renderizarTabela(linhas) {
+            let tbodyHTML = '';
+            
+            if (linhas.length === 0) {
+                tbodyHTML = `<tr><td colspan="10" class="loading-text" style="color:var(--muted)">Nenhum registro encontrado.</td></tr>`;
+            }
+
+            linhas.forEach(linha => {
+                tbodyHTML += `<tr>`;
+                
+                tbodyHTML += `<td data-label="AÇÕES" class="td-acoes">
+                    <button class="action-btn btn-edit" onclick='abrirForm(${JSON.stringify(linha).replace(/'/g, "&#39;")})'><span class="material-icons">edit</span></button>
+                    <button class="action-btn btn-del" onclick="excluir(${linha.rowIdx})"><span class="material-icons">delete</span></button>
+                </td>`;
+                
+                colunasAtuais.forEach(coluna => {
+                    let valor = linha[coluna] || "";
+                    let strValor = String(valor).toLowerCase();
+                    
+                    if(strValor.startsWith("http")) {
+                        let colUpper = coluna.toUpperCase();
+                        if(colUpper.includes("FOTO") || colUpper.includes("VIDEO") || colUpper.includes("GIF") || colUpper.includes("IMAGEM") || strValor.match(/\.(jpeg|jpg|gif|png)/i)) {
+                            valor = `<img src="${valor}" style="width: 50px; height: 50px; border-radius: 8px; object-fit: cover; border: 1px solid var(--p); box-shadow: 0 2px 10px rgba(255,85,0,0.2);">`;
+                        } else {
+                            valor = `<a href="${valor}" target="_blank" style="color:var(--p); text-decoration:none;">🔗 Abrir Link</a>`;
+                        }
+                    }
+                    
+                    tbodyHTML += `<td data-label="${nomeVisual(coluna)}">${valor}</td>`;
+                });
+                tbodyHTML += `</tr>`;
+            });
+            document.getElementById('tbody').innerHTML = tbodyHTML;
+        }
+
+        // 🔎 MOTOR DE PESQUISA INSTANTÂNEA
+        function filtrarTabela() {
+            const termo = document.getElementById('input-pesquisa').value.toLowerCase();
+            
+            if (termo === "") {
+                renderizarTabela(linhasAtuais); // Se estiver vazio, mostra tudo
+                return;
+            }
+
+            // Procura o termo em qualquer coluna daquela linha
+            const filtrados = linhasAtuais.filter(linha => {
+                return colunasAtuais.some(coluna => {
+                    const valor = linha[coluna];
+                    return valor && String(valor).toLowerCase().includes(termo);
+                });
+            });
+
+            renderizarTabela(filtrados);
         }
 
         function abrirForm(dados = null) {

@@ -31,13 +31,7 @@
         }
 
         /* ======= SWEETALERT THEME ======= */
-        .swal2-popup {
-            background: var(--bg-card) !important;
-            color: var(--text) !important;
-            border-radius: 20px !important;
-            border: 1px solid var(--border) !important;
-            font-family: 'Barlow', sans-serif !important;
-        }
+        .swal2-popup { background: var(--bg-card) !important; color: var(--text) !important; border-radius: 20px !important; border: 1px solid var(--border) !important; font-family: 'Barlow', sans-serif !important; }
         .swal2-title { color: var(--text) !important; font-family: 'Barlow Condensed', sans-serif !important; font-weight: 900 !important; font-size: 1.6rem !important; letter-spacing: 1px; }
         .swal2-html-container { color: var(--muted) !important; font-size: 0.95rem !important; }
         .swal2-confirm, .swal2-cancel { border-radius: 10px !important; font-weight: 700 !important; padding: 12px 24px !important; text-transform: uppercase !important; letter-spacing: 1px !important; font-family: 'Barlow Condensed', sans-serif !important; font-size: 1rem !important; }
@@ -49,552 +43,147 @@
 
         /* ======= LOGIN ======= */
         #screen-login {
-            align-items: center;
-            justify-content: center;
-            padding: 30px 24px;
+            align-items: center; justify-content: center; padding: 30px 24px;
             background: radial-gradient(ellipse at 50% 0%, rgba(255,85,0,0.12) 0%, transparent 60%);
-            position: relative;
-            overflow: hidden;
+            position: relative; overflow: hidden;
         }
-
         #screen-login::before {
-            content: '';
-            position: absolute;
-            top: -80px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 400px;
-            height: 400px;
-            background: radial-gradient(circle, rgba(255,85,0,0.08) 0%, transparent 70%);
-            pointer-events: none;
+            content: ''; position: absolute; top: -80px; left: 50%; transform: translateX(-50%);
+            width: 400px; height: 400px; background: radial-gradient(circle, rgba(255,85,0,0.08) 0%, transparent 70%); pointer-events: none;
         }
 
-        .brand {
-            text-align: center;
-            margin-bottom: 48px;
-            position: relative;
-        }
-
-        .brand-logo {
-            width: 80px;
-            height: 80px;
-            border-radius: 22px;
-            margin-bottom: 16px;
-            box-shadow: 0 8px 32px rgba(255,85,0,0.35);
-        }
-
-        .brand h1 {
-            font-family: 'Barlow Condensed', sans-serif;
-            font-size: 2.8rem;
-            font-weight: 900;
-            letter-spacing: 2px;
-            line-height: 1;
-        }
-
+        .brand { text-align: center; margin-bottom: 48px; position: relative; }
+        .brand-logo { width: 80px; height: 80px; border-radius: 22px; margin-bottom: 16px; box-shadow: 0 8px 32px rgba(255,85,0,0.35); }
+        .brand h1 { font-family: 'Barlow Condensed', sans-serif; font-size: 2.8rem; font-weight: 900; letter-spacing: 2px; line-height: 1; }
         .brand h1 span { color: var(--primary); }
         .brand p { color: var(--muted); font-size: 0.85rem; margin-top: 6px; letter-spacing: 2px; text-transform: uppercase; }
 
-        .login-card {
-            width: 100%;
-            max-width: 380px;
-            background: var(--bg-card);
-            border: 1px solid var(--border);
-            border-radius: 24px;
-            padding: 32px 24px;
-        }
-
+        .login-card { width: 100%; max-width: 380px; background: var(--bg-card); border: 1px solid var(--border); border-radius: 24px; padding: 32px 24px; }
         .login-label { font-size: 0.75rem; font-weight: 700; letter-spacing: 2px; color: var(--muted); text-transform: uppercase; margin-bottom: 10px; display: block; }
-
         .cpf-input {
-            width: 100%;
-            background: var(--bg-surface);
-            border: 2px solid var(--border);
-            border-radius: 14px;
-            padding: 16px 20px;
-            color: white;
-            font-size: 1.1rem;
-            font-family: 'Barlow Condensed', sans-serif;
-            font-weight: 700;
-            letter-spacing: 3px;
-            text-align: center;
-            outline: none;
-            transition: border-color 0.2s;
-            -webkit-appearance: none;
+            width: 100%; background: var(--bg-surface); border: 2px solid var(--border); border-radius: 14px;
+            padding: 16px 20px; color: white; font-size: 1.1rem; font-family: 'Barlow Condensed', sans-serif;
+            font-weight: 700; letter-spacing: 3px; text-align: center; outline: none; transition: border-color 0.2s; -webkit-appearance: none;
         }
-
         .cpf-input:focus { border-color: var(--primary); }
         .cpf-input::placeholder { color: #333; letter-spacing: 1px; font-size: 0.9rem; }
 
         .btn-login {
-            width: 100%;
-            margin-top: 16px;
-            background: var(--primary);
-            color: white;
-            border: none;
-            border-radius: 14px;
-            padding: 18px;
-            font-family: 'Barlow Condensed', sans-serif;
-            font-size: 1.2rem;
-            font-weight: 900;
-            letter-spacing: 2px;
-            text-transform: uppercase;
-            cursor: pointer;
-            box-shadow: 0 8px 24px rgba(255,85,0,0.3);
-            transition: all 0.2s;
+            width: 100%; margin-top: 16px; background: var(--primary); color: white; border: none; border-radius: 14px;
+            padding: 18px; font-family: 'Barlow Condensed', sans-serif; font-size: 1.2rem; font-weight: 900;
+            letter-spacing: 2px; text-transform: uppercase; cursor: pointer; box-shadow: 0 8px 24px rgba(255,85,0,0.3); transition: all 0.2s;
         }
-
         .btn-login:active { transform: scale(0.98); }
         .btn-login:disabled { opacity: 0.6; }
 
         /* ======= SCREEN LOCKED ======= */
-        #screen-locked {
-            padding: 24px;
-            background: radial-gradient(ellipse at 50% 100%, rgba(255,85,0,0.06) 0%, transparent 50%);
-        }
+        #screen-locked { padding: 24px; background: radial-gradient(ellipse at 50% 100%, rgba(255,85,0,0.06) 0%, transparent 50%); }
 
         /* ======= SHARED HEADER ======= */
         .app-header {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 16px 24px;
-            background: var(--bg-card);
-            border-bottom: 1px solid var(--border);
-            position: sticky;
-            top: 0;
-            z-index: 50;
+            display: flex; align-items: center; justify-content: space-between; padding: 16px 24px;
+            background: var(--bg-card); border-bottom: 1px solid var(--border); position: sticky; top: 0; z-index: 50;
         }
-
-        .user-pill {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-
-        .avatar {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            background: var(--primary);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-family: 'Barlow Condensed', sans-serif;
-            font-size: 1.3rem;
-            font-weight: 900;
-            flex-shrink: 0;
-        }
-
-        .user-info h3 {
-            font-size: 0.9rem;
-            font-weight: 700;
-        }
-
-        .user-info p {
-            font-size: 0.7rem;
-            color: var(--muted);
-        }
+        .user-pill { display: flex; align-items: center; gap: 12px; }
+        .avatar { width: 40px; height: 40px; border-radius: 50%; background: var(--primary); display: flex; align-items: center; justify-content: center; font-family: 'Barlow Condensed', sans-serif; font-size: 1.3rem; font-weight: 900; flex-shrink: 0; }
+        .user-info h3 { font-size: 0.9rem; font-weight: 700; }
+        .user-info p { font-size: 0.7rem; color: var(--muted); }
 
         /* ======= LOCKED CARD ======= */
-        .locked-content {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            padding: 24px;
-            gap: 24px;
-        }
-
+        .locked-content { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 24px; gap: 24px; }
         .lock-visual {
-            width: 100px;
-            height: 100px;
-            background: var(--bg-surface);
-            border: 2px solid var(--border);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 2.8rem;
-            animation: breathe 3s ease-in-out infinite;
+            width: 100px; height: 100px; background: var(--bg-surface); border: 2px solid var(--border); border-radius: 50%;
+            display: flex; align-items: center; justify-content: center; font-size: 2.8rem; animation: breathe 3s ease-in-out infinite;
         }
-
-        @keyframes breathe {
-            0%, 100% { box-shadow: 0 0 0 0 rgba(255,85,0,0.2); }
-            50% { box-shadow: 0 0 0 20px rgba(255,85,0,0); }
-        }
-
-        .locked-title {
-            font-family: 'Barlow Condensed', sans-serif;
-            font-size: 2rem;
-            font-weight: 900;
-            letter-spacing: 2px;
-            text-align: center;
-        }
-
-        .locked-text {
-            color: var(--muted);
-            text-align: center;
-            font-size: 0.95rem;
-            line-height: 1.6;
-            max-width: 260px;
-        }
-
-        /* Ranking Badge */
-        .ranking-pill {
-            background: var(--bg-surface);
-            border: 1px solid var(--border);
-            border-radius: 50px;
-            padding: 12px 24px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            font-size: 0.9rem;
-        }
-
+        @keyframes breathe { 0%, 100% { box-shadow: 0 0 0 0 rgba(255,85,0,0.2); } 50% { box-shadow: 0 0 0 20px rgba(255,85,0,0); } }
+        .locked-title { font-family: 'Barlow Condensed', sans-serif; font-size: 2rem; font-weight: 900; letter-spacing: 2px; text-align: center; }
+        .locked-text { color: var(--muted); text-align: center; font-size: 0.95rem; line-height: 1.6; max-width: 260px; }
+        
+        .ranking-pill { background: var(--bg-surface); border: 1px solid var(--border); border-radius: 50px; padding: 12px 24px; display: flex; align-items: center; gap: 10px; font-size: 0.9rem; }
         .ranking-pill strong { color: var(--primary); }
-        .ranking-pill .pos-badge {
-            background: var(--primary-dim);
-            border: 1px solid rgba(255,85,0,0.3);
-            border-radius: 8px;
-            padding: 2px 8px;
-            font-family: 'Barlow Condensed', sans-serif;
-            font-weight: 900;
-            font-size: 1rem;
-            color: var(--primary);
-        }
+        .ranking-pill .pos-badge { background: var(--primary-dim); border: 1px solid rgba(255,85,0,0.3); border-radius: 8px; padding: 2px 8px; font-family: 'Barlow Condensed', sans-serif; font-weight: 900; font-size: 1rem; color: var(--primary); }
 
-        .waiting-dots::after {
-            content: '';
-            animation: dots 1.5s steps(4, end) infinite;
-        }
-
-        @keyframes dots {
-            0%   { content: ''; }
-            25%  { content: '.'; }
-            50%  { content: '..'; }
-            75%  { content: '...'; }
-            100% { content: ''; }
-        }
+        .waiting-dots::after { content: ''; animation: dots 1.5s steps(4, end) infinite; }
+        @keyframes dots { 0% { content: ''; } 25% { content: '.'; } 50% { content: '..'; } 75% { content: '...'; } 100% { content: ''; } }
 
         /* ======= WORKOUT SCREEN ======= */
-        #screen-workout {
-            background: var(--bg);
-        }
+        #screen-workout { background: var(--bg); }
+        .workout-topbar { padding: 20px 24px 0; }
+        .day-label { font-family: 'Barlow Condensed', sans-serif; font-size: 2.2rem; font-weight: 900; letter-spacing: 1px; color: var(--primary); }
+        .workout-subtitle { font-size: 0.75rem; color: var(--muted); letter-spacing: 2px; text-transform: uppercase; margin-top: 2px; }
 
-        .workout-topbar {
-            padding: 20px 24px 0;
+        /* 🗓️ SELETOR DE DIAS */
+        .day-selector {
+            display: flex; gap: 10px; padding: 0 24px; margin-top: 18px;
+            overflow-x: auto; scrollbar-width: none;
         }
-
-        .day-label {
-            font-family: 'Barlow Condensed', sans-serif;
-            font-size: 2.2rem;
-            font-weight: 900;
-            letter-spacing: 1px;
-            color: var(--primary);
+        .day-selector::-webkit-scrollbar { display: none; }
+        .day-btn {
+            background: var(--bg-surface); border: 1px solid var(--border); color: var(--muted);
+            padding: 10px 18px; border-radius: 12px; font-family: 'Barlow Condensed', sans-serif;
+            font-size: 1.15rem; font-weight: 700; cursor: pointer; transition: all 0.2s; white-space: nowrap;
         }
-
-        .workout-subtitle {
-            font-size: 0.75rem;
-            color: var(--muted);
-            letter-spacing: 2px;
-            text-transform: uppercase;
-            margin-top: 2px;
-        }
+        .day-btn.active { background: var(--primary); color: #fff; border-color: var(--primary); box-shadow: 0 4px 12px rgba(255,85,0,0.3); }
 
         /* Timer */
-        .timer-bar {
-            margin: 20px 24px 0;
-            background: var(--bg-card);
-            border: 1px solid var(--border);
-            border-radius: 16px;
-            padding: 16px 20px;
-            display: none;
-            align-items: center;
-            justify-content: space-between;
-        }
-
+        .timer-bar { margin: 20px 24px 0; background: var(--bg-card); border: 1px solid var(--border); border-radius: 16px; padding: 16px 20px; display: none; align-items: center; justify-content: space-between; }
         .timer-bar.visible { display: flex; }
-
-        .timer-display {
-            font-family: 'Barlow Condensed', sans-serif;
-            font-size: 2.5rem;
-            font-weight: 900;
-            color: var(--primary);
-            letter-spacing: 3px;
-        }
-
-        .timer-label {
-            font-size: 0.65rem;
-            color: var(--muted);
-            letter-spacing: 2px;
-            text-transform: uppercase;
-        }
+        .timer-display { font-family: 'Barlow Condensed', sans-serif; font-size: 2.5rem; font-weight: 900; color: var(--primary); letter-spacing: 3px; }
+        .timer-label { font-size: 0.65rem; color: var(--muted); letter-spacing: 2px; text-transform: uppercase; }
 
         /* Progress */
-        .progress-section {
-            margin: 16px 24px 0;
-        }
-
-        .progress-header {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 8px;
-            font-size: 0.75rem;
-            color: var(--muted);
-        }
-
-        .progress-bar {
-            height: 4px;
-            background: var(--bg-surface);
-            border-radius: 2px;
-            overflow: hidden;
-        }
-
-        .progress-fill {
-            height: 100%;
-            background: var(--primary);
-            border-radius: 2px;
-            transition: width 0.5s ease;
-            width: 0%;
-        }
+        .progress-section { margin: 16px 24px 0; }
+        .progress-header { display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 0.75rem; color: var(--muted); }
+        .progress-bar { height: 4px; background: var(--bg-surface); border-radius: 2px; overflow: hidden; }
+        .progress-fill { height: 100%; background: var(--primary); border-radius: 2px; transition: width 0.5s ease; width: 0%; }
 
         /* Exercises */
-        .exercises-list {
-            padding: 16px 24px;
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-        }
-
-        .section-label {
-            font-size: 0.7rem;
-            color: var(--muted);
-            letter-spacing: 2px;
-            text-transform: uppercase;
-            padding: 12px 0 4px;
-            font-weight: 700;
-            border-top: 1px solid var(--border);
-            margin-top: 8px;
-        }
-
+        .exercises-list { padding: 16px 24px; display: flex; flex-direction: column; gap: 10px; }
+        .section-label { font-size: 0.7rem; color: var(--muted); letter-spacing: 2px; text-transform: uppercase; padding: 12px 0 4px; font-weight: 700; border-top: 1px solid var(--border); margin-top: 8px; }
         .section-label:first-child { border-top: none; margin-top: 0; }
-
-        .exercise-item {
-            background: var(--bg-card);
-            border: 1px solid var(--border);
-            border-radius: 16px;
-            padding: 14px 16px;
-            display: flex;
-            align-items: center;
-            gap: 14px;
-            transition: all 0.25s ease;
-            cursor: default;
-        }
-
+        .exercise-item { background: var(--bg-card); border: 1px solid var(--border); border-radius: 16px; padding: 14px 16px; display: flex; align-items: center; gap: 14px; transition: all 0.25s ease; cursor: default; }
         .exercise-item.interactive { cursor: pointer; }
-
-        .exercise-item.pendente {
-            border-color: rgba(255,85,0,0.3);
-            background: rgba(255,85,0,0.04);
-        }
-
-        .exercise-item.concluido {
-            opacity: 0.45;
-            border-color: rgba(0,230,118,0.3);
-            background: rgba(0,230,118,0.04);
-        }
-
+        .exercise-item.pendente { border-color: rgba(255,85,0,0.3); background: rgba(255,85,0,0.04); }
+        .exercise-item.concluido { opacity: 0.45; border-color: rgba(0,230,118,0.3); background: rgba(0,230,118,0.04); }
         .exercise-item.concluido .ex-name { text-decoration: line-through; }
-
-        .ex-check {
-            width: 28px;
-            height: 28px;
-            border-radius: 50%;
-            border: 2px solid #2A2F3A;
-            flex-shrink: 0;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: all 0.2s;
-        }
-
+        
+        .ex-check { width: 28px; height: 28px; border-radius: 50%; border: 2px solid #2A2F3A; flex-shrink: 0; display: flex; align-items: center; justify-content: center; transition: all 0.2s; }
         .exercise-item.pendente .ex-check { border-color: var(--primary); }
-
-        .exercise-item.concluido .ex-check {
-            background: var(--success);
-            border-color: var(--success);
-        }
-
-        .ex-check-icon {
-            opacity: 0;
-            transition: 0.2s;
-            font-size: 0.85rem;
-        }
-
+        .exercise-item.concluido .ex-check { background: var(--success); border-color: var(--success); }
+        .ex-check-icon { opacity: 0; transition: 0.2s; font-size: 0.85rem; }
         .exercise-item.concluido .ex-check-icon { opacity: 1; }
-
-        .ex-body {
-            flex: 1;
-            min-width: 0;
-        }
-
-        .ex-name {
-            font-size: 0.92rem;
-            font-weight: 700;
-            line-height: 1.3;
-            color: var(--text);
-        }
-
-        .ex-tags {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 6px;
-            margin-top: 8px;
-        }
-
-        .tag {
-            font-size: 0.7rem;
-            font-weight: 700;
-            border-radius: 6px;
-            padding: 3px 8px;
-            white-space: nowrap;
-        }
-
+        .ex-body { flex: 1; min-width: 0; }
+        .ex-name { font-size: 0.92rem; font-weight: 700; line-height: 1.3; color: var(--text); }
+        
+        .ex-tags { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
+        .tag { font-size: 0.7rem; font-weight: 700; border-radius: 6px; padding: 3px 8px; white-space: nowrap; }
         .tag-id { background: rgba(255,255,255,0.06); color: var(--muted); border: 1px solid rgba(255,255,255,0.06); }
-
-        .tag-series {
-            background: var(--primary-dim);
-            color: var(--primary);
-            border: 1px solid rgba(255,85,0,0.25);
-        }
-
-        .tag-tech {
-            background: rgba(0,230,118,0.08);
-            color: var(--success);
-            border: 1px dashed rgba(0,230,118,0.3);
-            cursor: pointer;
-            text-transform: uppercase;
-        }
+        .tag-series { background: var(--primary-dim); color: var(--primary); border: 1px solid rgba(255,85,0,0.25); }
+        .tag-tech { background: rgba(0,230,118,0.08); color: var(--success); border: 1px dashed rgba(0,230,118,0.3); cursor: pointer; text-transform: uppercase; }
 
         /* Bottom Buttons */
-        .workout-cta {
-            padding: 16px 24px 32px;
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-        }
-
-        .btn-cta {
-            width: 100%;
-            padding: 18px;
-            border-radius: 16px;
-            border: none;
-            font-family: 'Barlow Condensed', sans-serif;
-            font-size: 1.2rem;
-            font-weight: 900;
-            letter-spacing: 2px;
-            text-transform: uppercase;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-
+        .workout-cta { padding: 16px 24px 32px; display: flex; flex-direction: column; gap: 10px; }
+        .btn-cta { width: 100%; padding: 18px; border-radius: 16px; border: none; font-family: 'Barlow Condensed', sans-serif; font-size: 1.2rem; font-weight: 900; letter-spacing: 2px; text-transform: uppercase; cursor: pointer; transition: all 0.2s; }
         .btn-cta:active { transform: scale(0.98); }
-
-        .btn-start {
-            background: var(--primary);
-            color: white;
-            box-shadow: 0 8px 24px rgba(255,85,0,0.3);
-        }
-
-        .btn-finish {
-            background: var(--success);
-            color: #000;
-            box-shadow: 0 8px 24px rgba(0,230,118,0.25);
-            display: none;
-        }
+        .btn-start { background: var(--primary); color: white; box-shadow: 0 8px 24px rgba(255,85,0,0.3); }
+        .btn-finish { background: var(--success); color: #000; box-shadow: 0 8px 24px rgba(0,230,118,0.25); display: none; }
 
         /* ======= MODAL TÉCNICA ======= */
-        #modal-tecnica {
-            display: none;
-            position: fixed;
-            inset: 0;
-            background: rgba(0,0,0,0.85);
-            z-index: 1000;
-            align-items: flex-end;
-            padding: 16px;
-            backdrop-filter: blur(6px);
-        }
-
+        #modal-tecnica { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.85); z-index: 1000; align-items: flex-end; padding: 16px; backdrop-filter: blur(6px); }
         #modal-tecnica.open { display: flex; }
-
-        .modal-sheet {
-            background: var(--bg-card);
-            border-radius: 24px;
-            padding: 28px;
-            width: 100%;
-            border: 1px solid var(--border);
-            animation: slideSheet 0.3s cubic-bezier(0.34,1.56,0.64,1);
-        }
-
+        .modal-sheet { background: var(--bg-card); border-radius: 24px; padding: 28px; width: 100%; border: 1px solid var(--border); animation: slideSheet 0.3s cubic-bezier(0.34,1.56,0.64,1); }
         @keyframes slideSheet { from { transform: translateY(30px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+        .modal-title { font-family: 'Barlow Condensed', sans-serif; font-size: 1.5rem; font-weight: 900; color: var(--success); letter-spacing: 2px; margin-bottom: 12px; }
+        .modal-desc { color: var(--muted); font-size: 0.95rem; line-height: 1.6; margin-bottom: 20px; }
+        .btn-modal-close { width: 100%; padding: 14px; background: var(--bg-surface); border: 1px solid var(--border); border-radius: 12px; color: var(--text); font-family: 'Barlow Condensed', sans-serif; font-size: 1rem; font-weight: 700; letter-spacing: 1px; cursor: pointer; }
 
-        .modal-title {
-            font-family: 'Barlow Condensed', sans-serif;
-            font-size: 1.5rem;
-            font-weight: 900;
-            color: var(--success);
-            letter-spacing: 2px;
-            margin-bottom: 12px;
-        }
-
-        .modal-desc {
-            color: var(--muted);
-            font-size: 0.95rem;
-            line-height: 1.6;
-            margin-bottom: 20px;
-        }
-
-        .btn-modal-close {
-            width: 100%;
-            padding: 14px;
-            background: var(--bg-surface);
-            border: 1px solid var(--border);
-            border-radius: 12px;
-            color: var(--text);
-            font-family: 'Barlow Condensed', sans-serif;
-            font-size: 1rem;
-            font-weight: 700;
-            letter-spacing: 1px;
-            cursor: pointer;
-        }
-
-        /* Info text in workout (not exercises) */
-        .info-text {
-            font-size: 0.85rem;
-            color: var(--muted);
-            line-height: 1.6;
-            padding: 4px 0;
-        }
+        .info-text { font-size: 0.85rem; color: var(--muted); line-height: 1.6; padding: 4px 0; }
 
         /* ======= MODAL ROLETA DA SORTE ======= */
-        #modal-roleta {
-            display: none; position: fixed; inset: 0; background: rgba(8, 10, 15, 0.95);
-            z-index: 2000; align-items: center; justify-content: center; flex-direction: column;
-            backdrop-filter: blur(8px);
-        }
+        #modal-roleta { display: none; position: fixed; inset: 0; background: rgba(8, 10, 15, 0.95); z-index: 2000; align-items: center; justify-content: center; flex-direction: column; backdrop-filter: blur(8px); }
         .roleta-wrapper { position: relative; width: 280px; height: 280px; margin: 20px 0; }
-        .ponteiro {
-            position: absolute; top: -15px; left: 50%; transform: translateX(-50%);
-            width: 0; height: 0; border-left: 20px solid transparent; border-right: 20px solid transparent;
-            border-top: 40px solid #FFD700; z-index: 10; filter: drop-shadow(0 4px 4px rgba(0,0,0,0.6));
-        }
-        .roleta {
-            width: 100%; height: 100%; border-radius: 50%; border: 5px solid #2A2F3A;
-            background: conic-gradient(#e74c3c 0deg 90deg, #e67e22 90deg 180deg, #2ecc71 180deg 270deg, #3498db 270deg 360deg);
-            transition: transform 4s cubic-bezier(0.25, 1, 0.5, 1);
-            transform: rotate(0deg); box-shadow: 0 0 40px rgba(255, 85, 0, 0.2);
-        }
+        .ponteiro { position: absolute; top: -15px; left: 50%; transform: translateX(-50%); width: 0; height: 0; border-left: 20px solid transparent; border-right: 20px solid transparent; border-top: 40px solid #FFD700; z-index: 10; filter: drop-shadow(0 4px 4px rgba(0,0,0,0.6)); }
+        .roleta { width: 100%; height: 100%; border-radius: 50%; border: 5px solid #2A2F3A; background: conic-gradient(#e74c3c 0deg 90deg, #e67e22 90deg 180deg, #2ecc71 180deg 270deg, #3498db 270deg 360deg); transition: transform 4s cubic-bezier(0.25, 1, 0.5, 1); transform: rotate(0deg); box-shadow: 0 0 40px rgba(255, 85, 0, 0.2); }
         .roleta-legenda { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 10px; font-size: 0.85rem; font-weight: 700; color: #6B7280; }
         .leg-item { display: flex; align-items: center; gap: 8px; }
         .leg-cor { width: 14px; height: 14px; border-radius: 4px; }
@@ -602,7 +191,6 @@
 </head>
 <body>
 
-<!-- MODAL TÉCNICA (BOTTOM SHEET) -->
 <div id="modal-tecnica" onclick="fecharModal()">
     <div class="modal-sheet" onclick="event.stopPropagation()">
         <div class="modal-title" id="modal-titulo">TÉCNICA</div>
@@ -611,7 +199,6 @@
     </div>
 </div>
 
-<!-- MODAL ROLETA (POP-UP) -->
 <div id="modal-roleta">
     <h2 style="color:#FFD700; font-family:'Barlow Condensed', sans-serif; font-size:2.8rem; letter-spacing:2px; text-shadow: 0 2px 10px rgba(255,215,0,0.3); text-align:center;">ROLETA DA SORTE</h2>
     <p style="color:#FFFFFF; margin-top:5px; font-size:1rem; text-align:center;">Multiplicador de Pontos do Max</p>
@@ -628,7 +215,6 @@
         <div class="leg-item"><div class="leg-cor" style="background:#3498db;"></div> +15 Pts</div>
     </div>
 
-    <!-- BOTÃO PARA GIRAR MANUALMENTE -->
     <div style="text-align: center; margin-top: 20px;">
         <button id="btn-girar-roleta" style="padding: 15px 30px; font-size: 1.2rem; font-weight: 900; background: #FF5500; color: white; border: none; border-radius: 12px; cursor: pointer; font-family: 'Barlow Condensed', sans-serif; letter-spacing: 2px; box-shadow: 0 4px 15px rgba(255,85,0,0.4); transition: transform 0.2s;">
             GIRAR ROLETA!
@@ -639,7 +225,7 @@
         GIRANDO...
     </div>
 </div>
-    <!-- TELA DE LOGIN -->
+    
 <div id="screen-login" class="screen active">
     <div class="brand">
         <img src="logo.jpeg" alt="Logo" class="brand-logo" onerror="this.style.display='none'">
@@ -648,19 +234,11 @@
     </div>
     <div class="login-card">
         <label class="login-label" for="alunoCpf">Seu CPF</label>
-        <input
-            type="tel"
-            id="alunoCpf"
-            class="cpf-input"
-            placeholder="000.000.000-00"
-            maxlength="14"
-            inputmode="numeric"
-        >
+        <input type="tel" id="alunoCpf" class="cpf-input" placeholder="000.000.000-00" maxlength="14" inputmode="numeric">
         <button class="btn-login" id="btn-login" onclick="fazerLogin()">ENTRAR NA ARENA</button>
     </div>
 </div>
 
-<!-- TELA BLOQUEADA -->
 <div id="screen-locked" class="screen">
     <div class="app-header">
         <div class="user-pill">
@@ -674,19 +252,14 @@
 
     <div class="locked-content">
         <div class="lock-visual">🔒</div>
-        <div>
-            <div class="locked-title">MISSÃO BLOQUEADA</div>
-        </div>
-        <p class="locked-text">
-            Passe na <strong>catraca da academia</strong> para desbloquear o treino de hoje!
-        </p>
+        <div><div class="locked-title">MISSÃO BLOQUEADA</div></div>
+        <p class="locked-text">Passe na <strong>catraca da academia</strong> para desbloquear o treino!</p>
         <div class="ranking-pill" id="txt-ranking">
             <span>Carregando<span class="waiting-dots"></span></span>
         </div>
     </div>
 </div>
 
-<!-- TELA TREINO -->
 <div id="screen-workout" class="screen">
     <div class="app-header">
         <div class="user-pill">
@@ -703,7 +276,9 @@
         <div class="workout-subtitle" id="treino-nivel">Gerando missão...</div>
     </div>
 
-    <!-- Timer -->
+    <div class="day-selector" id="day-selector">
+        </div>
+
     <div class="timer-bar" id="timer-bar">
         <div>
             <div class="timer-label">Tempo de Treino</div>
@@ -715,18 +290,11 @@
         </div>
     </div>
 
-    <!-- Progress -->
     <div class="progress-section" id="progress-section" style="display:none;">
-        <div class="progress-header">
-            <span>Progresso</span>
-            <span id="progress-pct">0%</span>
-        </div>
-        <div class="progress-bar">
-            <div class="progress-fill" id="progress-fill"></div>
-        </div>
+        <div class="progress-header"><span>Progresso</span> <span id="progress-pct">0%</span></div>
+        <div class="progress-bar"><div class="progress-fill" id="progress-fill"></div></div>
     </div>
 
-    <!-- Exercise list -->
     <div class="exercises-list" id="lista-exercicios">
         <div style="text-align:center; padding: 40px 0; color: var(--primary);">
             <div style="font-size:2rem; margin-bottom:12px;">🤖</div>
@@ -734,7 +302,6 @@
         </div>
     </div>
 
-    <!-- CTAs -->
     <div class="workout-cta">
         <button class="btn-cta btn-start" id="btn-iniciar-treino" onclick="iniciarTreinoInterativo()">COMEÇAR TREINO 🚀</button>
         <button class="btn-cta btn-finish" id="btn-concluir-treino" onclick="concluirMissao()">CONCLUIR MISSÃO ✅</button>
@@ -750,7 +317,7 @@
     let timerId;
     let totalEx = 0;
 
-    // Máscar CPF ao digitar
+    // Máscara CPF ao digitar
     document.getElementById('alunoCpf').addEventListener('input', function(e) {
         let v = e.target.value.replace(/\D/g, '');
         if (v.length > 11) v = v.slice(0,11);
@@ -778,9 +345,7 @@
         const btn = document.getElementById('btn-login');
         const cpf = input.value.replace(/\D/g, '');
 
-        if (cpf.length < 11) {
-            return Swal.fire({ title: 'CPF Inválido', text: 'Digite os 11 dígitos do seu CPF.', icon: 'warning', confirmButtonColor: '#FF5500' });
-        }
+        if (cpf.length < 11) return Swal.fire({ title: 'CPF Inválido', text: 'Digite os 11 dígitos do seu CPF.', icon: 'warning', confirmButtonColor: '#FF5500' });
 
         btn.textContent = "AUTENTICANDO...";
         btn.disabled = true;
@@ -829,20 +394,52 @@
         } catch(e) {}
     }
 
-    async function carregarTreinoDaAPI() {
+    // 🔄 Função reestruturada para aceitar o dia selecionado manualmente
+    async function carregarTreinoDaAPI(diaManual = null) {
         trocarTela('screen-workout');
+
+        // Resetar interface caso o aluno esteja trocando de dia no meio do treino
+        clearInterval(timerId);
+        document.getElementById('btn-iniciar-treino').style.display = 'block';
+        document.getElementById('btn-concluir-treino').style.display = 'none';
+        document.getElementById('timer-bar').classList.remove('visible');
+        document.getElementById('progress-section').style.display = 'none';
 
         const primeiroNome = AlunoLogado.nome.split(' ')[0];
         document.getElementById('avatar-workout').textContent = primeiroNome.charAt(0).toUpperCase();
         document.getElementById('header-nome').textContent = primeiroNome;
         document.getElementById('header-pos').textContent = AlunoLogado.posicao ? `${AlunoLogado.posicao}º no ranking` : 'Powerfisio';
 
+        // Lógica do dia atual vs dia selecionado
         const diasSemana = ['Domingo', 'Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta', 'Sábado'];
         const diaHoje = diasSemana[new Date().getDay()];
-        document.getElementById('dia-titulo').textContent = diaHoje.toUpperCase();
+        const diaBuscado = diaManual || diaHoje;
+
+        document.getElementById('dia-titulo').textContent = diaBuscado.toUpperCase();
+        
+        // 🗓️ Construir Seletor de Dias (Seg a Sab)
+        const diasExibicao = ['Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta', 'Sábado'];
+        if (diaBuscado === 'Domingo') diasExibicao.unshift('Domingo'); // Se for domingo, adiciona na lista
+
+        let selectorHtml = '';
+        diasExibicao.forEach(d => {
+            const isAtivo = (d === diaBuscado) ? 'active' : '';
+            const sigla = d.substring(0,3).toUpperCase();
+            selectorHtml += `<button class="day-btn ${isAtivo}" onclick="carregarTreinoDaAPI('${d}')">${sigla}</button>`;
+        });
+        document.getElementById('day-selector').innerHTML = selectorHtml;
+
+        // Visual de Loading
+        document.getElementById('lista-exercicios').innerHTML = `
+            <div style="text-align:center; padding: 40px 0; color: var(--primary);">
+                <div style="font-size:2rem; margin-bottom:12px;">🤖</div>
+                <div style="font-family:'Barlow Condensed',sans-serif; font-size:1.2rem; letter-spacing:1px;">Max buscando treino<span class="waiting-dots"></span></div>
+            </div>
+        `;
+        document.getElementById('treino-nivel').textContent = "Sincronizando banco de dados...";
 
         try {
-            const res = await fetch(`${API_URL}?acao=gerarTreinoMax&idAluno=${AlunoLogado.id}&dia=${diaHoje}`);
+            const res = await fetch(`${API_URL}?acao=gerarTreinoMax&idAluno=${AlunoLogado.id}&dia=${diaBuscado}`);
             const contentType = res.headers.get("content-type");
             if (!contentType || !contentType.includes("application/json")) throw new Error("Resposta inválida do servidor.");
 
@@ -876,13 +473,11 @@
             const texto = linha.replace(/\*\*/g, '').trim();
             if (!texto) return;
 
-            // Seções (Como Executar, Nota Clínica)
             if (/^(como executar|nota clínica|nota clinica)/i.test(texto)) {
                 html += `<div class="section-label">${texto}</div>`;
                 return;
             }
 
-            // Exercícios numerados
             if (/^\d+\./.test(texto)) {
                 const match = texto.match(/^\d+\.\s*(.+?)\s*\[ID:\s*(\d+)\]\s*-\s*(.+)/i);
                 if (match) {
@@ -890,16 +485,9 @@
                     const id = match[2];
                     let resto = match[3];
 
-                    // Tags de séries ex: 3x12, 4x10-12
                     let tagsHtml = `<span class="tag tag-id">ID: ${id}</span>`;
-
-                    resto = resto.replace(/(\d+\s*[xX]\s*\d+(?:\s*(?:a|-)\s*\d+)?)/g, match => {
-                        return `<span class="tag tag-series">${match.trim()}</span>`;
-                    });
-
-                    resto = resto.replace(/\(([^)]+)\)/g, (_, p1) => {
-                        return `<span class="tag tag-tech" onclick="abrirModalTecnica('${p1}')">${p1}</span>`;
-                    });
+                    resto = resto.replace(/(\d+\s*[xX]\s*\d+(?:\s*(?:a|-)\s*\d+)?)/g, m => `<span class="tag tag-series">${m.trim()}</span>`);
+                    resto = resto.replace(/\(([^)]+)\)/g, (_, p1) => `<span class="tag tag-tech" onclick="abrirModalTecnica('${p1}')">${p1}</span>`);
 
                     exCount++;
                     html += `
@@ -915,8 +503,6 @@
                 }
                 return;
             }
-
-            // Texto normal
             html += `<p class="info-text">${texto}</p>`;
         });
 
@@ -935,7 +521,6 @@
             item.classList.add('pendente', 'interactive');
             item.onclick = function(e) {
                 if (e.target.classList.contains('tag-tech')) return;
-                const wasConcluido = this.classList.contains('concluido');
                 this.classList.toggle('pendente');
                 this.classList.toggle('concluido');
                 atualizarProgresso();
@@ -981,7 +566,7 @@
 
         const result = await Swal.fire({
             title: 'CONCLUIR MISSÃO?',
-            html: `Você completou <strong>${pct}%</strong> dos exercícios hoje.<br>Quer registar o treino?`,
+            html: `Você completou <strong>${pct}%</strong> dos exercícios de hoje.<br>Quer registar o treino no histórico?`,
             icon: 'question',
             showCancelButton: true,
             confirmButtonColor: '#00E676',
@@ -997,15 +582,11 @@
         btn.textContent = "VERIFICANDO...";
         btn.disabled = true;
 
-        // 🎰 1. O APLICATIVO FAZ O SORTEIO 100% ALEATÓRIO
         const arraySorteio = [0, 5, 10, 15];
         const pontosExtras = arraySorteio[Math.floor(Math.random() * arraySorteio.length)];
-        
-        // 🤫 2. CONTRABANDO V3: Junta o NOME com o prêmio (Ex: FRANCISCO MATHEUS@@15)
         const nomeComPremio = AlunoLogado.nome + "@@" + pontosExtras;
 
         try {
-            // 3. Envia o ID limpo e o Nome "turbinado" com os pontos
             const res = await fetch(`${API_URL}?acao=concluirTreinoApp&idAluno=${AlunoLogado.id}&cpf=${AlunoLogado.cpf}&nome=${encodeURIComponent(nomeComPremio)}`);
             const resp = await res.json();
 
@@ -1019,20 +600,12 @@
                 const msgRoleta = document.getElementById('mensagem-roleta');
                 const roletaElement = document.getElementById('roleta');
 
-                // 🛡️ Segurança de visualização
                 if (!modalRoleta || !btnGirar || !roletaElement) {
-                    await Swal.fire({
-                        title: 'MISSÃO CUMPRIDA! 💪',
-                        html: `Guerreiro, você é inspirador!<br><br><strong style="color:#FFD700;font-size:1.8rem;">+${totalGanhos} PONTOS</strong>`,
-                        icon: 'success',
-                        confirmButtonColor: '#FF5500',
-                        confirmButtonText: 'FECHAR'
-                    });
+                    await Swal.fire({ title: 'MISSÃO CUMPRIDA! 💪', html: `Guerreiro, você é inspirador!<br><br><strong style="color:#FFD700;font-size:1.8rem;">+${totalGanhos} PONTOS</strong>`, icon: 'success', confirmButtonColor: '#FF5500', confirmButtonText: 'FECHAR' });
                     location.reload();
                     return;
                 }
 
-                // 🛑 PREPARA A TELA DA ROLETA
                 modalRoleta.style.display = 'flex';
                 btnGirar.style.display = 'block';
                 msgRoleta.style.display = 'none';
@@ -1047,27 +620,22 @@
 
                 const rotacaoTotal = (360 * 5) + anguloFinal;
 
-                // 🚀 A MÁGICA ACONTECE QUANDO O ALUNO CLICA
                 btnGirar.onclick = function() {
                     btnGirar.style.display = 'none'; 
                     msgRoleta.style.display = 'block'; 
                     msgRoleta.innerText = 'GIRANDO...';
                     msgRoleta.style.color = 'white';
 
-                    // Gira a roleta fisicamente na tela
                     roletaElement.style.transition = 'transform 4s cubic-bezier(0.25, 1, 0.5, 1)';
                     void roletaElement.offsetWidth; 
                     roletaElement.style.transform = `rotate(${rotacaoTotal}deg)`;
 
                     setTimeout(async () => {
-                        // Revela o resultado visual
                         msgRoleta.innerText = pontosExtras > 0 ? `+${pontosExtras} PONTOS EXTRA!` : "QUASE! 0 PONTOS EXTRA.";
                         msgRoleta.style.color = pontosExtras > 0 ? "#00E676" : "#e74c3c";
 
                         setTimeout(async () => {
                             modalRoleta.style.display = 'none';
-                            
-                            // Celebração oficial com os pontos garantidos e somados perfeitamente
                             await Swal.fire({
                                 title: 'MISSÃO CUMPRIDA! 💪',
                                 html: `Guerreiro, você é inspirador!<br><br><strong style="color:#FFD700;font-size:1.8rem;">+${totalGanhos} PONTOS</strong><br><span style="font-size:0.85rem;color:#888;">(${base} do Treino + ${pontosExtras} da Roleta)</span>`,
@@ -1077,17 +645,11 @@
                             });
                             location.reload();
                         }, 1500); 
-
                     }, 4000); 
                 };
 
             } else {
-                await Swal.fire({
-                    title: 'Calma, atleta!',
-                    text: resp.mensagem || 'Você já registrou treino hoje. O descanso também é treino!',
-                    icon: 'info',
-                    confirmButtonColor: '#FF5500'
-                });
+                await Swal.fire({ title: 'Calma, atleta!', text: resp.mensagem || 'Você já registrou treino hoje. O descanso também é treino!', icon: 'info', confirmButtonColor: '#FF5500' });
                 btn.textContent = "CONCLUIR MISSÃO ✅";
                 btn.disabled = false;
             }

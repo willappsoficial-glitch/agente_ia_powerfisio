@@ -172,12 +172,23 @@
         .tag-series { background: var(--primary-dim); color: var(--primary); border: 1px solid rgba(255,85,0,0.25); }
         .tag-tech { background: rgba(0,230,118,0.08); color: var(--success); border: 1px dashed rgba(0,230,118,0.3); cursor: pointer; text-transform: uppercase; }
 
-        /* Bottom Buttons */
-        .workout-cta { padding: 16px 24px 32px; display: flex; flex-direction: column; gap: 10px; }
+        /* CTAs e Botões Específicos */
         .btn-cta { width: 100%; padding: 18px; border-radius: 16px; border: none; font-family: 'Barlow Condensed', sans-serif; font-size: 1.2rem; font-weight: 900; letter-spacing: 2px; text-transform: uppercase; cursor: pointer; transition: all 0.2s; }
         .btn-cta:active { transform: scale(0.98); }
-        .btn-start { background: var(--primary); color: white; box-shadow: 0 8px 24px rgba(255,85,0,0.3); display: none; }
-        .btn-finish { background: var(--success); color: #000; box-shadow: 0 8px 24px rgba(0,230,118,0.25); display: none; }
+        
+        /* 🚀 Novo Estilo para o Botão Iniciar (no topo) */
+        .btn-start { 
+            background: var(--primary); 
+            color: white; 
+            box-shadow: 0 8px 24px rgba(255,85,0,0.3); 
+            display: none; 
+            margin: 20px 24px 0; 
+            width: calc(100% - 48px) !important; /* Ajusta as margens para não estourar a tela */
+        }
+        
+        /* ✅ Botão de Concluir (no rodapé) */
+        .workout-cta { padding: 16px 24px 32px; display: flex; flex-direction: column; gap: 10px; }
+        .btn-finish { background: var(--success); color: #000; box-shadow: 0 8px 24px rgba(0,230,118,0.25); display: none; width: 100%; }
 
         /* ======= MODAL TÉCNICA ======= */
         #modal-tecnica { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.85); z-index: 1000; align-items: flex-end; padding: 16px; backdrop-filter: blur(6px); }
@@ -202,6 +213,7 @@
 </head>
 <body>
 
+<!-- MODAL TÉCNICA -->
 <div id="modal-tecnica" onclick="fecharModal()">
     <div class="modal-sheet" onclick="event.stopPropagation()">
         <div class="modal-title" id="modal-titulo">TÉCNICA</div>
@@ -210,6 +222,7 @@
     </div>
 </div>
 
+<!-- MODAL ROLETA -->
 <div id="modal-roleta">
     <h2 style="color:#FFD700; font-family:'Barlow Condensed', sans-serif; font-size:2.8rem; letter-spacing:2px; text-shadow: 0 2px 10px rgba(255,215,0,0.3); text-align:center;">ROLETA DA SORTE</h2>
     <p style="color:#FFFFFF; margin-top:5px; font-size:1rem; text-align:center;">Multiplicador de Pontos do Max</p>
@@ -237,6 +250,7 @@
     </div>
 </div>
     
+<!-- TELA DE LOGIN -->
 <div id="screen-login" class="screen active">
     <div class="brand">
         <img src="logo.jpeg" alt="Logo" class="brand-logo" onerror="this.style.display='none'">
@@ -250,6 +264,7 @@
     </div>
 </div>
 
+<!-- TELA BLOQUEADA -->
 <div id="screen-locked" class="screen">
     <div class="app-header">
         <div class="user-pill">
@@ -271,6 +286,7 @@
     </div>
 </div>
 
+<!-- TELA TREINO -->
 <div id="screen-workout" class="screen">
     <div class="app-header">
         <div class="user-pill">
@@ -287,12 +303,18 @@
         <div class="workout-subtitle" id="treino-nivel">Aguardando seleção...</div>
     </div>
 
+    <!-- 🗓️ ORIENTAÇÃO E SELETOR DE DIAS DA SEMANA -->
     <div class="orientacao-dia" id="msg-orientacao">
         👉 Escolha qual treino você vai fazer hoje:
     </div>
     <div class="day-selector" id="day-selector">
-        </div>
+        <!-- Preenchido via JavaScript -->
+    </div>
 
+    <!-- 🚀 BOTÃO DE START AGORA FICA AQUI NO TOPO -->
+    <button class="btn-cta btn-start" id="btn-iniciar-treino" onclick="iniciarTreinoInterativo()">COMEÇAR TREINO 🚀</button>
+
+    <!-- Timer -->
     <div class="timer-bar" id="timer-bar">
         <div>
             <div class="timer-label">Tempo de Treino</div>
@@ -304,16 +326,19 @@
         </div>
     </div>
 
+    <!-- Progress -->
     <div class="progress-section" id="progress-section" style="display:none;">
         <div class="progress-header"><span>Progresso</span> <span id="progress-pct">0%</span></div>
         <div class="progress-bar"><div class="progress-fill" id="progress-fill"></div></div>
     </div>
 
+    <!-- Exercise list -->
     <div class="exercises-list" id="lista-exercicios">
-        </div>
+        <!-- Substituído temporariamente até o aluno clicar no dia -->
+    </div>
 
+    <!-- CTAs - APENAS O BOTÃO DE CONCLUIR FICA AQUI EM BAIXO -->
     <div class="workout-cta">
-        <button class="btn-cta btn-start" id="btn-iniciar-treino" onclick="iniciarTreinoInterativo()">COMEÇAR TREINO 🚀</button>
         <button class="btn-cta btn-finish" id="btn-concluir-treino" onclick="concluirMissao()">CONCLUIR MISSÃO ✅</button>
     </div>
 </div>
@@ -399,12 +424,11 @@
             const dados = await res.json();
             if (dados.desbloqueado) {
                 clearInterval(radarInterval);
-                prepararTelaTreino(); // Alterado: Chama a preparação em vez de buscar logo
+                prepararTelaTreino(); // Prepara a tela exigindo escolha do dia
             }
         } catch(e) {}
     }
 
-    // 🛑 1. Prepara a tela vazia e OBRIGA o aluno a clicar no dia
     function prepararTelaTreino() {
         trocarTela('screen-workout');
 
@@ -444,15 +468,14 @@
         document.getElementById('treino-nivel').textContent = "Aguardando sua escolha...";
     }
 
-    // 🚀 2. Busca o treino SOMENTE APÓS O CLIQUE do aluno
     async function buscarTreinoSelecionado(diaBuscado, btnElement) {
         // Atualiza botões
         document.querySelectorAll('.day-btn').forEach(b => b.classList.remove('active'));
         btnElement.classList.add('active');
 
         document.getElementById('dia-titulo').textContent = diaBuscado.toUpperCase();
-        document.getElementById('msg-orientacao').style.display = 'none'; // Esconde a mensagem
-        document.getElementById('btn-iniciar-treino').style.display = 'none'; // Continua escondido até a IA responder
+        document.getElementById('msg-orientacao').style.display = 'none'; // Esconde a mensagem orientadora
+        document.getElementById('btn-iniciar-treino').style.display = 'none'; // Mantém o botão escondido durante a busca
 
         // Visual de Loading
         document.getElementById('lista-exercicios').innerHTML = `
@@ -473,7 +496,7 @@
             if (treino.sucesso) {
                 document.getElementById('treino-nivel').textContent = treino.cabecalho || '';
                 renderizarTreino(treino.conteudo);
-                // Libera o botão de Start apenas se deu certo
+                // Exibe o botão START apenas agora que o treino carregou com sucesso
                 document.getElementById('btn-iniciar-treino').style.display = 'block'; 
             } else {
                 document.getElementById('lista-exercicios').innerHTML = `

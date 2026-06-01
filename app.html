@@ -523,7 +523,11 @@
             const texto = linha.replace(/\*\*/g, '').trim();
             if (!texto) return;
 
-            if (/^(como executar|nota clínica|nota clinica)/i.test(texto)) {
+            // 🚀 MÁGICA AQUI: Quando o app encontra a "Nota Clínica", ele injeta o "Como Executar" estático logo acima!
+            if (/^(nota clínica|nota clinica)/i.test(texto)) {
+                html += `<div class="section-label">COMO EXECUTAR</div>`;
+                html += `<p class="info-text" style="margin-bottom: 12px;">Em caso de dúvidas na execução, vá até o totem na parede e digite o ID do exercício para ver o vídeo ou aperte o botão do aparelho para chamar o instrutor!</p>`;
+                
                 html += `<div class="section-label">${texto}</div>`;
                 return;
             }
@@ -559,7 +563,6 @@
         totalEx = exCount;
         document.getElementById('lista-exercicios').innerHTML = html;
     }
-
     function iniciarTreinoInterativo() {
         document.getElementById('btn-iniciar-treino').style.display = 'none';
         document.getElementById('btn-concluir-treino').style.display = 'block';

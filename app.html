@@ -642,7 +642,10 @@
 
             if (resp.sucesso) {
                 const diaSemana = new Date().getDay();
-                const base = (diaSemana === 3 || diaSemana === 5) ? 30 : 15;
+                let base = 15;
+                if (diaSemana === 3 || diaSemana === 5) base = 30;
+                else if (diaSemana === 6) base = 7.5; // Regra visual do Sábado
+                
                 const totalGanhos = base + pontosExtras;
 
                 const modalRoleta = document.getElementById('modal-roleta');

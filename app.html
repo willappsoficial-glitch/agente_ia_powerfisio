@@ -3,8 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Powerfisio - App do Aluno</title>
+    <title>MaxGym - App do Aluno</title>
     <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;700;900&family=Barlow:wght@400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <style>
         :root {
@@ -37,13 +38,25 @@
         .swal2-confirm, .swal2-cancel { border-radius: 10px !important; font-weight: 700 !important; padding: 12px 24px !important; text-transform: uppercase !important; letter-spacing: 1px !important; font-family: 'Barlow Condensed', sans-serif !important; font-size: 1rem !important; }
 
         /* ======= SCREENS ======= */
-        .screen { display: none; flex-direction: column; min-height: 100vh; animation: slideUp 0.4s ease-out; }
+        .screen { display: none; flex-direction: column; min-height: 100vh; padding-bottom: 80px; animation: slideUp 0.4s ease-out; }
         .screen.active { display: flex; }
         @keyframes slideUp { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
 
+        /* ======= MENU INFERIOR ======= */
+        .bottom-nav {
+            position: fixed; bottom: 0; left: 0; width: 100%; height: 70px;
+            background: rgba(17, 19, 24, 0.95); backdrop-filter: blur(10px);
+            border-top: 1px solid var(--border); display: none; align-items: center; justify-content: space-around; z-index: 100;
+        }
+        .nav-item { display: flex; flex-direction: column; align-items: center; color: var(--muted); cursor: pointer; transition: 0.2s; width: 50%; }
+        .nav-item.active { color: var(--primary); }
+        .nav-item .material-icons { font-size: 1.6rem; margin-bottom: 4px; transition: 0.2s; }
+        .nav-item.active .material-icons { transform: translateY(-2px); text-shadow: 0 4px 10px rgba(255,85,0,0.4); }
+        .nav-item span:not(.material-icons) { font-family: 'Barlow Condensed', sans-serif; font-size: 0.85rem; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; }
+
         /* ======= LOGIN ======= */
         #screen-login {
-            align-items: center; justify-content: center; padding: 30px 24px;
+            align-items: center; justify-content: center; padding: 30px 24px 0;
             background: radial-gradient(ellipse at 50% 0%, rgba(255,85,0,0.12) 0%, transparent 60%);
             position: relative; overflow: hidden;
         }
@@ -112,43 +125,24 @@
         .day-label { font-family: 'Barlow Condensed', sans-serif; font-size: 2.2rem; font-weight: 900; letter-spacing: 1px; color: var(--primary); }
         .workout-subtitle { font-size: 0.75rem; color: var(--muted); letter-spacing: 2px; text-transform: uppercase; margin-top: 2px; }
 
-        /* 🗓️ ORIENTAÇÃO E SELETOR DE DIAS */
-        .orientacao-dia {
-            padding: 24px 24px 0;
-            font-size: 0.85rem;
-            color: var(--primary);
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            animation: pulse-text 2s infinite;
-        }
+        .orientacao-dia { padding: 24px 24px 0; font-size: 0.85rem; color: var(--primary); font-weight: 700; text-transform: uppercase; letter-spacing: 1px; animation: pulse-text 2s infinite; }
         @keyframes pulse-text { 0%, 100% { opacity: 0.7; } 50% { opacity: 1; } }
 
-        .day-selector {
-            display: flex; gap: 10px; padding: 12px 24px 0;
-            overflow-x: auto; scrollbar-width: none;
-        }
+        .day-selector { display: flex; gap: 10px; padding: 12px 24px 0; overflow-x: auto; scrollbar-width: none; }
         .day-selector::-webkit-scrollbar { display: none; }
-        .day-btn {
-            background: var(--bg-surface); border: 1px solid var(--border); color: var(--muted);
-            padding: 10px 18px; border-radius: 12px; font-family: 'Barlow Condensed', sans-serif;
-            font-size: 1.15rem; font-weight: 700; cursor: pointer; transition: all 0.2s; white-space: nowrap;
-        }
+        .day-btn { background: var(--bg-surface); border: 1px solid var(--border); color: var(--muted); padding: 10px 18px; border-radius: 12px; font-family: 'Barlow Condensed', sans-serif; font-size: 1.15rem; font-weight: 700; cursor: pointer; transition: all 0.2s; white-space: nowrap; }
         .day-btn.active { background: var(--primary); color: #fff; border-color: var(--primary); box-shadow: 0 4px 12px rgba(255,85,0,0.3); }
 
-        /* Timer */
         .timer-bar { margin: 20px 24px 0; background: var(--bg-card); border: 1px solid var(--border); border-radius: 16px; padding: 16px 20px; display: none; align-items: center; justify-content: space-between; }
         .timer-bar.visible { display: flex; }
         .timer-display { font-family: 'Barlow Condensed', sans-serif; font-size: 2.5rem; font-weight: 900; color: var(--primary); letter-spacing: 3px; }
         .timer-label { font-size: 0.65rem; color: var(--muted); letter-spacing: 2px; text-transform: uppercase; }
 
-        /* Progress */
         .progress-section { margin: 16px 24px 0; }
         .progress-header { display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 0.75rem; color: var(--muted); }
         .progress-bar { height: 4px; background: var(--bg-surface); border-radius: 2px; overflow: hidden; }
         .progress-fill { height: 100%; background: var(--primary); border-radius: 2px; transition: width 0.5s ease; width: 0%; }
 
-        /* Exercises */
         .exercises-list { padding: 16px 24px; display: flex; flex-direction: column; gap: 10px; }
         .section-label { font-size: 0.7rem; color: var(--muted); letter-spacing: 2px; text-transform: uppercase; padding: 12px 0 4px; font-weight: 700; border-top: 1px solid var(--border); margin-top: 8px; }
         .section-label:first-child { border-top: none; margin-top: 0; }
@@ -172,25 +166,47 @@
         .tag-series { background: var(--primary-dim); color: var(--primary); border: 1px solid rgba(255,85,0,0.25); }
         .tag-tech { background: rgba(0,230,118,0.08); color: var(--success); border: 1px dashed rgba(0,230,118,0.3); cursor: pointer; text-transform: uppercase; }
 
-        /* CTAs e Botões Específicos */
         .btn-cta { width: 100%; padding: 18px; border-radius: 16px; border: none; font-family: 'Barlow Condensed', sans-serif; font-size: 1.2rem; font-weight: 900; letter-spacing: 2px; text-transform: uppercase; cursor: pointer; transition: all 0.2s; }
         .btn-cta:active { transform: scale(0.98); }
-        
-        /* 🚀 Novo Estilo para o Botão Iniciar (no topo) */
-        .btn-start { 
-            background: var(--primary); 
-            color: white; 
-            box-shadow: 0 8px 24px rgba(255,85,0,0.3); 
-            display: none; 
-            margin: 20px 24px 0; 
-            width: calc(100% - 48px) !important; /* Ajusta as margens para não estourar a tela */
-        }
-        
-        /* ✅ Botão de Concluir (no rodapé) */
+        .btn-start { background: var(--primary); color: white; box-shadow: 0 8px 24px rgba(255,85,0,0.3); display: none; margin: 20px 24px 0; width: calc(100% - 48px) !important; }
         .workout-cta { padding: 16px 24px 32px; display: flex; flex-direction: column; gap: 10px; }
         .btn-finish { background: var(--success); color: #000; box-shadow: 0 8px 24px rgba(0,230,118,0.25); display: none; width: 100%; }
 
-        /* ======= MODAL TÉCNICA ======= */
+        /* ======= SCREEN RANKING ======= */
+        #screen-ranking { padding: 0 0 80px 0; background: var(--bg); }
+        .rank-app-header { padding: 24px 24px 16px; text-align: center; }
+        .rank-app-title { font-family: 'Barlow Condensed', sans-serif; font-size: 2.2rem; font-weight: 900; color: var(--gold); letter-spacing: 1px; }
+        .rank-app-subtitle { font-size: 0.8rem; color: var(--muted); text-transform: uppercase; letter-spacing: 2px; }
+        
+        /* Barra de Busca */
+        .search-container { padding: 0 24px 16px; position: sticky; top: 0; background: var(--bg); z-index: 10; }
+        .search-box { position: relative; }
+        .search-box .material-icons { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: var(--muted); }
+        .search-box input { width: 100%; background: var(--bg-surface); border: 1px solid var(--border); border-radius: 14px; padding: 14px 14px 14px 44px; color: white; font-family: 'Barlow Condensed', sans-serif; font-size: 1.1rem; font-weight: 600; outline: none; transition: 0.2s; }
+        .search-box input:focus { border-color: var(--primary); }
+        .search-box input::placeholder { color: #555; }
+
+        .ranking-list-container { padding: 0 24px; display: flex; flex-direction: column; gap: 10px; }
+        
+        .rank-app-card { display: flex; align-items: center; gap: 12px; background: var(--bg-card); padding: 12px 16px; border-radius: 16px; border: 1px solid var(--border); border-left: 4px solid transparent; }
+        .rank-app-card.me { border-color: var(--primary); background: rgba(255,85,0,0.1); border-left: 4px solid var(--primary); }
+        .rank-app-card.gold { border-left-color: var(--gold); }
+        .rank-app-card.silver { border-left-color: silver; }
+        .rank-app-card.bronze { border-left-color: #CD7F32; }
+        
+        .rank-app-pos { font-family: 'Barlow Condensed', sans-serif; font-size: 1.5rem; font-weight: 900; width: 30px; text-align: center; color: rgba(255,255,255,0.3); }
+        .rank-app-card.gold .rank-app-pos { color: var(--gold); }
+        .rank-app-card.silver .rank-app-pos { color: silver; }
+        .rank-app-card.bronze .rank-app-pos { color: #CD7F32; }
+
+        /* Avatares do Ranking */
+        .rank-avatar { width: 40px; height: 40px; border-radius: 50%; object-fit: cover; background: var(--bg-surface); border: 1px solid var(--border); flex-shrink: 0; }
+        .rank-avatar-placeholder { width: 40px; height: 40px; border-radius: 50%; background: var(--primary-dim); color: var(--primary); display: flex; align-items: center; justify-content: center; font-family: 'Barlow Condensed', sans-serif; font-weight: 900; font-size: 1.2rem; border: 1px solid rgba(255,85,0,0.3); flex-shrink: 0; }
+        
+        .rank-app-nome { flex: 1; font-family: 'Barlow Condensed', sans-serif; font-size: 1.1rem; font-weight: 700; text-transform: uppercase; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .rank-app-pts { font-family: 'Barlow Condensed', sans-serif; font-size: 1.5rem; font-weight: 900; color: var(--primary); }
+
+        /* ======= MODAL TÉCNICA / ROLETA ======= */
         #modal-tecnica { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.85); z-index: 1000; align-items: flex-end; padding: 16px; backdrop-filter: blur(6px); }
         #modal-tecnica.open { display: flex; }
         .modal-sheet { background: var(--bg-card); border-radius: 24px; padding: 28px; width: 100%; border: 1px solid var(--border); animation: slideSheet 0.3s cubic-bezier(0.34,1.56,0.64,1); }
@@ -201,7 +217,6 @@
 
         .info-text { font-size: 0.85rem; color: var(--muted); line-height: 1.6; padding: 4px 0; }
 
-        /* ======= MODAL ROLETA DA SORTE ======= */
         #modal-roleta { display: none; position: fixed; inset: 0; background: rgba(8, 10, 15, 0.95); z-index: 2000; align-items: center; justify-content: center; flex-direction: column; backdrop-filter: blur(8px); }
         .roleta-wrapper { position: relative; width: 280px; height: 280px; margin: 20px 0; }
         .ponteiro { position: absolute; top: -15px; left: 50%; transform: translateX(-50%); width: 0; height: 0; border-left: 20px solid transparent; border-right: 20px solid transparent; border-top: 40px solid #FFD700; z-index: 10; filter: drop-shadow(0 4px 4px rgba(0,0,0,0.6)); }
@@ -213,49 +228,23 @@
 </head>
 <body>
 
-<!-- MODAL TÉCNICA -->
-<div id="modal-tecnica" onclick="fecharModal()">
-    <div class="modal-sheet" onclick="event.stopPropagation()">
-        <div class="modal-title" id="modal-titulo">TÉCNICA</div>
-        <p class="modal-desc" id="modal-desc">Explicação aqui...</p>
-        <button class="btn-modal-close" onclick="fecharModal()">ENTENDI!</button>
-    </div>
-</div>
-
-<!-- MODAL ROLETA -->
+<!-- MODAIS -->
+<div id="modal-tecnica" onclick="fecharModal()"><div class="modal-sheet" onclick="event.stopPropagation()"><div class="modal-title" id="modal-titulo">TÉCNICA</div><p class="modal-desc" id="modal-desc">Explicação aqui...</p><button class="btn-modal-close" onclick="fecharModal()">ENTENDI!</button></div></div>
 <div id="modal-roleta">
     <h2 style="color:#FFD700; font-family:'Barlow Condensed', sans-serif; font-size:2.8rem; letter-spacing:2px; text-shadow: 0 2px 10px rgba(255,215,0,0.3); text-align:center;">ROLETA DA SORTE</h2>
     <p style="color:#FFFFFF; margin-top:5px; font-size:1rem; text-align:center;">Multiplicador de Pontos do Max</p>
-    
-    <div class="roleta-wrapper">
-        <div class="ponteiro"></div>
-        <div class="roleta" id="roleta"></div>
-    </div>
-    
-    <div class="roleta-legenda">
-        <div class="leg-item"><div class="leg-cor" style="background:#e74c3c;"></div> +0 Pts</div>
-        <div class="leg-item"><div class="leg-cor" style="background:#e67e22;"></div> +5 Pts</div>
-        <div class="leg-item"><div class="leg-cor" style="background:#2ecc71;"></div> +10 Pts</div>
-        <div class="leg-item"><div class="leg-cor" style="background:#3498db;"></div> +15 Pts</div>
-    </div>
-
-    <div style="text-align: center; margin-top: 20px;">
-        <button id="btn-girar-roleta" style="padding: 15px 30px; font-size: 1.2rem; font-weight: 900; background: #FF5500; color: white; border: none; border-radius: 12px; cursor: pointer; font-family: 'Barlow Condensed', sans-serif; letter-spacing: 2px; box-shadow: 0 4px 15px rgba(255,85,0,0.4); transition: transform 0.2s;">
-            GIRAR ROLETA!
-        </button>
-    </div>
-
-    <div id="mensagem-roleta" style="margin-top:15px; font-size:1.6rem; font-weight:bold; color:white; font-family:'Barlow Condensed', sans-serif; letter-spacing:2px; height: 30px; display: none; text-align:center;">
-        GIRANDO...
-    </div>
+    <div class="roleta-wrapper"><div class="ponteiro"></div><div class="roleta" id="roleta"></div></div>
+    <div class="roleta-legenda"><div class="leg-item"><div class="leg-cor" style="background:#e74c3c;"></div> +0 Pts</div><div class="leg-item"><div class="leg-cor" style="background:#e67e22;"></div> +5 Pts</div><div class="leg-item"><div class="leg-cor" style="background:#2ecc71;"></div> +10 Pts</div><div class="leg-item"><div class="leg-cor" style="background:#3498db;"></div> +15 Pts</div></div>
+    <div style="text-align: center; margin-top: 20px;"><button id="btn-girar-roleta" style="padding: 15px 30px; font-size: 1.2rem; font-weight: 900; background: #FF5500; color: white; border: none; border-radius: 12px; cursor: pointer; font-family: 'Barlow Condensed', sans-serif; letter-spacing: 2px; box-shadow: 0 4px 15px rgba(255,85,0,0.4); transition: transform 0.2s;">GIRAR ROLETA!</button></div>
+    <div id="mensagem-roleta" style="margin-top:15px; font-size:1.6rem; font-weight:bold; color:white; font-family:'Barlow Condensed', sans-serif; letter-spacing:2px; height: 30px; display: none; text-align:center;">GIRANDO...</div>
 </div>
     
 <!-- TELA DE LOGIN -->
 <div id="screen-login" class="screen active">
     <div class="brand">
         <img src="logo.jpeg" alt="Logo" class="brand-logo" onerror="this.style.display='none'">
-        <h1>POWER<span>FISIO</span></h1>
-        <p>App do Aluno • Max IA</p>
+        <h1>MAX<span>GYM</span></h1>
+        <p>App do Aluno • Inteligência Artificial</p>
     </div>
     <div class="login-card">
         <label class="login-label" for="alunoCpf">Seu CPF</label>
@@ -275,14 +264,11 @@
             </div>
         </div>
     </div>
-
     <div class="locked-content">
         <div class="lock-visual">🔒</div>
         <div><div class="locked-title">MISSÃO BLOQUEADA</div></div>
         <p class="locked-text">Passe na <strong>catraca da academia</strong> para desbloquear o treino!</p>
-        <div class="ranking-pill" id="txt-ranking">
-            <span>Carregando<span class="waiting-dots"></span></span>
-        </div>
+        <div class="ranking-pill" id="txt-ranking"><span>Carregando<span class="waiting-dots"></span></span></div>
     </div>
 </div>
 
@@ -297,51 +283,58 @@
             </div>
         </div>
     </div>
-
     <div class="workout-topbar">
         <div class="day-label" id="dia-titulo">SEU TREINO</div>
         <div class="workout-subtitle" id="treino-nivel">Aguardando seleção...</div>
     </div>
-
-    <!-- 🗓️ ORIENTAÇÃO E SELETOR DE DIAS DA SEMANA -->
-    <div class="orientacao-dia" id="msg-orientacao">
-        👉 Escolha qual treino você vai fazer hoje:
-    </div>
-    <div class="day-selector" id="day-selector">
-        <!-- Preenchido via JavaScript -->
-    </div>
-
-    <!-- 🚀 BOTÃO DE START AGORA FICA AQUI NO TOPO -->
+    <div class="orientacao-dia" id="msg-orientacao">👉 Escolha qual treino você vai fazer hoje:</div>
+    <div class="day-selector" id="day-selector"></div>
     <button class="btn-cta btn-start" id="btn-iniciar-treino" onclick="iniciarTreinoInterativo()">COMEÇAR TREINO 🚀</button>
-
-    <!-- Timer -->
     <div class="timer-bar" id="timer-bar">
-        <div>
-            <div class="timer-label">Tempo de Treino</div>
-            <div class="timer-display" id="cronometro">00:00</div>
-        </div>
-        <div style="text-align:right;">
-            <div class="timer-label">Concluídos</div>
-            <div style="font-family:'Barlow Condensed',sans-serif;font-size:1.8rem;font-weight:900;color:var(--success);" id="contador-ex">0/0</div>
-        </div>
+        <div><div class="timer-label">Tempo de Treino</div><div class="timer-display" id="cronometro">00:00</div></div>
+        <div style="text-align:right;"><div class="timer-label">Concluídos</div><div style="font-family:'Barlow Condensed',sans-serif;font-size:1.8rem;font-weight:900;color:var(--success);" id="contador-ex">0/0</div></div>
     </div>
-
-    <!-- Progress -->
     <div class="progress-section" id="progress-section" style="display:none;">
         <div class="progress-header"><span>Progresso</span> <span id="progress-pct">0%</span></div>
         <div class="progress-bar"><div class="progress-fill" id="progress-fill"></div></div>
     </div>
-
-    <!-- Exercise list -->
-    <div class="exercises-list" id="lista-exercicios">
-        <!-- Substituído temporariamente até o aluno clicar no dia -->
-    </div>
-
-    <!-- CTAs - APENAS O BOTÃO DE CONCLUIR FICA AQUI EM BAIXO -->
+    <div class="exercises-list" id="lista-exercicios"></div>
     <div class="workout-cta">
         <button class="btn-cta btn-finish" id="btn-concluir-treino" onclick="concluirMissao()">CONCLUIR MISSÃO ✅</button>
     </div>
 </div>
+
+<!-- TELA RANKING -->
+<div id="screen-ranking" class="screen">
+    <div class="rank-app-header">
+        <div class="rank-app-title">TOP ATLETAS</div>
+        <div class="rank-app-subtitle">Ranking de Frequência Max</div>
+    </div>
+    
+    <!-- Barra de Busca Adicionada -->
+    <div class="search-container">
+        <div class="search-box">
+            <span class="material-icons">search</span>
+            <input type="text" id="busca-ranking" placeholder="Buscar por nome..." onkeyup="filtrarRanking()">
+        </div>
+    </div>
+
+    <div class="ranking-list-container" id="app-ranking-list">
+        <!-- Preenchido via JavaScript -->
+    </div>
+</div>
+
+<!-- MENU INFERIOR GERAL -->
+<nav class="bottom-nav" id="app-bottom-nav">
+    <div class="nav-item active" id="tab-treino" onclick="mudarAbaApp('treino')">
+        <span class="material-icons">fitness_center</span>
+        <span>Treino</span>
+    </div>
+    <div class="nav-item" id="tab-ranking" onclick="mudarAbaApp('ranking')">
+        <span class="material-icons">emoji_events</span>
+        <span>Ranking</span>
+    </div>
+</nav>
 
 <script>
     const API_URL = "https://script.google.com/macros/s/AKfycby62vambopzAU-hOp4Och0Qg9_ZOxNCqqo19BFZvUA13OFTYBRMnTnNckq3aBzncXKTJg/exec";
@@ -351,8 +344,12 @@
     let tempoSegundos = 0;
     let timerId;
     let totalEx = 0;
+    
+    // Variáveis de Controle
+    let telaTreinoAtual = 'screen-locked';
+    let abaAtiva = 'treino';
+    let rankingGlobal = []; // Guarda os dados do ranking para a busca não travar o app
 
-    // Máscara CPF ao digitar
     document.getElementById('alunoCpf').addEventListener('input', function(e) {
         let v = e.target.value.replace(/\D/g, '');
         if (v.length > 11) v = v.slice(0,11);
@@ -372,7 +369,7 @@
         "TRI-SET": "Combine três exercícios diferentes sem descanso entre as séries. Alta intensidade metabólica!",
         "REST-PAUSE": "Treine até a falha, descanse apenas 15 segundos e faça mais algumas repetições com o mesmo peso.",
         "CLUSTER": "Divida a série em blocos (ex: 4+4+4) com 10-15s de pausa entre eles para manter a carga máxima.",
-        "ISOMETRIA": "Mantenha o músculo contraído na posição de maior esforço pelo tempo indicado, sem se mover.",
+        "ISOMETRIA": "Mantenha o músculo contraído na posição de maior esforço pelo tempo indicado, sem se mover."
     };
 
     async function fazerLogin() {
@@ -380,7 +377,7 @@
         const btn = document.getElementById('btn-login');
         const cpf = input.value.replace(/\D/g, '');
 
-        if (cpf.length < 11) return Swal.fire({ title: 'CPF Inválido', text: 'Digite os 11 dígitos do seu CPF.', icon: 'warning', confirmButtonColor: '#FF5500' });
+        if (cpf.length < 11) return Swal.fire({ title: 'CPF Inválido', text: 'Digite os 11 dígitos.', icon: 'warning', confirmButtonColor: '#FF5500' });
 
         btn.textContent = "AUTENTICANDO...";
         btn.disabled = true;
@@ -399,7 +396,8 @@
                 const posStr = dados.posicao ? `<span class="pos-badge">${dados.posicao}º</span> no ranking` : 'Bem-vindo!';
                 document.getElementById('txt-ranking').innerHTML = `🔥 Você está em ${posStr}`;
 
-                trocarTela('screen-locked');
+                document.getElementById('app-bottom-nav').style.display = 'flex';
+                mudarAbaApp('treino');
                 radarInterval = setInterval(checarDesbloqueio, 5000);
             } else {
                 Swal.fire({ title: 'Acesso Negado', text: 'CPF não encontrado. Fale com a recepção!', icon: 'error', confirmButtonColor: '#FF5500' });
@@ -418,17 +416,103 @@
         window.scrollTo(0,0);
     }
 
+    function mudarAbaApp(aba) {
+        document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+        abaAtiva = aba;
+        
+        if (aba === 'treino') {
+            document.getElementById('tab-treino').classList.add('active');
+            if (telaTreinoAtual === 'screen-workout' && !document.getElementById('day-selector').innerHTML) {
+                prepararTelaTreino();
+            } else {
+                trocarTela(telaTreinoAtual);
+            }
+        } 
+        else if (aba === 'ranking') {
+            document.getElementById('tab-ranking').classList.add('active');
+            trocarTela('screen-ranking');
+            if (rankingGlobal.length === 0) {
+                carregarRankingApp();
+            }
+        }
+    }
+
     async function checarDesbloqueio() {
         try {
             const res = await fetch(`${API_URL}?acao=checkCatracaApp&idAluno=${AlunoLogado.id}`);
             const dados = await res.json();
             if (dados.desbloqueado) {
                 clearInterval(radarInterval);
-                prepararTelaTreino(); // Prepara a tela exigindo escolha do dia
+                telaTreinoAtual = 'screen-workout';
+                if (abaAtiva === 'treino') {
+                    prepararTelaTreino();
+                }
             }
         } catch(e) {}
     }
 
+    // ==========================================
+    // LÓGICA DO RANKING COM BUSCA E FOTOS
+    // ==========================================
+    async function carregarRankingApp() {
+        const container = document.getElementById('app-ranking-list');
+        container.innerHTML = `<div style="text-align:center; padding: 40px; color:var(--primary);"><span class="material-icons" style="font-size: 3rem; animation: breathe 2s infinite;">sync</span><br><br>Buscando os campeões...</div>`;
+        
+        try {
+            const res = await fetch(`${API_URL}?acao=getRankingTV&t=${Date.now()}`);
+            rankingGlobal = await res.json();
+            renderizarListaRanking(rankingGlobal.slice(0, 50)); // Renderiza os top 50 ao carregar
+        } catch(e) {
+            container.innerHTML = `<div style="text-align:center; color: #ff6b6b; padding: 20px;">Falha ao carregar o ranking. Tente novamente mais tarde.</div>`;
+        }
+    }
+
+    function renderizarListaRanking(lista) {
+        const container = document.getElementById('app-ranking-list');
+        let html = '';
+        
+        if(lista.length === 0) {
+            container.innerHTML = `<div style="text-align:center; padding: 20px; color:var(--muted);">Nenhum atleta encontrado com este nome.</div>`;
+            return;
+        }
+
+        lista.forEach(aluno => {
+            let cls = 'other';
+            if (aluno.posicao == 1) cls = 'gold';
+            else if (aluno.posicao == 2) cls = 'silver';
+            else if (aluno.posicao == 3) cls = 'bronze';
+
+            let isMe = (aluno.nome.toLowerCase() === AlunoLogado.nome.toLowerCase()) ? 'me' : '';
+
+            // Desenha a foto ou o placeholder com a letra
+            let avatarHtml = aluno.foto 
+                ? `<img src="${aluno.foto}" class="rank-avatar" onerror="this.outerHTML='<div class=\\'rank-avatar-placeholder\\'>${aluno.nome.charAt(0)}</div>'">` 
+                : `<div class="rank-avatar-placeholder">${aluno.nome.charAt(0)}</div>`;
+
+            html += `
+            <div class="rank-app-card ${cls} ${isMe}">
+                <div class="rank-app-pos">${aluno.posicao}º</div>
+                ${avatarHtml}
+                <div class="rank-app-nome">${aluno.nome}</div>
+                <div class="rank-app-pts">${aluno.pontos}</div>
+            </div>`;
+        });
+        container.innerHTML = html;
+    }
+
+    function filtrarRanking() {
+        const termo = document.getElementById('busca-ranking').value.toLowerCase();
+        if (termo === '') {
+            renderizarListaRanking(rankingGlobal.slice(0, 50));
+        } else {
+            const filtrados = rankingGlobal.filter(a => a.nome.toLowerCase().includes(termo));
+            renderizarListaRanking(filtrados);
+        }
+    }
+
+    // ==========================================
+    // LÓGICA DO TREINO
+    // ==========================================
     function prepararTelaTreino() {
         trocarTela('screen-workout');
 
@@ -441,12 +525,11 @@
         const primeiroNome = AlunoLogado.nome.split(' ')[0];
         document.getElementById('avatar-workout').textContent = primeiroNome.charAt(0).toUpperCase();
         document.getElementById('header-nome').textContent = primeiroNome;
-        document.getElementById('header-pos').textContent = AlunoLogado.posicao ? `${AlunoLogado.posicao}º no ranking` : 'Powerfisio';
+        document.getElementById('header-pos').textContent = AlunoLogado.posicao ? `${AlunoLogado.posicao}º no ranking` : 'MaxGym';
 
         document.getElementById('dia-titulo').textContent = "ESCOLHA O TREINO";
         document.getElementById('msg-orientacao').style.display = 'block';
 
-        // 🗓️ Construir Seletor de Dias (sem nenhum selecionado)
         const diasExibicao = ['Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta', 'Sábado'];
         const diaHoje = ['Domingo', 'Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta', 'Sábado'][new Date().getDay()];
         if (diaHoje === 'Domingo') diasExibicao.unshift('Domingo');
@@ -458,7 +541,6 @@
         });
         document.getElementById('day-selector').innerHTML = selectorHtml;
 
-        // Visual "Aguardando clique"
         document.getElementById('lista-exercicios').innerHTML = `
             <div style="text-align:center; padding: 60px 0; color: var(--muted);">
                 <div style="font-size:3rem; margin-bottom:12px; animation: slideUp 1s infinite alternate;">👆</div>
@@ -469,15 +551,13 @@
     }
 
     async function buscarTreinoSelecionado(diaBuscado, btnElement) {
-        // Atualiza botões
         document.querySelectorAll('.day-btn').forEach(b => b.classList.remove('active'));
         btnElement.classList.add('active');
 
         document.getElementById('dia-titulo').textContent = diaBuscado.toUpperCase();
-        document.getElementById('msg-orientacao').style.display = 'none'; // Esconde a mensagem orientadora
-        document.getElementById('btn-iniciar-treino').style.display = 'none'; // Mantém o botão escondido durante a busca
+        document.getElementById('msg-orientacao').style.display = 'none';
+        document.getElementById('btn-iniciar-treino').style.display = 'none'; 
 
-        // Visual de Loading
         document.getElementById('lista-exercicios').innerHTML = `
             <div style="text-align:center; padding: 40px 0; color: var(--primary);">
                 <div style="font-size:2rem; margin-bottom:12px;">🤖</div>
@@ -496,7 +576,6 @@
             if (treino.sucesso) {
                 document.getElementById('treino-nivel').textContent = treino.cabecalho || '';
                 renderizarTreino(treino.conteudo);
-                // Exibe o botão START apenas agora que o treino carregou com sucesso
                 document.getElementById('btn-iniciar-treino').style.display = 'block'; 
             } else {
                 document.getElementById('lista-exercicios').innerHTML = `
@@ -523,12 +602,15 @@
             const texto = linha.replace(/\*\*/g, '').trim();
             if (!texto) return;
 
-            // 🚀 MÁGICA AQUI: Quando o app encontra a "Nota Clínica", ele injeta o "Como Executar" estático logo acima!
             if (/^(nota clínica|nota clinica)/i.test(texto)) {
                 html += `<div class="section-label">COMO EXECUTAR</div>`;
                 html += `<p class="info-text" style="margin-bottom: 12px;">Em caso de dúvidas na execução, vá até o totem na parede e digite o ID do exercício para ver o vídeo ou aperte o botão do aparelho para chamar o instrutor!</p>`;
-                
-                html += `<div class="section-label">${texto}</div>`;
+                html += `<div class="section-label">NOTA CLÍNICA</div>`;
+                let partes = texto.split(':');
+                if (partes.length > 1 && partes[1].trim() !== "") {
+                    let conteudoNota = partes.slice(1).join(':').trim();
+                    html += `<p class="info-text">${conteudoNota}</p>`;
+                }
                 return;
             }
 
@@ -563,6 +645,7 @@
         totalEx = exCount;
         document.getElementById('lista-exercicios').innerHTML = html;
     }
+
     function iniciarTreinoInterativo() {
         document.getElementById('btn-iniciar-treino').style.display = 'none';
         document.getElementById('btn-concluir-treino').style.display = 'block';
@@ -647,7 +730,7 @@
                 const diaSemana = new Date().getDay();
                 let base = 15;
                 if (diaSemana === 3 || diaSemana === 5) base = 30;
-                else if (diaSemana === 6) base = 7.5; // Regra visual do Sábado
+                else if (diaSemana === 6) base = 7.5; 
                 
                 const totalGanhos = base + pontosExtras;
 

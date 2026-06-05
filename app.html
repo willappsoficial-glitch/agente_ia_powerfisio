@@ -833,7 +833,12 @@
         Swal.fire({
             title: 'INSTALAR APLICATIVO',
             html: 'Adicione o <strong>MaxGym</strong> ao ecrã principal do seu telemóvel para ter acesso rápido ao treino e ao ranking!',
-            icon: 'info',
+            // 🚀 A MÁGICA AQUI: Trocamos o ícone pela sua logo!
+            imageUrl: 'icon-192.png', 
+            imageWidth: 80,
+            imageHeight: 80,
+            imageAlt: 'Logo MaxGym',
+            customClass: { image: 'brand-logo' },
             showCancelButton: true,
             confirmButtonColor: '#FF5500',
             cancelButtonColor: '#2A2F3A',

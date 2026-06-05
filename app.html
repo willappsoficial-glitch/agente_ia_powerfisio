@@ -4,6 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>MaxGym - App do Aluno</title>
+
+    <link rel="manifest" href="manifest-app.json">
+    <meta name="theme-color" content="#0B0D14">
+    <link rel="apple-touch-icon" href="icon-192.png">
     <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;700;900&family=Barlow:wght@400;600;700&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
@@ -797,6 +801,15 @@
             btn.textContent = "CONCLUIR MISSÃO ✅";
             btn.disabled = false;
         }
+    }
+</script>
+<script>
+    if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+            navigator.serviceWorker.register('./sw-app.js')
+                .then(reg => console.log('PWA do App ativado com sucesso!'))
+                .catch(err => console.error('Erro no PWA:', err));
+        });
     }
 </script>
 </body>

@@ -2,7 +2,7 @@
   "name": "MaxGym",
   "short_name": "MaxGym",
   "description": "App do Aluno com Inteligência Artificial",
-  "start_url": "./app.html",
+  "start_url": "./index.html",
   "display": "standalone",
   "background_color": "#0B0D14",
   "theme_color": "#FF5500",

@@ -804,6 +804,7 @@
     }
 </script>
 <script>
+    // 1. Registo do Service Worker
     if ('serviceWorker' in navigator) {
         window.addEventListener('load', () => {
             navigator.serviceWorker.register('./sw-app.js')
@@ -811,6 +812,50 @@
                 .catch(err => console.error('Erro no PWA:', err));
         });
     }
+
+    // 2. Intercetar o evento de instalação e disparar o SweetAlert
+    let deferredPrompt;
+
+    window.addEventListener('beforeinstallprompt', (e) => {
+        // Previne o Chrome de mostrar aquele ícone minúsculo e inútil
+        e.preventDefault();
+        
+        // Guarda o evento para podermos disparar o botão de instalação depois
+        deferredPrompt = e;
+        
+        // Espera 3 segundos depois de o site carregar e mostra o Pop-up Premium!
+        setTimeout(mostrarBannerInstalacao, 3000); 
+    });
+
+    function mostrarBannerInstalacao() {
+        if (!deferredPrompt) return;
+
+        Swal.fire({
+            title: 'INSTALAR APLICATIVO',
+            html: 'Adicione o <strong>MaxGym</strong> ao ecrã principal do seu telemóvel para ter acesso rápido ao treino e ao ranking!',
+            icon: 'info',
+            showCancelButton: true,
+            confirmButtonColor: '#FF5500',
+            cancelButtonColor: '#2A2F3A',
+            confirmButtonText: 'INSTALAR AGORA',
+            cancelButtonText: 'AGORA NÃO'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                // Se ele clicou em instalar, disparamos a tela preta nativa do Android
+                deferredPrompt.prompt();
+                
+                // Aguarda a resposta do aluno
+                deferredPrompt.userChoice.then((choiceResult) => {
+                    if (choiceResult.outcome === 'accepted') {
+                        console.log('Aluno instalou o MaxGym!');
+                    }
+                    deferredPrompt = null; // Limpa o evento
+                });
+            }
+        });
+    }
 </script>
+</body>
+</html>
 </body>
 </html>

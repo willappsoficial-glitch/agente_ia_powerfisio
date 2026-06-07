@@ -35,6 +35,12 @@
             overflow-x: hidden;
         }
 
+        html, body {
+            overscroll-behavior: none !important; /* Bloqueia no navegador inteiro */
+            overscroll-behavior-y: none !important;
+            touch-action: pan-y; /* Previne gestos nativos de recarregamento */
+        }
+
         /* ======= SWEETALERT THEME ======= */
         .swal2-popup { background: var(--bg-card) !important; color: var(--text) !important; border-radius: 20px !important; border: 1px solid var(--border) !important; font-family: 'Barlow', sans-serif !important; }
         .swal2-title { color: var(--text) !important; font-family: 'Barlow Condensed', sans-serif !important; font-weight: 900 !important; font-size: 1.6rem !important; letter-spacing: 1px; }
@@ -58,7 +64,6 @@
         .nav-item.active .material-icons { transform: translateY(-2px); text-shadow: 0 4px 10px rgba(255,85,0,0.4); }
         .nav-item span:not(.material-icons) { font-family: 'Barlow Condensed', sans-serif; font-size: 0.85rem; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; }
 
-        /* ======= LOGIN ======= */
         /* ======= LOGIN ======= */
         #screen-login {
             align-items: center; justify-content: center; padding: 30px 24px 0;
@@ -236,7 +241,6 @@
 </head>
 <body>
 
-<!-- MODAIS -->
 <div id="modal-tecnica" onclick="fecharModal()"><div class="modal-sheet" onclick="event.stopPropagation()"><div class="modal-title" id="modal-titulo">TÉCNICA</div><p class="modal-desc" id="modal-desc">Explicação aqui...</p><button class="btn-modal-close" onclick="fecharModal()">ENTENDI!</button></div></div>
 <div id="modal-roleta">
     <h2 style="color:#FFD700; font-family:'Barlow Condensed', sans-serif; font-size:2.8rem; letter-spacing:2px; text-shadow: 0 2px 10px rgba(255,215,0,0.3); text-align:center;">ROLETA DA SORTE</h2>
@@ -247,7 +251,6 @@
     <div id="mensagem-roleta" style="margin-top:15px; font-size:1.6rem; font-weight:bold; color:white; font-family:'Barlow Condensed', sans-serif; letter-spacing:2px; height: 30px; display: none; text-align:center;">GIRANDO...</div>
 </div>
     
-<!-- TELA DE LOGIN -->
 <div id="screen-login" class="screen active">
     <div class="brand">
         <img src="logo.jpeg" alt="Logo" class="brand-logo" onerror="this.style.display='none'">
@@ -261,11 +264,10 @@
     </div>
 </div>
 
-<!-- TELA BLOQUEADA -->
 <div id="screen-locked" class="screen">
     <div class="app-header">
         <div class="user-pill">
-            <div class="avatar" id="avatar-letra">?</div>
+            <div class="avatar" id="avatar-letra" onclick="fazerLogout()" style="cursor: pointer;">?</div>
             <div class="user-info">
                 <h3 id="user-welcome">Carregando...</h3>
                 <p>Aguardando liberação</p>
@@ -280,11 +282,10 @@
     </div>
 </div>
 
-<!-- TELA TREINO -->
 <div id="screen-workout" class="screen">
     <div class="app-header">
         <div class="user-pill">
-            <div class="avatar" id="avatar-workout">?</div>
+            <div class="avatar" id="avatar-workout" onclick="fazerLogout()" style="cursor: pointer;">?</div>
             <div class="user-info">
                 <h3 id="header-nome">—</h3>
                 <p id="header-pos">Ranking</p>
@@ -312,14 +313,12 @@
     </div>
 </div>
 
-<!-- TELA RANKING -->
 <div id="screen-ranking" class="screen">
     <div class="rank-app-header">
         <div class="rank-app-title">TOP ATLETAS</div>
         <div class="rank-app-subtitle">Ranking de Frequência Max</div>
     </div>
     
-    <!-- Barra de Busca Adicionada -->
     <div class="search-container">
         <div class="search-box">
             <span class="material-icons">search</span>
@@ -328,11 +327,9 @@
     </div>
 
     <div class="ranking-list-container" id="app-ranking-list">
-        <!-- Preenchido via JavaScript -->
-    </div>
+        </div>
 </div>
 
-<!-- MENU INFERIOR GERAL -->
 <nav class="bottom-nav" id="app-bottom-nav">
     <div class="nav-item active" id="tab-treino" onclick="mudarAbaApp('treino')">
         <span class="material-icons">fitness_center</span>
@@ -357,6 +354,17 @@
     let telaTreinoAtual = 'screen-locked';
     let abaAtiva = 'treino';
     let rankingGlobal = []; // Guarda os dados do ranking para a busca não travar o app
+
+    // ==========================================
+    // AUTO-LOGIN (SESSÃO SALVA)
+    // ==========================================
+    window.addEventListener('DOMContentLoaded', () => {
+        const alunoSalvo = localStorage.getItem('maxgym_aluno');
+        if (alunoSalvo) {
+            AlunoLogado = JSON.parse(alunoSalvo);
+            iniciarSessaoDoAluno();
+        }
+    });
 
     document.getElementById('alunoCpf').addEventListener('input', function(e) {
         let v = e.target.value.replace(/\D/g, '');
@@ -396,17 +404,11 @@
 
             if (dados.sucesso) {
                 AlunoLogado = { id: dados.id, nome: dados.nome, cpf, posicao: dados.posicao };
-                const primeiroNome = dados.nome.split(' ')[0];
-
-                document.getElementById('user-welcome').textContent = `Olá, ${primeiroNome}!`;
-                document.getElementById('avatar-letra').textContent = primeiroNome.charAt(0).toUpperCase();
-
-                const posStr = dados.posicao ? `<span class="pos-badge">${dados.posicao}º</span> no ranking` : 'Bem-vindo!';
-                document.getElementById('txt-ranking').innerHTML = `🔥 Você está em ${posStr}`;
-
-                document.getElementById('app-bottom-nav').style.display = 'flex';
-                mudarAbaApp('treino');
-                radarInterval = setInterval(checarDesbloqueio, 5000);
+                
+                // Salva a sessão na memória do celular!
+                localStorage.setItem('maxgym_aluno', JSON.stringify(AlunoLogado));
+                
+                iniciarSessaoDoAluno();
             } else {
                 Swal.fire({ title: 'Acesso Negado', text: 'CPF não encontrado. Fale com a recepção!', icon: 'error', confirmButtonColor: '#FF5500' });
             }
@@ -416,6 +418,45 @@
             btn.textContent = "ENTRAR NA ARENA";
             btn.disabled = false;
         }
+    }
+
+    // Função separada para desenhar a interface do aluno logado
+    function iniciarSessaoDoAluno() {
+        const primeiroNome = AlunoLogado.nome.split(' ')[0];
+
+        document.getElementById('user-welcome').textContent = `Olá, ${primeiroNome}!`;
+        document.getElementById('avatar-letra').textContent = primeiroNome.charAt(0).toUpperCase();
+        document.getElementById('avatar-workout').textContent = primeiroNome.charAt(0).toUpperCase();
+        document.getElementById('header-nome').textContent = primeiroNome;
+
+        const posStr = AlunoLogado.posicao ? `<span class="pos-badge">${AlunoLogado.posicao}º</span> no ranking` : 'Bem-vindo!';
+        document.getElementById('txt-ranking').innerHTML = `🔥 Você está em ${posStr}`;
+        document.getElementById('header-pos').textContent = AlunoLogado.posicao ? `${AlunoLogado.posicao}º no ranking` : 'MaxGym';
+
+        document.getElementById('app-bottom-nav').style.display = 'flex';
+        mudarAbaApp('treino');
+        
+        if(radarInterval) clearInterval(radarInterval);
+        radarInterval = setInterval(checarDesbloqueio, 5000);
+    }
+
+    // Função de Logout (ativada clicando na foto)
+    function fazerLogout() {
+        Swal.fire({
+            title: 'SAIR DA CONTA?',
+            text: 'Deseja desconectar o seu usuário deste aparelho?',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#FF5500',
+            cancelButtonColor: '#2A2F3A',
+            confirmButtonText: 'SIM, SAIR',
+            cancelButtonText: 'CANCELAR'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                localStorage.removeItem('maxgym_aluno');
+                location.reload();
+            }
+        });
     }
 
     function trocarTela(id) {
@@ -469,7 +510,8 @@
         try {
             const res = await fetch(`${API_URL}?acao=getRankingTV&t=${Date.now()}`);
             rankingGlobal = await res.json();
-            renderizarListaRanking(rankingGlobal.slice(0, 50)); // Renderiza os top 50 ao carregar
+            // REMOVIDO O LIMITE: Renderiza a academia inteira de uma vez
+            renderizarListaRanking(rankingGlobal); 
         } catch(e) {
             container.innerHTML = `<div style="text-align:center; color: #ff6b6b; padding: 20px;">Falha ao carregar o ranking. Tente novamente mais tarde.</div>`;
         }
@@ -703,6 +745,31 @@
         document.getElementById('modal-tecnica').classList.remove('open');
     }
 
+    // Função NOVA para manter o aluno logado e inativar a tela de treino após concluir
+    function mostrarTelaSucesso() {
+        mudarAbaApp('ranking');
+        carregarRankingApp(); // Atualiza os pontos na hora!
+        
+        // Zera a tela de treino para não deixar o cara clicar de novo
+        document.getElementById('dia-titulo').textContent = "MISSÃO CUMPRIDA";
+        document.getElementById('treino-nivel').textContent = "Treino de hoje finalizado!";
+        document.getElementById('msg-orientacao').style.display = 'none';
+        document.getElementById('day-selector').style.display = 'none';
+        document.getElementById('timer-bar').classList.remove('visible');
+        document.getElementById('progress-section').style.display = 'none';
+        document.getElementById('btn-concluir-treino').style.display = 'none';
+        document.getElementById('lista-exercicios').innerHTML = `
+            <div style="display:flex; flex-direction:column; align-items:center; justify-content:center; padding: 40px 20px; text-align:center;">
+                <div style="font-size: 80px; margin-bottom: 15px;">🏆</div>
+                <h2 style="color: #FF5500; font-weight: 900; font-size: 26px; font-family: 'Barlow Condensed', sans-serif; letter-spacing: 1px; margin-bottom: 10px;">TREINO CONCLUÍDO!</h2>
+                <p style="color: var(--muted); font-size: 16px; line-height: 1.5;">
+                    Excelente trabalho! Seus pontos já foram computados.<br><br>
+                    <strong>Descanse e volte amanhã para subir ainda mais no ranking!</strong>
+                </p>
+            </div>
+        `;
+    }
+
     async function concluirMissao() {
         const feitos = document.querySelectorAll('.exercise-item.concluido').length;
         const todos = document.querySelectorAll('.exercise-item.interactive').length;
@@ -749,7 +816,7 @@
 
                 if (!modalRoleta || !btnGirar || !roletaElement) {
                     await Swal.fire({ title: 'MISSÃO CUMPRIDA! 💪', html: `Guerreiro, você é inspirador!<br><br><strong style="color:#FFD700;font-size:1.8rem;">+${totalGanhos} PONTOS</strong>`, icon: 'success', confirmButtonColor: '#FF5500', confirmButtonText: 'FECHAR' });
-                    location.reload();
+                    mostrarTelaSucesso(); // 🚀 Substituímos o reload por manter na tela
                     return;
                 }
 
@@ -790,7 +857,7 @@
                                 confirmButtonColor: '#FF5500',
                                 confirmButtonText: 'FECHAR'
                             });
-                            location.reload();
+                            mostrarTelaSucesso(); // 🚀 Substituímos o reload por manter na tela
                         }, 1500); 
                     }, 4000); 
                 };
@@ -864,7 +931,5 @@
         });
     }
 </script>
-</body>
-</html>
 </body>
 </html>

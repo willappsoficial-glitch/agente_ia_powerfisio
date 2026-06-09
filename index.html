@@ -23,6 +23,9 @@
             --text: #FFFFFF;
             --muted: #6B7280;
             --gold: #FFD700;
+            /* Novas cores para o campeão */
+            --gold-dark: #B8860B;
+            --gold-light: #FFFACD;
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
@@ -188,43 +191,98 @@
         /* ======= SCREEN RANKING ======= */
         #screen-ranking { padding: 0 0 80px 0; background: var(--bg); }
         
-        /* 🚀 NOVO HEADER DO RANKING COM FLEXBOX E BOTÃO DE REFRESH */
-        .rank-app-header-container { display: flex; justify-content: space-between; align-items: center; padding: 24px 24px 16px; }
+        /* NOVO HEADER DO RANKING COM FLEXBOX E BOTÃO DE REFRESH */
+        .rank-app-header-container { display: flex; justify-content: space-between; align-items: center; padding: 24px 24px 16px; border-bottom: 1px solid var(--border); background: var(--bg-card); position: sticky; top: 0; z-index: 20; }
         .rank-app-titles { text-align: left; }
-        .rank-app-title { font-family: 'Barlow Condensed', sans-serif; font-size: 2.2rem; font-weight: 900; color: var(--gold); letter-spacing: 1px; }
-        .rank-app-subtitle { font-size: 0.8rem; color: var(--muted); text-transform: uppercase; letter-spacing: 2px; }
+        .rank-app-title { font-family: 'Barlow Condensed', sans-serif; font-size: 2.2rem; font-weight: 900; color: var(--text); letter-spacing: 1px; }
+        .rank-app-subtitle { font-size: 0.8rem; color: var(--muted); text-transform: uppercase; letter-spacing: 2px; margin-top: 2px;}
         
         .spin-animation { animation: spin-anim 1s linear infinite; }
         @keyframes spin-anim { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-        /* 🚀 FIM NOVO HEADER */
         
         /* Barra de Busca */
-        .search-container { padding: 0 24px 16px; position: sticky; top: 0; background: var(--bg); z-index: 10; }
+        .search-container { padding: 16px 24px; background: var(--bg); position: sticky; top: 83px; z-index: 10; border-bottom: 1px solid var(--border); }
         .search-box { position: relative; }
         .search-box .material-icons { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: var(--muted); }
         .search-box input { width: 100%; background: var(--bg-surface); border: 1px solid var(--border); border-radius: 14px; padding: 14px 14px 14px 44px; color: white; font-family: 'Barlow Condensed', sans-serif; font-size: 1.1rem; font-weight: 600; outline: none; transition: 0.2s; }
         .search-box input:focus { border-color: var(--primary); }
         .search-box input::placeholder { color: #555; }
 
-        .ranking-list-container { padding: 0 24px; display: flex; flex-direction: column; gap: 10px; }
+        .ranking-list-container { padding: 16px 24px; display: flex; flex-direction: column; gap: 12px; }
         
-        .rank-app-card { display: flex; align-items: center; gap: 12px; background: var(--bg-card); padding: 12px 16px; border-radius: 16px; border: 1px solid var(--border); border-left: 4px solid transparent; }
-        .rank-app-card.me { border-color: var(--primary); background: rgba(255,85,0,0.1); border-left: 4px solid var(--primary); }
-        .rank-app-card.gold { border-left-color: var(--gold); }
-        .rank-app-card.silver { border-left-color: silver; }
-        .rank-app-card.bronze { border-left-color: #CD7F32; }
+        /* Estilo Base dos Cards */
+        .rank-app-card { 
+            display: flex; align-items: center; gap: 14px; 
+            background: linear-gradient(145deg, #13161d, #0f1116); /* Gradiente sutil */
+            padding: 14px 18px; border-radius: 18px; 
+            border: 1px solid var(--border); 
+            position: relative; overflow: hidden;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            animation: cardEntrance 0.5s ease-out both; /* Animação de entrada */
+        }
+        @keyframes cardEntrance { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
         
-        .rank-app-pos { font-family: 'Barlow Condensed', sans-serif; font-size: 1.5rem; font-weight: 900; width: 30px; text-align: center; color: rgba(255,255,255,0.3); }
-        .rank-app-card.gold .rank-app-pos { color: var(--gold); }
+        .rank-app-card.me { border-color: var(--primary); background: rgba(255,85,0,0.06); }
+        .rank-app-card.silver { border-left: 4px solid silver; }
+        .rank-app-card.bronze { border-left: 4px solid #CD7F32; }
+        
+        .rank-app-pos { font-family: 'Barlow Condensed', sans-serif; font-size: 1.6rem; font-weight: 900; width: 32px; text-align: center; color: rgba(255,255,255,0.25); flex-shrink: 0; }
         .rank-app-card.silver .rank-app-pos { color: silver; }
         .rank-app-card.bronze .rank-app-pos { color: #CD7F32; }
 
         /* Avatares do Ranking */
-        .rank-avatar { width: 40px; height: 40px; border-radius: 50%; object-fit: cover; background: var(--bg-surface); border: 1px solid var(--border); flex-shrink: 0; }
-        .rank-avatar-placeholder { width: 40px; height: 40px; border-radius: 50%; background: var(--primary-dim); color: var(--primary); display: flex; align-items: center; justify-content: center; font-family: 'Barlow Condensed', sans-serif; font-weight: 900; font-size: 1.2rem; border: 1px solid rgba(255,85,0,0.3); flex-shrink: 0; }
+        .rank-avatar-wrapper { position: relative; flex-shrink: 0; }
+        .rank-avatar { width: 44px; height: 44px; border-radius: 50%; object-fit: cover; background: var(--bg-surface); border: 2px solid var(--border); }
+        .rank-avatar-placeholder { width: 44px; height: 44px; border-radius: 50%; background: var(--bg-surface); color: var(--muted); display: flex; align-items: center; justify-content: center; font-family: 'Barlow Condensed', sans-serif; font-weight: 900; font-size: 1.4rem; border: 2px solid var(--border); }
         
-        .rank-app-nome { flex: 1; font-family: 'Barlow Condensed', sans-serif; font-size: 1.1rem; font-weight: 700; text-transform: uppercase; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-        .rank-app-pts { font-family: 'Barlow Condensed', sans-serif; font-size: 1.5rem; font-weight: 900; color: var(--primary); }
+        .rank-app-nome { flex: 1; font-family: 'Barlow Condensed', sans-serif; font-size: 1.2rem; font-weight: 700; text-transform: uppercase; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: var(--text); }
+        .rank-app-card.me .rank-app-nome { color: var(--primary); font-weight: 900; }
+        
+        .rank-app-pts { font-family: 'Barlow Condensed', sans-serif; font-size: 1.7rem; font-weight: 900; color: var(--muted); font-style: italic; flex-shrink: 0; }
+        .rank-app-card.silver .rank-app-pts, .rank-app-card.bronze .rank-app-pts { color: var(--text); }
+
+        /* ======= ⭐ O CAMPEÃO (1º LUGAR) - ESTILO LENDÁRIO ⭐ ======= */
+        .rank-app-card.gold.champion { 
+            background: linear-gradient(135deg, #2c2100 0%, #080a0f 50%, #2c2100 100%); /* Fundo Preto-Dourado Profundo */
+            border: 2px solid var(--gold);
+            margin-bottom: 10px;
+            transform: scale(1.02); /* Ligeiramente maior */
+            box-shadow: 0 10px 30px rgba(255, 215, 0, 0.15); /* Sombra Larga Dourada */
+            animation: championPulsar 2s infinite alternate, cardEntrance 0.5s ease-out both; /* Pulsação + Entrada */
+        }
+        
+        @keyframes championPulsar {
+            0% { box-shadow: 0 10px 30px rgba(255, 215, 0, 0.15); border-color: var(--gold); }
+            100% { box-shadow: 0 10px 40px rgba(255, 215, 0, 0.3); border-color: var(--gold-light); }
+        }
+
+        /* Coroa flutuante */
+        .champion-crown {
+            position: absolute; top: -12px; left: 16px;
+            font-size: 2.2rem; transform: rotate(-15deg);
+            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.5));
+            z-index: 5;
+            animation: crownFloat 2s ease-in-out infinite;
+        }
+        @keyframes crownFloat { 0%, 100% { transform: rotate(-15deg) translateY(0); } 50% { transform: rotate(-15deg) translateY(-5px); } }
+
+        .rank-app-card.champion .rank-app-pos { color: var(--gold); font-size: 2.2rem; text-shadow: 0 0 10px rgba(255, 215, 0, 0.5); }
+        .rank-app-card.champion .rank-avatar, .rank-app-card.champion .rank-avatar-placeholder { width: 50px; height: 50px; border-color: var(--gold); border-width: 3px; box-shadow: 0 0 15px rgba(255, 215, 0, 0.3); }
+        .rank-app-card.champion .rank-app-nome { font-size: 1.4rem; color: var(--gold); font-weight: 900; text-shadow: 0 0 8px rgba(255, 215, 0, 0.4); text-transform: uppercase; letter-spacing: 1px; }
+        
+        /* Pontuação Brilhante do Campeão */
+        .rank-app-card.champion .rank-app-pts { 
+            color: #FFFFFF; font-size: 2.2rem; font-style: normal;
+            position: relative;
+            background: linear-gradient(90deg, #FFFFFF 0%, var(--gold) 50%, #FFFFFF 100%);
+            background-size: 200% auto;
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: shineText 3s linear infinite;
+        }
+        @keyframes shineText { to { background-position: 200% center; } }
+        /* ======= FIM ESTILO CAMPEÃO ======= */
 
         /* ======= MODAL TÉCNICA / ROLETA ======= */
         #modal-tecnica { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.85); z-index: 1000; align-items: flex-end; padding: 16px; backdrop-filter: blur(6px); }
@@ -326,8 +384,8 @@
             <div class="rank-app-title">TOP ATLETAS</div>
             <div class="rank-app-subtitle">Ranking de Frequência Max</div>
         </div>
-        <button id="btn-refresh-ranking" onclick="atualizarRankingUI()" style="background: none; border: none; color: var(--primary); padding: 5px; cursor: pointer; outline: none;">
-            <svg id="icon-refresh" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <button id="btn-refresh-ranking" onclick="atualizarRankingUI()" style="background: none; border: none; color: var(--primary); padding: 8px; cursor: pointer; outline: none; border-radius: 50%;">
+            <svg id="icon-refresh" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
                 <polyline points="23 4 23 10 17 10"></polyline>
                 <polyline points="1 20 1 14 7 14"></polyline>
                 <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path>
@@ -520,7 +578,7 @@
     // LÓGICA DO RANKING COM BUSCA E FOTOS E REFRESH
     // ==========================================
     
-    // 🚀 NOVA FUNÇÃO: Aciona a animação e chama a carga
+    // NOVA FUNÇÃO: Aciona a animação e chama a carga
     async function atualizarRankingUI() {
         const icone = document.getElementById('icon-refresh');
         icone.classList.add('spin-animation');
@@ -528,7 +586,7 @@
         try {
             // Limpa o termo de busca se houver, pra trazer a lista completa atualizada
             document.getElementById('busca-ranking').value = ''; 
-            await carregarRankingApp(); 
+            await carregarRankingApp(true); // 'true' para forçar limpar a lista visual antes
         } catch (erro) {
             console.error("Falha ao atualizar o ranking:", erro);
         } finally {
@@ -536,7 +594,7 @@
         }
     }
 
-    // 🚀 BÔNUS: Atualização silenciosa a cada 3 minutos se o usuário estiver na tela
+    // BÔNUS: Atualização silenciosa a cada 3 minutos se o usuário estiver na tela
     setInterval(() => {
         if (document.visibilityState === 'visible' && abaAtiva === 'ranking') {
             // Se a pessoa não estiver buscando nada no momento, atualiza por baixo dos panos
@@ -546,11 +604,12 @@
         }
     }, 180000);
 
-    async function carregarRankingApp() {
+    async function carregarRankingApp(forcarLimpar = false) {
         const container = document.getElementById('app-ranking-list');
-        // Só mostra a msg de carregando se for a primeira vez, pra não piscar a tela no refresh
-        if (rankingGlobal.length === 0) {
-            container.innerHTML = `<div style="text-align:center; padding: 40px; color:var(--primary);"><span class="material-icons" style="font-size: 3rem; animation: breathe 2s infinite;">sync</span><br><br>Buscando os campeões...</div>`;
+        
+        // Só mostra a msg de carregando se for a primeira vez ou refresh forçado, pra não piscar a tela
+        if (rankingGlobal.length === 0 || forcarLimpar) {
+            container.innerHTML = `<div style="text-align:center; padding: 60px; color:var(--primary);"><span class="material-icons" style="font-size: 3rem; animation: spin-anim 1.5s linear infinite;">sync</span><br><br><span style="font-family:'Barlow Condensed', sans-serif; letter-spacing:1px; font-weight:700;">ATUALIZANDO PONTUAÇÕES<span class="waiting-dots"></span></span></div>`;
         }
         
         try {
@@ -566,16 +625,24 @@
 
     function renderizarListaRanking(lista) {
         const container = document.getElementById('app-ranking-list');
-        let html = '';
+        container.innerHTML = ''; // Limpa antes de renderizar
         
         if(lista.length === 0) {
             container.innerHTML = `<div style="text-align:center; padding: 20px; color:var(--muted);">Nenhum atleta encontrado com este nome.</div>`;
             return;
         }
 
-        lista.forEach(aluno => {
-            let cls = 'other';
-            if (aluno.posicao == 1) cls = 'gold';
+        // REMOVIDO: let html = '';
+        
+        lista.forEach((aluno, index) => {
+            let cls = '';
+            let crownHtml = '';
+            
+            // ⭐ LÓGICA DO CAMPEÃO ⭐
+            if (aluno.posicao == 1) { 
+                cls = 'gold champion'; 
+                crownHtml = '<div class="champion-crown">👑</div>'; // Adiciona a coroa flutuante
+            }
             else if (aluno.posicao == 2) cls = 'silver';
             else if (aluno.posicao == 3) cls = 'bronze';
 
@@ -586,15 +653,21 @@
                 ? `<img src="${aluno.foto}" class="rank-avatar" onerror="this.outerHTML='<div class=\\'rank-avatar-placeholder\\'>${aluno.nome.charAt(0)}</div>'">` 
                 : `<div class="rank-avatar-placeholder">${aluno.nome.charAt(0)}</div>`;
 
-            html += `
-            <div class="rank-app-card ${cls} ${isMe}">
+            // NOVA ESTRUTURA DOM (para animação staggered)
+            const card = document.createElement('div');
+            card.className = `rank-app-card ${cls} ${isMe}`;
+            card.style.animationDelay = `${index * 50}ms`; // Animação staggered (atraso cascata)
+
+            card.innerHTML = `
+                ${crownHtml}
                 <div class="rank-app-pos">${aluno.posicao}º</div>
-                ${avatarHtml}
+                <div class="rank-avatar-wrapper">${avatarHtml}</div>
                 <div class="rank-app-nome">${aluno.nome}</div>
                 <div class="rank-app-pts">${aluno.pontos}</div>
-            </div>`;
+            `;
+            
+            container.appendChild(card); // Adiciona ao invés de acumular string
         });
-        container.innerHTML = html;
     }
 
     function filtrarRanking() {
@@ -795,7 +868,7 @@
     // Função NOVA para manter o aluno logado e inativar a tela de treino após concluir
     function mostrarTelaSucesso() {
         mudarAbaApp('ranking');
-        carregarRankingApp(); // Atualiza os pontos na hora!
+        carregarRankingApp(true); // Atualiza os pontos na hora!
         
         // Zera a tela de treino para não deixar o cara clicar de novo
         document.getElementById('dia-titulo').textContent = "MISSÃO CUMPRIDA";

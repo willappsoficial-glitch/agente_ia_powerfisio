@@ -36,9 +36,9 @@
         }
 
         html, body {
-            overscroll-behavior: none !important; /* Bloqueia no navegador inteiro */
+            overscroll-behavior: none !important; 
             overscroll-behavior-y: none !important;
-            touch-action: pan-y; /* Previne gestos nativos de recarregamento */
+            touch-action: pan-y; 
         }
 
         /* ======= SWEETALERT THEME ======= */
@@ -68,9 +68,9 @@
         #screen-login {
             align-items: center; justify-content: center; padding: 30px 24px 0;
             background: 
-                radial-gradient(ellipse at 50% 0%, rgba(255,85,0,0.4) 0%, transparent 60%), /* Brilho Laranja Superior */
-                linear-gradient(to bottom, rgba(8, 10, 15, 0.6), rgba(8, 10, 15, 0)), /* Película Escura para Leitura */
-                url('fundo-login.jpg') center/cover no-repeat; /* A sua Imagem de Fundo */
+                radial-gradient(ellipse at 50% 0%, rgba(255,85,0,0.4) 0%, transparent 60%), 
+                linear-gradient(to bottom, rgba(8, 10, 15, 0.6), rgba(8, 10, 15, 0)), 
+                url('fundo-login.jpg') center/cover no-repeat; 
             position: relative; overflow: hidden;
         }
         #screen-login::before {
@@ -187,9 +187,16 @@
 
         /* ======= SCREEN RANKING ======= */
         #screen-ranking { padding: 0 0 80px 0; background: var(--bg); }
-        .rank-app-header { padding: 24px 24px 16px; text-align: center; }
+        
+        /* 🚀 NOVO HEADER DO RANKING COM FLEXBOX E BOTÃO DE REFRESH */
+        .rank-app-header-container { display: flex; justify-content: space-between; align-items: center; padding: 24px 24px 16px; }
+        .rank-app-titles { text-align: left; }
         .rank-app-title { font-family: 'Barlow Condensed', sans-serif; font-size: 2.2rem; font-weight: 900; color: var(--gold); letter-spacing: 1px; }
         .rank-app-subtitle { font-size: 0.8rem; color: var(--muted); text-transform: uppercase; letter-spacing: 2px; }
+        
+        .spin-animation { animation: spin-anim 1s linear infinite; }
+        @keyframes spin-anim { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        /* 🚀 FIM NOVO HEADER */
         
         /* Barra de Busca */
         .search-container { padding: 0 24px 16px; position: sticky; top: 0; background: var(--bg); z-index: 10; }
@@ -314,9 +321,18 @@
 </div>
 
 <div id="screen-ranking" class="screen">
-    <div class="rank-app-header">
-        <div class="rank-app-title">TOP ATLETAS</div>
-        <div class="rank-app-subtitle">Ranking de Frequência Max</div>
+    <div class="rank-app-header-container">
+        <div class="rank-app-titles">
+            <div class="rank-app-title">TOP ATLETAS</div>
+            <div class="rank-app-subtitle">Ranking de Frequência Max</div>
+        </div>
+        <button id="btn-refresh-ranking" onclick="atualizarRankingUI()" style="background: none; border: none; color: var(--primary); padding: 5px; cursor: pointer; outline: none;">
+            <svg id="icon-refresh" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="23 4 23 10 17 10"></polyline>
+                <polyline points="1 20 1 14 7 14"></polyline>
+                <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path>
+            </svg>
+        </button>
     </div>
     
     <div class="search-container">
@@ -501,19 +517,50 @@
     }
 
     // ==========================================
-    // LÓGICA DO RANKING COM BUSCA E FOTOS
+    // LÓGICA DO RANKING COM BUSCA E FOTOS E REFRESH
     // ==========================================
+    
+    // 🚀 NOVA FUNÇÃO: Aciona a animação e chama a carga
+    async function atualizarRankingUI() {
+        const icone = document.getElementById('icon-refresh');
+        icone.classList.add('spin-animation');
+        
+        try {
+            // Limpa o termo de busca se houver, pra trazer a lista completa atualizada
+            document.getElementById('busca-ranking').value = ''; 
+            await carregarRankingApp(); 
+        } catch (erro) {
+            console.error("Falha ao atualizar o ranking:", erro);
+        } finally {
+            setTimeout(() => { icone.classList.remove('spin-animation'); }, 500);
+        }
+    }
+
+    // 🚀 BÔNUS: Atualização silenciosa a cada 3 minutos se o usuário estiver na tela
+    setInterval(() => {
+        if (document.visibilityState === 'visible' && abaAtiva === 'ranking') {
+            // Se a pessoa não estiver buscando nada no momento, atualiza por baixo dos panos
+            if(document.getElementById('busca-ranking').value === '') {
+                carregarRankingApp();
+            }
+        }
+    }, 180000);
+
     async function carregarRankingApp() {
         const container = document.getElementById('app-ranking-list');
-        container.innerHTML = `<div style="text-align:center; padding: 40px; color:var(--primary);"><span class="material-icons" style="font-size: 3rem; animation: breathe 2s infinite;">sync</span><br><br>Buscando os campeões...</div>`;
+        // Só mostra a msg de carregando se for a primeira vez, pra não piscar a tela no refresh
+        if (rankingGlobal.length === 0) {
+            container.innerHTML = `<div style="text-align:center; padding: 40px; color:var(--primary);"><span class="material-icons" style="font-size: 3rem; animation: breathe 2s infinite;">sync</span><br><br>Buscando os campeões...</div>`;
+        }
         
         try {
             const res = await fetch(`${API_URL}?acao=getRankingTV&t=${Date.now()}`);
             rankingGlobal = await res.json();
-            // REMOVIDO O LIMITE: Renderiza a academia inteira de uma vez
             renderizarListaRanking(rankingGlobal); 
         } catch(e) {
-            container.innerHTML = `<div style="text-align:center; color: #ff6b6b; padding: 20px;">Falha ao carregar o ranking. Tente novamente mais tarde.</div>`;
+            if (rankingGlobal.length === 0) {
+                container.innerHTML = `<div style="text-align:center; color: #ff6b6b; padding: 20px;">Falha ao carregar o ranking. Tente novamente mais tarde.</div>`;
+            }
         }
     }
 
@@ -816,7 +863,7 @@
 
                 if (!modalRoleta || !btnGirar || !roletaElement) {
                     await Swal.fire({ title: 'MISSÃO CUMPRIDA! 💪', html: `Guerreiro, você é inspirador!<br><br><strong style="color:#FFD700;font-size:1.8rem;">+${totalGanhos} PONTOS</strong>`, icon: 'success', confirmButtonColor: '#FF5500', confirmButtonText: 'FECHAR' });
-                    mostrarTelaSucesso(); // 🚀 Substituímos o reload por manter na tela
+                    mostrarTelaSucesso(); 
                     return;
                 }
 
@@ -857,7 +904,7 @@
                                 confirmButtonColor: '#FF5500',
                                 confirmButtonText: 'FECHAR'
                             });
-                            mostrarTelaSucesso(); // 🚀 Substituímos o reload por manter na tela
+                            mostrarTelaSucesso(); 
                         }, 1500); 
                     }, 4000); 
                 };

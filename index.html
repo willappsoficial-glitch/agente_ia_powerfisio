@@ -22,6 +22,11 @@
             --border: rgba(255,255,255,0.07);
             --text: #FFFFFF;
             --muted: #6B7280;
+            
+            /* ⭐ Paleta Metálica para o TOP 3 ⭐ */
+            --gold: #D4AF37;
+            --silver: #AFAFAF;
+            --bronze: #A0522D;
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
@@ -35,9 +40,9 @@
         }
 
         html, body {
-            overscroll-behavior: none !important; 
+            overscroll-behavior: none !important;
             overscroll-behavior-y: none !important;
-            touch-action: pan-y; 
+            touch-action: pan-y;
         }
 
         /* ======= SWEETALERT THEME ======= */
@@ -184,9 +189,7 @@
         .workout-cta { padding: 16px 24px 32px; display: flex; flex-direction: column; gap: 10px; }
         .btn-finish { background: var(--success); color: #000; box-shadow: 0 8px 24px rgba(0,230,118,0.25); display: none; width: 100%; }
 
-        /* ==========================================================
-           🏆 SCREEN RANKING: DESIGN FIEL, ESPAÇOSO E COM CORES DE MEDALHA
-           ========================================================== */
+        /* ======= ⭐ SCREEN RANKING (DESIGN FIEL E REQUINTADO) ⭐ ======= */
         #screen-ranking { padding: 0 0 80px 0; background: var(--bg); }
         
         .rank-app-header-container { display: flex; justify-content: space-between; align-items: center; padding: 24px 24px 16px; background: var(--bg); position: sticky; top: 0; z-index: 50; border-bottom: 1px solid var(--border); }
@@ -210,82 +213,97 @@
         .rank-item { animation: itemEntrance 0.4s ease-out both; }
         @keyframes itemEntrance { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
-        /* ⭐ Base dos Cards: Espaçosos e Imponentes ⭐ */
+        /* ⭐ Base dos Cards REFATORADA: Mais Espaçosa e com Cantos Arredondados ⭐ */
         .rank-app-card { 
             display: flex; 
             align-items: center; 
-            padding: 20px 24px; /* Bem mais espaço interno */
-            border-radius: 20px; /* Cantos bem arredondados */
-            background-color: #13161D; /* Fundo padrão escuro */
-            border: 1px solid var(--border);
-            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+            padding: 20px 24px; /* Mais espaçosos, como pedido */
+            border-radius: 20px; /* Cantos mais arredondados, como pedido */
+            background-color: transparent; 
             position: relative;
         }
-
-        .rank-app-pos { font-family: 'Barlow Condensed', sans-serif; font-size: 2rem; font-weight: 900; width: 40px; text-align: left; flex-shrink: 0; color: rgba(255,255,255,0.3); }
         
-        .rank-avatar-wrapper { position: relative; flex-shrink: 0; margin-right: 16px; }
-        .rank-avatar, .rank-avatar-placeholder { width: 56px; height: 56px; border-radius: 50%; object-fit: cover; border: 3px solid rgba(255,255,255,0.1); }
-        .rank-avatar-placeholder { background: rgba(255,255,255,0.05); color: #888; display: flex; align-items: center; justify-content: center; font-family: 'Barlow Condensed', sans-serif; font-weight: 900; font-size: 1.6rem; }
+        .rank-avatar, .rank-avatar-placeholder { width: 56px; height: 56px; border-radius: 50%; object-fit: cover; border: 3px solid rgba(255,255,255,0.03); flex-shrink: 0; }
+        .rank-avatar-placeholder { background: rgba(255,255,255,0.05); color: #888; display: flex; align-items: center; justify-content: center; font-family: 'Barlow Condensed', sans-serif; font-weight: 900; font-size: 1.6rem; border: 2px solid rgba(255,255,255,0.03); flex-shrink: 0; }
         
-        /* ⭐ Nomes com Quebra de Linha Automática ⭐ */
+        /* ⭐ Nomes e Quebra de Linha (A MÁGICA PEDIDA) ⭐ */
         .rank-app-nome { 
             flex: 1; 
+            margin-left: 16px; 
             font-family: 'Barlow Condensed', sans-serif; 
             font-size: 1.4rem; 
             font-weight: 700; 
             color: var(--text); 
             text-transform: uppercase; 
             
-            /* Permite a quebra de linha em nomes longos */
-            white-space: normal; 
-            word-wrap: break-word; 
-            line-height: 1.2;
+            /* Remove truncamento e ellipsis */
+            white-space: normal !important; /* Força quebra de linha */
+            overflow: visible !important;
+            text-overflow: unset !important;
+            
+            /* Garante que quebre em múltiplas linhas e card cresça verticalmente */
+            word-wrap: break-word; /* Quebra no meio da palavra se necessário */
+            overflow-wrap: break-word; /* Suporte moderno */
+            
+            display: block; /* Garante que o texto se comporte como bloco e quebre */
+            margin-right: 10px; /* Pequeno espaçamento para a pontuação */
+            line-height: 1.2; /* Ajuste para leitura em múltiplas linhas */
         }
 
-        .rank-app-pts { font-family: 'Barlow Condensed', sans-serif; font-size: 2.2rem; font-weight: 900; flex-shrink: 0; text-align: right; color: #AAAAAA; }
+        .rank-app-pos { font-family: 'Barlow Condensed', sans-serif; font-size: 2.2rem; font-weight: 900; width: 40px; text-align: left; flex-shrink: 0; margin-right: 10px; }
+        .rank-app-pts { font-family: 'Barlow Condensed', sans-serif; font-size: 2.4rem; font-weight: 900; flex-shrink: 0; text-align: right; }
 
         /* =======================================================
-           🏅 ESTILOS DOS PÓDIOS (Cores Sólidas Premium) 
+           🏅 ESTILOS DOS PÓDIOS (Requinte Metálico, sem fundo sólido) 
            ======================================================= */
 
-        /* 👑 1º LUGAR (Ouro Brilhante) */
+        /* 👑 1º LUGAR (Ouro Metálico) */
         .rank-item-1 .rank-app-card { 
-            background: linear-gradient(135deg, #FFDF00 0%, #D4AF37 100%);
-            border: none;
-            box-shadow: 0 8px 25px rgba(212, 175, 55, 0.4); 
+            background: linear-gradient(135deg, rgba(212,175,55,0.12) 0%, #111318 100%);
+            border: 2px solid var(--gold);
+            box-shadow: 0 4px 20px rgba(212, 175, 55, 0.15); 
         }
-        .rank-item-1 .rank-app-pos, .rank-item-1 .rank-app-nome, .rank-item-1 .rank-app-pts { color: #000; text-shadow: none; }
-        .rank-item-1 .rank-avatar, .rank-item-1 .rank-avatar-placeholder { border-color: #000; color: #000; }
+        .rank-item-1 .rank-app-pos { color: var(--gold); text-shadow: 0 0 10px rgba(212,175,55,0.3); }
+        .rank-item-1 .rank-app-pts { color: var(--gold); }
+        .rank-item-1 .rank-avatar, .rank-item-1 .rank-avatar-placeholder { border-color: var(--gold); }
+        .rank-item-1 .rank-app-nome { color: var(--gold); font-weight: 900;}
 
         /* 🥈 2º LUGAR (Prata Metálica) */
         .rank-item-2 .rank-app-card { 
-            background: linear-gradient(135deg, #E0E0E0 0%, #BDBDBD 100%);
-            border: none;
-            box-shadow: 0 6px 20px rgba(189, 189, 189, 0.2); 
+            background: linear-gradient(135deg, rgba(175,175,175,0.1) 0%, #111318 100%);
+            border: 1px solid var(--silver); 
         }
-        .rank-item-2 .rank-app-pos, .rank-item-2 .rank-app-nome, .rank-item-2 .rank-app-pts { color: #000; }
-        .rank-item-2 .rank-avatar, .rank-item-2 .rank-avatar-placeholder { border-color: #000; color: #000; }
+        .rank-item-2 .rank-app-pos { color: var(--silver); }
+        .rank-item-2 .rank-app-pts { color: var(--silver); }
+        .rank-item-2 .rank-avatar, .rank-item-2 .rank-avatar-placeholder { border-color: var(--silver); }
+        .rank-item-2 .rank-app-nome { color: var(--silver); }
 
         /* 🥉 3º LUGAR (Bronze Metálico) */
         .rank-item-3 .rank-app-card { 
-            background: linear-gradient(135deg, #CD7F32 0%, #A0522D 100%);
-            border: none;
-            box-shadow: 0 6px 20px rgba(205, 127, 50, 0.2); 
+            background: linear-gradient(135deg, rgba(160,82,45,0.1) 0%, #111318 100%);
+            border: 1px solid var(--bronze); 
         }
-        .rank-item-3 .rank-app-pos, .rank-item-3 .rank-app-nome, .rank-item-3 .rank-app-pts { color: #000; }
-        .rank-item-3 .rank-avatar, .rank-item-3 .rank-avatar-placeholder { border-color: #000; color: #000; }
+        .rank-item-3 .rank-app-pos { color: var(--bronze); }
+        .rank-item-3 .rank-app-pts { color: var(--bronze); }
+        .rank-item-3 .rank-avatar, .rank-item-3 .rank-avatar-placeholder { border-color: var(--bronze); }
+        .rank-item-3 .rank-app-nome { color: var(--bronze); }
 
-        /* ⭐ CURRENT USER (O seu card) ⭐ */
+        /* ⭐ OUTROS ATLETAS ⭐ */
+        .rank-item-normal .rank-app-card { background-color: #111318; border: 1px solid rgba(255,255,255,0.03); }
+        .rank-item-normal .rank-app-pos { color: rgba(255,255,255,0.15); font-size: 1.8rem;}
+        .rank-item-normal .rank-app-pts { color: #888888; font-size: 2rem; font-style: italic;}
+        .rank-item-normal .rank-avatar, .rank-item-normal .rank-avatar-placeholder { border: 2px solid rgba(255,255,255,0.05); }
+
+        /* ⭐ CURRENT USER ⭐ */
         .rank-item-me .rank-app-card { 
-            background: var(--bg);
+            background: #181C24;
             border: 2px solid var(--primary);
-            box-shadow: 0 0 15px rgba(255, 85, 0, 0.3); 
+            box-shadow: 0 0 12px rgba(255, 85, 0, 0.2); 
         }
-        .rank-item-me .rank-app-pos, .rank-item-me .rank-app-pts { color: var(--primary) !important; font-weight: 900; }
+        .rank-item-me .rank-app-pos { color: var(--primary) !important; font-weight: 900; }
+        .rank-item-me .rank-app-pts { color: var(--primary) !important; font-weight: 900; font-style: normal; }
         .rank-item-me .rank-app-nome { color: var(--text) !important;}
-        .rank-item-me .rank-avatar, .rank-item-me .rank-avatar-placeholder { border-color: var(--primary) !important; color: var(--primary) !important;}
-
+        .rank-item-me .rank-avatar, .rank-item-me .rank-avatar-placeholder { border: 2px solid var(--primary) !important; }
 
         /* ======= MODAL TÉCNICA / ROLETA ======= */
         #modal-tecnica { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.85); z-index: 1000; align-items: flex-end; padding: 16px; backdrop-filter: blur(6px); }
@@ -427,14 +445,11 @@
     let timerId;
     let totalEx = 0;
     
-    // Variáveis de Controle
     let telaTreinoAtual = 'screen-locked';
     let abaAtiva = 'treino';
     let rankingGlobal = []; 
 
-    // ==========================================
-    // AUTO-LOGIN (SESSÃO SALVA)
-    // ==========================================
+    // AUTO-LOGIN
     window.addEventListener('DOMContentLoaded', () => {
         const alunoSalvo = localStorage.getItem('maxgym_aluno');
         if (alunoSalvo) {
@@ -572,9 +587,6 @@
         } catch(e) {}
     }
 
-    // ==========================================
-    // LÓGICA DO RANKING COM BUSCA E FOTOS
-    // ==========================================
     async function atualizarRankingUI() {
         const icone = document.getElementById('icon-refresh');
         if (icone) icone.classList.add('spin-animation');

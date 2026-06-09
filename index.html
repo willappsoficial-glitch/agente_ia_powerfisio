@@ -22,11 +22,6 @@
             --border: rgba(255,255,255,0.07);
             --text: #FFFFFF;
             --muted: #6B7280;
-            
-            /* ⭐ Paleta de cores para o TOP 3 (Fiel à imagem) */
-            --gold: #FFC000; /* Dourado da Imagem */
-            --silver: #E0E0E0; /* Cinza Prata da Imagem */
-            --bronze: #CD7F32; /* Bronze da Imagem */
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
@@ -40,12 +35,12 @@
         }
 
         html, body {
-            overscroll-behavior: none !important; /* Bloqueia no navegador inteiro */
+            overscroll-behavior: none !important; 
             overscroll-behavior-y: none !important;
-            touch-action: pan-y; /* Previne gestos nativos de recarregamento */
+            touch-action: pan-y; 
         }
 
-        /* ======= SWEETALERT THEME (JS-Based Popups) ======= */
+        /* ======= SWEETALERT THEME ======= */
         .swal2-popup { background: var(--bg-card) !important; color: var(--text) !important; border-radius: 20px !important; border: 1px solid var(--border) !important; font-family: 'Barlow', sans-serif !important; }
         .swal2-title { color: var(--text) !important; font-family: 'Barlow Condensed', sans-serif !important; font-weight: 900 !important; font-size: 1.6rem !important; letter-spacing: 1px; }
         .swal2-html-container { color: var(--muted) !important; font-size: 0.95rem !important; }
@@ -189,7 +184,9 @@
         .workout-cta { padding: 16px 24px 32px; display: flex; flex-direction: column; gap: 10px; }
         .btn-finish { background: var(--success); color: #000; box-shadow: 0 8px 24px rgba(0,230,118,0.25); display: none; width: 100%; }
 
-        /* ======= SCREEN RANKING (DESIGN ELEGANTE E ESPAÇOSO) ======= */
+        /* ==========================================================
+           🏆 SCREEN RANKING: DESIGN FIEL, ESPAÇOSO E COM CORES DE MEDALHA
+           ========================================================== */
         #screen-ranking { padding: 0 0 80px 0; background: var(--bg); }
         
         .rank-app-header-container { display: flex; justify-content: space-between; align-items: center; padding: 24px 24px 16px; background: var(--bg); position: sticky; top: 0; z-index: 50; border-bottom: 1px solid var(--border); }
@@ -213,28 +210,29 @@
         .rank-item { animation: itemEntrance 0.4s ease-out both; }
         @keyframes itemEntrance { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
-        /* ⭐ Base dos Cards: Escuros, Espaçosos e Elegantes ⭐ */
+        /* ⭐ Base dos Cards: Espaçosos e Imponentes ⭐ */
         .rank-app-card { 
             display: flex; 
             align-items: center; 
-            padding: 18px 20px; /* Bem mais espaço interno */
-            border-radius: 16px; /* Cantos mais arredondados */
-            background-color: #13161D; /* Fundo escuro premium */
+            padding: 20px 24px; /* Bem mais espaço interno */
+            border-radius: 20px; /* Cantos bem arredondados */
+            background-color: #13161D; /* Fundo padrão escuro */
             border: 1px solid var(--border);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
             position: relative;
-            overflow: hidden;
         }
+
+        .rank-app-pos { font-family: 'Barlow Condensed', sans-serif; font-size: 2rem; font-weight: 900; width: 40px; text-align: left; flex-shrink: 0; color: rgba(255,255,255,0.3); }
         
-        .rank-avatar, .rank-avatar-placeholder { width: 50px; height: 50px; border-radius: 50%; object-fit: cover; flex-shrink: 0; }
-        .rank-avatar-placeholder { background: rgba(255,255,255,0.05); color: #888; display: flex; align-items: center; justify-content: center; font-family: 'Barlow Condensed', sans-serif; font-weight: 900; font-size: 1.5rem; }
+        .rank-avatar-wrapper { position: relative; flex-shrink: 0; margin-right: 16px; }
+        .rank-avatar, .rank-avatar-placeholder { width: 56px; height: 56px; border-radius: 50%; object-fit: cover; border: 3px solid rgba(255,255,255,0.1); }
+        .rank-avatar-placeholder { background: rgba(255,255,255,0.05); color: #888; display: flex; align-items: center; justify-content: center; font-family: 'Barlow Condensed', sans-serif; font-weight: 900; font-size: 1.6rem; }
         
         /* ⭐ Nomes com Quebra de Linha Automática ⭐ */
         .rank-app-nome { 
             flex: 1; 
-            margin-left: 16px; 
-            margin-right: 12px;
             font-family: 'Barlow Condensed', sans-serif; 
-            font-size: 1.3rem; 
+            font-size: 1.4rem; 
             font-weight: 700; 
             color: var(--text); 
             text-transform: uppercase; 
@@ -245,59 +243,49 @@
             line-height: 1.2;
         }
 
-        .rank-app-pos { font-family: 'Barlow Condensed', sans-serif; font-size: 1.8rem; font-weight: 900; width: 32px; text-align: center; flex-shrink: 0; margin-right: 10px; }
-        .rank-app-pts { font-family: 'Barlow Condensed', sans-serif; font-size: 2rem; font-weight: 900; flex-shrink: 0; text-align: right; }
+        .rank-app-pts { font-family: 'Barlow Condensed', sans-serif; font-size: 2.2rem; font-weight: 900; flex-shrink: 0; text-align: right; color: #AAAAAA; }
 
         /* =======================================================
-           🏅 ESTILOS DOS PÓDIOS (Detalhes Metálicos, sem fundo sólido) 
+           🏅 ESTILOS DOS PÓDIOS (Cores Sólidas Premium) 
            ======================================================= */
 
-        /* 👑 1º LUGAR (Ouro) */
+        /* 👑 1º LUGAR (Ouro Brilhante) */
         .rank-item-1 .rank-app-card { 
-            background: linear-gradient(135deg, rgba(255,192,0,0.1) 0%, #13161D 100%);
-            border: 2px solid var(--gold);
-            box-shadow: 0 4px 20px rgba(255, 192, 0, 0.15); 
+            background: linear-gradient(135deg, #FFDF00 0%, #D4AF37 100%);
+            border: none;
+            box-shadow: 0 8px 25px rgba(212, 175, 55, 0.4); 
         }
-        .rank-item-1 .rank-app-pos { color: var(--gold); text-shadow: 0 0 10px rgba(255,192,0,0.3); }
-        .rank-item-1 .rank-app-pts { color: var(--gold); }
-        .rank-item-1 .rank-avatar, .rank-item-1 .rank-avatar-placeholder { border: 3px solid var(--gold); }
-        .rank-item-1 .rank-app-nome { color: var(--gold); }
+        .rank-item-1 .rank-app-pos, .rank-item-1 .rank-app-nome, .rank-item-1 .rank-app-pts { color: #000; text-shadow: none; }
+        .rank-item-1 .rank-avatar, .rank-item-1 .rank-avatar-placeholder { border-color: #000; color: #000; }
 
-        /* 🥈 2º LUGAR (Prata) */
+        /* 🥈 2º LUGAR (Prata Metálica) */
         .rank-item-2 .rank-app-card { 
-            background: linear-gradient(135deg, rgba(224,224,224,0.08) 0%, #13161D 100%);
-            border: 1px solid var(--silver); 
+            background: linear-gradient(135deg, #E0E0E0 0%, #BDBDBD 100%);
+            border: none;
+            box-shadow: 0 6px 20px rgba(189, 189, 189, 0.2); 
         }
-        .rank-item-2 .rank-app-pos { color: var(--silver); }
-        .rank-item-2 .rank-app-pts { color: var(--silver); }
-        .rank-item-2 .rank-avatar, .rank-item-2 .rank-avatar-placeholder { border: 2px solid var(--silver); }
-        .rank-item-2 .rank-app-nome { color: var(--silver); }
+        .rank-item-2 .rank-app-pos, .rank-item-2 .rank-app-nome, .rank-item-2 .rank-app-pts { color: #000; }
+        .rank-item-2 .rank-avatar, .rank-item-2 .rank-avatar-placeholder { border-color: #000; color: #000; }
 
-        /* 🥉 3º LUGAR (Bronze) */
+        /* 🥉 3º LUGAR (Bronze Metálico) */
         .rank-item-3 .rank-app-card { 
-            background: linear-gradient(135deg, rgba(205,127,50,0.08) 0%, #13161D 100%);
-            border: 1px solid var(--bronze); 
+            background: linear-gradient(135deg, #CD7F32 0%, #A0522D 100%);
+            border: none;
+            box-shadow: 0 6px 20px rgba(205, 127, 50, 0.2); 
         }
-        .rank-item-3 .rank-app-pos { color: var(--bronze); }
-        .rank-item-3 .rank-app-pts { color: var(--bronze); }
-        .rank-item-3 .rank-avatar, .rank-item-3 .rank-avatar-placeholder { border: 2px solid var(--bronze); }
-        .rank-item-3 .rank-app-nome { color: var(--bronze); }
-
-        /* ⭐ OUTROS ATLETAS ⭐ */
-        .rank-item-normal .rank-app-pos { color: rgba(255,255,255,0.15); font-size: 1.6rem;}
-        .rank-item-normal .rank-app-pts { color: #888888; font-size: 1.7rem; font-style: italic;}
-        .rank-item-normal .rank-avatar, .rank-item-normal .rank-avatar-placeholder { border: 2px solid rgba(255,255,255,0.05); }
+        .rank-item-3 .rank-app-pos, .rank-item-3 .rank-app-nome, .rank-item-3 .rank-app-pts { color: #000; }
+        .rank-item-3 .rank-avatar, .rank-item-3 .rank-avatar-placeholder { border-color: #000; color: #000; }
 
         /* ⭐ CURRENT USER (O seu card) ⭐ */
         .rank-item-me .rank-app-card { 
-            background: #181C24;
+            background: var(--bg);
             border: 2px solid var(--primary);
-            box-shadow: 0 0 12px rgba(255, 85, 0, 0.2); 
+            box-shadow: 0 0 15px rgba(255, 85, 0, 0.3); 
         }
-        .rank-item-me .rank-app-pos { color: var(--primary) !important; font-weight: 900; }
-        .rank-item-me .rank-app-pts { color: var(--primary) !important; font-weight: 900; font-style: normal; }
+        .rank-item-me .rank-app-pos, .rank-item-me .rank-app-pts { color: var(--primary) !important; font-weight: 900; }
         .rank-item-me .rank-app-nome { color: var(--text) !important;}
-        .rank-item-me .rank-avatar, .rank-item-me .rank-avatar-placeholder { border: 2px solid var(--primary) !important; }
+        .rank-item-me .rank-avatar, .rank-item-me .rank-avatar-placeholder { border-color: var(--primary) !important; color: var(--primary) !important;}
+
 
         /* ======= MODAL TÉCNICA / ROLETA ======= */
         #modal-tecnica { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.85); z-index: 1000; align-items: flex-end; padding: 16px; backdrop-filter: blur(6px); }
@@ -442,7 +430,7 @@
     // Variáveis de Controle
     let telaTreinoAtual = 'screen-locked';
     let abaAtiva = 'treino';
-    let rankingGlobal = []; // Guarda os dados do ranking para a busca não travar o app
+    let rankingGlobal = []; 
 
     // ==========================================
     // AUTO-LOGIN (SESSÃO SALVA)
@@ -493,10 +481,7 @@
 
             if (dados.sucesso) {
                 AlunoLogado = { id: dados.id, nome: dados.nome, cpf, posicao: dados.posicao };
-                
-                // Salva a sessão na memória do celular!
                 localStorage.setItem('maxgym_aluno', JSON.stringify(AlunoLogado));
-                
                 iniciarSessaoDoAluno();
             } else {
                 Swal.fire({ title: 'Acesso Negado', text: 'CPF não encontrado. Fale com a recepção!', icon: 'error', confirmButtonColor: '#FF5500' });
@@ -509,7 +494,6 @@
         }
     }
 
-    // Função separada para desenhar a interface do aluno logado
     function iniciarSessaoDoAluno() {
         const primeiroNome = AlunoLogado.nome.split(' ')[0];
 
@@ -529,7 +513,6 @@
         radarInterval = setInterval(checarDesbloqueio, 5000);
     }
 
-    // Função de Logout (ativada clicando na foto)
     function fazerLogout() {
         Swal.fire({
             title: 'SAIR DA CONTA?',
@@ -590,29 +573,24 @@
     }
 
     // ==========================================
-    // ⭐ LÓGICA DO RANKING REFATORADA (JavaScript) ⭐
+    // LÓGICA DO RANKING COM BUSCA E FOTOS
     // ==========================================
-    
-    // NOVA FUNÇÃO: Aciona a animação e chama a carga
     async function atualizarRankingUI() {
         const icone = document.getElementById('icon-refresh');
-        icone.classList.add('spin-animation');
+        if (icone) icone.classList.add('spin-animation');
         
         try {
-            // Limpa o termo de busca se houver, pra trazer a lista completa atualizada
             document.getElementById('busca-ranking').value = ''; 
-            await carregarRankingApp(true); // 'true' para forçar limpar a lista visual antes
+            await carregarRankingApp(true); 
         } catch (erro) {
             console.error("Falha ao atualizar o ranking:", erro);
         } finally {
-            setTimeout(() => { icone.classList.remove('spin-animation'); }, 500);
+            if (icone) setTimeout(() => { icone.classList.remove('spin-animation'); }, 500);
         }
     }
 
-    // BÔNUS: Atualização silenciosa a cada 3 minutos se o usuário estiver na tela
     setInterval(() => {
         if (document.visibilityState === 'visible' && abaAtiva === 'ranking') {
-            // Se a pessoa não estiver buscando nada no momento, atualiza por baixo dos panos
             if(document.getElementById('busca-ranking').value === '') {
                 carregarRankingApp();
             }
@@ -621,8 +599,6 @@
 
     async function carregarRankingApp(forcarLimpar = false) {
         const container = document.getElementById('app-ranking-list');
-        
-        // Só mostra a msg de carregando se for a primeira vez ou refresh forçado, pra não piscar a tela
         if (rankingGlobal.length === 0 || forcarLimpar) {
             container.innerHTML = `<div style="text-align:center; padding: 60px; color:var(--primary);"><span class="material-icons" style="font-size: 3rem; animation: spin-anim 1.5s linear infinite;">sync</span><br><br><span style="font-family:'Barlow Condensed', sans-serif; letter-spacing:1px; font-weight:700;">ATUALIZANDO PONTUAÇÕES<span class="waiting-dots"></span></span></div>`;
         }
@@ -640,7 +616,7 @@
 
     function renderizarListaRanking(lista) {
         const container = document.getElementById('app-ranking-list');
-        container.innerHTML = ''; // Limpa antes de renderizar
+        container.innerHTML = ''; 
         
         if(lista.length === 0) {
             container.innerHTML = `<div style="text-align:center; padding: 20px; color:var(--muted);">Nenhum atleta encontrado com este nome.</div>`;
@@ -650,26 +626,23 @@
         let html = '';
         
         lista.forEach((aluno, index) => {
-            let posClass = '';
-            let isMe = (aluno.nome.toLowerCase() === AlunoLogado.nome.toLowerCase()) ? 'rank-item-me' : '';
-
-            // ⭐ Lógica de Classe Posição Exata do Print Profissional ⭐
+            const pNome = AlunoLogado.nome ? AlunoLogado.nome.trim().toLowerCase() : ''; 
+            const aNome = aluno.nome ? aluno.nome.trim().toLowerCase() : '';
+            const isMe = pNome === aNome ? 'rank-item-me' : '';
+            
+            let posClass = 'rank-item-normal';
             if (aluno.posicao == 1) posClass = 'rank-item-1';
             else if (aluno.posicao == 2) posClass = 'rank-item-2';
             else if (aluno.posicao == 3) posClass = 'rank-item-3';
-            else posClass = 'rank-item-normal';
 
-            // Desenha a foto ou o placeholder com a letra
             let avatarHtml = aluno.foto 
-                ? `<img src="${aluno.foto}" class="rank-avatar" onerror="this.outerHTML='<div class=\\'rank-avatar-placeholder\\'>${aluno.nome.charAt(0)}</div>'">` 
-                : `<div class="rank-avatar-placeholder">${aluno.nome.charAt(0)}</div>`;
+                ? `<div class="rank-avatar-wrapper"><img src="${aluno.foto}" class="rank-avatar" onerror="this.outerHTML='<div class=\\'rank-avatar-placeholder\\'>${aluno.nome.charAt(0)}</div>'"></div>` 
+                : `<div class="rank-avatar-wrapper"><div class="rank-avatar-placeholder">${aluno.nome.charAt(0)}</div></div>`;
 
-            // ⭐ O CAMPEÃO TEM ESTRUTURA DIFERENTE (Sem número visível) ⭐
-            let posHtml = aluno.posicao == 1 ? `<div class="rank-app-pos"></div>` : `<div class="rank-app-pos">${aluno.posicao}</div>`;
+            let posHtml = `<div class="rank-app-pos">${aluno.posicao}</div>`;
 
-            // ⭐ Montagem do HTML com as Novas Classes e Estrutura ⭐
             html += `
-            <div class="rank-item interactive ${posClass} ${isMe}" style="animation-delay: ${index * 30}ms;">
+            <div class="rank-item ${posClass} ${isMe}" style="animation-delay: ${index * 30}ms;">
                 <div class="rank-app-card">
                     ${posHtml}
                     ${avatarHtml}
@@ -877,12 +850,10 @@
         document.getElementById('modal-tecnica').classList.remove('open');
     }
 
-    // Função NOVA para manter o aluno logado e inativar a tela de treino após concluir
     function mostrarTelaSucesso() {
         mudarAbaApp('ranking');
-        carregarRankingApp(true); // Atualiza os pontos na hora!
+        carregarRankingApp(true); 
         
-        // Zera a tela de treino para não deixar o cara clicar de novo
         document.getElementById('dia-titulo').textContent = "MISSÃO CUMPRIDA";
         document.getElementById('treino-nivel').textContent = "Treino de hoje finalizado!";
         document.getElementById('msg-orientacao').style.display = 'none';
@@ -1007,7 +978,6 @@
     }
 </script>
 <script>
-    // 1. Registo do Service Worker
     if ('serviceWorker' in navigator) {
         window.addEventListener('load', () => {
             navigator.serviceWorker.register('./sw-app.js')
@@ -1016,17 +986,11 @@
         });
     }
 
-    // 2. Intercetar o evento de instalação e disparar o SweetAlert
     let deferredPrompt;
 
     window.addEventListener('beforeinstallprompt', (e) => {
-        // Previne o Chrome de mostrar aquele ícone minúsculo e inútil
         e.preventDefault();
-        
-        // Guarda o evento para podermos disparar o botão de instalação depois
         deferredPrompt = e;
-        
-        // Espera 3 segundos depois de o site carregar e mostra o Pop-up Premium!
         setTimeout(mostrarBannerInstalacao, 3000); 
     });
 
@@ -1036,7 +1000,6 @@
         Swal.fire({
             title: 'INSTALAR APLICATIVO',
             html: 'Adicione o <strong>MaxGym</strong> ao ecrã principal do seu telemóvel para ter acesso rápido ao treino e ao ranking!',
-            // 🚀 A MÁGICA AQUI: Trocamos o ícone pela sua logo!
             imageUrl: 'icon-192.png', 
             imageWidth: 80,
             imageHeight: 80,
@@ -1049,15 +1012,12 @@
             cancelButtonText: 'AGORA NÃO'
         }).then((result) => {
             if (result.isConfirmed) {
-                // Se ele clicou em instalar, disparamos a tela preta nativa do Android
                 deferredPrompt.prompt();
-                
-                // Aguarda a resposta do aluno
                 deferredPrompt.userChoice.then((choiceResult) => {
                     if (choiceResult.outcome === 'accepted') {
                         console.log('Aluno instalou o MaxGym!');
                     }
-                    deferredPrompt = null; // Limpa o evento
+                    deferredPrompt = null; 
                 });
             }
         });

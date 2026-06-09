@@ -243,12 +243,15 @@
 
         /* ======= ⭐ O CAMPEÃO (1º LUGAR) - ESTILO LENDÁRIO ⭐ ======= */
         .rank-app-card.gold.champion { 
-            background: linear-gradient(135deg, #2c2100 0%, #080a0f 50%, #2c2100 100%); /* Fundo Preto-Dourado Profundo */
+            background: linear-gradient(135deg, #2c2100 0%, #080a0f 50%, #2c2100 100%);
             border: 2px solid var(--gold);
             margin-bottom: 10px;
-            transform: scale(1.02); /* Ligeiramente maior */
-            box-shadow: 0 10px 30px rgba(255, 215, 0, 0.15); /* Sombra Larga Dourada */
-            animation: championPulsar 2s infinite alternate, cardEntrance 0.5s ease-out both; /* Pulsação + Entrada */
+            transform: scale(1.02);
+            box-shadow: 0 10px 30px rgba(255, 215, 0, 0.15);
+            animation: championPulsar 2s infinite alternate, cardEntrance 0.5s ease-out both;
+            /* 🚀 AJUSTE: Menos padding e gap para dar espaço ao texto */
+            padding: 12px 12px; 
+            gap: 10px; 
         }
         
         @keyframes championPulsar {
@@ -258,21 +261,38 @@
 
         /* Coroa flutuante */
         .champion-crown {
-            position: absolute; top: -12px; left: 16px;
-            font-size: 2.2rem; transform: rotate(-15deg);
+            position: absolute; top: -14px; left: 10px;
+            font-size: 2rem; transform: rotate(-15deg);
             filter: drop-shadow(0 2px 4px rgba(0,0,0,0.5));
             z-index: 5;
             animation: crownFloat 2s ease-in-out infinite;
         }
         @keyframes crownFloat { 0%, 100% { transform: rotate(-15deg) translateY(0); } 50% { transform: rotate(-15deg) translateY(-5px); } }
 
-        .rank-app-card.champion .rank-app-pos { color: var(--gold); font-size: 2.2rem; text-shadow: 0 0 10px rgba(255, 215, 0, 0.5); }
-        .rank-app-card.champion .rank-avatar, .rank-app-card.champion .rank-avatar-placeholder { width: 50px; height: 50px; border-color: var(--gold); border-width: 3px; box-shadow: 0 0 15px rgba(255, 215, 0, 0.3); }
-        .rank-app-card.champion .rank-app-nome { font-size: 1.4rem; color: var(--gold); font-weight: 900; text-shadow: 0 0 8px rgba(255, 215, 0, 0.4); text-transform: uppercase; letter-spacing: 1px; }
+        .rank-app-card.champion .rank-app-pos { 
+            color: var(--gold); 
+            font-size: 1.8rem; /* 🚀 AJUSTE: Reduzido um pouco */
+            text-shadow: 0 0 10px rgba(255, 215, 0, 0.5); 
+            width: auto; min-width: 25px; /* Permite respirar */
+        }
+        .rank-app-card.champion .rank-avatar, .rank-app-card.champion .rank-avatar-placeholder { 
+            width: 46px; height: 46px; /* 🚀 AJUSTE: Equilibrado */
+            border-color: var(--gold); border-width: 3px; 
+            box-shadow: 0 0 15px rgba(255, 215, 0, 0.3); 
+        }
+        .rank-app-card.champion .rank-app-nome { 
+            font-size: 1.25rem; /* 🚀 AJUSTE: Ideal para caber o nome */
+            color: var(--gold); font-weight: 900; 
+            text-shadow: 0 0 8px rgba(255, 215, 0, 0.4); 
+            text-transform: uppercase; 
+            letter-spacing: 0.5px; 
+        }
         
         /* Pontuação Brilhante do Campeão */
         .rank-app-card.champion .rank-app-pts { 
-            color: #FFFFFF; font-size: 2.2rem; font-style: normal;
+            color: #FFFFFF; 
+            font-size: 1.9rem; /* 🚀 AJUSTE: Reduzido um pouco */
+            font-style: normal;
             position: relative;
             background: linear-gradient(90deg, #FFFFFF 0%, var(--gold) 50%, #FFFFFF 100%);
             background-size: 200% auto;

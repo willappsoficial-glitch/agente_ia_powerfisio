@@ -78,7 +78,7 @@
         }
         #input-pesquisa::placeholder { color: rgba(255,255,255,0.3); }
 
-        /* TABELA BASE (COMPUTADOR) */
+        /* TABELA BASE */
         .table-wrapper {
             background: var(--card);
             border-radius: 12px;
@@ -98,40 +98,14 @@
 
         /* MENU INFERIOR */
         .bottom-nav {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            width: 100%;
-            background: rgba(26, 29, 42, 0.95);
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
-            display: flex;
-            justify-content: space-between;
-            padding: 10px 2px 20px 2px;
-            border-top: 1px solid rgba(255,255,255,0.05);
-            z-index: 100;
+            position: fixed; bottom: 0; left: 0; width: 100%;
+            background: rgba(26, 29, 42, 0.95); backdrop-filter: blur(10px);
+            display: flex; justify-content: space-between; padding: 10px 2px 20px 2px;
+            border-top: 1px solid rgba(255,255,255,0.05); z-index: 100;
         }
-        .nav-item {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            color: var(--muted);
-            cursor: pointer;
-            transition: 0.3s;
-            flex: 1;
-        }
-        .nav-item .material-icons { 
-            font-size: 1.4rem; 
-            margin-bottom: 4px; 
-            transition: 0.3s; 
-            text-transform: none !important; 
-        }
-        .nav-item span:not(.material-icons) { 
-            font-size: 0.50rem; 
-            font-weight: 700; 
-            text-transform: uppercase; 
-            text-align: center;
-        }
+        .nav-item { display: flex; flex-direction: column; align-items: center; color: var(--muted); cursor: pointer; transition: 0.3s; flex: 1; }
+        .nav-item .material-icons { font-size: 1.4rem; margin-bottom: 4px; transition: 0.3s; text-transform: none !important; }
+        .nav-item span:not(.material-icons) { font-size: 0.50rem; font-weight: 700; text-transform: uppercase; text-align: center; }
         .nav-item.active { color: var(--p); }
         .nav-item.active .material-icons { transform: translateY(-3px); text-shadow: 0 4px 10px rgba(255,85,0,0.4); }
 
@@ -151,7 +125,7 @@
         .spin { animation: rodar 1s linear infinite; }
         @keyframes rodar { to { transform: rotate(360deg); } }
 
-        /* MÁGICA MOBILE: LAYOUT DE CARTÕES */
+        /* MÁGICA MOBILE */
         @media (max-width: 768px) {
             .table-wrapper { background: transparent; border: none; box-shadow: none; overflow: visible; }
             table, thead, tbody, th, td, tr { display: block; }
@@ -255,7 +229,7 @@
             if (autenticado === 'true') {
                 const trava = document.getElementById('trava-master-painel');
                 if (trava) trava.style.display = 'none';
-                carregarDados(); // Carrega os dados direto se já estiver logado
+                carregarDados(); 
             }
         })();
 
@@ -286,7 +260,7 @@
                     
                     setTimeout(() => { trava.style.display = 'none'; }, 300);
                     
-                    carregarDados(); // Dispara o carregamento da planilha só APÓS digitar a senha
+                    carregarDados(); 
                     
                 } else {
                     btn.innerHTML = "CONECTAR 🚀";
@@ -301,7 +275,7 @@
                     });
                 }
             } catch(erro) {
-                alert("Erro interno de segurança. Verifique a conexão.");
+                alert("Erro interno de segurança. Verifique a conexão com a internet.");
                 btn.innerHTML = "CONECTAR 🚀";
             }
         }

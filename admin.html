@@ -4,7 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MaxGym - Admin</title>
+    
     <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;700;900&family=Barlow:wght@400;600;700&display=swap" rel="stylesheet">
+    
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
     <style>
         :root {
             --primary: #FF5500;
@@ -30,6 +34,8 @@
             justify-content: center;
             padding: 24px;
             background-image: radial-gradient(ellipse at 20% 50%, rgba(255,85,0,0.04) 0%, transparent 50%);
+            /* Ocultar o scroll principal caso o ecrã seja pequeno */
+            overflow-x: hidden; 
         }
 
         .container {
@@ -239,148 +245,218 @@
 </head>
 <body>
 
-<div class="container">
-    <div class="header">
-        <img src="logo.jpeg" alt="Logo Powerfisio" class="header-logo" onerror="this.style.display='none'">
-        <h1>MAX<span>GYM</span></h1>
-        <p>Prontuário Clínico — Max IA</p>
+    <div id="trava-master-painel" style="position: fixed; inset: 0; background: #080A0F; z-index: 999999; display: flex; align-items: center; justify-content: center; font-family: 'Barlow', sans-serif; padding: 20px;">
+        <div style="background: #111318; border: 1px solid rgba(255,255,255,0.07); border-radius: 24px; padding: 40px 30px; width: 100%; max-width: 380px; text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.5);">
+            <h2 style="font-family: 'Barlow Condensed', sans-serif; font-size: 2.2rem; font-weight: 900; color: #FFF; letter-spacing: 1px; margin-bottom: 5px;">ACESSO CLÍNICO</h2>
+            <p style="color: #6B7280; font-size: 0.9rem; text-transform: uppercase; letter-spacing: 1px; font-weight: 600; margin-bottom: 30px;">Prontuários MaxGym</p>
+            
+            <div style="text-align: left; margin-bottom: 20px;">
+                <label style="font-size: 0.75rem; font-weight: 700; letter-spacing: 1.5px; color: #6B7280; text-transform: uppercase; margin-bottom: 10px; display: block;">Chave Master de Autenticação</label>
+                <input type="password" id="input-senha-master" placeholder="••••••••••••" style="width: 100%; background: #181C24; border: 1px solid rgba(255,255,255,0.07); border-radius: 14px; padding: 16px; color: white; font-size: 1.2rem; text-align: center; outline: none; transition: 0.2s;">
+            </div>
+            
+            <button id="btn-entrar-master" onclick="validarAcessoMaster()" style="width: 100%; background: #FF5500; color: white; border: none; border-radius: 14px; padding: 18px; font-family: 'Barlow Condensed', sans-serif; font-size: 1.2rem; font-weight: 900; letter-spacing: 2px; text-transform: uppercase; cursor: pointer; box-shadow: 0 8px 24px rgba(255,85,0,0.3);">CONECTAR 🚀</button>
+        </div>
     </div>
 
-    <div class="card">
-        <span class="section-label">Buscar Aluno</span>
-        <div class="search-row">
-            <input
-                type="text"
-                id="inputBusca"
-                class="input-field"
-                placeholder="ID ou nome do aluno..."
-                onkeydown="if(event.key==='Enter') buscarAluno()"
-            >
-            <button class="btn btn-primary" onclick="buscarAluno()">BUSCAR</button>
+    <div class="container">
+        <div class="header">
+            <img src="logo.jpeg" alt="Logo Powerfisio" class="header-logo" onerror="this.style.display='none'">
+            <h1>MAX<span>GYM</span></h1>
+            <p>Prontuário Clínico — Max IA</p>
         </div>
 
-        <!-- Resultado da busca -->
-        <div id="resultado-busca" class="aluno-box">
-            <div class="aluno-nome" id="nomeAluno">—</div>
-            <div class="aluno-id">ID EVO: <span id="idAluno">—</span></div>
-        </div>
-
-        <!-- Formulário de saúde -->
-        <div id="formulario" class="form-section">
-            <span class="section-label">Condições de Saúde</span>
-            <div class="tags-grid">
-                <div class="tag-item" onclick="toggleTag(this)">Hérnia de Disco</div>
-                <div class="tag-item" onclick="toggleTag(this)">Escoliose</div>
-                <div class="tag-item" onclick="toggleTag(this)">Hipertensão</div>
-                <div class="tag-item" onclick="toggleTag(this)">Condromalácia</div>
-                <div class="tag-item" onclick="toggleTag(this)">Labirintite</div>
-                <div class="tag-item" onclick="toggleTag(this)">Gestante</div>
-                <div class="tag-item" onclick="toggleTag(this)">Pós-Cirúrgico</div>
-                <div class="tag-item" onclick="toggleTag(this)">Diabetes</div>
+        <div class="card">
+            <span class="section-label">Buscar Aluno</span>
+            <div class="search-row">
+                <input
+                    type="text"
+                    id="inputBusca"
+                    class="input-field"
+                    placeholder="ID ou nome do aluno..."
+                    onkeydown="if(event.key==='Enter') buscarAluno()"
+                >
+                <button class="btn btn-primary" onclick="buscarAluno()">BUSCAR</button>
             </div>
 
-            <span class="section-label">Observações Adicionais</span>
-            <textarea
-                id="obs"
-                class="obs-field"
-                rows="3"
-                placeholder="Ex: Limitação de carga no agachamento, evitar impacto no joelho esquerdo..."
-            ></textarea>
+            <div id="resultado-busca" class="aluno-box">
+                <div class="aluno-nome" id="nomeAluno">—</div>
+                <div class="aluno-id">ID EVO: <span id="idAluno">—</span></div>
+            </div>
 
-            <button class="btn btn-primary btn-full" id="btnSalvar" onclick="salvarProntuario()">
-                SALVAR PRONTUÁRIO
-            </button>
+            <div id="formulario" class="form-section">
+                <span class="section-label">Condições de Saúde</span>
+                <div class="tags-grid">
+                    <div class="tag-item" onclick="toggleTag(this)">Hérnia de Disco</div>
+                    <div class="tag-item" onclick="toggleTag(this)">Escoliose</div>
+                    <div class="tag-item" onclick="toggleTag(this)">Hipertensão</div>
+                    <div class="tag-item" onclick="toggleTag(this)">Condromalácia</div>
+                    <div class="tag-item" onclick="toggleTag(this)">Labirintite</div>
+                    <div class="tag-item" onclick="toggleTag(this)">Gestante</div>
+                    <div class="tag-item" onclick="toggleTag(this)">Pós-Cirúrgico</div>
+                    <div class="tag-item" onclick="toggleTag(this)">Diabetes</div>
+                </div>
+
+                <span class="section-label">Observações Adicionais</span>
+                <textarea
+                    id="obs"
+                    class="obs-field"
+                    rows="3"
+                    placeholder="Ex: Limitação de carga no agachamento, evitar impacto no joelho esquerdo..."
+                ></textarea>
+
+                <button class="btn btn-primary btn-full" id="btnSalvar" onclick="salvarProntuario()">
+                    SALVAR PRONTUÁRIO
+                </button>
+            </div>
+
+            <div class="msg" id="msg"></div>
         </div>
-
-        <div class="msg" id="msg"></div>
     </div>
-</div>
 
-<script>
-    const GOOGLE_API_URL = "https://script.google.com/macros/s/AKfycby62vambopzAU-hOp4Och0Qg9_ZOxNCqqo19BFZvUA13OFTYBRMnTnNckq3aBzncXKTJg/exec";
-
-    let alunoSelecionado = null;
-
-    function toggleTag(el) {
-        el.classList.toggle('active');
-    }
-
-    function setMsg(texto, cor = 'var(--muted)') {
-        const msg = document.getElementById('msg');
-        msg.textContent = texto;
-        msg.style.color = cor;
-    }
-
-    async function buscarAluno() {
-        const query = document.getElementById('inputBusca').value.trim();
-        if (!query) return;
-
-        setMsg('🔍 Localizando na EVO...', 'var(--muted)');
-
-        try {
-            const res = await fetch(`${GOOGLE_API_URL}?acao=buscar&query=${encodeURIComponent(query)}`);
-            const aluno = await res.json();
-
-            if (aluno && aluno.id) {
-                alunoSelecionado = aluno;
-                document.getElementById('nomeAluno').textContent = aluno.nome;
-                document.getElementById('idAluno').textContent = aluno.id;
-                document.getElementById('resultado-busca').style.display = 'block';
-                document.getElementById('formulario').classList.add('visible');
-                setMsg('');
-
-                // Reset form
-                document.querySelectorAll('.tag-item').forEach(t => t.classList.remove('active'));
-                document.getElementById('obs').value = '';
-            } else {
-                setMsg('❌ Aluno não encontrado.', '#ff6b6b');
-                document.getElementById('resultado-busca').style.display = 'none';
-                document.getElementById('formulario').classList.remove('visible');
+    <script>
+        // ==========================================
+        // 1. LÓGICA DE SEGURANÇA (Auto-login e Validação)
+        // ==========================================
+        (function() {
+            // Usa uma chave de sessão diferente do gerencia para não cruzar logins acidentalmente, caso queira
+            const autenticado = sessionStorage.getItem('maxgym_admin_autenticado');
+            if (autenticado === 'true') {
+                const trava = document.getElementById('trava-master-painel');
+                if (trava) trava.style.display = 'none';
             }
-        } catch(e) {
-            setMsg('⚠️ Erro de conexão com a API.', '#ff6b6b');
+        })();
+
+        document.getElementById('input-senha-master').addEventListener('keydown', function(e) {
+            if (e.key === 'Enter') validarAcessoMaster();
+        });
+
+        function validarAcessoMaster() {
+            const btn = document.getElementById('btn-entrar-master');
+            const input = document.getElementById('input-senha-master');
+            const senhaDigitada = input.value;
+            
+            if (!senhaDigitada) return;
+
+            btn.textContent = "VERIFICANDO...";
+            
+            try {
+                // A senha é: MaxAdmin2026
+                // TWF4QWRtaW4yMDI2 é o código Base64 para MaxAdmin2026
+                if (btoa(senhaDigitada) === "TWF4QWRtaW4yMDI2") {
+                    sessionStorage.setItem('maxgym_admin_autenticado', 'true');
+                    
+                    const trava = document.getElementById('trava-master-painel');
+                    trava.style.transition = 'opacity 0.3s ease';
+                    trava.style.opacity = '0';
+                    
+                    setTimeout(() => { trava.style.display = 'none'; }, 300);
+                    
+                } else {
+                    btn.innerHTML = "CONECTAR 🚀";
+                    input.value = '';
+                    input.focus();
+
+                    Swal.fire({
+                        title: 'CHAVE INVÁLIDA',
+                        text: 'A senha de acesso clínico informada está incorreta.',
+                        icon: 'error',
+                        confirmButtonColor: '#FF5500'
+                    });
+                }
+            } catch(erro) {
+                alert("Erro interno de segurança. Verifique a conexão com a internet.");
+                btn.innerHTML = "CONECTAR 🚀";
+            }
         }
-    }
 
-    async function salvarProntuario() {
-        const tags = Array.from(document.querySelectorAll('.tag-item.active')).map(t => t.textContent.trim());
-        const obs = document.getElementById('obs').value;
-        const btn = document.getElementById('btnSalvar');
+        // ==========================================
+        // 2. LÓGICA ORIGINAL DO PRONTUÁRIO CLÍNICO
+        // ==========================================
+        const GOOGLE_API_URL = "https://script.google.com/macros/s/AKfycby62vambopzAU-hOp4Och0Qg9_ZOxNCqqo19BFZvUA13OFTYBRMnTnNckq3aBzncXKTJg/exec";
 
-        btn.disabled = true;
-        btn.textContent = "SALVANDO...";
-        setMsg('💾 Gravando prontuário...', 'var(--muted)');
+        let alunoSelecionado = null;
 
-        try {
-            const res = await fetch(GOOGLE_API_URL, {
-                method: 'POST',
-                body: JSON.stringify({
-                    acao: 'salvar',
-                    id: alunoSelecionado.id,
-                    nome: alunoSelecionado.nome,
-                    condicoes: tags.join(", "),
-                    observacoes: obs
-                })
-            });
+        function toggleTag(el) {
+            el.classList.toggle('active');
+        }
 
-            const resposta = await res.text();
-            if (resposta === "Sucesso") {
-                setMsg('✅ PRONTUÁRIO ATUALIZADO!', 'var(--success)');
-                btn.textContent = "SALVO ✓";
-                setTimeout(() => {
-                    btn.textContent = "SALVAR PRONTUÁRIO";
-                    btn.disabled = false;
+        function setMsg(texto, cor = 'var(--muted)') {
+            const msg = document.getElementById('msg');
+            msg.textContent = texto;
+            msg.style.color = cor;
+        }
+
+        async function buscarAluno() {
+            const query = document.getElementById('inputBusca').value.trim();
+            if (!query) return;
+
+            setMsg('🔍 Localizando na EVO...', 'var(--muted)');
+
+            try {
+                const res = await fetch(`${GOOGLE_API_URL}?acao=buscar&query=${encodeURIComponent(query)}`);
+                const aluno = await res.json();
+
+                if (aluno && aluno.id) {
+                    alunoSelecionado = aluno;
+                    document.getElementById('nomeAluno').textContent = aluno.nome;
+                    document.getElementById('idAluno').textContent = aluno.id;
+                    document.getElementById('resultado-busca').style.display = 'block';
+                    document.getElementById('formulario').classList.add('visible');
                     setMsg('');
-                }, 3000);
-            } else {
-                throw new Error();
+
+                    // Reset form
+                    document.querySelectorAll('.tag-item').forEach(t => t.classList.remove('active'));
+                    document.getElementById('obs').value = '';
+                } else {
+                    setMsg('❌ Aluno não encontrado.', '#ff6b6b');
+                    document.getElementById('resultado-busca').style.display = 'none';
+                    document.getElementById('formulario').classList.remove('visible');
+                }
+            } catch(e) {
+                setMsg('⚠️ Erro de conexão com a API.', '#ff6b6b');
             }
-        } catch(e) {
-            setMsg('❌ Erro ao salvar. Tente novamente.', '#ff6b6b');
-            btn.textContent = "SALVAR PRONTUÁRIO";
-            btn.disabled = false;
         }
-    }
-</script>
+
+        async function salvarProntuario() {
+            const tags = Array.from(document.querySelectorAll('.tag-item.active')).map(t => t.textContent.trim());
+            const obs = document.getElementById('obs').value;
+            const btn = document.getElementById('btnSalvar');
+
+            btn.disabled = true;
+            btn.textContent = "SALVANDO...";
+            setMsg('💾 Gravando prontuário...', 'var(--muted)');
+
+            try {
+                const res = await fetch(GOOGLE_API_URL, {
+                    method: 'POST',
+                    body: JSON.stringify({
+                        acao: 'salvar',
+                        id: alunoSelecionado.id,
+                        nome: alunoSelecionado.nome,
+                        condicoes: tags.join(", "),
+                        observacoes: obs
+                    })
+                });
+
+                const resposta = await res.text();
+                if (resposta === "Sucesso") {
+                    setMsg('✅ PRONTUÁRIO ATUALIZADO!', 'var(--success)');
+                    btn.textContent = "SALVO ✓";
+                    setTimeout(() => {
+                        btn.textContent = "SALVAR PRONTUÁRIO";
+                        btn.disabled = false;
+                        setMsg('');
+                    }, 3000);
+                } else {
+                    throw new Error();
+                }
+            } catch(e) {
+                setMsg('❌ Erro ao salvar. Tente novamente.', '#ff6b6b');
+                btn.textContent = "SALVAR PRONTUÁRIO";
+                btn.disabled = false;
+            }
+        }
+    </script>
 </body>
 </html>

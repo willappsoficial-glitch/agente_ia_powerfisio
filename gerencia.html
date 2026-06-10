@@ -4,9 +4,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Master App - MAXGYM</title>
+    
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
+
     <style>
         :root { 
             --p: #FF5500; 
@@ -167,91 +171,19 @@
 <body>
 
     <div id="trava-master-painel" style="position: fixed; inset: 0; background: #080A0F; z-index: 999999; display: flex; align-items: center; justify-content: center; font-family: 'Barlow', sans-serif; padding: 20px;">
-    <div style="background: #111318; border: 1px solid rgba(255,255,255,0.07); border-radius: 24px; padding: 40px 30px; width: 100%; max-width: 380px; text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.5);">
-        <h2 style="font-family: 'Barlow Condensed', sans-serif; font-size: 2.2rem; font-weight: 900; color: #FFF; letter-spacing: 1px; margin-bottom: 5px;">ACESSO RESTRITO</h2>
-        <p style="color: #6B7280; font-size: 0.9rem; text-transform: uppercase; letter-spacing: 1px; font-weight: 600; margin-bottom: 30px;">Painel de Controle MaxGym</p>
-        
-        <div style="text-align: left; margin-bottom: 20px;">
-            <label style="font-size: 0.75rem; font-weight: 700; letter-spacing: 1.5px; color: #6B7280; text-transform: uppercase; margin-bottom: 10px; display: block;">Chave Master de Autenticação</label>
-            <input type="password" id="input-senha-master" placeholder="••••••••••••" style="width: 100%; background: #181C24; border: 1px solid rgba(255,255,255,0.07); border-radius: 14px; padding: 16px; color: white; font-size: 1.2rem; text-align: center; outline: none; transition: 0.2s;">
-        </div>
-        
-        <button id="btn-entrar-master" onclick="validarAcessoMaster()" style="width: 100%; background: #FF5500; color: white; border: none; border-radius: 14px; padding: 18px; font-family: 'Barlow Condensed', sans-serif; font-size: 1.2rem; font-weight: 900; letter-spacing: 2px; text-transform: uppercase; cursor: pointer; box-shadow: 0 8px 24px rgba(255,85,0,0.3);">CONECTAR 🚀</button>
-    </div>
-</div>
-
-<script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-
-<script>
-    // Executa assim que a página começa a carregar
-    (function() {
-        const autenticado = sessionStorage.getItem('maxgym_painel_autenticado');
-        if (autenticado === 'true') {
-            const trava = document.getElementById('trava-master-painel');
-            if (trava) trava.style.display = 'none';
-        }
-    })();
-
-    // Permite apertar "Enter" no teclado para logar
-    document.getElementById('input-senha-master').addEventListener('keydown', function(e) {
-        if (e.key === 'Enter') validarAcessoMaster();
-    });
-
-    function validarAcessoMaster() {
-        const btn = document.getElementById('btn-entrar-master');
-        const input = document.getElementById('input-senha-master');
-        const senhaDigitada = input.value;
-        
-        if (!senhaDigitada) return;
-
-        // Feedback visual de que o botão foi clicado
-        btn.textContent = "VERIFICANDO...";
-        
-        try {
-            // Gera o Hash criptografado
-            const hashDigitado = CryptoJS.SHA256(senhaDigitada).toString();
-            // Senha padrão atual: MaxAdmin2026
-            const hashCorreto = "f86ba52f75e2f7b8cfd0b28e5dbec03f9055745778893ccf9a6296317bc216d7"; 
+        <div style="background: #111318; border: 1px solid rgba(255,255,255,0.07); border-radius: 24px; padding: 40px 30px; width: 100%; max-width: 380px; text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.5);">
+            <h2 style="font-family: 'Barlow Condensed', sans-serif; font-size: 2.2rem; font-weight: 900; color: #FFF; letter-spacing: 1px; margin-bottom: 5px;">ACESSO RESTRITO</h2>
+            <p style="color: #6B7280; font-size: 0.9rem; text-transform: uppercase; letter-spacing: 1px; font-weight: 600; margin-bottom: 30px;">Painel de Controle MaxGym</p>
             
-            if (hashDigitado === hashCorreto) {
-                // Sucesso!
-                sessionStorage.setItem('maxgym_painel_autenticado', 'true');
-                
-                const trava = document.getElementById('trava-master-painel');
-                trava.style.transition = 'opacity 0.3s ease';
-                trava.style.opacity = '0';
-                
-                // Reduzido para 300ms para ser praticamente instantâneo!
-                setTimeout(() => { trava.style.display = 'none'; }, 300);
-                
-                if (typeof carregarDadosIniciais === "function") carregarDadosIniciais();
-                
-            } else {
-                // Erro na senha
-                btn.innerHTML = "CONECTAR 🚀"; // Volta o botão ao normal
-                input.value = '';
-                input.focus();
+            <div style="text-align: left; margin-bottom: 20px;">
+                <label style="font-size: 0.75rem; font-weight: 700; letter-spacing: 1.5px; color: #6B7280; text-transform: uppercase; margin-bottom: 10px; display: block;">Chave Master de Autenticação</label>
+                <input type="password" id="input-senha-master" placeholder="••••••••••••" style="width: 100%; background: #181C24; border: 1px solid rgba(255,255,255,0.07); border-radius: 14px; padding: 16px; color: white; font-size: 1.2rem; text-align: center; outline: none; transition: 0.2s;">
+            </div>
+            
+            <button id="btn-entrar-master" onclick="validarAcessoMaster()" style="width: 100%; background: #FF5500; color: white; border: none; border-radius: 14px; padding: 18px; font-family: 'Barlow Condensed', sans-serif; font-size: 1.2rem; font-weight: 900; letter-spacing: 2px; text-transform: uppercase; cursor: pointer; box-shadow: 0 8px 24px rgba(255,85,0,0.3);">CONECTAR 🚀</button>
+        </div>
+    </div>
 
-                // Usa o SweetAlert se existir, ou o Alerta padrão se a biblioteca falhar
-                if (typeof Swal !== 'undefined') {
-                    Swal.fire({
-                        title: 'CHAVE INVÁLIDA',
-                        text: 'A senha master informada está incorreta.',
-                        icon: 'error',
-                        confirmButtonColor: '#FF5500'
-                    });
-                } else {
-                    alert("⚠️ CHAVE INVÁLIDA! A senha master informada está incorreta.");
-                }
-            }
-        } catch(erro) {
-            // Se a biblioteca de criptografia não carregar por problema de internet
-            alert("Erro no sistema de segurança. Verifique a sua conexão com a internet.");
-            btn.innerHTML = "CONECTAR 🚀";
-        }
-    }
-</script>
     <header class="app-header">
         <div class="logo">MAXGYM <span>ERP</span></div>
         <button class="btn-add" onclick="abrirForm()">+ NOVO</button>
@@ -317,14 +249,72 @@
     </div>
 
     <script>
-        // 🚨 COLOQUE A SUA URL AQUI - A MESMA QUE JÁ ESTAVA USANDO!
+        // LÓGICA DE SEGURANÇA E TELA DE BLOQUEIO
+        (function() {
+            const autenticado = sessionStorage.getItem('maxgym_painel_autenticado');
+            if (autenticado === 'true') {
+                const trava = document.getElementById('trava-master-painel');
+                if (trava) trava.style.display = 'none';
+                carregarDados(); // Carrega os dados direto se já estiver logado
+            }
+        })();
+
+        document.getElementById('input-senha-master').addEventListener('keydown', function(e) {
+            if (e.key === 'Enter') validarAcessoMaster();
+        });
+
+        function validarAcessoMaster() {
+            const btn = document.getElementById('btn-entrar-master');
+            const input = document.getElementById('input-senha-master');
+            const senhaDigitada = input.value;
+            
+            if (!senhaDigitada) return;
+
+            btn.textContent = "VERIFICANDO...";
+            
+            try {
+                const hashDigitado = CryptoJS.SHA256(senhaDigitada).toString();
+                // A senha é: MaxAdmin2026
+                const hashCorreto = "f86ba52f75e2f7b8cfd0b28e5dbec03f9055745778893ccf9a6296317bc216d7"; 
+                
+                if (hashDigitado === hashCorreto) {
+                    sessionStorage.setItem('maxgym_painel_autenticado', 'true');
+                    
+                    const trava = document.getElementById('trava-master-painel');
+                    trava.style.transition = 'opacity 0.3s ease';
+                    trava.style.opacity = '0';
+                    
+                    setTimeout(() => { trava.style.display = 'none'; }, 300);
+                    
+                    carregarDados(); // Dispara o carregamento da planilha só APÓS digitar a senha
+                    
+                } else {
+                    btn.innerHTML = "CONECTAR 🚀";
+                    input.value = '';
+                    input.focus();
+
+                    Swal.fire({
+                        title: 'CHAVE INVÁLIDA',
+                        text: 'A senha master informada está incorreta.',
+                        icon: 'error',
+                        confirmButtonColor: '#FF5500'
+                    });
+                }
+            } catch(erro) {
+                alert("Erro interno de segurança. Verifique a conexão.");
+                btn.innerHTML = "CONECTAR 🚀";
+            }
+        }
+
+        // ==========================================
+        // LÓGICA ORIGINAL DO PAINEL GERENCIAL
+        // ==========================================
         const API = "https://script.google.com/macros/s/AKfycby62vambopzAU-hOp4Och0Qg9_ZOxNCqqo19BFZvUA13OFTYBRMnTnNckq3aBzncXKTJg/exec"; 
         
         let abaAtual = "Alunos_Max";
         let colunasAtuais = [];
-        let linhasAtuais = []; // 💾 Variável para guardar os dados da aba atual
+        let linhasAtuais = []; 
 
-        // 🔄 TRADUTOR VISUAL DE COLUNAS
         function nomeVisual(coluna) {
             if (coluna === "CPF") return "ID DO ALUNO";
             if (coluna === "QTD_TREINOS") return "PONTOS";
@@ -336,7 +326,7 @@
             elemento.classList.add('active');
             abaAtual = nome;
             document.getElementById('titulo-aba').innerText = nome.replace('_', ' ');
-            document.getElementById('input-pesquisa').value = ""; // Limpa a barra ao trocar de aba
+            document.getElementById('input-pesquisa').value = "";
             carregarDados();
         }
 
@@ -354,21 +344,20 @@
                 }
 
                 colunasAtuais = data.cabecalho;
-                linhasAtuais = data.linhas; // Salva as linhas na memória
+                linhasAtuais = data.linhas;
                 
                 let theadHTML = '<tr><th>AÇÕES</th>';
                 colunasAtuais.forEach(coluna => theadHTML += `<th>${nomeVisual(coluna)}</th>`);
                 theadHTML += '</tr>';
                 document.getElementById('thead').innerHTML = theadHTML;
 
-                renderizarTabela(linhasAtuais); // Chama a função para desenhar a tabela
+                renderizarTabela(linhasAtuais);
 
             } catch(e) { 
                 document.getElementById('tbody').innerHTML = `<tr><td colspan="10" class="loading-text" style="color:#ff4444">Falha na conexão.</td></tr>`;
             }
         }
 
-        // 🎨 FUNÇÃO SEPARADA PARA DESENHAR A TABELA
         function renderizarTabela(linhas) {
             let tbodyHTML = '';
             
@@ -404,16 +393,14 @@
             document.getElementById('tbody').innerHTML = tbodyHTML;
         }
 
-        // 🔎 MOTOR DE PESQUISA INSTANTÂNEA
         function filtrarTabela() {
             const termo = document.getElementById('input-pesquisa').value.toLowerCase();
             
             if (termo === "") {
-                renderizarTabela(linhasAtuais); // Se estiver vazio, mostra tudo
+                renderizarTabela(linhasAtuais);
                 return;
             }
 
-            // Procura o termo em qualquer coluna daquela linha
             const filtrados = linhasAtuais.filter(linha => {
                 return colunasAtuais.some(coluna => {
                     const valor = linha[coluna];
@@ -469,8 +456,6 @@
         function fecharModal() { 
             document.getElementById('modal').style.display = 'none'; 
         }
-        
-        carregarDados();
     </script>
 </body>
 </html>

@@ -180,14 +180,15 @@
 </div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 <script>
     // Executa assim que a página começa a carregar
     (function() {
-        // Verifica se você já digitou a senha nesta sessão do navegador para não ficar pedindo toda hora que der F5
         const autenticado = sessionStorage.getItem('maxgym_painel_autenticado');
         if (autenticado === 'true') {
-            document.getElementById('trava-master-painel').style.display = 'none';
+            const trava = document.getElementById('trava-master-painel');
+            if (trava) trava.style.display = 'none';
         }
     })();
 
@@ -197,43 +198,59 @@
     });
 
     function validarAcessoMaster() {
+        const btn = document.getElementById('btn-entrar-master');
         const input = document.getElementById('input-senha-master');
         const senhaDigitada = input.value;
         
-        // Gera o Hash criptografado da senha digitada
-        const hashDigitado = CryptoJS.SHA256(senhaDigitada).toString();
+        if (!senhaDigitada) return;
+
+        // Feedback visual de que o botão foi clicado
+        btn.textContent = "VERIFICANDO...";
         
-        // 🔒 Este é o Hash trancado da senha "MaxAdmin2026" - Ninguém consegue ler o texto original aqui!
-        const hashCorreto = "f86ba52f75e2f7b8cfd0b28e5dbec03f9055745778893ccf9a6296317bc216d7"; 
-        
-        if (hashDigitado === hashCorreto) {
-            // Salva o sucesso temporariamente na sessão do navegador
-            sessionStorage.setItem('maxgym_painel_autenticado', 'true');
+        try {
+            // Gera o Hash criptografado
+            const hashDigitado = CryptoJS.SHA256(senhaDigitada).toString();
+            // Senha padrão atual: MaxAdmin2026
+            const hashCorreto = "f86ba52f75e2f7b8cfd0b28e5dbec03f9055745778893ccf9a6296317bc216d7"; 
             
-            // Remove a tela preta com efeito suave
-            const trava = document.getElementById('trava-master-painel');
-            trava.style.transition = 'opacity 0.3s ease';
-            trava.style.opacity = '0';
-            setTimeout(() => { trava.style.display = 'none'; }, 3000);
-            
-            // Se você tiver uma função de carga inicial na sua tela (ex: carregarDados), ela pode ser chamada aqui se quiser
-            if (typeof carregarDadosIniciais === "function") carregarDadosIniciais();
-            
-        } else {
-            // Feedback premium de erro usando o SweetAlert que você já tem no projeto
-            Swal.fire({
-                title: 'CHAVE INVÁLIDA',
-                text: 'A senha master informada está incorreta.',
-                icon: 'error',
-                confirmButtonColor: '#FF5500',
-                confirmButtonText: 'TENTAR NOVAMENTE'
-            });
-            input.value = '';
-            input.focus();
+            if (hashDigitado === hashCorreto) {
+                // Sucesso!
+                sessionStorage.setItem('maxgym_painel_autenticado', 'true');
+                
+                const trava = document.getElementById('trava-master-painel');
+                trava.style.transition = 'opacity 0.3s ease';
+                trava.style.opacity = '0';
+                
+                // Reduzido para 300ms para ser praticamente instantâneo!
+                setTimeout(() => { trava.style.display = 'none'; }, 300);
+                
+                if (typeof carregarDadosIniciais === "function") carregarDadosIniciais();
+                
+            } else {
+                // Erro na senha
+                btn.innerHTML = "CONECTAR 🚀"; // Volta o botão ao normal
+                input.value = '';
+                input.focus();
+
+                // Usa o SweetAlert se existir, ou o Alerta padrão se a biblioteca falhar
+                if (typeof Swal !== 'undefined') {
+                    Swal.fire({
+                        title: 'CHAVE INVÁLIDA',
+                        text: 'A senha master informada está incorreta.',
+                        icon: 'error',
+                        confirmButtonColor: '#FF5500'
+                    });
+                } else {
+                    alert("⚠️ CHAVE INVÁLIDA! A senha master informada está incorreta.");
+                }
+            }
+        } catch(erro) {
+            // Se a biblioteca de criptografia não carregar por problema de internet
+            alert("Erro no sistema de segurança. Verifique a sua conexão com a internet.");
+            btn.innerHTML = "CONECTAR 🚀";
         }
     }
 </script>
-
     <header class="app-header">
         <div class="logo">MAXGYM <span>ERP</span></div>
         <button class="btn-add" onclick="abrirForm()">+ NOVO</button>

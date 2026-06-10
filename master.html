@@ -1,0 +1,717 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>MaxGym ADM - Command Center</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;700;900&family=Inter:wght@400;500;600;700;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet">
+    
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <style>
+        /* ========================================================
+           🎨 1. VARIÁVEIS E TEMA "OUT OF THIS WORLD"
+           ======================================================== */
+        :root {
+            --primary: #FF5E00;
+            --primary-glow: rgba(255, 94, 0, 0.35);
+            --primary-dim: rgba(255, 94, 0, 0.1);
+            --bg-deep: #050608;
+            --bg-panel: rgba(15, 18, 25, 0.65);
+            --bg-card: rgba(22, 26, 36, 0.8);
+            --border: rgba(255, 255, 255, 0.06);
+            --border-highlight: rgba(255, 94, 0, 0.2);
+            --text-main: #FFFFFF;
+            --text-muted: #8B92A5;
+            --success: #00E676;
+            --danger: #FF3D00;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-deep);
+            color: var(--text-main);
+            height: 100vh;
+            overflow: hidden;
+            background-image: 
+                radial-gradient(circle at 15% 50%, rgba(255, 94, 0, 0.06), transparent 25%),
+                radial-gradient(circle at 85% 30%, rgba(255, 94, 0, 0.04), transparent 25%);
+        }
+
+        /* Animações Globais */
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes pulseGlow { 0% { box-shadow: 0 0 15px var(--primary-glow); } 50% { box-shadow: 0 0 30px rgba(255,94,0,0.6); } 100% { box-shadow: 0 0 15px var(--primary-glow); } }
+
+        /* Scrollbar Invisível/Elegante */
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.2); }
+
+        /* ========================================================
+           🔒 2. TELA DE LOGIN MASTER (GLASSMORPHISM)
+           ======================================================== */
+        #login-screen {
+            position: fixed; inset: 0; z-index: 9999;
+            background: rgba(5, 6, 8, 0.9);
+            backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px);
+            display: flex; align-items: center; justify-content: center;
+            padding: 20px; transition: opacity 0.4s ease;
+        }
+        .login-card {
+            background: var(--bg-panel);
+            border: 1px solid var(--border);
+            border-radius: 24px; padding: 45px 35px; width: 100%; max-width: 400px;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.1);
+            text-align: center; position: relative; overflow: hidden;
+        }
+        .login-card::before {
+            content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%;
+            background: radial-gradient(circle at center, var(--primary-dim) 0%, transparent 50%); pointer-events: none;
+        }
+        .login-logo { font-family: 'Barlow Condensed', sans-serif; font-size: 2.8rem; font-weight: 900; letter-spacing: 1px; margin-bottom: 5px; }
+        .login-logo span { color: var(--primary); }
+        .login-sub { color: var(--text-muted); font-size: 0.85rem; text-transform: uppercase; letter-spacing: 3px; margin-bottom: 35px; font-weight: 600; }
+        .login-input {
+            width: 100%; background: rgba(0,0,0,0.3); border: 1.5px solid var(--border);
+            border-radius: 16px; padding: 18px; color: #fff; font-size: 1.2rem;
+            text-align: center; outline: none; transition: 0.3s; margin-bottom: 20px; letter-spacing: 3px;
+        }
+        .login-input:focus { border-color: var(--primary); box-shadow: 0 0 15px var(--primary-dim); }
+        .btn-glow {
+            width: 100%; background: linear-gradient(135deg, #FF7B00, #FF3D00);
+            color: #fff; border: none; padding: 18px; border-radius: 16px;
+            font-family: 'Barlow Condensed', sans-serif; font-size: 1.3rem; font-weight: 900;
+            letter-spacing: 2px; text-transform: uppercase; cursor: pointer;
+            transition: 0.3s; animation: pulseGlow 3s infinite;
+        }
+        .btn-glow:active { transform: scale(0.97); }
+
+        /* ========================================================
+           📱 3. ESTRUTURA DO SUPER APP (SIDEBAR + CONTENT)
+           ======================================================== */
+        #app-core { display: none; height: 100vh; width: 100vw; }
+        
+        /* SIDEBAR (Desktop) */
+        .app-sidebar {
+            width: 280px; background: var(--bg-panel); border-right: 1px solid var(--border);
+            display: flex; flex-direction: column; padding: 30px 20px;
+            backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+        }
+        .sidebar-brand { font-family: 'Barlow Condensed', sans-serif; font-size: 2.2rem; font-weight: 900; margin-bottom: 40px; text-align: center; }
+        .sidebar-brand span { color: var(--primary); }
+        
+        .nav-menu { display: flex; flex-direction: column; gap: 10px; flex: 1; }
+        .nav-link {
+            display: flex; align-items: center; gap: 14px; padding: 16px 20px;
+            border-radius: 16px; color: var(--text-muted); text-decoration: none;
+            font-weight: 600; font-size: 1.05rem; cursor: pointer; transition: 0.3s;
+            border: 1px solid transparent;
+        }
+        .nav-link:hover { background: rgba(255,255,255,0.03); color: #fff; }
+        .nav-link.active {
+            background: var(--primary-dim); color: var(--primary);
+            border-color: var(--border-highlight); box-shadow: inset 0 0 20px rgba(255,94,0,0.05);
+        }
+        .nav-link .material-icons-round { font-size: 1.6rem; }
+        
+        .sidebar-footer { margin-top: auto; }
+
+        /* MAIN CONTENT AREA */
+        .app-main { flex: 1; display: flex; flex-direction: column; overflow: hidden; position: relative; }
+        
+        /* HEADER SUPERIOR */
+        .top-header {
+            padding: 20px 30px; display: flex; justify-content: space-between; align-items: center;
+            border-bottom: 1px solid var(--border); background: rgba(5,6,8,0.4);
+            backdrop-filter: blur(10px); z-index: 10;
+        }
+        .module-title { font-family: 'Barlow Condensed', sans-serif; font-size: 2rem; font-weight: 900; letter-spacing: 1px; text-transform: uppercase; }
+        
+        /* CONTEÚDO DOS MÓDULOS */
+        .module-content { flex: 1; overflow-y: auto; padding: 30px; display: none; }
+        .module-content.active { display: block; animation: fadeIn 0.4s ease-out; }
+
+        /* ========================================================
+           🏢 4. MÓDULO ERP (GERÊNCIA) - ESTILOS
+           ======================================================== */
+        /* Sub-Navegação Horizontal (Pills) */
+        .erp-tabs {
+            display: flex; gap: 12px; overflow-x: auto; padding-bottom: 15px; margin-bottom: 20px;
+            scrollbar-width: none; /* Firefox */
+        }
+        .erp-tabs::-webkit-scrollbar { display: none; } /* Chrome */
+        .erp-tab {
+            background: var(--bg-card); border: 1px solid var(--border); color: var(--text-muted);
+            padding: 12px 24px; border-radius: 50px; font-weight: 700; font-size: 0.9rem;
+            text-transform: uppercase; letter-spacing: 1px; cursor: pointer; transition: 0.3s;
+            white-space: nowrap;
+        }
+        .erp-tab:hover { border-color: rgba(255,255,255,0.2); color: #fff; }
+        .erp-tab.active { background: var(--primary); border-color: var(--primary); color: #fff; box-shadow: 0 4px 15px var(--primary-glow); }
+
+        /* Barra de Ferramentas ERP */
+        .erp-toolbar { display: flex; gap: 15px; margin-bottom: 25px; align-items: center; flex-wrap: wrap; }
+        .search-box {
+            flex: 1; min-width: 250px; display: flex; align-items: center;
+            background: var(--bg-card); border: 1px solid var(--border); border-radius: 16px; padding: 0 20px; height: 55px;
+        }
+        .search-box input { flex: 1; background: transparent; border: none; color: #fff; font-size: 1rem; outline: none; padding-left: 12px; }
+        .btn-action {
+            height: 55px; padding: 0 24px; background: var(--bg-card); border: 1px solid var(--border);
+            border-radius: 16px; color: #fff; font-weight: 700; cursor: pointer; transition: 0.3s;
+            display: flex; align-items: center; gap: 8px; font-size: 0.95rem; text-transform: uppercase;
+        }
+        .btn-action.add { background: var(--primary); border-color: var(--primary); box-shadow: 0 4px 15px var(--primary-glow); }
+        .btn-action.add:hover { filter: brightness(1.1); transform: translateY(-2px); }
+
+        /* Tabela ERP */
+        .table-container { background: var(--bg-card); border: 1px solid var(--border); border-radius: 20px; overflow-x: auto; }
+        table { width: 100%; border-collapse: collapse; white-space: nowrap; }
+        th { background: rgba(0,0,0,0.3); padding: 18px 20px; text-align: left; font-size: 0.75rem; text-transform: uppercase; color: var(--text-muted); font-weight: 800; letter-spacing: 1px;}
+        td { padding: 15px 20px; border-bottom: 1px solid var(--border); font-size: 0.9rem; vertical-align: middle; }
+        tr:hover td { background: rgba(255,255,255,0.02); }
+        tr:last-child td { border-bottom: none; }
+        
+        .td-actions { display: flex; gap: 10px; }
+        .icon-btn { background: rgba(255,255,255,0.05); border: 1px solid var(--border); color: var(--text-main); width: 36px; height: 36px; border-radius: 10px; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: 0.2s; }
+        .icon-btn:hover { background: rgba(255,255,255,0.1); transform: scale(1.05); }
+        .icon-btn.edit:hover { color: var(--success); border-color: var(--success); background: rgba(0,230,118,0.1); }
+        .icon-btn.delete:hover { color: var(--danger); border-color: var(--danger); background: rgba(255,61,0,0.1); }
+
+        /* ========================================================
+           🏥 5. MÓDULO CLÍNICO (PRONTUÁRIO) - ESTILOS
+           ======================================================== */
+        .clinic-container { max-width: 600px; margin: 0 auto; }
+        .clinic-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 24px; padding: 35px; box-shadow: 0 20px 40px rgba(0,0,0,0.3); }
+        
+        .aluno-result { background: rgba(0,0,0,0.3); border: 1px solid var(--border-highlight); border-radius: 16px; padding: 20px; margin: 25px 0; display: none; text-align: center; }
+        .aluno-result h3 { font-family: 'Barlow Condensed', sans-serif; font-size: 1.8rem; text-transform: uppercase; margin-bottom: 5px; }
+        .aluno-result p { color: var(--primary); font-weight: 700; letter-spacing: 2px; font-size: 0.85rem; }
+
+        .tags-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 12px; margin-bottom: 25px; }
+        .tag-pill { background: rgba(255,255,255,0.03); border: 1px solid var(--border); border-radius: 12px; padding: 14px 10px; text-align: center; font-size: 0.85rem; font-weight: 600; cursor: pointer; transition: 0.2s; color: var(--text-muted); user-select: none; }
+        .tag-pill:hover { border-color: rgba(255,255,255,0.2); color: #fff; }
+        .tag-pill.active { background: var(--primary-dim); border-color: var(--primary); color: var(--primary); box-shadow: 0 0 15px var(--primary-glow); }
+
+        .clinic-textarea { width: 100%; background: rgba(0,0,0,0.3); border: 1px solid var(--border); border-radius: 16px; padding: 20px; color: #fff; font-family: 'Inter', sans-serif; font-size: 0.95rem; resize: none; outline: none; margin-bottom: 25px; transition: 0.3s; }
+        .clinic-textarea:focus { border-color: var(--primary); }
+        
+        .msg-feedback { text-align: center; font-size: 0.9rem; font-weight: 600; margin-top: 15px; min-height: 20px; }
+
+        /* ========================================================
+           📱 6. MÁGICA MOBILE (RESPONSIVIDADE EXTREMA)
+           ======================================================== */
+        @media (max-width: 900px) {
+            #app-core { flex-direction: column; }
+            
+            /* Sidebar vira Bottom Nav */
+            .app-sidebar {
+                flex-direction: row; width: 100%; height: 75px; padding: 0 10px;
+                position: fixed; bottom: 0; left: 0; z-index: 100;
+                border-right: none; border-top: 1px solid var(--border);
+                justify-content: space-around; align-items: center;
+                background: rgba(11, 13, 20, 0.95);
+            }
+            .sidebar-brand, .sidebar-footer { display: none; }
+            .nav-menu { flex-direction: row; width: 100%; justify-content: space-around; gap: 0; }
+            .nav-link { 
+                flex-direction: column; gap: 4px; padding: 10px; border: none;
+                border-radius: 0; justify-content: center; flex: 1;
+            }
+            .nav-link .material-icons-round { font-size: 1.5rem; }
+            .nav-link span:not(.material-icons-round) { font-size: 0.65rem; text-transform: uppercase; font-weight: 700; letter-spacing: 1px; }
+            .nav-link.active { background: transparent; border: none; box-shadow: none; color: var(--primary); }
+            .nav-link.active .material-icons-round { transform: translateY(-3px); text-shadow: 0 4px 10px var(--primary-glow); }
+
+            /* Ajustes Main Content */
+            .app-main { margin-bottom: 75px; } /* Espaço pro bottom nav */
+            .top-header { padding: 15px 20px; }
+            .module-title { font-size: 1.6rem; }
+            .module-content { padding: 15px; }
+            
+            /* Tabela ERP vira Cards no Mobile (A mágica do Gerencia) */
+            .table-container { background: transparent; border: none; overflow: visible; }
+            table, thead, tbody, th, td, tr { display: block; }
+            thead tr { display: none; }
+            tr { background: var(--bg-card); margin-bottom: 15px; border-radius: 16px; padding: 15px; border: 1px solid var(--border); box-shadow: 0 5px 15px rgba(0,0,0,0.3); }
+            td { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px solid rgba(255,255,255,0.03); font-size: 0.9rem; text-align: right; }
+            td:last-child { border-bottom: none; }
+            td::before { content: attr(data-label); font-weight: 800; color: var(--text-muted); text-transform: uppercase; font-size: 0.75rem; margin-right: 15px; text-align: left; }
+            .td-actions { justify-content: flex-end; padding-top: 10px; border-top: 1px solid rgba(255,255,255,0.05); width: 100%; margin-top: 5px; }
+            
+            /* Ajustes Prontuário */
+            .clinic-card { padding: 20px; }
+            .tags-grid { grid-template-columns: 1fr 1fr; }
+        }
+
+        /* Loading Universal */
+        .spinner { animation: spin 1s linear infinite; }
+        @keyframes spin { 100% { transform: rotate(360deg); } }
+        
+        /* Modal ERP Universal */
+        #modal-erp { display: none; position: fixed; inset:0; background: rgba(0,0,0,0.85); z-index: 9999; justify-content: center; align-items: center; padding: 15px; backdrop-filter: blur(10px); }
+        .modal-box { background: var(--bg-panel); padding: 30px; border-radius: 24px; width: 100%; max-width: 500px; max-height: 85vh; overflow-y: auto; border: 1px solid var(--border); box-shadow: 0 20px 50px rgba(0,0,0,0.5); }
+        .modal-box h3 { margin-bottom: 25px; font-family: 'Barlow Condensed', sans-serif; font-size: 1.8rem; text-transform: uppercase; letter-spacing: 1px;}
+        .form-group { margin-bottom: 18px; }
+        .form-group label { display: block; margin-bottom: 8px; font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; font-weight: 700; letter-spacing: 1px; }
+        .form-group input { width: 100%; padding: 15px; background: rgba(0,0,0,0.3); border: 1px solid var(--border); color: #fff; border-radius: 12px; font-family: 'Inter'; font-size: 1rem; outline: none; transition: 0.2s;}
+        .form-group input:focus { border-color: var(--primary); }
+        .modal-btn-row { display: flex; gap: 12px; margin-top: 30px; }
+    </style>
+</head>
+<body>
+
+    <div id="login-screen">
+        <div class="login-card">
+            <div class="login-logo">MAXGYM <span>ADM</span></div>
+            <div class="login-sub">Command Center</div>
+            <input type="password" id="input-senha" class="login-input" placeholder="SENHA MASTER">
+            <button class="btn-glow" id="btn-login" onclick="fazerLogin()">ACESSAR SISTEMA</button>
+        </div>
+    </div>
+
+    <div id="app-core">
+        
+        <nav class="app-sidebar">
+            <div class="sidebar-brand">MAXGYM <span>ADM</span></div>
+            
+            <div class="nav-menu">
+                <a class="nav-link active" onclick="trocarModulo('erp', this)">
+                    <span class="material-icons-round">space_dashboard</span>
+                    <span>Gestão ERP</span>
+                </a>
+                <a class="nav-link" onclick="trocarModulo('clinic', this)">
+                    <span class="material-icons-round">medical_services</span>
+                    <span>Prontuário</span>
+                </a>
+            </div>
+
+            <div class="sidebar-footer">
+                <a class="nav-link" onclick="sairApp()" style="color: var(--danger);">
+                    <span class="material-icons-round">logout</span>
+                    <span>Desconectar</span>
+                </a>
+            </div>
+        </nav>
+
+        <main class="app-main">
+            <header class="top-header">
+                <div class="module-title" id="header-title">GESTÃO ERP</div>
+            </header>
+
+            <section id="mod-erp" class="module-content active">
+                
+                <div class="erp-tabs" id="erp-abas-container">
+                    </div>
+
+                <div class="erp-toolbar">
+                    <div class="search-box">
+                        <span class="material-icons-round" style="color:var(--text-muted)">search</span>
+                        <input type="text" id="erp-pesquisa" placeholder="Pesquisar registro..." oninput="filtrarTabelaERP()">
+                    </div>
+                    <button class="btn-action add" onclick="abrirModalERP()">
+                        <span class="material-icons-round">add</span> NOVO REGISTRO
+                    </button>
+                </div>
+
+                <div class="table-container">
+                    <table id="tabela-erp">
+                        <thead id="erp-thead"></thead>
+                        <tbody id="erp-tbody">
+                            <tr><td colspan="10" style="text-align:center; padding: 40px; color:var(--text-muted);"><span class="material-icons-round spinner">sync</span> Conectando ao Banco de Dados...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <section id="mod-clinic" class="module-content">
+                <div class="clinic-container">
+                    <div class="clinic-card">
+                        
+                        <div style="font-size:0.8rem; color:var(--text-muted); text-transform:uppercase; font-weight:700; letter-spacing:2px; margin-bottom:12px;">Localizar Aluno (EVO)</div>
+                        <div class="erp-toolbar" style="margin-bottom:10px;">
+                            <div class="search-box">
+                                <span class="material-icons-round" style="color:var(--text-muted)">badge</span>
+                                <input type="text" id="clinic-pesquisa" placeholder="ID ou Nome do aluno..." onkeydown="if(event.key==='Enter') buscarAlunoClinic()">
+                            </div>
+                            <button class="btn-action add" onclick="buscarAlunoClinic()">BUSCAR</button>
+                        </div>
+
+                        <div id="clinic-aluno-result" class="aluno-result">
+                            <h3 id="clinic-nome-aluno">—</h3>
+                            <p>ID: <span id="clinic-id-aluno">—</span></p>
+                        </div>
+
+                        <div id="clinic-form" style="display:none; animation: fadeIn 0.4s ease;">
+                            <div style="font-size:0.8rem; color:var(--text-muted); text-transform:uppercase; font-weight:700; letter-spacing:2px; margin-bottom:12px; margin-top:20px;">Condições Clínicas</div>
+                            <div class="tags-grid">
+                                <div class="tag-pill" onclick="this.classList.toggle('active')">Hérnia de Disco</div>
+                                <div class="tag-pill" onclick="this.classList.toggle('active')">Escoliose</div>
+                                <div class="tag-pill" onclick="this.classList.toggle('active')">Hipertensão</div>
+                                <div class="tag-pill" onclick="this.classList.toggle('active')">Condromalácia</div>
+                                <div class="tag-pill" onclick="this.classList.toggle('active')">Labirintite</div>
+                                <div class="tag-pill" onclick="this.classList.toggle('active')">Gestante</div>
+                                <div class="tag-pill" onclick="this.classList.toggle('active')">Pós-Cirúrgico</div>
+                                <div class="tag-pill" onclick="this.classList.toggle('active')">Diabetes</div>
+                            </div>
+
+                            <div style="font-size:0.8rem; color:var(--text-muted); text-transform:uppercase; font-weight:700; letter-spacing:2px; margin-bottom:12px;">Observações Extras</div>
+                            <textarea id="clinic-obs" class="clinic-textarea" rows="4" placeholder="Restrições de carga, dores articulares..."></textarea>
+
+                            <button class="btn-glow" id="btn-salvar-clinic" onclick="salvarProntuarioClinic()" style="font-size: 1.1rem; padding: 15px; margin-top:10px;">SALVAR PRONTUÁRIO</button>
+                        </div>
+                        
+                        <div id="clinic-msg" class="msg-feedback"></div>
+                    </div>
+                </div>
+            </section>
+
+        </main>
+    </div>
+
+    <div id="modal-erp">
+        <div class="modal-box">
+            <h3 id="modal-erp-titulo">REGISTRO</h3>
+            <form id="form-erp">
+                <input type="hidden" id="erp-rowIdx">
+                <div id="erp-form-fields"></div>
+                <div class="modal-btn-row">
+                    <button type="button" class="btn-action" style="flex:1; justify-content:center;" onclick="document.getElementById('modal-erp').style.display='none'">CANCELAR</button>
+                    <button type="button" class="btn-action add" id="btn-salvar-erp" style="flex:2; justify-content:center;" onclick="salvarModalERP()">SALVAR DADOS</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // -----------------------------------------
+        // 1. CONFIGURAÇÕES GERAIS E SEGURANÇA
+        // -----------------------------------------
+        const API = "https://script.google.com/macros/s/AKfycby62vambopzAU-hOp4Och0Qg9_ZOxNCqqo19BFZvUA13OFTYBRMnTnNckq3aBzncXKTJg/exec";
+        
+        // Verifica Sessão ao Abrir
+        window.onload = () => {
+            if (sessionStorage.getItem('max_master_auth') === 'true') {
+                liberarApp();
+            }
+        };
+
+        // Permite "Enter" no Login
+        document.getElementById('input-senha').addEventListener('keydown', e => {
+            if(e.key === 'Enter') fazerLogin();
+        });
+
+        function fazerLogin() {
+            const btn = document.getElementById('btn-login');
+            const senha = document.getElementById('input-senha').value;
+            
+            if(!senha) return;
+            btn.textContent = "AUTENTICANDO...";
+
+            try {
+                // A senha é: MaxAdmin2026 (Usando Base64 nativo para blindagem leve e eficiente)
+                if (btoa(senha) === "TWF4QWRtaW4yMDI2") {
+                    sessionStorage.setItem('max_master_auth', 'true');
+                    liberarApp();
+                } else {
+                    btn.textContent = "ACESSAR SISTEMA";
+                    document.getElementById('input-senha').value = '';
+                    Swal.fire({ title: 'ACESSO NEGADO', text: 'Senha incorreta.', icon: 'error', confirmButtonColor: '#FF5E00', background: '#111318', color: '#fff' });
+                }
+            } catch(e) {
+                btn.textContent = "ACESSAR SISTEMA";
+            }
+        }
+
+        function liberarApp() {
+            document.getElementById('login-screen').style.opacity = '0';
+            setTimeout(() => {
+                document.getElementById('login-screen').style.display = 'none';
+                document.getElementById('app-core').style.display = 'flex';
+                // Inicia carregando o módulo padrão (ERP)
+                iniciarModuloERP();
+            }, 400);
+        }
+
+        function sairApp() {
+            sessionStorage.removeItem('max_master_auth');
+            location.reload();
+        }
+
+        // Navegação entre os Grandes Módulos (ERP x Clínico)
+        function trocarModulo(moduloID, elementoMenu) {
+            // Atualiza Menu
+            document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+            elementoMenu.classList.add('active');
+            
+            // Atualiza Título
+            document.getElementById('header-title').textContent = elementoMenu.querySelector('span:not(.material-icons-round)').textContent;
+
+            // Atualiza Telas
+            document.querySelectorAll('.module-content').forEach(s => s.classList.remove('active'));
+            document.getElementById(`mod-${moduloID}`).classList.add('active');
+
+            // Lógica de Init por módulo (Para não puxar dados desnecessários)
+            if(moduloID === 'erp' && erpLinhas.length === 0) iniciarModuloERP();
+            // Módulo Clínico não precisa de init automático pois depende de pesquisa
+        }
+
+
+        // -----------------------------------------
+        // 2. MOTOR DO ERP (Antigo Gerencia)
+        // -----------------------------------------
+        const abasERP = ['Alunos_Max', 'Exercicios', 'Ranking', 'Saude', 'MemoriaTreinos', 'Log_Webhook'];
+        let erpAbaAtual = 'Alunos_Max';
+        let erpColunas = [];
+        let erpLinhas = [];
+
+        function iniciarModuloERP() {
+            // Desenha os botões (Pills) das abas da planilha
+            let pillsHtml = '';
+            abasERP.forEach(aba => {
+                const ativa = aba === erpAbaAtual ? 'active' : '';
+                const nomeAmigavel = aba.replace('_', ' ');
+                pillsHtml += `<div class="erp-tab ${ativa}" onclick="mudarAbaERP('${aba}', this)">${nomeAmigavel}</div>`;
+            });
+            document.getElementById('erp-abas-container').innerHTML = pillsHtml;
+            carregarDadosERP();
+        }
+
+        function mudarAbaERP(nomeAba, elemento) {
+            document.querySelectorAll('.erp-tab').forEach(t => t.classList.remove('active'));
+            elemento.classList.add('active');
+            erpAbaAtual = nomeAba;
+            document.getElementById('erp-pesquisa').value = "";
+            carregarDadosERP();
+        }
+
+        // Tradutor visual de colunas para ficar mais bonito na tabela
+        function nomeVisualERP(col) {
+            if(col === "CPF") return "ID ALUNO";
+            if(col === "QTD_TREINOS") return "PONTOS";
+            return col;
+        }
+
+        async function carregarDadosERP() {
+            const tbody = document.getElementById('erp-tbody');
+            document.getElementById('erp-thead').innerHTML = "";
+            tbody.innerHTML = `<tr><td colspan="10" style="text-align:center; padding:40px; color:var(--text-muted);"><span class="material-icons-round spinner">sync</span> Extraindo dados de ${erpAbaAtual.replace('_',' ')}...</td></tr>`;
+            
+            try {
+                const res = await fetch(`${API}?acao=getDadosAba&aba=${erpAbaAtual}`);
+                const data = await res.json();
+                
+                if(data.erro) {
+                    tbody.innerHTML = `<tr><td colspan="10" style="color:var(--danger); text-align:center;">${data.erro}</td></tr>`;
+                    return;
+                }
+
+                erpColunas = data.cabecalho;
+                erpLinhas = data.linhas;
+                
+                // Monta Header da Tabela
+                let thead = '<tr><th>GERIR</th>';
+                erpColunas.forEach(c => thead += `<th>${nomeVisualERP(c)}</th>`);
+                thead += '</tr>';
+                document.getElementById('erp-thead').innerHTML = thead;
+
+                renderizarTabelaERP(erpLinhas);
+            } catch(e) {
+                tbody.innerHTML = `<tr><td colspan="10" style="color:var(--danger); text-align:center;">Falha de Conexão. Verifique a internet.</td></tr>`;
+            }
+        }
+
+        function renderizarTabelaERP(linhas) {
+            let html = '';
+            if(linhas.length === 0) {
+                html = `<tr><td colspan="10" style="text-align:center; color:var(--text-muted); padding:20px;">Nenhum registro encontrado.</td></tr>`;
+            }
+
+            linhas.forEach(linha => {
+                html += `<tr>`;
+                
+                // Coluna de Ações (Botões Modernos)
+                html += `<td data-label="GERIR" class="td-actions">
+                    <div class="icon-btn edit" onclick='abrirModalERP(${JSON.stringify(linha).replace(/'/g, "&#39;")})'><span class="material-icons-round" style="font-size:1.1rem;">edit</span></div>
+                    <div class="icon-btn delete" onclick="excluirLinhaERP(${linha.rowIdx})"><span class="material-icons-round" style="font-size:1.1rem;">delete_outline</span></div>
+                </td>`;
+
+                erpColunas.forEach(col => {
+                    let val = linha[col] || "";
+                    let strVal = String(val).toLowerCase();
+                    
+                    // Formata Links/Imagens
+                    if(strVal.startsWith("http")) {
+                        if(strVal.match(/\.(jpeg|jpg|gif|png)/i) || col.toLowerCase().includes('foto')) {
+                            val = `<img src="${val}" style="width:40px; height:40px; border-radius:8px; object-fit:cover; border:1px solid rgba(255,255,255,0.1);">`;
+                        } else {
+                            val = `<a href="${val}" target="_blank" style="color:var(--primary); text-decoration:none; font-weight:600;">Abrir Link ↗</a>`;
+                        }
+                    }
+                    html += `<td data-label="${nomeVisualERP(col)}">${val}</td>`;
+                });
+                html += `</tr>`;
+            });
+            document.getElementById('erp-tbody').innerHTML = html;
+        }
+
+        function filtrarTabelaERP() {
+            const termo = document.getElementById('erp-pesquisa').value.toLowerCase();
+            if(termo === "") { renderizarTabelaERP(erpLinhas); return; }
+
+            const filtrados = erpLinhas.filter(linha => {
+                return erpColunas.some(col => String(linha[col] || "").toLowerCase().includes(termo));
+            });
+            renderizarTabelaERP(filtrados);
+        }
+
+        function abrirModalERP(dados = null) {
+            document.getElementById('modal-erp').style.display = 'flex';
+            document.getElementById('modal-erp-titulo').innerText = dados ? "EDITAR REGISTRO" : "NOVO REGISTRO";
+            document.getElementById('erp-rowIdx').value = dados ? dados.rowIdx : "";
+            
+            let fieldsHtml = '';
+            erpColunas.forEach(col => {
+                let valor = dados ? (dados[col] || "") : "";
+                fieldsHtml += `
+                    <div class="form-group">
+                        <label>${nomeVisualERP(col)}</label>
+                        <input type="text" name="${col}" value="${valor}">
+                    </div>`;
+            });
+            document.getElementById('erp-form-fields').innerHTML = fieldsHtml;
+        }
+
+        async function salvarModalERP() {
+            const btn = document.getElementById('btn-salvar-erp');
+            btn.innerHTML = "<span class='material-icons-round spinner' style='font-size:1.2rem; margin-right:5px;'>sync</span> SALVANDO...";
+            btn.disabled = true;
+
+            const formData = new FormData(document.getElementById('form-erp'));
+            const payload = {
+                acao: 'salvarLinha',
+                aba: erpAbaAtual,
+                rowIdx: document.getElementById('erp-rowIdx').value,
+                dados: Object.fromEntries(formData)
+            };
+
+            try {
+                await fetch(API, { method: 'POST', body: JSON.stringify(payload) });
+                document.getElementById('modal-erp').style.display = 'none';
+                Swal.fire({ title: 'SUCESSO!', text: 'Registro salvo no banco de dados.', icon: 'success', background: '#111318', color: '#fff', confirmButtonColor: '#FF5E00' });
+                carregarDadosERP();
+            } catch(e) {
+                Swal.fire({ title: 'ERRO', text: 'Falha ao salvar.', icon: 'error', background: '#111318', color: '#fff' });
+            } finally {
+                btn.innerHTML = "SALVAR DADOS";
+                btn.disabled = false;
+            }
+        }
+
+        async function excluirLinhaERP(idx) {
+            const confirmacao = await Swal.fire({
+                title: 'EXCLUIR REGISTRO?',
+                text: "Esta ação apagará a linha da planilha permanentemente.",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#FF3D00',
+                cancelButtonColor: '#2A2F42',
+                confirmButtonText: 'SIM, APAGAR',
+                background: '#111318', color: '#fff'
+            });
+
+            if(confirmacao.isConfirmed) {
+                const payload = { acao: 'excluirLinha', aba: erpAbaAtual, rowIdx: idx };
+                await fetch(API, { method: 'POST', body: JSON.stringify(payload) });
+                Swal.fire({ title: 'APAGADO!', icon: 'success', background: '#111318', color: '#fff', timer: 1500, showConfirmButton: false });
+                carregarDadosERP();
+            }
+        }
+
+
+        // -----------------------------------------
+        // 3. MOTOR DO PRONTUÁRIO CLÍNICO (Antigo Admin)
+        // -----------------------------------------
+        let alunoClinicAtual = null;
+
+        function setClinicMsg(texto, cor) {
+            const el = document.getElementById('clinic-msg');
+            el.textContent = texto;
+            el.style.color = cor || "var(--text-muted)";
+        }
+
+        async function buscarAlunoClinic() {
+            const query = document.getElementById('clinic-pesquisa').value.trim();
+            if(!query) return;
+
+            setClinicMsg('Pesquisando na base...', 'var(--text-muted)');
+            
+            try {
+                const res = await fetch(`${API}?acao=buscar&query=${encodeURIComponent(query)}`);
+                const aluno = await res.json();
+
+                if (aluno && aluno.id) {
+                    alunoClinicAtual = aluno;
+                    document.getElementById('clinic-nome-aluno').textContent = aluno.nome;
+                    document.getElementById('clinic-id-aluno').textContent = aluno.id;
+                    
+                    document.getElementById('clinic-aluno-result').style.display = 'block';
+                    document.getElementById('clinic-form').style.display = 'block';
+                    setClinicMsg('');
+
+                    // Limpa form
+                    document.querySelectorAll('.tag-pill').forEach(t => t.classList.remove('active'));
+                    document.getElementById('clinic-obs').value = '';
+                } else {
+                    setClinicMsg('Aluno não encontrado.', 'var(--danger)');
+                    document.getElementById('clinic-aluno-result').style.display = 'none';
+                    document.getElementById('clinic-form').style.display = 'none';
+                }
+            } catch(e) {
+                setClinicMsg('Erro na conexão com a API.', 'var(--danger)');
+            }
+        }
+
+        async function salvarProntuarioClinic() {
+            if(!alunoClinicAtual) return;
+
+            const tags = Array.from(document.querySelectorAll('.tag-pill.active')).map(t => t.textContent.trim());
+            const obs = document.getElementById('clinic-obs').value;
+            const btn = document.getElementById('btn-salvar-clinic');
+
+            btn.disabled = true;
+            btn.innerHTML = "<span class='material-icons-round spinner' style='font-size:1.2rem; vertical-align:middle; margin-right:8px;'>sync</span> GRAVANDO...";
+
+            try {
+                const res = await fetch(API, {
+                    method: 'POST',
+                    body: JSON.stringify({
+                        acao: 'salvar',
+                        id: alunoClinicAtual.id,
+                        nome: alunoClinicAtual.nome,
+                        condicoes: tags.join(", "),
+                        observacoes: obs
+                    })
+                });
+
+                const resposta = await res.text();
+                if(resposta === "Sucesso") {
+                    Swal.fire({ title: 'PRONTUÁRIO SALVO', icon: 'success', confirmButtonColor: '#FF5E00', background: '#111318', color: '#fff' });
+                } else {
+                    throw new Error();
+                }
+            } catch(e) {
+                Swal.fire({ title: 'ERRO', text: 'Falha ao salvar prontuário.', icon: 'error', background: '#111318', color: '#fff' });
+            } finally {
+                btn.innerHTML = "SALVAR PRONTUÁRIO";
+                btn.disabled = false;
+            }
+        }
+    </script>
+</body>
+</html>

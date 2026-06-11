@@ -195,24 +195,10 @@
         .workout-cta { padding: 16px 24px 32px; display: flex; flex-direction: column; gap: 10px; }
         .btn-finish { background: var(--success); color: #000; box-shadow: 0 8px 24px rgba(0,230,118,0.25); display: none; width: 100%; }
 
-        /* ======= SCREEN RANKING ======= */
-        #screen-ranking { 
-            padding: 0 0 80px 0; 
-            background: 
-                radial-gradient(ellipse at 50% 0%, rgba(255,85,0,0.15) 0%, transparent 60%),
-                linear-gradient(to bottom, rgba(8, 10, 15, 0.85), rgba(8, 10, 15, 0.5)),
-                url('fundo-login.jpg') center/cover no-repeat fixed;
-            min-height: 100vh;
-        }
+        /* ======= SCREEN RANKING (NOVO LAYOUT CARDS QUADRADOS) ======= */
+        #screen-ranking { padding: 0 0 80px 0; background: var(--bg); }
         
-        /* NOVO HEADER DO RANKING COM EFEITO VIDRO */
-        .rank-app-header-container { 
-            display: flex; justify-content: space-between; align-items: center; 
-            padding: 24px 24px 16px; border-bottom: 1px solid var(--border); 
-            background: rgba(17, 19, 24, 0.6); 
-            backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
-            position: sticky; top: 0; z-index: 20; 
-        }
+        .rank-app-header-container { display: flex; justify-content: space-between; align-items: center; padding: 24px 24px 16px; border-bottom: 1px solid var(--border); background: var(--bg-card); position: sticky; top: 0; z-index: 20; }
         .rank-app-titles { text-align: left; }
         .rank-app-title { font-family: 'Barlow Condensed', sans-serif; font-size: 2.2rem; font-weight: 900; color: var(--text); letter-spacing: 1px; }
         .rank-app-subtitle { font-size: 0.8rem; color: var(--muted); text-transform: uppercase; letter-spacing: 2px; margin-top: 2px;}
@@ -220,77 +206,87 @@
         .spin-animation { animation: spin-anim 1s linear infinite; }
         @keyframes spin-anim { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
         
-        /* Barra de Busca com Efeito Vidro */
-        .search-container { 
-            padding: 16px 24px; 
-            background: rgba(8, 10, 15, 0.6); 
-            backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
-            position: sticky; top: 83px; z-index: 10; border-bottom: 1px solid var(--border); 
+        .search-container { padding: 16px 24px; background: var(--bg); position: sticky; top: 83px; z-index: 10; border-bottom: 1px solid var(--border); }
+        .search-box { position: relative; }
+        .search-box .material-icons { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: var(--muted); }
+        .search-box input { width: 100%; background: var(--bg-surface); border: 1px solid var(--border); border-radius: 14px; padding: 14px 14px 14px 44px; color: white; font-family: 'Barlow Condensed', sans-serif; font-size: 1.1rem; font-weight: 600; outline: none; transition: 0.2s; }
+        .search-box input:focus { border-color: var(--primary); }
+        .search-box input::placeholder { color: #555; }
+
+        /* Transformamos a lista num Grid de Cartões (1 coluna no telemóvel, 2+ no PC) */
+        .ranking-list-container { 
+            padding: 20px 24px; 
+            display: grid; 
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); 
+            gap: 24px; 
         }
         
-        /* Estilo Base dos Cards */
+        /* O Novo Card Quadrado (Vertical) */
         .rank-app-card { 
-            display: flex; align-items: center; gap: 14px; 
-            background: linear-gradient(145deg, #13161d, #0f1116); /* Gradiente sutil */
-            padding: 14px 18px; border-radius: 18px; 
+            display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; gap: 8px;
+            background: linear-gradient(145deg, rgba(19,22,29,0.95), rgba(13,15,20,0.95));
+            padding: 35px 20px; border-radius: 28px; 
             border: 1px solid var(--border); 
             position: relative; overflow: hidden;
             transition: transform 0.2s ease, box-shadow 0.2s ease;
-            animation: cardEntrance 0.5s ease-out both; /* Animação de entrada */
+            animation: cardEntrance 0.5s ease-out both; 
         }
         @keyframes cardEntrance { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
         
-        .rank-app-card.me { border-color: var(--primary); background: rgba(255,85,0,0.06); }
-        .rank-app-card.silver { border-left: 4px solid silver; }
-        .rank-app-card.bronze { border-left: 4px solid #CD7F32; }
+        /* Cores Base e Bordas */
+        .rank-app-card.me { border-color: var(--primary); background: rgba(255,85,0,0.06); box-shadow: 0 0 20px rgba(255,85,0,0.15); }
+        .rank-app-card.silver { border-color: silver; background: linear-gradient(135deg, rgba(192,192,192,0.05) 0%, rgba(13,15,20,0.95) 100%); }
+        .rank-app-card.bronze { border-color: #CD7F32; background: linear-gradient(135deg, rgba(205,127,50,0.05) 0%, rgba(13,15,20,0.95) 100%); }
         
-        .rank-app-pos { font-family: 'Barlow Condensed', sans-serif; font-size: 1.6rem; font-weight: 900; width: 32px; text-align: center; color: rgba(255,255,255,0.25); flex-shrink: 0; }
+        /* Posição no topo do card */
+        .rank-app-pos { font-family: 'Barlow Condensed', sans-serif; font-size: 2.6rem; font-weight: 900; line-height: 1; color: rgba(255,255,255,0.15); margin-bottom: 5px; }
         .rank-app-card.silver .rank-app-pos { color: silver; }
         .rank-app-card.bronze .rank-app-pos { color: #CD7F32; }
 
-        /* Avatares do Ranking */
-        .rank-avatar-wrapper { position: relative; flex-shrink: 0; }
-        .rank-avatar { width: 44px; height: 44px; border-radius: 50%; object-fit: cover; background: var(--bg-surface); border: 2px solid var(--border); }
-        .rank-avatar-placeholder { width: 44px; height: 44px; border-radius: 50%; background: var(--bg-surface); color: var(--muted); display: flex; align-items: center; justify-content: center; font-family: 'Barlow Condensed', sans-serif; font-weight: 900; font-size: 1.4rem; border: 2px solid var(--border); }
+        /* Avatares Maiores e Centralizados */
+        .rank-avatar-wrapper { position: relative; margin: 5px 0 10px; }
+        .rank-avatar { width: 86px; height: 86px; border-radius: 50%; object-fit: cover; background: var(--bg-surface); border: 3px solid var(--border); box-shadow: 0 10px 20px rgba(0,0,0,0.4); }
+        .rank-avatar-placeholder { width: 86px; height: 86px; border-radius: 50%; background: rgba(255,255,255,0.05); color: var(--muted); display: flex; align-items: center; justify-content: center; font-family: 'Barlow Condensed', sans-serif; font-weight: 900; font-size: 2.8rem; border: 3px solid var(--border); box-shadow: 0 10px 20px rgba(0,0,0,0.4); }
         
-        .rank-app-nome { flex: 1; font-family: 'Barlow Condensed', sans-serif; font-size: 1.2rem; font-weight: 700; text-transform: uppercase; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: var(--text); }
+        .rank-app-card.silver .rank-avatar, .rank-app-card.silver .rank-avatar-placeholder { border-color: silver; }
+        .rank-app-card.bronze .rank-avatar, .rank-app-card.bronze .rank-avatar-placeholder { border-color: #CD7F32; }
+
+        /* Nome e Pontos em Bloco */
+        .rank-app-nome { font-family: 'Barlow Condensed', sans-serif; font-size: 1.6rem; font-weight: 700; text-transform: uppercase; color: var(--text); line-height: 1.2; word-wrap: break-word; white-space: normal; }
         .rank-app-card.me .rank-app-nome { color: var(--primary); font-weight: 900; }
         
-        .rank-app-pts { font-family: 'Barlow Condensed', sans-serif; font-size: 1.7rem; font-weight: 900; color: var(--muted); font-style: italic; flex-shrink: 0; }
+        .rank-app-pts { font-family: 'Barlow Condensed', sans-serif; font-size: 2.2rem; font-weight: 900; color: var(--primary); line-height: 1; margin-top: 8px;}
         .rank-app-card.silver .rank-app-pts, .rank-app-card.bronze .rank-app-pts { color: var(--text); }
-
-        /* ======= ⭐ O CAMPEÃO (1º LUGAR) - ESTILO LENDÁRIO ⭐ ======= */
+        
+        /* ======= ⭐ O CAMPEÃO (1º LUGAR) ⭐ ======= */
         .rank-app-card.gold.champion { 
-            background: linear-gradient(135deg, #2c2100 0%, #080a0f 50%, #2c2100 100%); /* Fundo Preto-Dourado Profundo */
+            background: linear-gradient(135deg, rgba(255,215,0,0.12) 0%, rgba(13,15,20,0.95) 100%);
             border: 2px solid var(--gold);
-            margin-bottom: 10px;
-            transform: scale(1.02); /* Ligeiramente maior */
-            box-shadow: 0 10px 30px rgba(255, 215, 0, 0.15); /* Sombra Larga Dourada */
-            animation: championPulsar 2s infinite alternate, cardEntrance 0.5s ease-out both; /* Pulsação + Entrada */
+            transform: scale(1.02);
+            box-shadow: 0 10px 35px rgba(255, 215, 0, 0.15); 
+            animation: championPulsar 2s infinite alternate, cardEntrance 0.5s ease-out both;
         }
         
         @keyframes championPulsar {
-            0% { box-shadow: 0 10px 30px rgba(255, 215, 0, 0.15); border-color: var(--gold); }
-            100% { box-shadow: 0 10px 40px rgba(255, 215, 0, 0.3); border-color: var(--gold-light); }
+            0% { box-shadow: 0 10px 35px rgba(255, 215, 0, 0.15); border-color: var(--gold); }
+            100% { box-shadow: 0 10px 45px rgba(255, 215, 0, 0.3); border-color: var(--gold-light); }
         }
 
-        /* Coroa flutuante */
         .champion-crown {
-            position: absolute; top: -12px; left: 16px;
-            font-size: 2.2rem; transform: rotate(-15deg);
-            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.5));
+            position: absolute; top: 20px; left: 25px;
+            font-size: 3rem; transform: rotate(-15deg);
+            filter: drop-shadow(0 4px 6px rgba(0,0,0,0.5));
             z-index: 5;
             animation: crownFloat 2s ease-in-out infinite;
         }
-        @keyframes crownFloat { 0%, 100% { transform: rotate(-15deg) translateY(0); } 50% { transform: rotate(-15deg) translateY(-5px); } }
+        @keyframes crownFloat { 0%, 100% { transform: rotate(-15deg) translateY(0); } 50% { transform: rotate(-15deg) translateY(-8px); } }
 
-        .rank-app-card.champion .rank-app-pos { color: var(--gold); font-size: 2.2rem; text-shadow: 0 0 10px rgba(255, 215, 0, 0.5); }
-        .rank-app-card.champion .rank-avatar, .rank-app-card.champion .rank-avatar-placeholder { width: 50px; height: 50px; border-color: var(--gold); border-width: 3px; box-shadow: 0 0 15px rgba(255, 215, 0, 0.3); }
-        .rank-app-card.champion .rank-app-nome { font-size: 1.4rem; color: var(--gold); font-weight: 900; text-shadow: 0 0 8px rgba(255, 215, 0, 0.4); text-transform: uppercase; letter-spacing: 1px; }
+        .rank-app-card.champion .rank-app-pos { color: var(--gold); font-size: 3rem; text-shadow: 0 0 15px rgba(255, 215, 0, 0.5); }
+        .rank-app-card.champion .rank-avatar, .rank-app-card.champion .rank-avatar-placeholder { width: 100px; height: 100px; border-color: var(--gold); border-width: 4px; box-shadow: 0 0 20px rgba(255, 215, 0, 0.3); font-size: 3.2rem;}
+        .rank-app-card.champion .rank-app-nome { font-size: 1.8rem; color: var(--gold); font-weight: 900; text-shadow: 0 0 10px rgba(255, 215, 0, 0.4); }
         
-        /* Pontuação Brilhante do Campeão */
         .rank-app-card.champion .rank-app-pts { 
-            color: #FFFFFF; font-size: 2.2rem; font-style: normal;
+            color: #FFFFFF; font-size: 2.6rem;
             position: relative;
             background: linear-gradient(90deg, #FFFFFF 0%, var(--gold) 50%, #FFFFFF 100%);
             background-size: 200% auto;
@@ -300,8 +296,10 @@
             animation: shineText 3s linear infinite;
         }
         @keyframes shineText { to { background-position: 200% center; } }
-        /* ======= FIM ESTILO CAMPEÃO ======= */
-
+        
+        @media (max-width: 600px) {
+            .ranking-list-container { grid-template-columns: 1fr; } /* Força 1 coluna em telemóveis */
+        }
         /* ======= MODAL TÉCNICA / ROLETA ======= */
         #modal-tecnica { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.85); z-index: 1000; align-items: flex-end; padding: 16px; backdrop-filter: blur(6px); }
         #modal-tecnica.open { display: flex; }

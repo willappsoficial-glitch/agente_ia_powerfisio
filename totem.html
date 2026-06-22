@@ -5,6 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Totem - MaxGym</title>
     <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@0,400;0,700;0,900;1,900&family=Barlow:wght@400;600;700&display=swap" rel="stylesheet">
+    
+    <script src="https://www.gstatic.com/firebasejs/10.0.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.0.0/firebase-database-compat.js"></script>
+
     <style>
         :root {
             --primary: #FF5500;
@@ -260,7 +264,7 @@
             align-items: center;
             gap: 20px;
             width: 100%;
-            max-width: 500px; /* Mais estreito para focar o botão */
+            max-width: 500px;
             animation: fadeSlideIn 0.4s ease-out 0.2s both;
         }
 
@@ -410,7 +414,6 @@
 </head>
 <body>
 
-    <!-- TELA DE ESPERA -->
     <div id="tela-espera" class="tela visivel">
         <div class="scan-line"></div>
 
@@ -434,9 +437,7 @@
         </div>
     </div>
 
-    <!-- TELA DO ALUNO -->
     <div id="tela-aluno" class="tela oculta">
-        <!-- Botão Novo de Fechamento Imediato -->
         <button class="btn-fechar" onclick="resetarTela()">X SAIR</button>
 
         <div class="foto-wrapper">
@@ -447,7 +448,6 @@
         <div class="saudacao">FALA, <span id="nome-aluno">ATLETA</span>!</div>
         <div class="subtitulo-aluno" id="txt-instrucao">A SUA MISSÃO ESTÁ PRONTA</div>
 
-        <!-- Menu Principal Otimizado (Apenas MAX + Roleta) -->
         <div class="area-principal" id="menu-principal">
             <button class="btn-max" onclick="abrirSeletorDias()">
                 <span class="btn-icon-max">🤖</span>
@@ -462,7 +462,6 @@
             </div>
         </div>
 
-        <!-- Seletor de Dias -->
         <div class="grid-dias" id="seletor-dias" style="display:none;">
             <button class="btn-dia" onclick="gerarTreinoIA('Segunda')">SEG</button>
             <button class="btn-dia" onclick="gerarTreinoIA('Terça')">TER</button>
@@ -472,19 +471,16 @@
             <button class="btn-dia" style="border-color:rgba(255,255,255,0.15);" onclick="voltarMenu()">← VOLTAR</button>
         </div>
 
-        <!-- Loading -->
         <div class="loading-container" id="loading">
             <div class="loading-spinner"></div>
             <div class="loading-text">MAX MONTANDO SEU TREINO...</div>
         </div>
     </div>
 
-    <!-- DEV Button -->
     <button class="dev-btn" onclick="simularPassagemCatraca('Williano Teste', '999', 3)">
         Simular [DEV]
     </button>
 
-    <!-- Área de Impressão -->
     <div id="area-impressao">
         <div style="text-align:center; margin-bottom: 5px;">
             <strong style="font-size: 20px; font-family: 'Barlow Condensed', sans-serif;">POWERFISIO</strong>
@@ -518,21 +514,29 @@
         let radarAtivo = true;
         let alunoAtualId = "";
         
-        // NOVO: Tempo cravado em 5 segundos! Super ágil.
         const TEMPO_LIBERACAO = 5000; 
 
-        // Polling Inteligente
-        window.onload = () => {
-            iniciarRadarInteligente();
+        // =========================================================
+        // 🔥 LIGAÇÃO DIRETA COM O FIREBASE
+        // =========================================================
+        const firebaseConfig = {
+            databaseURL: "https://max-catraca-default-rtdb.firebaseio.com"
         };
+        firebase.initializeApp(firebaseConfig);
+        const database = firebase.database();
 
-        async function iniciarRadarInteligente() {
-            if (radarAtivo) {
-                await escutarCatraca();
-            }
-            // Só faz a próxima chamada APÓS a anterior ter terminado, evitando gargalos
-            setTimeout(iniciarRadarInteligente, 1200);
-        }
+        // 🎧 ESCUTA: Apanha os alunos no momento em que a catraca os envia para a nuvem
+        database.ref('acessos').on('child_added', (snapshot) => {
+            // 🛡️ PROTEÇÃO: Se alguém estiver a usar o ecrã do Totem, ignora as passagens atrás
+            if (!radarAtivo) return; 
+
+            const dadosAluno = snapshot.val();
+            
+            // Tranca imediatamente o Totem para este aluno usar
+            radarAtivo = false; 
+            mostrarAluno(dadosAluno.nome, dadosAluno.idAluno, dadosAluno.posicao, dadosAluno.foto);
+        });
+        // =========================================================
 
         function formatarNome(nomeCompleto) {
             if (!nomeCompleto) return "Atleta";
@@ -551,19 +555,6 @@
 
         function capitalize(str) {
             return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
-        }
-
-        async function escutarCatraca() {
-            try {
-                const res = await fetch(`${API_URL}?acao=radar&t=${Date.now()}`);
-                const dados = await res.json();
-                if (dados.detectado) {
-                    radarAtivo = false;
-                    mostrarAluno(dados.nome, dados.idAluno, dados.posicao, dados.foto);
-                }
-            } catch(e) {
-                // Falha silenciosa
-            }
         }
 
         function mostrarAluno(nomeCompleto, idAluno, posicao, foto) {

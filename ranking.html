@@ -349,7 +349,7 @@
         let filaExibicaoVisual = [];
         let exibindoNesteMomento = false;
 
-        // 🎧 ESCUTA: Se passar 10 alunos juntos, o Firebase avisa 10 vezes instantaneamente
+        // 🎧 ESCUTA: Apanha os alunos no momento em que a catraca os envia para a nuvem
         database.ref('acessos').on('child_added', (snapshot) => {
             const alunoQuePassou = snapshot.val();
             const chaveFirebase = snapshot.key;
@@ -357,11 +357,13 @@
             // 1. Coloca na Fila da TV
             filaExibicaoVisual.push(alunoQuePassou);
 
-            // 2. Apaga da Nuvem para o seu Firebase não encher e continuar gratuito
-            database.ref('acessos/' + chaveFirebase).remove();
+            // 2. 🌟 A MÁGICA: Apaga da Nuvem com 15 segundos de atraso!
+            // Assim o Totem tem tempo de sobra para ler a informação antes de ela sumir.
+            setTimeout(() => {
+                database.ref('acessos/' + chaveFirebase).remove();
+            }, 15000);
 
             // 3. Manda a TV processar a fila
             gerenciarFilaVisualDaTV();
         });
-
         // 📺 MOTOR VISUAL: Gar

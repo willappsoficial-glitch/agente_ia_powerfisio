@@ -136,35 +136,6 @@
         .scroll-pts { font-family: 'Barlow Condensed', sans-serif; font-size: 0.9rem; font-weight: 900; color: rgba(255,85,0,0.6); }
         .scroll-sep { color: rgba(255,255,255,0.1); margin: 0 20px; }
 
-        /* ======= 🚨 O NOVO POPUP DE CATRACA DA TV (RADAR) 🚨 ======= */
-        .radar-overlay {
-            position: fixed; inset: 0; background: rgba(0,0,0,0.85); backdrop-filter: blur(8px);
-            display: flex; align-items: center; justify-content: center;
-            z-index: 9999; opacity: 0; pointer-events: none; transition: opacity 0.3s;
-        }
-        .radar-overlay.active { opacity: 1; pointer-events: auto; }
-        
-        .radar-card {
-            background: linear-gradient(145deg, #11141a, #060709);
-            border: 2px solid var(--primary);
-            border-radius: 30px;
-            padding: 40px;
-            display: flex; flex-direction: column; align-items: center;
-            box-shadow: 0 20px 50px rgba(255,85,0,0.3);
-            transform: scale(0.8); transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            text-align: center;
-            min-width: 400px;
-        }
-        .radar-overlay.active .radar-card { transform: scale(1); }
-
-        .radar-foto-box { width: 150px; height: 150px; border-radius: 50%; overflow: hidden; border: 4px solid var(--primary); margin-bottom: 20px; background: rgba(255,85,0,0.1); display: flex; align-items: center; justify-content: center; }
-        .radar-foto { width: 100%; height: 100%; object-fit: cover; }
-        .radar-inicial { font-family: 'Barlow Condensed', sans-serif; font-size: 5rem; font-weight: 900; color: var(--primary); }
-        
-        .radar-welcome { color: var(--primary); font-size: 1.2rem; font-weight: 700; letter-spacing: 4px; text-transform: uppercase; margin-bottom: 5px; }
-        .radar-name { font-family: 'Barlow Condensed', sans-serif; font-size: 3rem; font-weight: 900; color: #fff; text-transform: uppercase; line-height: 1; margin-bottom: 15px; }
-        .radar-pos { background: rgba(255,85,0,0.15); padding: 8px 20px; border-radius: 50px; border: 1px solid rgba(255,85,0,0.3); color: #fff; font-weight: 600; letter-spacing: 1px; }
-
         @media (max-width: 800px) {
             body { overflow-y: auto; overflow-x: hidden; }
             .header { padding: 15px; justify-content: flex-start; gap: 15px; }
@@ -180,26 +151,10 @@
             .rank-points { min-width: 65px; padding: 4px 8px; }
             .pts-value { font-size: 1.6rem; }
             #scroll-bar { display: none !important; }
-            
-            .radar-card { min-width: 90%; padding: 30px; }
-            .radar-foto-box { width: 120px; height: 120px; }
-            .radar-name { font-size: 2.2rem; }
         }
     </style>
 </head>
 <body>
-
-    <div id="radarOverlay" class="radar-overlay">
-        <div class="radar-card">
-            <div class="radar-foto-box">
-                <img id="radarFoto" class="radar-foto" src="" style="display:none;" alt="">
-                <div id="radarInicial" class="radar-inicial" style="display:none;"></div>
-            </div>
-            <div class="radar-welcome">Bem-vindo(a)</div>
-            <div id="radarNome" class="radar-name">NOME</div>
-            <div id="radarPos" class="radar-pos">A atualizar posição...</div>
-        </div>
-    </div>
 
     <div class="header">
         <img src="logo.jpeg" class="header-logo" alt="Logo" onclick="toggleFullScreen()" onerror="this.style.display='none'">
@@ -344,96 +299,24 @@
         }
 
         // =========================================================
-        // 🚀 3. MÁGICA DA FILA INDIANA AO VIVO (FIREBASE)
+        // 🚀 3. ATUALIZAÇÃO SILENCIOSA AO VIVO (FIREBASE)
         // =========================================================
-        let filaExibicaoVisual = [];
-        let exibindoNesteMomento = false;
-
-        // 🎧 ESCUTA: Apanha os alunos no momento em que a catraca os envia para a nuvem
+        // 🎧 ESCUTA: Apanha o sinal no momento em que a catraca é ativada
         database.ref('acessos').on('child_added', (snapshot) => {
-            const alunoQuePassou = snapshot.val();
             const chaveFirebase = snapshot.key;
 
-            // 1. Coloca na Fila da TV
-            filaExibicaoVisual.push(alunoQuePassou);
+            // 1. Atualiza a tabela de fundo silenciosamente
+            carregarRanking();
 
-            // 2. Apaga da Nuvem com 15 segundos de atraso
+            // 2. A TV tem a missão de varrer o lixo da nuvem para não acumular
             setTimeout(() => {
                 database.ref('acessos/' + chaveFirebase).remove();
             }, 15000);
-
-            // 3. Manda a TV processar a fila
-            gerenciarFilaVisualDaTV();
         });
 
-        // 📺 MOTOR VISUAL: Garante que os popups não se atropelem
-        function gerenciarFilaVisualDaTV() {
-            if (exibindoNesteMomento || filaExibicaoVisual.length === 0) return;
-
-            exibindoNesteMomento = true;
-            const alunoAtual = filaExibicaoVisual.shift(); // Tira o primeiro da fila
-            
-            exibirPopupRadar(alunoAtual);
-        }
-
-        function exibirPopupRadar(aluno) {
-            const overlay = document.getElementById('radarOverlay');
-            const foto = document.getElementById('radarFoto');
-            const inicial = document.getElementById('radarInicial');
-            const nome = document.getElementById('radarNome');
-            const pos = document.getElementById('radarPos');
-
-            // Formatar Nome Curto
-            let nomeExibicao = aluno.nome;
-            const partes = aluno.nome.trim().split(" ");
-            if (partes.length > 1) {
-                const p1 = partes[0];
-                let p2 = partes[1];
-                if (["de", "da", "do", "dos", "das"].includes(p2.toLowerCase()) && partes.length > 2) {
-                    p2 += " " + partes[2];
-                }
-                nomeExibicao = p1 + " " + p2;
-            }
-            nome.textContent = nomeExibicao.toUpperCase();
-
-            // Foto ou Inicial
-            if (aluno.foto && aluno.foto.trim() !== "") {
-                foto.src = aluno.foto;
-                foto.style.display = 'block';
-                inicial.style.display = 'none';
-            } else {
-                foto.style.display = 'none';
-                inicial.textContent = nomeExibicao.charAt(0).toUpperCase();
-                inicial.style.display = 'flex';
-            }
-
-            // Posição
-            if (aluno.posicao) {
-                const medalhas = { 1: '🥇', 2: '🥈', 3: '🥉' };
-                const medalha = medalhas[aluno.posicao] || '🏅';
-                pos.innerHTML = `${medalha} VOCÊ É O <strong>${aluno.posicao}º</strong> NO RANKING!`;
-            } else {
-                pos.innerHTML = `🏅 BEM-VINDO(A) À POWERFISIO!`;
-            }
-
-            // Animação de Entrada
-            overlay.classList.add('active');
-
-            // Tempo de Tela: 6 Segundos
-            setTimeout(() => {
-                overlay.classList.remove('active');
-                
-                // Atualiza a tabela de fundo para o aluno ver o ponto dele cair na conta!
-                carregarRanking();
-
-                // Respira meio segundo e chama o próximo da fila (se houver)
-                setTimeout(() => {
-                    exibindoNesteMomento = false;
-                    gerenciarFilaVisualDaTV();
-                }, 500); 
-            }, 6000);
-        }
-
+        // =========================================================
+        // 🔄 4. FUNÇÕES EXTRAS E INICIALIZAÇÃO
+        // =========================================================
         function toggleFullScreen() {
             if (!document.fullscreenElement) {
                 document.documentElement.requestFullscreen().catch(err => {
@@ -446,9 +329,6 @@
             }
         }
 
-        // =========================================================
-        // 🔄 4. INICIALIZAÇÃO DA TELA (CRÍTICO)
-        // =========================================================
         window.onload = () => {
             carregarRanking();
             // Recarrega o painel de fundo silenciosamente a cada 5 minutos 

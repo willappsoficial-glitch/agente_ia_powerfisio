@@ -357,8 +357,7 @@
             // 1. Coloca na Fila da TV
             filaExibicaoVisual.push(alunoQuePassou);
 
-            // 2. 🌟 A MÁGICA: Apaga da Nuvem com 15 segundos de atraso!
-            // Assim o Totem tem tempo de sobra para ler a informação antes de ela sumir.
+            // 2. Apaga da Nuvem com 15 segundos de atraso
             setTimeout(() => {
                 database.ref('acessos/' + chaveFirebase).remove();
             }, 15000);
@@ -366,4 +365,96 @@
             // 3. Manda a TV processar a fila
             gerenciarFilaVisualDaTV();
         });
-        // 📺 MOTOR VISUAL: Gar
+
+        // 📺 MOTOR VISUAL: Garante que os popups não se atropelem
+        function gerenciarFilaVisualDaTV() {
+            if (exibindoNesteMomento || filaExibicaoVisual.length === 0) return;
+
+            exibindoNesteMomento = true;
+            const alunoAtual = filaExibicaoVisual.shift(); // Tira o primeiro da fila
+            
+            exibirPopupRadar(alunoAtual);
+        }
+
+        function exibirPopupRadar(aluno) {
+            const overlay = document.getElementById('radarOverlay');
+            const foto = document.getElementById('radarFoto');
+            const inicial = document.getElementById('radarInicial');
+            const nome = document.getElementById('radarNome');
+            const pos = document.getElementById('radarPos');
+
+            // Formatar Nome Curto
+            let nomeExibicao = aluno.nome;
+            const partes = aluno.nome.trim().split(" ");
+            if (partes.length > 1) {
+                const p1 = partes[0];
+                let p2 = partes[1];
+                if (["de", "da", "do", "dos", "das"].includes(p2.toLowerCase()) && partes.length > 2) {
+                    p2 += " " + partes[2];
+                }
+                nomeExibicao = p1 + " " + p2;
+            }
+            nome.textContent = nomeExibicao.toUpperCase();
+
+            // Foto ou Inicial
+            if (aluno.foto && aluno.foto.trim() !== "") {
+                foto.src = aluno.foto;
+                foto.style.display = 'block';
+                inicial.style.display = 'none';
+            } else {
+                foto.style.display = 'none';
+                inicial.textContent = nomeExibicao.charAt(0).toUpperCase();
+                inicial.style.display = 'flex';
+            }
+
+            // Posição
+            if (aluno.posicao) {
+                const medalhas = { 1: '🥇', 2: '🥈', 3: '🥉' };
+                const medalha = medalhas[aluno.posicao] || '🏅';
+                pos.innerHTML = `${medalha} VOCÊ É O <strong>${aluno.posicao}º</strong> NO RANKING!`;
+            } else {
+                pos.innerHTML = `🏅 BEM-VINDO(A) À POWERFISIO!`;
+            }
+
+            // Animação de Entrada
+            overlay.classList.add('active');
+
+            // Tempo de Tela: 6 Segundos
+            setTimeout(() => {
+                overlay.classList.remove('active');
+                
+                // Atualiza a tabela de fundo para o aluno ver o ponto dele cair na conta!
+                carregarRanking();
+
+                // Respira meio segundo e chama o próximo da fila (se houver)
+                setTimeout(() => {
+                    exibindoNesteMomento = false;
+                    gerenciarFilaVisualDaTV();
+                }, 500); 
+            }, 6000);
+        }
+
+        function toggleFullScreen() {
+            if (!document.fullscreenElement) {
+                document.documentElement.requestFullscreen().catch(err => {
+                    console.error(`Erro ao tentar entrar em ecrã inteiro: ${err.message}`);
+                });
+            } else {
+                if (document.exitFullscreen) {
+                    document.exitFullscreen();
+                }
+            }
+        }
+
+        // =========================================================
+        // 🔄 4. INICIALIZAÇÃO DA TELA (CRÍTICO)
+        // =========================================================
+        window.onload = () => {
+            carregarRanking();
+            // Recarrega o painel de fundo silenciosamente a cada 5 minutos 
+            // (apenas como margem de segurança caso haja lentidão na rede)
+            setInterval(carregarRanking, 300000); 
+        };
+    </script>
+</body>
+</html>

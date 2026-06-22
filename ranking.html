@@ -3,12 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>MAXGYM - TV Ranking</title>
+    <title>MAXGYM - TV Ranking Ao Vivo</title>
     <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;700;900&family=Barlow:wght@400;600;700&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <link rel="manifest" href="manifest-tv.json">
     <meta name="theme-color" content="#060709">
     <meta name="apple-mobile-web-app-capable" content="yes">
+    
+    <script src="https://www.gstatic.com/firebasejs/10.0.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.0.0/firebase-database-compat.js"></script>
+
     <style>
         :root {
             --primary: #FF5500;
@@ -30,7 +34,7 @@
             height: 100vh;
             display: flex;
             flex-direction: column;
-            overflow-x: hidden; /* 🔒 IMPEDE QUE A TELA VÁ PARA OS LADOS */
+            overflow-x: hidden;
             position: relative;
         }
 
@@ -96,11 +100,7 @@
             border: 1px solid var(--border); border-left: 5px solid transparent; width: 100%;
             animation: cardIn 0.3s ease-out;
         }
-
-        @keyframes cardIn {
-            from { opacity: 0; transform: translateX(-10px); }
-            to { opacity: 1; transform: translateX(0); }
-        }
+        @keyframes cardIn { from { opacity: 0; transform: translateX(-10px); } to { opacity: 1; transform: translateX(0); } }
 
         .rank-card.gold { border-left-color: var(--gold); background: linear-gradient(90deg, rgba(255,215,0,0.08), var(--bg-card) 50%); }
         .rank-card.silver { border-left-color: var(--silver); background: linear-gradient(90deg, rgba(192,192,192,0.06), var(--bg-card) 50%); }
@@ -113,23 +113,19 @@
         .rank-card.bronze .pos-num { color: var(--bronze); }
 
         .rank-avatar { width: 52px; height: 52px; border-radius: 50%; object-fit: cover; flex-shrink: 0; border: 2px solid rgba(255,255,255,0.1); }
-        .rank-card.gold .rank-avatar { border-color: var(--gold); }
-        .rank-card.silver .rank-avatar { border-color: var(--silver); }
-        .rank-card.bronze .rank-avatar { border-color: var(--bronze); }
         .rank-avatar-placeholder { width: 52px; height: 52px; border-radius: 50%; background: rgba(255,85,0,0.15); border: 2px solid rgba(255,85,0,0.2); display: flex; align-items: center; justify-content: center; font-family: 'Barlow Condensed', sans-serif; font-size: 1.4rem; font-weight: 900; color: var(--primary); flex-shrink: 0; }
 
         .rank-name {
             flex: 1; font-family: 'Barlow Condensed', sans-serif; font-size: 1.3rem; font-weight: 700;
             text-transform: uppercase; letter-spacing: 0.5px; color: #E2E8F0;
-            white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
-            min-width: 0; /* Crucial para o texto não empurrar as divs flexbox */
+            white-space: nowrap; overflow: hidden; text-overflow: ellipsis; min-width: 0;
         }
 
         .rank-points { display: flex; flex-direction: column; align-items: center; background: rgba(255,85,0,0.08); border: 1px solid rgba(255,85,0,0.15); border-radius: 12px; padding: 6px 14px; flex-shrink: 0; min-width: 80px; }
         .pts-value { font-family: 'Barlow Condensed', sans-serif; font-size: 2.2rem; font-weight: 900; color: var(--primary); line-height: 1; }
         .pts-label { font-size: 0.6rem; color: rgba(255,170,136,0.7); text-transform: uppercase; letter-spacing: 1px; font-weight: 700; }
 
-        /* ======= SCROLLING BAR (Rodapé da TV) ======= */
+        /* ======= SCROLLING BAR ======= */
         #scroll-bar { position: fixed; bottom: 0; left: 0; width: 100vw; height: 58px; background: rgba(6,7,9,0.97); border-top: 1px solid rgba(255,85,0,0.25); display: none; align-items: center; overflow: hidden; z-index: 100; }
         #scroll-content { display: inline-flex; align-items: center; white-space: nowrap; padding-left: 100vw; animation: scrollLeft linear infinite; }
         @keyframes scrollLeft { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
@@ -140,52 +136,70 @@
         .scroll-pts { font-family: 'Barlow Condensed', sans-serif; font-size: 0.9rem; font-weight: 900; color: rgba(255,85,0,0.6); }
         .scroll-sep { color: rgba(255,255,255,0.1); margin: 0 20px; }
 
-        /* =========================================================
-           📱 MÁGICA CELULAR (RESOLVE A FUGA DA PONTUAÇÃO)
-           ========================================================= */
+        /* ======= 🚨 O NOVO POPUP DE CATRACA DA TV (RADAR) 🚨 ======= */
+        .radar-overlay {
+            position: fixed; inset: 0; background: rgba(0,0,0,0.85); backdrop-filter: blur(8px);
+            display: flex; align-items: center; justify-content: center;
+            z-index: 9999; opacity: 0; pointer-events: none; transition: opacity 0.3s;
+        }
+        .radar-overlay.active { opacity: 1; pointer-events: auto; }
+        
+        .radar-card {
+            background: linear-gradient(145deg, #11141a, #060709);
+            border: 2px solid var(--primary);
+            border-radius: 30px;
+            padding: 40px;
+            display: flex; flex-direction: column; align-items: center;
+            box-shadow: 0 20px 50px rgba(255,85,0,0.3);
+            transform: scale(0.8); transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            text-align: center;
+            min-width: 400px;
+        }
+        .radar-overlay.active .radar-card { transform: scale(1); }
+
+        .radar-foto-box { width: 150px; height: 150px; border-radius: 50%; overflow: hidden; border: 4px solid var(--primary); margin-bottom: 20px; background: rgba(255,85,0,0.1); display: flex; align-items: center; justify-content: center; }
+        .radar-foto { width: 100%; height: 100%; object-fit: cover; }
+        .radar-inicial { font-family: 'Barlow Condensed', sans-serif; font-size: 5rem; font-weight: 900; color: var(--primary); }
+        
+        .radar-welcome { color: var(--primary); font-size: 1.2rem; font-weight: 700; letter-spacing: 4px; text-transform: uppercase; margin-bottom: 5px; }
+        .radar-name { font-family: 'Barlow Condensed', sans-serif; font-size: 3rem; font-weight: 900; color: #fff; text-transform: uppercase; line-height: 1; margin-bottom: 15px; }
+        .radar-pos { background: rgba(255,85,0,0.15); padding: 8px 20px; border-radius: 50px; border: 1px solid rgba(255,85,0,0.3); color: #fff; font-weight: 600; letter-spacing: 1px; }
+
         @media (max-width: 800px) {
             body { overflow-y: auto; overflow-x: hidden; }
             .header { padding: 15px; justify-content: flex-start; gap: 15px; }
             .header-logo { width: 48px; height: 48px; }
             .header-title { font-size: 2.2rem; }
             .live-badge { display: none; }
-            
             .search-container { margin: 0 15px 15px; }
-            
-            .ranking-grid {
-                grid-template-columns: 1fr; /* 🔒 Lista de 1 Coluna */
-                gap: 10px;
-                padding: 0 15px 20px 15px; /* Margens contidas */
-            }
-
-            .rank-card { 
-                padding: 10px; 
-                gap: 10px; 
-                width: 100%; /* Respeita o ecrã */
-            }
-
+            .ranking-grid { grid-template-columns: 1fr; gap: 10px; padding: 0 15px 20px 15px; }
+            .rank-card { padding: 10px; gap: 10px; width: 100%; }
             .pos-num { font-size: 1.6rem; width: 35px; }
             .rank-avatar, .rank-avatar-placeholder { width: 45px; height: 45px; font-size: 1.2rem;}
-            
-            .rank-name { 
-                font-size: 1.1rem; 
-                /* 🔒 MÁGICA: Permite que nomes gigantes ocupem duas linhas! */
-                white-space: normal; 
-                word-break: break-word;
-                line-height: 1.1;
-                display: -webkit-box;
-                -webkit-line-clamp: 2; 
-                -webkit-box-orient: vertical;
-            }
-            
+            .rank-name { font-size: 1.1rem; white-space: normal; word-break: break-word; line-height: 1.1; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; }
             .rank-points { min-width: 65px; padding: 4px 8px; }
             .pts-value { font-size: 1.6rem; }
-            
             #scroll-bar { display: none !important; }
+            
+            .radar-card { min-width: 90%; padding: 30px; }
+            .radar-foto-box { width: 120px; height: 120px; }
+            .radar-name { font-size: 2.2rem; }
         }
     </style>
 </head>
 <body>
+
+    <div id="radarOverlay" class="radar-overlay">
+        <div class="radar-card">
+            <div class="radar-foto-box">
+                <img id="radarFoto" class="radar-foto" src="" style="display:none;" alt="">
+                <div id="radarInicial" class="radar-inicial" style="display:none;"></div>
+            </div>
+            <div class="radar-welcome">Bem-vindo(a)</div>
+            <div id="radarNome" class="radar-name">NOME</div>
+            <div id="radarPos" class="radar-pos">A atualizar posição...</div>
+        </div>
+    </div>
 
     <div class="header">
         <img src="logo.jpeg" class="header-logo" alt="Logo" onclick="toggleFullScreen()" onerror="this.style.display='none'">
@@ -217,9 +231,23 @@
     </div>
 
     <script>
+        // =========================================================
+        // ⚙️ 1. CONFIGURAÇÕES BASE
+        // =========================================================
         const API_URL = "https://script.google.com/macros/s/AKfycby62vambopzAU-hOp4Och0Qg9_ZOxNCqqo19BFZvUA13OFTYBRMnTnNckq3aBzncXKTJg/exec";
+        
+        // 🔥 INICIAÇÃO DO FIREBASE (LIGAÇÃO COM O "TUBO DE ESPERA")
+        const firebaseConfig = {
+            databaseURL: "https://max-catraca-default-rtdb.firebaseio.com"
+        };
+        firebase.initializeApp(firebaseConfig);
+        const database = firebase.database();
+
         let dadosGlobais = [];
 
+        // =========================================================
+        // 📊 2. LÓGICA DO RANKING (FUNDO DA TELA)
+        // =========================================================
         async function carregarRanking() {
             try {
                 const res = await fetch(`${API_URL}?acao=getRankingTV&t=${Date.now()}`);
@@ -248,7 +276,6 @@
 
             if (termo === "") {
                 if (window.innerWidth > 800) {
-                    // 📺 TV: MÁGICA DAS COLUNAS PERFEITAS (1-5 na Esquerda, 6-10 na Direita)
                     const top10 = filtrados.slice(0, 10);
                     for (let i = 0; i < 5; i++) {
                         if (top10[i]) exibirGrid.push(top10[i]);
@@ -256,12 +283,10 @@
                     }
                     exibirScroll = filtrados.slice(10);
                 } else {
-                    // 📱 Celular: Mostra todos em uma lista contínua
                     exibirGrid = filtrados;
                     exibirScroll = [];
                 }
             } else {
-                // Durante a pesquisa: Mostra os 30 primeiros resultados
                 exibirGrid = filtrados.slice(0, 30);
                 exibirScroll = [];
             }
@@ -318,15 +343,25 @@
             }
         }
 
-        carregarRanking();
-        setInterval(carregarRanking, 15000);
+        // =========================================================
+        // 🚀 3. MÁGICA DA FILA INDIANA AO VIVO (FIREBASE)
+        // =========================================================
+        let filaExibicaoVisual = [];
+        let exibindoNesteMomento = false;
 
-        function toggleFullScreen() {
-            if (!document.fullscreenElement) { document.documentElement.requestFullscreen().catch(() => {}); } 
-            else { document.exitFullscreen(); }
-        }
+        // 🎧 ESCUTA: Se passar 10 alunos juntos, o Firebase avisa 10 vezes instantaneamente
+        database.ref('acessos').on('child_added', (snapshot) => {
+            const alunoQuePassou = snapshot.val();
+            const chaveFirebase = snapshot.key;
 
-        if ('serviceWorker' in navigator) { window.addEventListener('load', () => { navigator.serviceWorker.register('sw.js').catch(() => {}); }); }
-    </script>
-</body>
-</html>
+            // 1. Coloca na Fila da TV
+            filaExibicaoVisual.push(alunoQuePassou);
+
+            // 2. Apaga da Nuvem para o seu Firebase não encher e continuar gratuito
+            database.ref('acessos/' + chaveFirebase).remove();
+
+            // 3. Manda a TV processar a fila
+            gerenciarFilaVisualDaTV();
+        });
+
+        // 📺 MOTOR VISUAL: Gar

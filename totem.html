@@ -5,10 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Totem - MaxGym</title>
     <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@0,400;0,700;0,900;1,900&family=Barlow:wght@400;600;700&display=swap" rel="stylesheet">
-    
-    <script src="https://www.gstatic.com/firebasejs/10.0.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.0.0/firebase-database-compat.js"></script>
-
     <style>
         :root {
             --primary: #FF5500;
@@ -517,27 +513,29 @@
         const TEMPO_LIBERACAO = 5000; 
 
         // =========================================================
-        // 🔥 LIGAÇÃO DIRETA COM O FIREBASE
+        // 🔄 DE VOLTA AO POLLING INTELIGENTE (100% BLINDADO)
         // =========================================================
-        const firebaseConfig = {
-            databaseURL: "https://max-catraca-default-rtdb.firebaseio.com"
+        window.onload = () => {
+            iniciarRadarInteligente();
         };
-        firebase.initializeApp(firebaseConfig);
-        const database = firebase.database();
 
-        // 🎧 ESCUTA: Apanha os alunos no momento em que a catraca os envia para a nuvem
-        database.ref('acessos').on('child_added', (snapshot) => {
-            // 🛡️ PROTEÇÃO: Se alguém estiver a usar o ecrã do Totem, ignora as passagens atrás
-            if (!radarAtivo) return; 
+        async function iniciarRadarInteligente() {
+            if (radarAtivo) {
+                await escutarCatraca();
+            }
+            setTimeout(iniciarRadarInteligente, 1200);
+        }
 
-            const dadosAluno = snapshot.val();
-            // 🛡️ PROTEÇÃO EXTRA: Garante que não lê dados vazios caso a TV tenha acabado de apagar
-            if (!dadosAluno) return; 
-            
-            // Tranca imediatamente o Totem para este aluno usar
-            radarAtivo = false; 
-            mostrarAluno(dadosAluno.nome, dadosAluno.idAluno, dadosAluno.posicao, dadosAluno.foto);
-        });
+        async function escutarCatraca() {
+            try {
+                const res = await fetch(`${API_URL}?acao=radar&t=${Date.now()}`);
+                const dados = await res.json();
+                if (dados.detectado) {
+                    radarAtivo = false;
+                    mostrarAluno(dados.nome, dados.idAluno, dados.posicao, dados.foto);
+                }
+            } catch(e) {}
+        }
         // =========================================================
 
         function formatarNome(nomeCompleto) {
@@ -563,7 +561,6 @@
             const nome = formatarNome(nomeCompleto);
             alunoAtualId = idAluno;
 
-            // Foto
             const imgEl = document.getElementById('foto-aluno');
             const placeholderEl = document.getElementById('foto-placeholder');
 
@@ -580,7 +577,6 @@
             document.getElementById('nome-aluno').textContent = nome;
             document.getElementById('print-nome').textContent = nome;
 
-            // Mensagem de ranking
             const instr = document.getElementById('txt-instrucao');
             if (posicao) {
                 const medalhas = { 1: '🥇', 2: '🥈', 3: '🥉' };
@@ -590,11 +586,9 @@
                 instr.textContent = "A SUA MISSÃO ESTÁ PRONTA!";
             }
 
-            // Transição de telas
             document.getElementById('tela-espera').classList.replace('visivel', 'oculta');
             document.getElementById('tela-aluno').classList.replace('oculta', 'visivel');
 
-            // Timeout ágil de 5s
             clearTimeout(timeoutReset);
             timeoutReset = setTimeout(resetarTela, TEMPO_LIBERACAO);
         }
@@ -609,7 +603,6 @@
             document.getElementById('seletor-dias').style.display = 'grid';
             document.getElementById('txt-instrucao').textContent = "IMPRIMIR O TREINO DE QUAL DIA?";
             
-            // Dá mais 5 segundos para ele escolher o dia
             clearTimeout(timeoutReset);
             timeoutReset = setTimeout(resetarTela, TEMPO_LIBERACAO);
         }
@@ -657,28 +650,23 @@
             linhas.forEach(linha => {
                 let txt = linha.trim();
                 if (!txt) {
-                    html += '<div style="margin-bottom: 8px;"></div>'; // Espaço extra entre blocos
+                    html += '<div style="margin-bottom: 8px;"></div>'; 
                     return;
                 }
                 
-                // Transforma **texto** da IA em Negrito de verdade
                 txt = txt.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+                let textoPuro = txt.replace(/<[^>]*>?/gm, ''); 
                 
-                let textoPuro = txt.replace(/<[^>]*>?/gm, ''); // Remove HTML para testar
-                
-                // Formata os Títulos de Seção (COMO EXECUTAR, NOTA CLÍNICA)
                 if (/^(como executar|nota clínica|nota clinica)/i.test(textoPuro)) {
                     html += `<div style="margin-top: 16px; margin-bottom: 6px; border-bottom: 1px solid #000; font-weight: bold; font-size: 12px; text-transform: uppercase;">${txt}</div>`;
                     return;
                 }
 
-                // Formata a lista de exercícios (1. Exercício) com recuo para não ficar bagunçado
                 if (/^\d+\./.test(textoPuro)) {
                     html += `<div style="margin-bottom: 8px; padding-left: 15px; text-indent: -15px;">${txt}</div>`;
                     return;
                 }
 
-                // Texto normal
                 html += `<div style="margin-bottom: 4px;">${txt}</div>`;
             });
             
@@ -690,7 +678,6 @@
             document.getElementById('area-impressao').style.display = 'block';
             document.getElementById('texto-impresso').textContent = titulo;
             
-            // Aqui ele envia o texto para o tradutor antes de jogar na tela
             document.getElementById('corpo-treino').innerHTML = formatarTreinoParaImpressao(conteudo);
 
             setTimeout(() => {
@@ -699,17 +686,17 @@
                 resetarTela();
             }, 500);
         }
+        
         function resetarTela() {
             document.getElementById('tela-aluno').classList.replace('visivel', 'oculta');
             document.getElementById('tela-espera').classList.replace('oculta', 'visivel');
             
-            // Restaura o layout padrão para o próximo aluno
             document.getElementById('menu-principal').style.display = 'flex';
             document.getElementById('seletor-dias').style.display = 'none';
             document.getElementById('loading').style.display = 'none';
             document.getElementById('txt-instrucao').textContent = "A SUA MISSÃO ESTÁ PRONTA!";
             
-            radarAtivo = true; // Libera o totem para ler a próxima catraca
+            radarAtivo = true; 
         }
     </script>
 </body>

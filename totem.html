@@ -531,6 +531,8 @@
             if (!radarAtivo) return; 
 
             const dadosAluno = snapshot.val();
+            // 🛡️ PROTEÇÃO EXTRA: Garante que não lê dados vazios caso a TV tenha acabado de apagar
+            if (!dadosAluno) return; 
             
             // Tranca imediatamente o Totem para este aluno usar
             radarAtivo = false; 

@@ -3,26 +3,24 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MaxGym - Admin</title>
-    
+    <title>MaxGym - Comando Central</title>
     <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;700;900&family=Barlow:wght@400;600;700&display=swap" rel="stylesheet">
-    
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <style>
         :root {
             --primary: #FF5500;
-            --primary-dim: rgba(255,85,0,0.12);
-            --bg: #080A0F;
-            --bg-card: #0F1219;
-            --bg-surface: #161923;
-            --border: rgba(255,255,255,0.07);
+            --primary-hover: #E64D00;
+            --bg: #060709;
+            --bg-card: #0D0F14;
+            --bg-input: #13161E;
+            --border: rgba(255,255,255,0.08);
             --text: #FFFFFF;
             --muted: #6B7280;
-            --success: #00E676;
+            --success: #00FF88;
+            --danger: #FF3333;
         }
 
-        * { box-sizing: border-box; margin: 0; padding: 0; }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
 
         body {
             font-family: 'Barlow', sans-serif;
@@ -30,432 +28,301 @@
             color: var(--text);
             min-height: 100vh;
             display: flex;
+            flex-direction: column;
             align-items: center;
-            justify-content: center;
-            padding: 24px;
-            background-image: radial-gradient(ellipse at 20% 50%, rgba(255,85,0,0.04) 0%, transparent 50%);
-            /* Ocultar o scroll principal caso o ecrã seja pequeno */
-            overflow-x: hidden; 
+            padding: 40px 20px;
         }
 
-        .container {
-            width: 100%;
-            max-width: 480px;
-        }
-
-        /* Header */
-        .header {
-            text-align: center;
-            margin-bottom: 28px;
-            animation: fadeIn 0.5s ease-out;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(12px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        .header-logo {
-            width: 72px;
-            height: 72px;
-            border-radius: 20px;
-            margin-bottom: 14px;
-            box-shadow: 0 8px 28px rgba(255,85,0,0.25);
-        }
-
-        .header h1 {
-            font-family: 'Barlow Condensed', sans-serif;
-            font-size: 2.4rem;
-            font-weight: 900;
-            letter-spacing: -1px;
-            margin-bottom: 4px;
-        }
-
+        .header { text-align: center; margin-bottom: 40px; }
+        .header img { width: 80px; border-radius: 20px; box-shadow: 0 10px 30px rgba(255,85,0,0.2); margin-bottom: 15px; }
+        .header h1 { font-family: 'Barlow Condensed', sans-serif; font-size: 2.5rem; font-weight: 900; letter-spacing: -1px; }
         .header h1 span { color: var(--primary); }
+        .header p { color: var(--muted); font-size: 0.9rem; letter-spacing: 3px; text-transform: uppercase; }
 
-        .header p {
-            font-size: 0.75rem;
-            color: var(--muted);
-            letter-spacing: 3px;
-            text-transform: uppercase;
+        .search-box {
+            display: flex; gap: 10px; width: 100%; max-width: 600px; margin-bottom: 30px;
         }
-
-        /* Card */
-        .card {
-            background: var(--bg-card);
-            border: 1px solid var(--border);
-            border-radius: 24px;
-            padding: 28px;
-            animation: fadeIn 0.5s ease-out 0.1s both;
+        .search-box input {
+            flex: 1; background: var(--bg-input); border: 1px solid var(--border); color: #fff;
+            padding: 15px 20px; border-radius: 12px; font-family: 'Barlow', sans-serif; font-size: 1.1rem; outline: none;
         }
-
-        /* Search */
-        .search-row {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 20px;
+        .search-box input:focus { border-color: var(--primary); }
+        .btn-buscar {
+            background: var(--primary); border: none; color: #fff; padding: 0 25px; border-radius: 12px;
+            font-family: 'Barlow Condensed', sans-serif; font-size: 1.2rem; font-weight: 700; cursor: pointer; transition: 0.2s;
         }
+        .btn-buscar:hover { background: var(--primary-hover); transform: translateY(-2px); }
 
-        .input-field {
-            flex: 1;
-            background: var(--bg-surface);
-            border: 1.5px solid var(--border);
-            border-radius: 12px;
-            padding: 14px 16px;
-            color: var(--text);
-            font-family: 'Barlow', sans-serif;
-            font-size: 0.95rem;
-            outline: none;
-            transition: border-color 0.2s;
+        .dashboard {
+            width: 100%; max-width: 900px; display: none; gap: 20px; grid-template-columns: 1fr 1fr;
+            animation: fadeIn 0.4s ease-out;
         }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
-        .input-field:focus { border-color: var(--primary); }
-        .input-field::placeholder { color: #333; }
+        .card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 16px; padding: 25px; display: flex; flex-direction: column; gap: 15px; }
+        .card-header { display: flex; align-items: center; gap: 10px; border-bottom: 1px solid var(--border); padding-bottom: 15px; margin-bottom: 5px; }
+        .card-header .material-icons { color: var(--primary); }
+        .card-header h2 { font-family: 'Barlow Condensed', sans-serif; font-size: 1.5rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; }
 
-        .btn {
-            border: none;
-            border-radius: 12px;
-            font-family: 'Barlow Condensed', sans-serif;
-            font-weight: 700;
-            font-size: 0.95rem;
-            letter-spacing: 1px;
-            text-transform: uppercase;
-            cursor: pointer;
-            transition: all 0.2s;
+        .form-group { display: flex; flex-direction: column; gap: 5px; }
+        .form-group label { font-size: 0.8rem; color: var(--muted); text-transform: uppercase; font-weight: 600; letter-spacing: 1px; }
+        .form-group input, .form-group select, .form-group textarea {
+            background: var(--bg-input); border: 1px solid var(--border); color: #fff;
+            padding: 12px; border-radius: 8px; font-family: 'Barlow', sans-serif; outline: none;
         }
+        .form-group input:disabled { opacity: 0.5; cursor: not-allowed; }
+        .form-group textarea { resize: vertical; min-height: 80px; }
 
-        .btn:active { transform: scale(0.97); }
-        .btn:disabled { opacity: 0.5; cursor: not-allowed; }
-
-        .btn-primary {
-            background: var(--primary);
-            color: white;
-            padding: 14px 20px;
-            box-shadow: 0 6px 20px rgba(255,85,0,0.25);
+        /* Toggles de Saúde */
+        .grid-saude { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+        .btn-toggle {
+            background: var(--bg-input); border: 1px solid var(--border); color: var(--muted);
+            padding: 10px; border-radius: 8px; cursor: pointer; transition: 0.2s; font-family: 'Barlow', sans-serif; font-weight: 600; font-size: 0.9rem;
         }
+        .btn-toggle.ativo { background: rgba(255,51,51,0.1); border-color: var(--danger); color: var(--danger); }
 
-        .btn-primary:hover:not(:disabled) { background: #ff6620; }
+        .full-width { grid-column: 1 / -1; }
 
-        .btn-full {
-            width: 100%;
-            padding: 17px;
-            font-size: 1rem;
-            letter-spacing: 2px;
-            margin-top: 4px;
+        .btn-salvar {
+            background: linear-gradient(135deg, var(--primary), #FF8C00); border: none; color: #fff;
+            padding: 18px; border-radius: 12px; font-family: 'Barlow Condensed', sans-serif; font-size: 1.5rem; font-weight: 700;
+            letter-spacing: 2px; cursor: pointer; transition: 0.2s; width: 100%; margin-top: 20px; box-shadow: 0 10px 20px rgba(255,85,0,0.3);
         }
+        .btn-salvar:hover { transform: translateY(-3px); box-shadow: 0 15px 25px rgba(255,85,0,0.4); }
 
-        /* Aluno encontrado */
-        .aluno-box {
-            background: var(--bg-surface);
-            border: 1px solid rgba(255,85,0,0.2);
-            border-radius: 14px;
-            padding: 16px;
-            margin-bottom: 20px;
-            display: none;
-            animation: fadeIn 0.3s ease-out;
-        }
+        /* Info Badge */
+        .info-badge { display: flex; justify-content: space-between; align-items: center; background: rgba(255,85,0,0.05); padding: 10px 15px; border-radius: 8px; border: 1px solid rgba(255,85,0,0.2); margin-top: 10px; }
+        .info-badge strong { color: var(--primary); font-size: 1.2rem; }
 
-        .aluno-nome {
-            font-family: 'Barlow Condensed', sans-serif;
-            font-size: 1.3rem;
-            font-weight: 700;
-            margin-bottom: 4px;
-        }
+        #loading { display: none; color: var(--primary); margin-top: 20px; font-family: 'Barlow Condensed', sans-serif; font-size: 1.5rem; letter-spacing: 2px; }
 
-        .aluno-id {
-            font-size: 0.75rem;
-            color: var(--primary);
-            font-weight: 700;
-            letter-spacing: 2px;
-        }
-
-        /* Form section */
-        .form-section { display: none; }
-        .form-section.visible { display: block; animation: fadeIn 0.4s ease-out; }
-
-        .section-label {
-            font-size: 0.7rem;
-            font-weight: 700;
-            letter-spacing: 2px;
-            color: var(--muted);
-            text-transform: uppercase;
-            margin-bottom: 12px;
-            display: block;
-        }
-
-        /* Tags grid */
-        .tags-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 8px;
-            margin-bottom: 20px;
-        }
-
-        .tag-item {
-            background: var(--bg-surface);
-            border: 1.5px solid var(--border);
-            border-radius: 10px;
-            padding: 12px;
-            text-align: center;
-            font-size: 0.82rem;
-            font-weight: 700;
-            cursor: pointer;
-            transition: all 0.2s;
-            user-select: none;
-            color: var(--muted);
-        }
-
-        .tag-item:hover { border-color: rgba(255,255,255,0.15); color: var(--text); }
-
-        .tag-item.active {
-            background: var(--primary-dim);
-            border-color: var(--primary);
-            color: var(--primary);
-        }
-
-        /* Obs textarea */
-        .obs-field {
-            width: 100%;
-            background: var(--bg-surface);
-            border: 1.5px solid var(--border);
-            border-radius: 12px;
-            padding: 14px;
-            color: var(--text);
-            font-family: 'Barlow', sans-serif;
-            font-size: 0.9rem;
-            resize: none;
-            outline: none;
-            margin-bottom: 16px;
-            transition: border-color 0.2s;
-            display: block;
-        }
-
-        .obs-field:focus { border-color: var(--primary); }
-        .obs-field::placeholder { color: #333; }
-
-        /* Message */
-        .msg {
-            text-align: center;
-            font-size: 0.88rem;
-            font-weight: 700;
-            min-height: 22px;
-            letter-spacing: 0.5px;
+        @media (max-width: 800px) {
+            .dashboard { grid-template-columns: 1fr; }
+            .grid-saude { grid-template-columns: 1fr; }
         }
     </style>
 </head>
 <body>
 
-    <div id="trava-master-painel" style="position: fixed; inset: 0; background: #080A0F; z-index: 999999; display: flex; align-items: center; justify-content: center; font-family: 'Barlow', sans-serif; padding: 20px;">
-        <div style="background: #111318; border: 1px solid rgba(255,255,255,0.07); border-radius: 24px; padding: 40px 30px; width: 100%; max-width: 380px; text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.5);">
-            <h2 style="font-family: 'Barlow Condensed', sans-serif; font-size: 2.2rem; font-weight: 900; color: #FFF; letter-spacing: 1px; margin-bottom: 5px;">ACESSO CLÍNICO</h2>
-            <p style="color: #6B7280; font-size: 0.9rem; text-transform: uppercase; letter-spacing: 1px; font-weight: 600; margin-bottom: 30px;">Prontuários MaxGym</p>
-            
-            <div style="text-align: left; margin-bottom: 20px;">
-                <label style="font-size: 0.75rem; font-weight: 700; letter-spacing: 1.5px; color: #6B7280; text-transform: uppercase; margin-bottom: 10px; display: block;">Chave Master de Autenticação</label>
-                <input type="password" id="input-senha-master" placeholder="••••••••••••" style="width: 100%; background: #181C24; border: 1px solid rgba(255,255,255,0.07); border-radius: 14px; padding: 16px; color: white; font-size: 1.2rem; text-align: center; outline: none; transition: 0.2s;">
-            </div>
-            
-            <button id="btn-entrar-master" onclick="validarAcessoMaster()" style="width: 100%; background: #FF5500; color: white; border: none; border-radius: 14px; padding: 18px; font-family: 'Barlow Condensed', sans-serif; font-size: 1.2rem; font-weight: 900; letter-spacing: 2px; text-transform: uppercase; cursor: pointer; box-shadow: 0 8px 24px rgba(255,85,0,0.3);">CONECTAR 🚀</button>
-        </div>
+    <div class="header">
+        <img src="logo.jpeg" alt="MaxGym Logo" onerror="this.style.display='none'">
+        <h1>MAX<span>GYM</span></h1>
+        <p>Comando Centralização e Controlo</p>
     </div>
 
-    <div class="container">
-        <div class="header">
-            <img src="logo.jpeg" alt="Logo Powerfisio" class="header-logo" onerror="this.style.display='none'">
-            <h1>MAX<span>GYM</span></h1>
-            <p>Prontuário Clínico — Max IA</p>
+    <div class="search-box">
+        <input type="text" id="inputBusca" placeholder="ID EVO, CPF ou Nome do Aluno..." onkeypress="if(event.key === 'Enter') buscarAluno()">
+        <button class="btn-buscar" onclick="buscarAluno()">BUSCAR</button>
+    </div>
+
+    <div id="loading">SINCRONIZANDO DADOS...</div>
+
+    <div class="dashboard" id="painelDashboard">
+        
+        <div class="card">
+            <div class="card-header">
+                <span class="material-icons">account_circle</span>
+                <h2>Dados Cadastrais</h2>
+            </div>
+            
+            <div class="form-group">
+                <label>ID EVO</label>
+                <input type="text" id="alunoId" disabled>
+            </div>
+            <div class="form-group">
+                <label>Nome do Aluno</label>
+                <input type="text" id="alunoNome">
+            </div>
+            <div class="form-group">
+                <label>WhatsApp</label>
+                <input type="text" id="alunoZap" placeholder="Ex: 84999999999">
+            </div>
+            <div class="form-group">
+                <label>Nível na IA (Max)</label>
+                <select id="alunoNivel">
+                    <option value="Iniciante 1">Iniciante 1</option>
+                    <option value="Iniciante 2">Iniciante 2</option>
+                    <option value="Iniciante 3">Iniciante 3</option>
+                    <option value="Intermediário 1">Intermediário 1</option>
+                    <option value="Intermediário 2">Intermediário 2</option>
+                    <option value="Intermediário 3">Intermediário 3</option>
+                    <option value="Avançado 1">Avançado 1</option>
+                    <option value="Avançado 2">Avançado 2</option>
+                    <option value="Avançado 3">Avançado 3</option>
+                    <option value="Nível Power">Nível Power</option>
+                </select>
+            </div>
         </div>
 
         <div class="card">
-            <span class="section-label">Buscar Aluno</span>
-            <div class="search-row">
-                <input
-                    type="text"
-                    id="inputBusca"
-                    class="input-field"
-                    placeholder="ID ou nome do aluno..."
-                    onkeydown="if(event.key==='Enter') buscarAluno()"
-                >
-                <button class="btn btn-primary" onclick="buscarAluno()">BUSCAR</button>
+            <div class="card-header">
+                <span class="material-icons">medical_services</span>
+                <h2>Prontuário Clínico</h2>
             </div>
-
-            <div id="resultado-busca" class="aluno-box">
-                <div class="aluno-nome" id="nomeAluno">—</div>
-                <div class="aluno-id">ID EVO: <span id="idAluno">—</span></div>
+            
+            <div class="grid-saude">
+                <button class="btn-toggle" onclick="toggleBtn(this)">Hérnia de Disco</button>
+                <button class="btn-toggle" onclick="toggleBtn(this)">Escoliose</button>
+                <button class="btn-toggle" onclick="toggleBtn(this)">Hipertensão</button>
+                <button class="btn-toggle" onclick="toggleBtn(this)">Condromalácia</button>
+                <button class="btn-toggle" onclick="toggleBtn(this)">Labirintite</button>
+                <button class="btn-toggle" onclick="toggleBtn(this)">Gestante</button>
+                <button class="btn-toggle" onclick="toggleBtn(this)">Pós-Cirúrgico</button>
+                <button class="btn-toggle" onclick="toggleBtn(this)">Diabetes</button>
             </div>
-
-            <div id="formulario" class="form-section">
-                <span class="section-label">Condições de Saúde</span>
-                <div class="tags-grid">
-                    <div class="tag-item" onclick="toggleTag(this)">Hérnia de Disco</div>
-                    <div class="tag-item" onclick="toggleTag(this)">Escoliose</div>
-                    <div class="tag-item" onclick="toggleTag(this)">Hipertensão</div>
-                    <div class="tag-item" onclick="toggleTag(this)">Condromalácia</div>
-                    <div class="tag-item" onclick="toggleTag(this)">Labirintite</div>
-                    <div class="tag-item" onclick="toggleTag(this)">Gestante</div>
-                    <div class="tag-item" onclick="toggleTag(this)">Pós-Cirúrgico</div>
-                    <div class="tag-item" onclick="toggleTag(this)">Diabetes</div>
-                </div>
-
-                <span class="section-label">Observações Adicionais</span>
-                <textarea
-                    id="obs"
-                    class="obs-field"
-                    rows="3"
-                    placeholder="Ex: Limitação de carga no agachamento, evitar impacto no joelho esquerdo..."
-                ></textarea>
-
-                <button class="btn btn-primary btn-full" id="btnSalvar" onclick="salvarProntuario()">
-                    SALVAR PRONTUÁRIO
-                </button>
+            
+            <div class="form-group" style="margin-top: 15px;">
+                <label>Observações Adicionais (IA vai ler isto)</label>
+                <textarea id="alunoObs" placeholder="Ex: Limitação de carga no agachamento, evitar impacto..."></textarea>
             </div>
-
-            <div class="msg" id="msg"></div>
         </div>
+
+        <div class="card full-width" style="flex-direction: row; flex-wrap: wrap; justify-content: space-between; align-items: center;">
+            <div style="flex: 1; min-width: 250px;">
+                <div class="card-header" style="border: none; padding: 0; margin: 0;">
+                    <span class="material-icons">security</span>
+                    <h2>Acesso & Gamificação</h2>
+                </div>
+                <div class="info-badge">
+                    <span>Pontos Atuais no Ranking:</span>
+                    <strong id="alunoPontos">0</strong>
+                </div>
+            </div>
+            
+            <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+                <button class="btn-toggle" style="border-color: var(--primary); color: var(--primary);" onclick="ajustarPontos(15)">+ Dar 15 Pontos</button>
+                <button class="btn-toggle" style="border-color: var(--success); color: var(--success);" onclick="liberarCatracaManual()">Liberar App (Manual)</button>
+            </div>
+        </div>
+
+        <button class="btn-salvar full-width" onclick="salvarTudo()">SALVAR DADOS DO ALUNO</button>
     </div>
 
     <script>
-        // ==========================================
-        // 1. LÓGICA DE SEGURANÇA (Auto-login e Validação)
-        // ==========================================
-        (function() {
-            // Usa uma chave de sessão diferente do gerencia para não cruzar logins acidentalmente, caso queira
-            const autenticado = sessionStorage.getItem('maxgym_admin_autenticado');
-            if (autenticado === 'true') {
-                const trava = document.getElementById('trava-master-painel');
-                if (trava) trava.style.display = 'none';
-            }
-        })();
+        const API_URL = "https://script.google.com/macros/s/AKfycby62vambopzAU-hOp4Och0Qg9_ZOxNCqqo19BFZvUA13OFTYBRMnTnNckq3aBzncXKTJg/exec";
 
-        document.getElementById('input-senha-master').addEventListener('keydown', function(e) {
-            if (e.key === 'Enter') validarAcessoMaster();
-        });
-
-        function validarAcessoMaster() {
-            const btn = document.getElementById('btn-entrar-master');
-            const input = document.getElementById('input-senha-master');
-            const senhaDigitada = input.value;
-            
-            if (!senhaDigitada) return;
-
-            btn.textContent = "VERIFICANDO...";
-            
-            try {
-                // A senha é: MaxAdmin2026
-                // TWF4QWRtaW4yMDI2 é o código Base64 para MaxAdmin2026
-                if (btoa(senhaDigitada) === "TWF4QWRtaW4yMDI2") {
-                    sessionStorage.setItem('maxgym_admin_autenticado', 'true');
-                    
-                    const trava = document.getElementById('trava-master-painel');
-                    trava.style.transition = 'opacity 0.3s ease';
-                    trava.style.opacity = '0';
-                    
-                    setTimeout(() => { trava.style.display = 'none'; }, 300);
-                    
-                } else {
-                    btn.innerHTML = "CONECTAR 🚀";
-                    input.value = '';
-                    input.focus();
-
-                    Swal.fire({
-                        title: 'CHAVE INVÁLIDA',
-                        text: 'A senha de acesso clínico informada está incorreta.',
-                        icon: 'error',
-                        confirmButtonColor: '#FF5500'
-                    });
-                }
-            } catch(erro) {
-                alert("Erro interno de segurança. Verifique a conexão com a internet.");
-                btn.innerHTML = "CONECTAR 🚀";
-            }
+        function toggleBtn(btn) {
+            btn.classList.toggle('ativo');
         }
 
-        // ==========================================
-        // 2. LÓGICA ORIGINAL DO PRONTUÁRIO CLÍNICO
-        // ==========================================
-        const GOOGLE_API_URL = "https://script.google.com/macros/s/AKfycby62vambopzAU-hOp4Och0Qg9_ZOxNCqqo19BFZvUA13OFTYBRMnTnNckq3aBzncXKTJg/exec";
-
-        let alunoSelecionado = null;
-
-        function toggleTag(el) {
-            el.classList.toggle('active');
-        }
-
-        function setMsg(texto, cor = 'var(--muted)') {
-            const msg = document.getElementById('msg');
-            msg.textContent = texto;
-            msg.style.color = cor;
+        function mostrarLoading(mostrar) {
+            document.getElementById('loading').style.display = mostrar ? 'block' : 'none';
+            document.getElementById('painelDashboard').style.display = mostrar ? 'none' : 'grid';
+            if(mostrar) document.getElementById('painelDashboard').style.display = 'none';
         }
 
         async function buscarAluno() {
-            const query = document.getElementById('inputBusca').value.trim();
-            if (!query) return;
+            const termo = document.getElementById('inputBusca').value.trim();
+            if (!termo) return alert("Digite um ID, CPF ou Nome");
 
-            setMsg('🔍 Localizando na EVO...', 'var(--muted)');
+            mostrarLoading(true);
 
             try {
-                const res = await fetch(`${GOOGLE_API_URL}?acao=buscar&query=${encodeURIComponent(query)}`);
-                const aluno = await res.json();
+                // Criaremos esta nova rota no code.gs
+                const res = await fetch(`${API_URL}?acao=buscarAdminCompleto&query=${encodeURIComponent(termo)}`);
+                const dados = await res.json();
 
-                if (aluno && aluno.id) {
-                    alunoSelecionado = aluno;
-                    document.getElementById('nomeAluno').textContent = aluno.nome;
-                    document.getElementById('idAluno').textContent = aluno.id;
-                    document.getElementById('resultado-busca').style.display = 'block';
-                    document.getElementById('formulario').classList.add('visible');
-                    setMsg('');
+                if (dados && dados.id) {
+                    // Preenche Dados Cadastrais
+                    document.getElementById('alunoId').value = dados.id;
+                    document.getElementById('alunoNome').value = dados.nome || "";
+                    document.getElementById('alunoZap').value = dados.celular || "";
+                    
+                    if (dados.nivel) {
+                        const selectNivel = document.getElementById('alunoNivel');
+                        for(let i=0; i < selectNivel.options.length; i++) {
+                            if(selectNivel.options[i].value === dados.nivel) {
+                                selectNivel.selectedIndex = i; break;
+                            }
+                        }
+                    }
 
-                    // Reset form
-                    document.querySelectorAll('.tag-item').forEach(t => t.classList.remove('active'));
-                    document.getElementById('obs').value = '';
+                    // Preenche Saúde
+                    const condicoesSalvas = dados.saude_condicoes ? dados.saude_condicoes.split(",") : [];
+                    document.querySelectorAll('.grid-saude .btn-toggle').forEach(btn => {
+                        if (condicoesSalvas.includes(btn.innerText)) btn.classList.add('ativo');
+                        else btn.classList.remove('ativo');
+                    });
+                    document.getElementById('alunoObs').value = dados.saude_obs || "";
+
+                    // Preenche Gamificação
+                    document.getElementById('alunoPontos').innerText = dados.pontos || "0";
+
+                    mostrarLoading(false);
                 } else {
-                    setMsg('❌ Aluno não encontrado.', '#ff6b6b');
-                    document.getElementById('resultado-busca').style.display = 'none';
-                    document.getElementById('formulario').classList.remove('visible');
+                    alert("Aluno não encontrado no sistema ou na EVO.");
+                    mostrarLoading(false);
+                    document.getElementById('painelDashboard').style.display = 'none';
                 }
-            } catch(e) {
-                setMsg('⚠️ Erro de conexão com a API.', '#ff6b6b');
+            } catch (e) {
+                alert("Erro de conexão.");
+                mostrarLoading(false);
             }
         }
 
-        async function salvarProntuario() {
-            const tags = Array.from(document.querySelectorAll('.tag-item.active')).map(t => t.textContent.trim());
-            const obs = document.getElementById('obs').value;
-            const btn = document.getElementById('btnSalvar');
+        async function salvarTudo() {
+            const id = document.getElementById('alunoId').value;
+            if (!id) return;
 
-            btn.disabled = true;
-            btn.textContent = "SALVANDO...";
-            setMsg('💾 Gravando prontuário...', 'var(--muted)');
+            const btnSalvar = document.querySelector('.btn-salvar');
+            btnSalvar.innerText = "A SALVAR...";
+            btnSalvar.style.opacity = "0.7";
+
+            // Coleta Saúde
+            const botoesAtivos = document.querySelectorAll('.grid-saude .btn-toggle.ativo');
+            const condicoesSelecionadas = Array.from(botoesAtivos).map(btn => btn.innerText).join(",");
+            const obs = document.getElementById('alunoObs').value;
+
+            // Coleta Dados
+            const payload = {
+                acao: 'salvarAdminCompleto',
+                id: id,
+                nome: document.getElementById('alunoNome').value,
+                celular: document.getElementById('alunoZap').value,
+                nivel: document.getElementById('alunoNivel').value,
+                condicoes: condicoesSelecionadas,
+                observacoes: obs
+            };
 
             try {
-                const res = await fetch(GOOGLE_API_URL, {
+                const res = await fetch(API_URL, {
                     method: 'POST',
-                    body: JSON.stringify({
-                        acao: 'salvar',
-                        id: alunoSelecionado.id,
-                        nome: alunoSelecionado.nome,
-                        condicoes: tags.join(", "),
-                        observacoes: obs
-                    })
+                    body: JSON.stringify(payload)
                 });
-
-                const resposta = await res.text();
-                if (resposta === "Sucesso") {
-                    setMsg('✅ PRONTUÁRIO ATUALIZADO!', 'var(--success)');
-                    btn.textContent = "SALVO ✓";
+                const resultado = await res.text();
+                
+                if (resultado.includes("Sucesso")) {
+                    btnSalvar.innerText = "✅ SALVO COM SUCESSO";
+                    btnSalvar.style.background = "var(--success)";
                     setTimeout(() => {
-                        btn.textContent = "SALVAR PRONTUÁRIO";
-                        btn.disabled = false;
-                        setMsg('');
+                        btnSalvar.innerText = "SALVAR DADOS DO ALUNO";
+                        btnSalvar.style.background = "linear-gradient(135deg, var(--primary), #FF8C00)";
+                        btnSalvar.style.opacity = "1";
                     }, 3000);
                 } else {
-                    throw new Error();
+                    alert("Erro ao salvar: " + resultado);
+                    btnSalvar.innerText = "SALVAR DADOS DO ALUNO";
+                    btnSalvar.style.opacity = "1";
                 }
-            } catch(e) {
-                setMsg('❌ Erro ao salvar. Tente novamente.', '#ff6b6b');
-                btn.textContent = "SALVAR PRONTUÁRIO";
-                btn.disabled = false;
+            } catch (e) {
+                alert("Erro de conexão.");
+                btnSalvar.innerText = "SALVAR DADOS DO ALUNO";
+                btnSalvar.style.opacity = "1";
             }
+        }
+
+        function ajustarPontos(quantidade) {
+            alert(`Funcionalidade de adicionar ${quantidade} pontos entrará na v2!`);
+        }
+
+        async function liberarCatracaManual() {
+            const id = document.getElementById('alunoId').value;
+            if(!id) return alert("Busque um aluno primeiro.");
+            
+            try {
+                await fetch(`${API_URL}?acao=liberarAppManual&id=${id}`);
+                alert("App liberado com sucesso para uso do treino!");
+            } catch(e) { alert("Erro ao liberar."); }
         }
     </script>
 </body>

@@ -194,7 +194,7 @@
         .workout-cta { padding: 16px 24px 32px; display: flex; flex-direction: column; gap: 10px; }
         .btn-finish { background: var(--success); color: #000; box-shadow: 0 8px 24px rgba(0,230,118,0.25); display: none; width: 100%; }
 
-        /* ======= SCREEN RANKING (NOVO LAYOUT CARDS QUADRADOS) ======= */
+        /* ======= SCREEN RANKING ======= */
         #screen-ranking { padding: 0 0 80px 0; background: var(--bg); }
         
         .rank-app-header-container { display: flex; justify-content: space-between; align-items: center; padding: 24px 24px 16px; border-bottom: 1px solid var(--border); background: var(--bg-card); position: sticky; top: 0; z-index: 20; }
@@ -212,21 +212,13 @@
         .search-box input:focus { border-color: var(--primary); }
         .search-box input::placeholder { color: #555; }
 
-        .ranking-list-container { 
-            padding: 20px 24px; 
-            display: grid; 
-            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); 
-            gap: 24px; 
-        }
+        .ranking-list-container { padding: 20px 24px; display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 24px; }
         
         .rank-app-card { 
             display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; gap: 8px;
             background: linear-gradient(145deg, rgba(19,22,29,0.95), rgba(13,15,20,0.95));
-            padding: 35px 20px; border-radius: 28px; 
-            border: 1px solid var(--border); 
-            position: relative; overflow: hidden;
-            transition: transform 0.2s ease, box-shadow 0.2s ease;
-            animation: cardEntrance 0.5s ease-out both; 
+            padding: 35px 20px; border-radius: 28px; border: 1px solid var(--border); position: relative; overflow: hidden;
+            transition: transform 0.2s ease, box-shadow 0.2s ease; animation: cardEntrance 0.5s ease-out both; 
         }
         @keyframes cardEntrance { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
         
@@ -241,53 +233,29 @@
         .rank-avatar-wrapper { position: relative; margin: 5px 0 10px; }
         .rank-avatar { width: 86px; height: 86px; border-radius: 50%; object-fit: cover; background: var(--bg-surface); border: 3px solid var(--border); box-shadow: 0 10px 20px rgba(0,0,0,0.4); }
         .rank-avatar-placeholder { width: 86px; height: 86px; border-radius: 50%; background: rgba(255,255,255,0.05); color: var(--muted); display: flex; align-items: center; justify-content: center; font-family: 'Barlow Condensed', sans-serif; font-weight: 900; font-size: 2.8rem; border: 3px solid var(--border); box-shadow: 0 10px 20px rgba(0,0,0,0.4); }
-        
         .rank-app-card.silver .rank-avatar, .rank-app-card.silver .rank-avatar-placeholder { border-color: silver; }
         .rank-app-card.bronze .rank-avatar, .rank-app-card.bronze .rank-avatar-placeholder { border-color: #CD7F32; }
 
         .rank-app-nome { font-family: 'Barlow Condensed', sans-serif; font-size: 1.6rem; font-weight: 700; text-transform: uppercase; color: var(--text); line-height: 1.2; word-wrap: break-word; white-space: normal; }
         .rank-app-card.me .rank-app-nome { color: var(--primary); font-weight: 900; }
-        
         .rank-app-pts { font-family: 'Barlow Condensed', sans-serif; font-size: 2.2rem; font-weight: 900; color: var(--primary); line-height: 1; margin-top: 8px;}
         .rank-app-card.silver .rank-app-pts, .rank-app-card.bronze .rank-app-pts { color: var(--text); }
         
-        /* ======= ⭐ O CAMPEÃO (1º LUGAR) ⭐ ======= */
         .rank-app-card.gold.champion { 
             background: linear-gradient(135deg, rgba(255,215,0,0.12) 0%, rgba(13,15,20,0.95) 100%);
-            border: 2px solid var(--gold);
-            transform: scale(1.02);
+            border: 2px solid var(--gold); transform: scale(1.02);
             box-shadow: 0 10px 35px rgba(255, 215, 0, 0.15); 
             animation: championPulsar 2s infinite alternate, cardEntrance 0.5s ease-out both;
         }
-        
-        @keyframes championPulsar {
-            0% { box-shadow: 0 10px 35px rgba(255, 215, 0, 0.15); border-color: var(--gold); }
-            100% { box-shadow: 0 10px 45px rgba(255, 215, 0, 0.3); border-color: var(--gold-light); }
-        }
+        @keyframes championPulsar { 0% { box-shadow: 0 10px 35px rgba(255, 215, 0, 0.15); border-color: var(--gold); } 100% { box-shadow: 0 10px 45px rgba(255, 215, 0, 0.3); border-color: var(--gold-light); } }
 
-        .champion-crown {
-            position: absolute; top: 20px; left: 25px;
-            font-size: 3rem; transform: rotate(-15deg);
-            filter: drop-shadow(0 4px 6px rgba(0,0,0,0.5));
-            z-index: 5;
-            animation: crownFloat 2s ease-in-out infinite;
-        }
+        .champion-crown { position: absolute; top: 20px; left: 25px; font-size: 3rem; transform: rotate(-15deg); filter: drop-shadow(0 4px 6px rgba(0,0,0,0.5)); z-index: 5; animation: crownFloat 2s ease-in-out infinite; }
         @keyframes crownFloat { 0%, 100% { transform: rotate(-15deg) translateY(0); } 50% { transform: rotate(-15deg) translateY(-8px); } }
 
         .rank-app-card.champion .rank-app-pos { color: var(--gold); font-size: 3rem; text-shadow: 0 0 15px rgba(255, 215, 0, 0.5); }
         .rank-app-card.champion .rank-avatar, .rank-app-card.champion .rank-avatar-placeholder { width: 100px; height: 100px; border-color: var(--gold); border-width: 4px; box-shadow: 0 0 20px rgba(255, 215, 0, 0.3); font-size: 3.2rem;}
         .rank-app-card.champion .rank-app-nome { font-size: 1.8rem; color: var(--gold); font-weight: 900; text-shadow: 0 0 10px rgba(255, 215, 0, 0.4); }
-        
-        .rank-app-card.champion .rank-app-pts { 
-            color: #FFFFFF; font-size: 2.6rem;
-            position: relative;
-            background: linear-gradient(90deg, #FFFFFF 0%, var(--gold) 50%, #FFFFFF 100%);
-            background-size: 200% auto;
-            -webkit-background-clip: text;
-            background-clip: text;
-            -webkit-text-fill-color: transparent;
-            animation: shineText 3s linear infinite;
-        }
+        .rank-app-card.champion .rank-app-pts { color: #FFFFFF; font-size: 2.6rem; position: relative; background: linear-gradient(90deg, #FFFFFF 0%, var(--gold) 50%, #FFFFFF 100%); background-size: 200% auto; -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; animation: shineText 3s linear infinite; }
         @keyframes shineText { to { background-position: 200% center; } }
 
         /* ======= SCREEN CALCULADORAS ======= */
@@ -296,16 +264,15 @@
         .calc-title { font-family: 'Barlow Condensed', sans-serif; font-size: 1.6rem; font-weight: 900; letter-spacing: 1px; margin-bottom: 5px; color: var(--text); }
         .calc-desc { font-size: 0.85rem; color: var(--muted); margin-bottom: 15px; line-height: 1.4; }
         .input-group { display: flex; gap: 10px; margin-bottom: 15px; }
-        .input-group input { flex: 1; background: var(--bg-surface); border: 1px solid var(--border); border-radius: 12px; padding: 14px; color: white; font-family: 'Barlow Condensed', sans-serif; font-size: 1.1rem; outline: none; transition: 0.2s; min-width: 0; text-align: center; }
-        .input-group input:focus { border-color: var(--primary); }
+        .input-group input, .input-group select { flex: 1; background: var(--bg-surface); border: 1px solid var(--border); border-radius: 12px; padding: 14px; color: white; font-family: 'Barlow Condensed', sans-serif; font-size: 1.1rem; outline: none; transition: 0.2s; min-width: 0; text-align: center; }
+        .input-group input:focus, .input-group select:focus { border-color: var(--primary); }
         .input-group input::placeholder { color: #555; }
         .calc-result { margin-top: 15px; padding: 15px; background: rgba(255,85,0,0.08); border: 1px solid rgba(255,85,0,0.2); border-radius: 12px; text-align: center; animation: slideUp 0.3s ease; }
         .calc-result h4 { color: var(--primary); font-family: 'Barlow Condensed', sans-serif; font-size: 2.2rem; font-weight: 900; line-height: 1; }
         .calc-result p { color: var(--text); font-size: 0.9rem; font-weight: 700; margin-top: 5px; text-transform: uppercase; letter-spacing: 1px; }
 
-        @media (max-width: 600px) {
-            .ranking-list-container { grid-template-columns: 1fr; } /* Força 1 coluna em telemóveis */
-        }
+        @media (max-width: 600px) { .ranking-list-container { grid-template-columns: 1fr; } }
+
         /* ======= MODAL TÉCNICA / ROLETA ======= */
         #modal-tecnica { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.85); z-index: 1000; align-items: flex-end; padding: 16px; backdrop-filter: blur(6px); }
         #modal-tecnica.open { display: flex; }
@@ -314,7 +281,6 @@
         .modal-title { font-family: 'Barlow Condensed', sans-serif; font-size: 1.5rem; font-weight: 900; color: var(--success); letter-spacing: 2px; margin-bottom: 12px; }
         .modal-desc { color: var(--muted); font-size: 0.95rem; line-height: 1.6; margin-bottom: 20px; }
         .btn-modal-close { width: 100%; padding: 14px; background: var(--bg-surface); border: 1px solid var(--border); border-radius: 12px; color: var(--text); font-family: 'Barlow Condensed', sans-serif; font-size: 1rem; font-weight: 700; letter-spacing: 1px; cursor: pointer; }
-
         .info-text { font-size: 0.85rem; color: var(--muted); line-height: 1.6; padding: 4px 0; }
 
         #modal-roleta { display: none; position: fixed; inset: 0; background: rgba(8, 10, 15, 0.95); z-index: 2000; align-items: center; justify-content: center; flex-direction: column; backdrop-filter: blur(8px); }
@@ -414,16 +380,13 @@
             </svg>
         </button>
     </div>
-    
     <div class="search-container">
         <div class="search-box">
             <span class="material-icons">search</span>
             <input type="text" id="busca-ranking" placeholder="Buscar por nome..." onkeyup="filtrarRanking()">
         </div>
     </div>
-
-    <div class="ranking-list-container" id="app-ranking-list">
-        </div>
+    <div class="ranking-list-container" id="app-ranking-list"></div>
 </div>
 
 <div id="screen-calculadoras" class="screen">
@@ -448,13 +411,38 @@
 
         <div class="calc-card">
             <h3 class="calc-title"><span class="material-icons" style="vertical-align: middle; color: var(--primary);">fitness_center</span> Calculadora de 1RM</h3>
-            <p class="calc-desc">Descubra sua força máxima teórica (1 Repetição Máxima) para progredir cargas com segurança.</p>
+            <p class="calc-desc">Descubra sua força máxima teórica (Protocolo Wathan) para progredir cargas com segurança.</p>
             <div class="input-group">
                 <input type="number" id="rm-carga" placeholder="Carga gasta (kg)" inputmode="decimal">
                 <input type="number" id="rm-reps" placeholder="Repetições feitas" inputmode="numeric">
             </div>
             <button class="btn-cta btn-start" style="display: block; margin: 0; width: 100% !important;" onclick="calcular1RM()">CALCULAR FORÇA MÁXIMA</button>
             <div id="rm-resultado" class="calc-result" style="display:none;"></div>
+        </div>
+
+        <div class="calc-card">
+            <h3 class="calc-title"><span class="material-icons" style="vertical-align: middle; color: var(--primary);">favorite</span> Zonas de Cardio</h3>
+            <p class="calc-desc">Descubra os seus batimentos por minuto (BPM) ideais para queimar gordura ou ganhar resistência na esteira/bike.</p>
+            <div class="input-group">
+                <input type="number" id="cardio-idade" placeholder="Sua Idade (ex: 30)" inputmode="numeric">
+            </div>
+            <button class="btn-cta btn-start" style="display: block; margin: 0; width: 100% !important;" onclick="calcularCardio()">CALCULAR ZONAS</button>
+            <div id="cardio-resultado" class="calc-result" style="display:none; text-align: left;"></div>
+        </div>
+
+        <div class="calc-card">
+            <h3 class="calc-title"><span class="material-icons" style="vertical-align: middle; color: var(--primary);">restaurant</span> Macros & Água</h3>
+            <p class="calc-desc">Uma estimativa rápida de quanto comer e beber por dia para atingir o seu objetivo.</p>
+            <div class="input-group" style="flex-direction: column;">
+                <input type="number" id="macro-peso" placeholder="Seu Peso atual (kg)" inputmode="decimal">
+                <select id="macro-objetivo" style="background: var(--bg-surface); border: 1px solid var(--border); border-radius: 12px; padding: 14px; color: white; font-family: 'Barlow Condensed', sans-serif; font-size: 1.1rem; outline: none; text-align: center; width: 100%;">
+                    <option value="emagrecer">Objetivo: Perder Gordura</option>
+                    <option value="manter">Objetivo: Manter / Saúde</option>
+                    <option value="ganhar">Objetivo: Ganhar Massa</option>
+                </select>
+            </div>
+            <button class="btn-cta btn-start" style="display: block; margin: 0; width: 100% !important;" onclick="calcularMacros()">CALCULAR DIETA</button>
+            <div id="macro-resultado" class="calc-result" style="display:none; text-align: left;"></div>
         </div>
     </div>
 </div>
@@ -486,11 +474,8 @@
     // Variáveis de Controle
     let telaTreinoAtual = 'screen-locked';
     let abaAtiva = 'treino';
-    let rankingGlobal = []; // Guarda os dados do ranking para a busca não travar o app
+    let rankingGlobal = [];
 
-    // ==========================================
-    // AUTO-LOGIN (SESSÃO SALVA)
-    // ==========================================
     window.addEventListener('DOMContentLoaded', () => {
         const alunoSalvo = localStorage.getItem('maxgym_aluno');
         if (alunoSalvo) {
@@ -537,10 +522,7 @@
 
             if (dados.sucesso) {
                 AlunoLogado = { id: dados.id, nome: dados.nome, cpf, posicao: dados.posicao };
-                
-                // Salva a sessão na memória do celular!
                 localStorage.setItem('maxgym_aluno', JSON.stringify(AlunoLogado));
-                
                 iniciarSessaoDoAluno();
             } else {
                 Swal.fire({ title: 'Acesso Negado', text: 'CPF não encontrado. Fale com a recepção!', icon: 'error', confirmButtonColor: '#FF5500' });
@@ -553,7 +535,6 @@
         }
     }
 
-    // Função separada para desenhar a interface do aluno logado
     function iniciarSessaoDoAluno() {
         const primeiroNome = AlunoLogado.nome.split(' ')[0];
 
@@ -573,7 +554,6 @@
         radarInterval = setInterval(checarDesbloqueio, 5000);
     }
 
-    // Função de Logout (ativada clicando na foto)
     function fazerLogout() {
         Swal.fire({
             title: 'SAIR DA CONTA?',
@@ -598,7 +578,6 @@
         window.scrollTo(0,0);
     }
 
-    // ATUALIZADO: Aba de Calculadoras incluída
     function mudarAbaApp(aba) {
         document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
         abaAtiva = aba;
@@ -639,20 +618,18 @@
     }
 
     // ==========================================
-    // LÓGICA DAS CALCULADORAS (NOVAS FUNÇÕES)
+    // LÓGICA DAS CALCULADORAS 
     // ==========================================
     function calcularIMC() {
         let peso = parseFloat(document.getElementById('imc-peso').value.replace(',', '.'));
         let altura = parseFloat(document.getElementById('imc-altura').value.replace(',', '.'));
         
         if (!peso || !altura) return Swal.fire({title: 'Faltam Dados', text: 'Preencha o seu peso e altura para calcular o IMC.', icon: 'warning', confirmButtonColor: '#FF5500'});
-        
-        // Se a pessoa digitar altura em centímetros (ex: 175) ao invés de metros (1.75), o app corrige automaticamente
         if (altura > 3) altura = altura / 100;
         
         const imc = (peso / (altura * altura)).toFixed(1);
         let classificacao = '';
-        let corDeDestaque = '#00E676'; // Verde Padrão
+        let corDeDestaque = '#00E676';
         
         if (imc < 18.5) { classificacao = 'Abaixo do Peso'; corDeDestaque = '#3498db'; }
         else if (imc >= 18.5 && imc <= 24.9) { classificacao = 'Peso Normal'; corDeDestaque = '#00E676'; }
@@ -671,10 +648,10 @@
         
         if (!carga || !reps) return Swal.fire({title: 'Faltam Dados', text: 'Preencha a carga levantada e as repetições feitas.', icon: 'warning', confirmButtonColor: '#FF5500'});
         
-        // Fórmula de Epley: 1RM = Peso * (1 + 0.0333 * Repetições)
+        // Fórmula de Wathan (mais precisa que Epley)
         let repMaxima = carga;
         if (reps > 1) {
-            repMaxima = carga * (1 + 0.0333 * reps);
+            repMaxima = carga / (1.0278 - (0.0278 * reps));
         }
         
         const divResultado = document.getElementById('rm-resultado');
@@ -682,19 +659,88 @@
         divResultado.innerHTML = `<h4>${Math.round(repMaxima)} kg</h4><p>Sua 1 Repetição Máxima Estimada</p>`;
     }
 
+    function calcularCardio() {
+        let idade = parseInt(document.getElementById('cardio-idade').value);
+        if (!idade) return Swal.fire({title: 'Faltam Dados', text: 'Preencha a sua idade para calcularmos os batimentos.', icon: 'warning', confirmButtonColor: '#FF5500'});
+        
+        let fcm = 220 - idade;
+        let queimaMin = Math.round(fcm * 0.60);
+        let queimaMax = Math.round(fcm * 0.70);
+        let resisMin = Math.round(fcm * 0.70);
+        let resisMax = Math.round(fcm * 0.80);
+
+        const divResultado = document.getElementById('cardio-resultado');
+        divResultado.style.display = 'block';
+        divResultado.innerHTML = `
+            <div style="margin-bottom: 15px; padding-bottom: 10px; border-bottom: 1px solid rgba(255,255,255,0.05);">
+                <span style="color: #00E676; font-size: 0.85rem; font-weight: bold; text-transform: uppercase;">🔥 Zona de Queima de Gordura</span><br>
+                <strong style="color: white; font-size: 1.6rem; font-family: 'Barlow Condensed', sans-serif;">${queimaMin} a ${queimaMax} BPM</strong>
+            </div>
+            <div style="margin-bottom: 10px;">
+                <span style="color: #3498db; font-size: 0.85rem; font-weight: bold; text-transform: uppercase;">🏃 Zona de Resistência (Cardio)</span><br>
+                <strong style="color: white; font-size: 1.6rem; font-family: 'Barlow Condensed', sans-serif;">${resisMin} a ${resisMax} BPM</strong>
+            </div>
+            <p style="margin-top: 10px; font-size: 0.75rem; color: var(--muted); text-align: center;">A sua frequência cardíaca máxima é de aprox. ${fcm} BPM.</p>
+        `;
+    }
+
+    function calcularMacros() {
+        let peso = parseFloat(document.getElementById('macro-peso').value.replace(',', '.'));
+        let objetivo = document.getElementById('macro-objetivo').value;
+
+        if (!peso) return Swal.fire({title: 'Faltam Dados', text: 'Preencha o seu peso para o cálculo dos macros.', icon: 'warning', confirmButtonColor: '#FF5500'});
+
+        let proteina, carbo, gordura;
+        let agua = (peso * 0.035).toFixed(1); 
+
+        if (objetivo === 'emagrecer') {
+            proteina = peso * 2.2;
+            carbo = peso * 1.5;
+            gordura = peso * 0.8;
+        } else if (objetivo === 'ganhar') {
+            proteina = peso * 2.0;
+            carbo = peso * 4.0;
+            gordura = peso * 1.0;
+        } else {
+            proteina = peso * 2.0;
+            carbo = peso * 2.5;
+            gordura = peso * 1.0;
+        }
+
+        const divResultado = document.getElementById('macro-resultado');
+        divResultado.style.display = 'block';
+        divResultado.innerHTML = `
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+                <div style="background: rgba(255,255,255,0.05); padding: 12px; border-radius: 12px; text-align: center;">
+                    <div style="color: #e74c3c; font-weight: 700; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 1px;">🥩 Proteínas</div>
+                    <div style="color: white; font-size: 1.8rem; font-weight: 900; font-family: 'Barlow Condensed', sans-serif;">${Math.round(proteina)}g</div>
+                </div>
+                <div style="background: rgba(255,255,255,0.05); padding: 12px; border-radius: 12px; text-align: center;">
+                    <div style="color: #f1c40f; font-weight: 700; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 1px;">🍚 Carbos</div>
+                    <div style="color: white; font-size: 1.8rem; font-weight: 900; font-family: 'Barlow Condensed', sans-serif;">${Math.round(carbo)}g</div>
+                </div>
+                <div style="background: rgba(255,255,255,0.05); padding: 12px; border-radius: 12px; text-align: center;">
+                    <div style="color: #e67e22; font-weight: 700; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 1px;">🥑 Gorduras</div>
+                    <div style="color: white; font-size: 1.8rem; font-weight: 900; font-family: 'Barlow Condensed', sans-serif;">${Math.round(gordura)}g</div>
+                </div>
+                <div style="background: rgba(255,255,255,0.05); padding: 12px; border-radius: 12px; text-align: center;">
+                    <div style="color: #3498db; font-weight: 700; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 1px;">💧 Água</div>
+                    <div style="color: white; font-size: 1.8rem; font-weight: 900; font-family: 'Barlow Condensed', sans-serif;">${agua} L</div>
+                </div>
+            </div>
+            <p style="margin-top: 15px; font-size: 0.75rem; color: var(--muted); text-align: center; line-height: 1.4;">Valores estimados baseados no seu peso. Para um plano preciso, consulte um nutricionista.</p>
+        `;
+    }
+
     // ==========================================
-    // LÓGICA DO RANKING COM BUSCA E FOTOS E REFRESH
+    // LÓGICA DO RANKING 
     // ==========================================
-    
-    // NOVA FUNÇÃO: Aciona a animação e chama a carga
     async function atualizarRankingUI() {
         const icone = document.getElementById('icon-refresh');
         icone.classList.add('spin-animation');
-        
         try {
-            // Limpa o termo de busca se houver, pra trazer a lista completa atualizada
             document.getElementById('busca-ranking').value = ''; 
-            await carregarRankingApp(true); // 'true' para forçar limpar a lista visual antes
+            await carregarRankingApp(true); 
         } catch (erro) {
             console.error("Falha ao atualizar o ranking:", erro);
         } finally {
@@ -702,10 +748,8 @@
         }
     }
 
-    // BÔNUS: Atualização silenciosa a cada 3 minutos se o usuário estiver na tela
     setInterval(() => {
         if (document.visibilityState === 'visible' && abaAtiva === 'ranking') {
-            // Se a pessoa não estiver buscando nada no momento, atualiza por baixo dos panos
             if(document.getElementById('busca-ranking').value === '') {
                 carregarRankingApp();
             }
@@ -715,7 +759,6 @@
     async function carregarRankingApp(forcarLimpar = false) {
         const container = document.getElementById('app-ranking-list');
         
-        // Só mostra a msg de carregando se for a primeira vez ou refresh forçado, pra não piscar a tela
         if (rankingGlobal.length === 0 || forcarLimpar) {
             container.innerHTML = `<div style="text-align:center; padding: 60px; color:var(--primary);"><span class="material-icons" style="font-size: 3rem; animation: spin-anim 1.5s linear infinite;">sync</span><br><br><span style="font-family:'Barlow Condensed', sans-serif; letter-spacing:1px; font-weight:700;">ATUALIZANDO PONTUAÇÕES<span class="waiting-dots"></span></span></div>`;
         }
@@ -733,38 +776,33 @@
 
     function renderizarListaRanking(lista) {
         const container = document.getElementById('app-ranking-list');
-        container.innerHTML = ''; // Limpa antes de renderizar
+        container.innerHTML = ''; 
         
         if(lista.length === 0) {
             container.innerHTML = `<div style="text-align:center; padding: 20px; color:var(--muted);">Nenhum atleta encontrado com este nome.</div>`;
             return;
         }
 
-        // REMOVIDO: let html = '';
-        
         lista.forEach((aluno, index) => {
             let cls = '';
             let crownHtml = '';
             
-            // ⭐ LÓGICA DO CAMPEÃO ⭐
             if (aluno.posicao == 1) { 
                 cls = 'gold champion'; 
-                crownHtml = '<div class="champion-crown">👑</div>'; // Adiciona a coroa flutuante
+                crownHtml = '<div class="champion-crown">👑</div>';
             }
             else if (aluno.posicao == 2) cls = 'silver';
             else if (aluno.posicao == 3) cls = 'bronze';
 
             let isMe = (aluno.nome.toLowerCase() === AlunoLogado.nome.toLowerCase()) ? 'me' : '';
 
-            // Desenha a foto ou o placeholder com a letra
             let avatarHtml = aluno.foto 
                 ? `<img src="${aluno.foto}" class="rank-avatar" onerror="this.outerHTML='<div class=\\'rank-avatar-placeholder\\'>${aluno.nome.charAt(0)}</div>'">` 
                 : `<div class="rank-avatar-placeholder">${aluno.nome.charAt(0)}</div>`;
 
-            // NOVA ESTRUTURA DOM (para animação staggered)
             const card = document.createElement('div');
             card.className = `rank-app-card ${cls} ${isMe}`;
-            card.style.animationDelay = `${index * 50}ms`; // Animação staggered (atraso cascata)
+            card.style.animationDelay = `${index * 50}ms`; 
 
             card.innerHTML = `
                 ${crownHtml}
@@ -773,8 +811,7 @@
                 <div class="rank-app-nome">${aluno.nome}</div>
                 <div class="rank-app-pts">${aluno.pontos} PTS</div>
             `;
-            
-            container.appendChild(card); // Adiciona ao invés de acumular string
+            container.appendChild(card); 
         });
     }
 
@@ -973,12 +1010,10 @@
         document.getElementById('modal-tecnica').classList.remove('open');
     }
 
-    // Função NOVA para manter o aluno logado e inativar a tela de treino após concluir
     function mostrarTelaSucesso() {
         mudarAbaApp('ranking');
-        carregarRankingApp(true); // Atualiza os pontos na hora!
+        carregarRankingApp(true); 
         
-        // Zera a tela de treino para não deixar o cara clicar de novo
         document.getElementById('dia-titulo').textContent = "MISSÃO CUMPRIDA";
         document.getElementById('treino-nivel').textContent = "Treino de hoje finalizado!";
         document.getElementById('msg-orientacao').style.display = 'none';
@@ -1103,7 +1138,6 @@
     }
 </script>
 <script>
-    // 1. Registo do Service Worker
     if ('serviceWorker' in navigator) {
         window.addEventListener('load', () => {
             navigator.serviceWorker.register('./sw-app.js')
@@ -1112,17 +1146,10 @@
         });
     }
 
-    // 2. Intercetar o evento de instalação e disparar o SweetAlert
     let deferredPrompt;
-
     window.addEventListener('beforeinstallprompt', (e) => {
-        // Previne o Chrome de mostrar aquele ícone minúsculo e inútil
         e.preventDefault();
-        
-        // Guarda o evento para podermos disparar o botão de instalação depois
         deferredPrompt = e;
-        
-        // Espera 3 segundos depois de o site carregar e mostra o Pop-up Premium!
         setTimeout(mostrarBannerInstalacao, 3000); 
     });
 
@@ -1132,7 +1159,6 @@
         Swal.fire({
             title: 'INSTALAR APLICATIVO',
             html: 'Adicione o <strong>MaxGym</strong> ao ecrã principal do seu telemóvel para ter acesso rápido ao treino e ao ranking!',
-            // 🚀 A MÁGICA AQUI: Trocamos o ícone pela sua logo!
             imageUrl: 'icon-192.png', 
             imageWidth: 80,
             imageHeight: 80,
@@ -1145,15 +1171,12 @@
             cancelButtonText: 'AGORA NÃO'
         }).then((result) => {
             if (result.isConfirmed) {
-                // Se ele clicou em instalar, disparamos a tela preta nativa do Android
                 deferredPrompt.prompt();
-                
-                // Aguarda a resposta do aluno
                 deferredPrompt.userChoice.then((choiceResult) => {
                     if (choiceResult.outcome === 'accepted') {
                         console.log('Aluno instalou o MaxGym!');
                     }
-                    deferredPrompt = null; // Limpa o evento
+                    deferredPrompt = null; 
                 });
             }
         });

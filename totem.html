@@ -6,6 +6,9 @@
     <title>Totem - MaxGym</title>
     <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@0,400;0,700;0,900;1,900&family=Barlow:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
+    <link rel="manifest" href="manifest-totem.json">
+    <meta name="theme-color" content="#060709">
+    <link rel="apple-touch-icon" href="icon-192.png">
         :root {
             --primary: #FF5500;
             --primary-glow: rgba(255,85,0,0.4);
@@ -717,6 +720,15 @@
             document.getElementById('txt-instrucao').textContent = "A SUA MISSÃO ESTÁ PRONTA!";
             
             radarAtivo = true; // Libera o totem para ler a próxima catraca
+        }
+    </script>
+    <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('./sw-totem.js')
+                    .then(reg => console.log('PWA do Totem ativado com sucesso!'))
+                    .catch(err => console.error('Erro no PWA do Totem:', err));
+            });
         }
     </script>
 </body>

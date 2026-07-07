@@ -189,9 +189,51 @@
             .pts-value { font-size: 1.8rem; }
             #scroll-bar { display: none !important; }
         }
+
+        /* Estilo para a tela de patrocínios (Ocupa a TV inteira) */
+.digital-signage {
+    display: none; /* Começa invisível */
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: #111827; /* Fundo escuro premium */
+    z-index: 9999;
+    justify-content: center;
+    align-items: center;
+    opacity: 0;
+    transition: opacity 1s ease-in-out; /* Efeito de transição suave */
+}
+
+/* Quando adicionarmos essa classe, a tela aparece suavemente */
+.digital-signage.show {
+    opacity: 1;
+}
+
+/* Estilo para a logomarca */
+#logo-patrocinador {
+    max-width: 80%;
+    max-height: 80%;
+    object-fit: contain;
+    animation: pulse 4s infinite; /* Pequeno efeito de pulso na logo (opcional) */
+}
+
+@keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+    100% { transform: scale(1); }
+}
     </style>
 </head>
 <body>
+
+    <div id="tela-ranking">
+        </div>
+
+    <div id="tela-patrocinadores" class="digital-signage">
+        <img id="logo-patrocinador" src="" alt="Patrocinador">
+    </div>
 
     <div class="header">
         <img src="logo.jpeg" class="header-logo" alt="Logo" onclick="toggleFullScreen()" onerror="this.style.display='none'">
@@ -365,6 +407,64 @@
             carregarRanking();
             setInterval(carregarRanking, 300000); 
         };
+
+        // Função auxiliar que pausa a execução pelo tempo determinado (em milissegundos)
+const sleep = ms => new Promise(resolve => setTimeout(resolve, ms));
+
+async function iniciarDigitalSignage() {
+    const telaRanking = document.getElementById('tela-ranking');
+    const telaAds = document.getElementById('tela-patrocinadores');
+    const imgLogo = document.getElementById('logo-patrocinador');
+
+    // Suas logos (Coloque a URL correta das imagens que você vai usar)
+    const patrocinadores = [
+        "https://sua-url.com/logo-willweb.png", // Imagem 1
+        "https://sua-url.com/logo-powerfisio.png" // Imagem 2
+    ];
+
+    // Loop infinito para rodar na TV o dia todo
+    while (true) {
+        // PASSO 1: Mostra o Ranking por 1 Minuto (60.000 milissegundos)
+        telaAds.classList.remove('show'); // Tira a opacidade
+        await sleep(1000); // Espera 1 seg para a transição terminar antes de dar display: none
+        telaAds.style.display = 'none';
+        
+        // Fica no ranking por 60 segundos
+        await sleep(60000); 
+
+        // PASSO 2: Prepara a tela de Patrocinadores
+        telaAds.style.display = 'flex';
+        // Pequeno delay para o navegador registrar o display: flex antes de aplicar a opacidade
+        await sleep(50); 
+        telaAds.classList.add('show');
+
+        // PASSO 3: Roda cada patrocinador por 10 segundos
+        for (let i = 0; i < patrocinadores.length; i++) {
+            // Se não for a primeira imagem, faz um pequeno piscar para trocar de logo
+            if (i > 0) {
+                imgLogo.style.opacity = 0;
+                await sleep(500);
+            }
+            
+            imgLogo.src = patrocinadores[i];
+            imgLogo.style.opacity = 1;
+            
+            // Fica mostrando a logo por 10 segundos (10.000 milissegundos)
+            await sleep(10000); 
+        }
+        
+        // Após mostrar todas as logos, o loop while(true) recomeça, voltando pro ranking!
+    }
+}
+
+// Inicia o motor de publicidade assim que a página carregar
+window.addEventListener('load', () => {
+    // Aqui você pode manter as suas outras funções (como a de carregar o ranking)
+    // carregarRankingNaTela(); 
+    
+    // Dispara a rotação de telas
+    iniciarDigitalSignage();
+});
     </script>
 </body>
 </html>

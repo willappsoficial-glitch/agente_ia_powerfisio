@@ -210,9 +210,105 @@
         }
         .dash-card p { margin: 0; color: var(--text-muted); font-size: 14px; font-weight: 500;}
         .dash-card h4 { margin: 10px 0 0 0; font-size: 28px; color: var(--dark); }
+
+        /* =========================================
+           📱 MODO MOBILE (APP PWA EXPERIENCE)
+           ========================================= */
+        
+        /* Esconde o cabeçalho mobile quando estiver no computador */
+        .mobile-header { display: none; }
+
+        @media (max-width: 768px) {
+            body { 
+                flex-direction: column; 
+            }
+            
+            /* Oculta a logo lateral grande */
+            .sidebar-header { display: none; }
+            
+            /* Novo Header Topo (Fixo) */
+            .mobile-header {
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                background-color: var(--dark);
+                color: var(--primary);
+                padding: 15px;
+                font-weight: 800;
+                font-size: 18px;
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                z-index: 999;
+                box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            }
+
+            /* Transforma a Sidebar em uma Bottom Nav Bar (Fixa embaixo) */
+            .sidebar {
+                position: fixed;
+                bottom: 0;
+                left: 0;
+                width: 100%;
+                height: auto;
+                flex-direction: row;
+                box-shadow: 0 -4px 15px rgba(0,0,0,0.1);
+                padding-bottom: env(safe-area-inset-bottom); /* Suporte para iPhone */
+            }
+            
+            .nav-menu {
+                flex-direction: row;
+                padding: 0;
+                width: 100%;
+                justify-content: space-around;
+                gap: 0;
+            }
+
+            /* Adapta os botões para formato de App (Ícone em cima, Texto embaixo) */
+            .nav-btn {
+                flex-direction: column;
+                justify-content: center;
+                padding: 10px 5px;
+                font-size: 11px;
+                gap: 4px;
+                flex: 1;
+                text-align: center;
+                border-right: none;
+                border-bottom: 3px solid transparent;
+            }
+            
+            .nav-btn.active {
+                border-right: none;
+                border-bottom: 3px solid var(--primary);
+                background-color: var(--dark-light);
+            }
+
+            /* Ajusta a área principal para não ser engolida pelas barras fixas */
+            .main-content {
+                padding: 70px 15px 90px 15px; /* Espaço pro Topo e pro Fundo */
+            }
+
+            /* Força os Cards e Inputs a ocuparem 100% da tela */
+            .dash-grid { grid-template-columns: 1fr; }
+            .form-group { min-width: 100%; }
+            .card { padding: 15px; }
+            h3 { font-size: 18px; }
+
+            /* Permite arrastar as tabelas para o lado sem quebrar a tela */
+            .table-container {
+                overflow-x: auto;
+                -webkit-overflow-scrolling: touch;
+            }
+            
+            table { min-width: 600px; } /* Garante que a tabela não esprema o texto */
+        }
     </style>
 </head>
 <body>
+
+    <div class="mobile-header">
+        MAX ERP
+    </div>
 
     <div class="sidebar">
         <div class="sidebar-header">
@@ -220,10 +316,10 @@
             <p>WillWeb Soluções</p>
         </div>
         <div class="nav-menu">
-            <button class="nav-btn active" onclick="navigate('tela-dashboard')">📊 Dashboard</button>
-            <button class="nav-btn" onclick="navigate('tela-alunos')">👥 Gestão de Alunos</button>
-            <button class="nav-btn" onclick="navigate('tela-planos')">🏷️ Catálogo de Planos</button>
-            <button class="nav-btn" onclick="navigate('tela-pdv')">💰 PDV / Recebimentos</button>
+            <button class="nav-btn active" onclick="navigate('tela-dashboard')"><span>📊</span> <span>Dashboard</span></button>
+            <button class="nav-btn" onclick="navigate('tela-alunos')"><span>👥</span> <span>Gestão de Alunos</span></button>
+            <button class="nav-btn" onclick="navigate('tela-planos')"><span>🏷️</span> <span>Catálogo de Planos</span></button>
+            <button class="nav-btn" onclick="navigate('tela-pdv')"><span>💰</span> <span>PDV / Recebimentos</span></button>
         </div>
     </div>
 

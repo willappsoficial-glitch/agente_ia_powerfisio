@@ -327,7 +327,9 @@
     </div>
 
     <script>
-        // Função para trocar de tela
+        // URL oficial da sua API no Google Apps Script
+        const API_URL = "https://script.google.com/macros/s/AKfycby62vambopzAU-hOp4Och0Qg9_ZOxNCqqo19BFZvUA13OFTYBRMnTnNckq3aBzncXKTJg/exec";
+
         function navigate(telaId) {
             document.querySelectorAll('.section-screen').forEach(el => el.classList.remove('active'));
             document.querySelectorAll('.nav-btn').forEach(el => el.classList.remove('active'));
@@ -336,79 +338,102 @@
         }
 
         // 👤 SALVAR ALUNO
-        function salvarAluno(e) {
+        async function salvarAluno(e) {
             e.preventDefault();
             const btn = e.target.querySelector('button');
-            btn.innerText = "Salvando..."; // Feedback visual
+            btn.innerText = "Salvando..."; 
             
-            const dados = {
+            const payload = {
+                acao: 'cadastrarAlunoERP',
                 nome: document.getElementById('alunoNome').value,
                 cpf: document.getElementById('alunoCPF').value,
                 celular: document.getElementById('alunoCelular').value
             };
             
-            // Chama o backend
-            google.script.run
-                .withSuccessHandler(function(res) {
-                    if(res.sucesso) {
-                        alert(res.mensagem);
-                        e.target.reset(); // Limpa o formulário
-                    } else {
-                        alert("Erro: " + res.erro);
-                    }
-                    btn.innerText = "Salvar Aluno";
-                })
-                .cadastrarNovoAlunoBase(dados);
+            try {
+                const response = await fetch(API_URL, {
+                    method: 'POST',
+                    body: JSON.stringify(payload)
+                });
+                const res = await response.json();
+                
+                if(res.sucesso) {
+                    alert(res.mensagem);
+                    e.target.reset();
+                } else {
+                    alert("Erro: " + res.erro);
+                }
+            } catch (err) {
+                alert("Erro de conexão com o servidor.");
+            } finally {
+                btn.innerText = "Salvar Aluno";
+            }
         }
 
         // 🏷️ SALVAR PLANO
-        function salvarPlano(e) {
+        async function salvarPlano(e) {
             e.preventDefault();
             const btn = e.target.querySelector('button');
             btn.innerText = "Salvando...";
             
-            const dados = {
+            const payload = {
+                acao: 'cadastrarPlanoERP',
                 nome: document.getElementById('planoNome').value,
                 valor: document.getElementById('planoValor').value,
                 duracao: document.getElementById('planoDuracao').value
             };
             
-            google.script.run
-                .withSuccessHandler(function(res) {
-                    if(res.sucesso) {
-                        alert(res.mensagem);
-                        e.target.reset();
-                    } else {
-                        alert("Erro: " + res.erro);
-                    }
-                    btn.innerText = "Cadastrar Plano";
-                })
-                .cadastrarNovoPlanoBase(dados);
+            try {
+                const response = await fetch(API_URL, {
+                    method: 'POST',
+                    body: JSON.stringify(payload)
+                });
+                const res = await response.json();
+                
+                if(res.sucesso) {
+                    alert(res.mensagem);
+                    e.target.reset();
+                } else {
+                    alert("Erro: " + res.erro);
+                }
+            } catch (err) {
+                alert("Erro de conexão com o servidor.");
+            } finally {
+                btn.innerText = "Cadastrar Plano";
+            }
         }
 
         // 💰 PROCESSAR VENDA (PDV)
-        function processarVenda(e) {
+        async function processarVenda(e) {
             e.preventDefault();
             const btn = e.target.querySelector('button');
             btn.innerText = "Processando...";
             
-            const dados = {
+            const payload = {
+                acao: 'registrarVendaERP',
                 idAluno: document.getElementById('vendaAluno').value,
                 idPlano: document.getElementById('vendaPlano').value,
                 formaPgto: document.getElementById('vendaPgto').value
             };
             
-            google.script.run
-                .withSuccessHandler(function(res) {
-                    if(res.sucesso) {
-                        alert(res.mensagem); // Vai mostrar a nova validade da catraca!
-                        e.target.reset();
-                    } else {
-                        alert("Erro: " + res.erro);
-                    }
-                    btn.innerText = "Confirmar Recebimento e Atualizar Catraca";
-                })
-                .registrarVendaERP(dados);
+            try {
+                const response = await fetch(API_URL, {
+                    method: 'POST',
+                    body: JSON.stringify(payload)
+                });
+                const res = await response.json();
+                
+                if(res.sucesso) {
+                    alert(res.mensagem);
+                    e.target.reset();
+                } else {
+                    alert("Erro: " + res.erro);
+                }
+            } catch (err) {
+                alert("Erro de conexão com o servidor.");
+            } finally {
+                btn.innerText = "Confirmar Recebimento e Atualizar Catraca";
+            }
         }
     </script>
 </body>

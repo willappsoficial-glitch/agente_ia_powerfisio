@@ -335,8 +335,58 @@
             document.querySelectorAll('.nav-btn').forEach(el => el.classList.remove('active'));
             document.getElementById(telaId).classList.add('active');
             event.currentTarget.classList.add('active');
-        }
 
+            // Gatilho: Se abriu a tela PDV, puxa os dados do banco atualizados
+            if(telaId === 'tela-pdv') {
+                carregarDadosPDV();
+            }
+        }
+        
+        // 🔄 CARREGAR LISTAS NO PDV
+        async function carregarDadosPDV() {
+            const selectAluno = document.getElementById('vendaAluno');
+            const selectPlano = document.getElementById('vendaPlano');
+            
+            // Coloca um aviso de carregamento enquanto busca
+            selectAluno.innerHTML = '<option value="">Carregando alunos...</option>';
+            selectPlano.innerHTML = '<option value="">Carregando planos...</option>';
+
+            const payload = { acao: 'obterDadosPDV' };
+
+            try {
+                const response = await fetch(API_URL, {
+                    method: 'POST',
+                    body: JSON.stringify(payload)
+                });
+                const res = await response.json();
+                
+                // Preenche os Alunos
+                selectAluno.innerHTML = '<option value="">Selecione o aluno...</option>';
+                res.alunos.forEach(aluno => {
+                    let option = document.createElement('option');
+                    option.value = aluno.id;
+                    option.textContent = `${aluno.nome} (CPF: ${aluno.cpf})`;
+                    selectAluno.appendChild(option);
+                });
+
+                // Preenche os Planos
+                selectPlano.innerHTML = '<option value="">Selecione o plano...</option>';
+                res.planos.forEach(plano => {
+                    let option = document.createElement('option');
+                    option.value = plano.id;
+                    // Formata o valor para Reais (R$)
+                    let valorFormatado = parseFloat(plano.valor).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+                    option.textContent = `${plano.nome} - ${valorFormatado}`;
+                    selectPlano.appendChild(option);
+                });
+
+            } catch (err) {
+                selectAluno.innerHTML = '<option value="">Erro ao carregar</option>';
+                selectPlano.innerHTML = '<option value="">Erro ao carregar</option>';
+            }
+        }
+        
+        
         // 👤 SALVAR ALUNO
         async function salvarAluno(e) {
             e.preventDefault();

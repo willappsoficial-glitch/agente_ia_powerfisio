@@ -3,532 +3,1506 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>MAXGYM - TV Ranking Ao Vivo</title>
-    <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;700;900&family=Barlow:wght@400;600;700&display=swap" rel="stylesheet">
+    <title>MAXGYM - Ranking TV</title>
+    <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;700;900&family=Barlow:wght@400;600;700;800&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <link rel="manifest" href="manifest-tv.json">
-    <meta name="theme-color" content="#060709">
+    <meta name="theme-color" content="#07090c">
     <meta name="apple-mobile-web-app-capable" content="yes">
-    
-    <script src="https://www.gstatic.com/firebasejs/10.0.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.0.0/firebase-database-compat.js"></script>
-
     <style>
         :root {
-            --primary: #FF5500;
-            --bg: #060709;
-            --bg-card: rgba(18, 20, 26, 0.75);
-            --border: rgba(255,255,255,0.08);
-            --gold: #FFD700;
-            --silver: #E0E0E0;
-            --bronze: #CD7F32;
+            --bg: #07090c;
+            --surface: rgba(14, 18, 24, 0.92);
+            --surface-strong: rgba(19, 24, 31, 0.98);
+            --line: rgba(255, 255, 255, 0.12);
+            --line-soft: rgba(255, 255, 255, 0.07);
+            --text: #f8fafc;
+            --muted: #94a3b8;
+            --muted-strong: #cbd5e1;
+            --orange: #ff5a1f;
+            --orange-soft: #ffb020;
+            --green: #22c55e;
+            --gold: #f8cf4d;
+            --silver: #d8dee9;
+            --bronze: #c77b30;
+            --danger: #ef4444;
+            --shadow: 0 24px 60px rgba(0, 0, 0, 0.34);
         }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-
-        /* ESCALA FLUIDA PARA TVS - Ajustada para dar mais respiro vertical */
-        html { font-size: 16px; }
-        @media (min-width: 1024px) {
-            html { font-size: 0.95vw; } /* Pouquinho menor para garantir que tudo caiba */
+        * {
+            box-sizing: border-box;
         }
 
-        /* TRAVA GLOBAL - Nada rola na página */
-        html, body {
-            width: 100%; height: 100%;
-            overflow: hidden; 
-        }
-
-        /* ======= FUNDO ANIMADO E DINÂMICO ======= */
+        html,
         body {
-            font-family: 'Barlow', sans-serif;
-            background: 
-                radial-gradient(circle at top, #ff6a0025 0%, transparent 45%),
-                radial-gradient(circle at bottom, #ff6a0015 0%, transparent 50%),
-                linear-gradient(180deg, #040404, #111111, #050505);
-            color: #FFF;
-            display: flex; flex-direction: column; position: relative;
+            width: 100%;
+            height: 100%;
+            margin: 0;
+        }
+
+        body {
+            font-family: "Barlow", Arial, sans-serif;
+            color: var(--text);
+            background:
+                linear-gradient(110deg, rgba(255, 90, 31, 0.13) 0%, transparent 29%),
+                linear-gradient(290deg, rgba(34, 197, 94, 0.07) 0%, transparent 32%),
+                linear-gradient(rgba(255, 255, 255, 0.028) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 255, 255, 0.022) 1px, transparent 1px),
+                var(--bg);
+            background-size: auto, auto, 52px 52px, 52px 52px, auto;
+            overflow: hidden;
         }
 
         body::before {
-            content: ""; position: absolute; inset: 0;
-            background-image: linear-gradient(rgba(255,255,255,.02) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,.02) 1px, transparent 1px);
-            background-size: 4rem 4rem; opacity: .35;
-            animation: gridMove 35s linear infinite; pointer-events: none; z-index: -3;
-        }
-
-        body::after {
-            content: ""; position: absolute; inset: -40%;
-            background: radial-gradient(circle at 20% 20%, rgba(255,120,0,.22), transparent 30%), radial-gradient(circle at 80% 70%, rgba(255,120,0,.12), transparent 30%);
-            filter: blur(120px); animation: ambientLight 12s ease-in-out infinite alternate;
-            pointer-events: none; z-index: -2;
-        }
-
-        @keyframes ambientLight { from { transform: scale(1) rotate(0deg); } to { transform: scale(1.2) rotate(8deg); } }
-        @keyframes gridMove { 0% { transform: translateY(0); } 100% { transform: translateY(4rem); } }
-
-        .bg-watermark {
-            position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%);
-            font-size: 20rem; font-weight: 900; letter-spacing: 1.5rem;
-            color: rgba(255,255,255,.025); pointer-events: none; user-select: none; z-index: -1;
-        }
-
-        .light-rays { position: absolute; inset: 0; overflow: hidden; pointer-events: none; z-index: 0; }
-        .light-rays span {
-            position: absolute; top: -20vh; width: 2px; height: 30vh;
-            background: linear-gradient(transparent, rgba(255,180,0,.9), transparent);
-            filter: blur(1px); animation: fall linear infinite;
-        }
-
-        @keyframes fall {
-            from { transform: translateY(-30vh) translateX(0) rotate(25deg); opacity: 0; }
-            10% { opacity: 1; }
-            90% { opacity: 1; }
-            to { transform: translateY(120vh) translateX(-10vw) rotate(25deg); opacity: 0; }
-        }
-
-        /* ======= TELA RANKING ======= */
-        #tela-ranking {
-            display: flex; flex-direction: column; width: 100%; height: 100%; z-index: 10;
-            overflow: hidden; /* TRAVA NA TELA */
-        }
-
-        /* ======= HEADER ======= */
-        .header { display: flex; align-items: center; justify-content: center; gap: 2rem; padding: 1.5rem 4vw 0.5rem; flex-shrink: 0; position: relative; }
-        .header-logo { width: 5.5rem; height: 5.5rem; border-radius: 1.5rem; box-shadow: 0 0 30px rgba(255,85,0,0.5); cursor: pointer; border: 3px solid rgba(255,85,0,0.5); }
-        
-        .header-title-container { display: flex; flex-direction: column; justify-content: center; align-items: center; }
-        .header-title { 
-            font-family: 'Barlow Condensed', sans-serif; font-size: 4rem; font-weight: 900; font-style: italic;
-            letter-spacing: 0.1rem; line-height: 0.9; text-transform: uppercase;
-            text-shadow: 3px 3px 0 #111, 0 8px 15px rgba(0,0,0,0.6); color: #fff;
-        }
-        .header-title span { 
-            background: linear-gradient(135deg, #FFD700, #ff5500); -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-            filter: drop-shadow(0 0 15px rgba(255,85,0,0.8)); margin-left: 0.5rem;
-        }
-        .header-subtitle { 
-            font-family: 'Barlow', sans-serif; font-size: 0.8rem; color: #FFD700; letter-spacing: 0.3rem; 
-            text-transform: uppercase; margin-top: 0.6rem; font-weight: 700; background: rgba(255, 85, 0, 0.15);
-            padding: 0.3rem 1.5rem; border-radius: 2rem; border: 1px solid rgba(255, 85, 0, 0.3);
-            box-shadow: 0 4px 10px rgba(0,0,0,0.5);
-        }
-        
-        .live-badge {
-            position: absolute; right: 4vw; top: 50%; transform: translateY(-50%);
-            display: flex; align-items: center; gap: 0.5rem; background: rgba(0, 255, 136, 0.1);
-            border: 1px solid rgba(0, 255, 136, 0.3); border-radius: 3rem; padding: 0.6rem 1.2rem;
-            font-size: 0.9rem; color: #00FF88; letter-spacing: 0.1rem; text-transform: uppercase; font-weight: 900;
-            box-shadow: 0 0 15px rgba(0, 255, 136, 0.1);
-        }
-        .live-dot { width: 0.7rem; height: 0.7rem; background: #00FF88; border-radius: 50%; box-shadow: 0 0 10px #00FF88; animation: livePulse 1.5s ease-in-out infinite; }
-        @keyframes livePulse { 0%, 100% { opacity: 0.3; transform: scale(0.8); } 50% { opacity: 1; transform: scale(1.2); box-shadow: 0 0 15px #00FF88; } }
-        
-        .header-divider { height: 2px; background: linear-gradient(90deg, transparent, var(--primary), transparent); margin: 0 6vw 1rem; flex-shrink: 0; opacity: 0.4; }
-
-        /* ======= BARRA DE PESQUISA NEON ======= */
-        .search-container {
-            display: flex; align-items: center; background: rgba(0,0,0,0.4);
-            border: 1px solid var(--border); border-radius: 1rem; margin: 0 4vw 1rem;
-            padding: 0 1.2rem; height: 3rem; flex-shrink: 0; backdrop-filter: blur(10px); transition: all 0.3s ease;
-        }
-        .search-container:focus-within {
-            border-color: var(--primary); box-shadow: 0 0 25px rgba(255,85,0,0.4), inset 0 0 10px rgba(255,85,0,0.1);
-            background: rgba(0,0,0,0.7); transform: scale(1.01);
-        }
-        .search-container:focus-within .search-icon { text-shadow: 0 0 10px var(--primary); }
-        .search-icon { color: var(--primary); font-size: 1.5rem; margin-right: 0.8rem; transition: 0.3s; }
-        #input-pesquisa {
-            flex: 1; background: transparent; border: none; color: #fff;
-            font-family: 'Barlow', sans-serif; font-size: 1.1rem; outline: none; width: 100%; letter-spacing: 1px;
-        }
-        #input-pesquisa::placeholder { color: rgba(255,255,255,0.2); }
-
-        /* ======= GRID DO RANKING FIXO (5 LINHAS MATEMÁTICAS) ======= */
-        .ranking-grid {
-            display: grid; 
-            grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); 
-            grid-template-rows: repeat(5, minmax(0, 1fr)); /* DIVIDE EXATAMENTE EM 5 LINHAS IGUAIS */
-            gap: 0.8rem 3rem; /* Menos espaço para garantir o encaixe */
-            padding: 1rem 4vw 5.5rem; /* Padding inferior cobre a barra ESPN perfeitamente */
-            flex: 1; overflow: hidden; /* SEM SCROLL */
-            width: 100%;
-        }
-
-        /* ======= RANK CARD PREMIUM ======= */
-        .rank-card {
-            position: relative;
-            display: flex; align-items: center; gap: 1rem; padding: 0.5rem 1.5rem 0.5rem 0.8rem;
-            width: 100%; height: 100%; min-width: 0; /* Altura 100% faz ele preencher a linha matemática */
-        }
-
-        /* Camada Exclusiva de Fundo do Card */
-        .card-bg {
-            position: absolute; inset: 0;
-            border-radius: 1.2rem;
-            background: linear-gradient(180deg, rgba(255,255,255,.10), rgba(255,255,255,.04));
-            backdrop-filter: blur(25px);
-            -webkit-backdrop-filter: blur(25px); 
-            border: 1px solid rgba(255,255,255,.08);
-            border-left: 0.4rem solid transparent;
-            box-shadow: 0 15px 40px rgba(0,0,0,.4);
-            overflow: hidden; 
-            z-index: 0;
-            transition: all 0.3s ease;
-        }
-
-        .card-bg::before {
-            content: ""; position: absolute; left: -120%; top: 0; width: 60%; height: 100%;
-            background: linear-gradient(120deg, transparent, rgba(255,255,255,.25), transparent); animation: shine 5s infinite;
-        }
-
-        @keyframes shine { to { left: 180%; } }
-        @keyframes cascadeIn {
-            0% { opacity: 0; transform: translateX(-30px) scale(0.95); }
-            100% { opacity: 1; transform: translateX(0) scale(1); }
-        }
-
-        /* COROA DO CAMPEÃO */
-        .rank-card.gold::after {
-            content: "👑";
-            position: absolute;
-            top: -1.2rem; 
-            left: 4.8rem; 
-            font-size: 2.8rem;
-            transform: rotate(15deg);
-            filter: drop-shadow(0 5px 10px rgba(255,215,0,0.8));
-            animation: crownFloat 3s ease-in-out infinite;
-            z-index: 20;
+            content: "";
+            position: fixed;
+            inset: 0;
             pointer-events: none;
-        }
-        @keyframes crownFloat {
-            0%, 100% { transform: translateY(0) rotate(15deg); }
-            50% { transform: translateY(-0.6rem) rotate(5deg) scale(1.1); }
-        }
-
-        /* Cores de pódio animadas */
-        .rank-card.gold { animation: championScale 2.5s infinite alternate; }
-        .rank-card.gold .card-bg { 
-            border-left-color: var(--gold); border: 1px solid rgba(255,215,0,0.3); border-left-width: 0.4rem;
-            background: linear-gradient(90deg, rgba(255,215,0,0.1), rgba(18,20,26,0.8) 60%); 
-            animation: championGlow 2.5s infinite alternate;
-        }
-        @keyframes championScale { from { transform: scale(1.01); } to { transform: scale(1.03); } }
-        @keyframes championGlow { from { box-shadow: 0 0 20px rgba(255,170,0,.4); } to { box-shadow: 0 0 60px rgba(255,170,0,.9); } }
-
-        .rank-card.silver .card-bg { border-left-color: var(--silver); border: 1px solid rgba(224,224,224,0.2); border-left-width: 0.4rem; background: linear-gradient(90deg, rgba(224,224,224,0.08), rgba(18,20,26,0.8) 60%); }
-        .rank-card.bronze .card-bg { border-left-color: var(--bronze); border: 1px solid rgba(205,127,50,0.2); border-left-width: 0.4rem; background: linear-gradient(90deg, rgba(205,127,50,0.08), rgba(18,20,26,0.8) 60%); }
-        .rank-card.other .card-bg { border-left-color: rgba(255,255,255,0.05); border-left-width: 0.4rem;}
-
-        /* Elementos por cima do fundo */
-        .pos-num, .avatar-wrapper, .rank-name-container, .rank-points { z-index: 2; position: relative; }
-
-        .pos-num { font-family: 'Barlow Condensed', sans-serif; font-size: 2.2rem; font-weight: 900; width: 4rem; text-align: center; flex-shrink: 0; color: rgba(255,255,255,0.1); }
-        .rank-card.gold .pos-num { color: var(--gold); text-shadow: 0 0 15px rgba(255,215,0,0.5); font-size: 2.8rem; }
-        .rank-card.silver .pos-num { color: var(--silver); text-shadow: 0 0 10px rgba(224,224,224,0.4); }
-        .rank-card.bronze .pos-num { color: var(--bronze); text-shadow: 0 0 10px rgba(205,127,50,0.4); }
-
-        .rank-avatar { width: 4rem; height: 4rem; border-radius: 50%; object-fit: cover; flex-shrink: 0; border: 2px solid rgba(255,255,255,0.1); box-shadow: 0 4px 10px rgba(0,0,0,0.5); display: block; }
-        .rank-card.gold .rank-avatar { border-color: var(--gold); box-shadow: 0 0 15px rgba(255,215,0,0.4); }
-        .rank-card.silver .rank-avatar { border-color: var(--silver); }
-        .rank-card.bronze .rank-avatar { border-color: var(--bronze); }
-
-        .rank-avatar-placeholder { width: 4rem; height: 4rem; border-radius: 50%; background: rgba(255,85,0,0.1); border: 2px solid rgba(255,85,0,0.3); display: flex; align-items: center; justify-content: center; font-family: 'Barlow Condensed', sans-serif; font-size: 1.8rem; font-weight: 900; color: var(--primary); flex-shrink: 0; }
-        .rank-card.gold .rank-avatar-placeholder { border-color: var(--gold); color: var(--gold); box-shadow: 0 0 15px rgba(255,215,0,0.4); background: rgba(255,215,0,0.1); }
-
-        .rank-name-container { flex: 1; display: flex; flex-direction: column; justify-content: center; min-width: 0; padding-right: 1rem; }
-        .rank-name {
-            font-family: 'Barlow Condensed', sans-serif; font-size: 1.5rem; font-weight: 700;
-            text-transform: uppercase; letter-spacing: 0.05rem; color: #FFFFFF;
-            white-space: nowrap; overflow: hidden; text-overflow: ellipsis; 
-            text-shadow: 0 2px 4px rgba(0,0,0,0.5); display: block;
+            background:
+                linear-gradient(90deg, rgba(7, 9, 12, 0.94), rgba(7, 9, 12, 0.52) 44%, rgba(7, 9, 12, 0.94)),
+                linear-gradient(180deg, rgba(7, 9, 12, 0.3), rgba(7, 9, 12, 0.92));
+            z-index: 0;
         }
 
-        .power-bar-bg { width: 100%; height: 0.35rem; background: rgba(0,0,0,0.5); border-radius: 0.3rem; margin-top: 0.4rem; overflow: hidden; position: relative; box-shadow: inset 0 1px 3px rgba(0,0,0,0.8); }
-        .power-bar-fill { height: 100%; border-radius: 0.3rem; width: 0%; background: linear-gradient(90deg, #ff5500, #ff8c00); box-shadow: 0 0 10px #ff5500; }
-        @keyframes fillBar { to { width: var(--target-width); } }
-        
-        .rank-card.gold .power-bar-fill { background: linear-gradient(90deg, #FFD700, #FFF); box-shadow: 0 0 15px #FFD700; }
-        .rank-card.silver .power-bar-fill { background: linear-gradient(90deg, #E0E0E0, #FFF); box-shadow: 0 0 10px rgba(224,224,224,0.5); }
-        .rank-card.bronze .power-bar-fill { background: linear-gradient(90deg, #CD7F32, #FFA07A); box-shadow: 0 0 10px rgba(205,127,50,0.5); }
+        .brand-watermark {
+            position: fixed;
+            right: 3rem;
+            bottom: 4.8rem;
+            width: 34rem;
+            max-width: 40vw;
+            opacity: 0.055;
+            filter: grayscale(1) contrast(1.2);
+            pointer-events: none;
+            z-index: 0;
+        }
 
-        .rank-points { display: flex; flex-direction: column; align-items: center; justify-content: center; border: 1px solid rgba(255,255,255,0.05); border-radius: 1rem; padding: 0.5rem 1rem; flex-shrink: 0; min-width: 6.5rem; background: linear-gradient(180deg, #ff8c00, #ff5500); box-shadow: 0 0 30px rgba(255,120,0,.45); }
-        .pts-value { font-family: 'Barlow Condensed', sans-serif; font-size: 2.3rem; font-weight: 900; color: #fff; line-height: 0.9; text-shadow: 0 2px 10px rgba(0,0,0,0.3); }
-        .pts-label { font-size: 0.7rem; color: rgba(255,255,255,0.9); text-transform: uppercase; letter-spacing: 0.15rem; font-weight: 700; margin-top: 0.2rem; }
-        .rank-card.gold .pts-value { color: var(--gold); text-shadow: 0 0 15px rgba(255,215,0,0.5); }
+        .tv-shell {
+            position: relative;
+            z-index: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 1.25rem;
+            width: 100%;
+            height: 100%;
+            padding: 1.5rem 2rem 1.5rem;
+        }
 
-        /* ======= SCROLLING BAR ======= */
-        #scroll-bar { position: fixed; bottom: 0; left: 0; width: 100%; height: 4.5rem; background: rgba(6,7,9,0.95); border-top: 2px solid rgba(255,85,0,0.3); display: none; align-items: center; overflow: hidden; z-index: 100; backdrop-filter: blur(10px); box-shadow: 0 -10px 30px rgba(0,0,0,0.5); }
-        #scroll-content { display: inline-flex; align-items: center; white-space: nowrap; padding-left: 100vw; animation: scrollLeft linear infinite; }
-        @keyframes scrollLeft { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
-        .scroll-item { display: inline-flex; align-items: center; gap: 1rem; margin-right: 8rem; }
-        .scroll-pos { font-family: 'Barlow Condensed', sans-serif; font-size: 1.6rem; font-weight: 900; color: rgba(255,255,255,0.2); }
-        .scroll-photo { width: 3rem; height: 3rem; border-radius: 50%; object-fit: cover; border: 2px solid rgba(255,85,0,0.3); }
-        .scroll-name { font-family: 'Barlow Condensed', sans-serif; font-size: 1.4rem; font-weight: 700; text-transform: uppercase; color: rgba(255,255,255,0.7); }
-        .scroll-pts { font-family: 'Barlow Condensed', sans-serif; font-size: 1.3rem; font-weight: 900; color: var(--primary); text-shadow: 0 0 10px rgba(255,85,0,0.3); }
-        .scroll-sep { color: rgba(255,255,255,0.1); margin: 0 1.5rem; }
+        body.has-ticker .tv-shell {
+            padding-bottom: 5.6rem;
+        }
 
-        /* ======= TELA DE PATROCÍNIOS ======= */
-        .digital-signage { display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background-color: #111827; z-index: 9999; justify-content: center; align-items: center; opacity: 0; transition: opacity 1s ease-in-out; }
-        .digital-signage.show { opacity: 1; }
-        #logo-patrocinador { width: 100vw; height: 100vh; object-fit: cover; transition: opacity 0.5s ease-in-out; }
+        .score-header {
+            display: grid;
+            grid-template-columns: 23rem minmax(0, 1fr) 18rem;
+            align-items: center;
+            gap: 1.5rem;
+            min-height: 7rem;
+            padding: 0 1.1rem;
+            background: linear-gradient(90deg, rgba(16, 20, 26, 0.94), rgba(13, 17, 23, 0.78));
+            border: 1px solid var(--line-soft);
+            border-left: 4px solid var(--orange);
+            border-radius: 8px;
+            box-shadow: var(--shadow);
+        }
 
-        /* RESPONSIVO MOBILE */
-        @media (max-width: 800px) {
-            html { font-size: 14px; }
-            body, #tela-ranking { overflow-y: auto; overflow-x: hidden; }
-            .header { padding: 1rem; justify-content: flex-start; gap: 1rem; }
-            .header-logo { width: 4rem; height: 4rem; }
-            .header-title { font-size: 2.8rem; }
-            .live-badge { display: none; }
-            .search-container { margin: 0 1rem 1rem; height: 3rem; }
-            .ranking-grid { grid-template-rows: auto; grid-template-columns: 1fr; gap: 0.8rem; padding: 1.5rem 1rem 2rem; overflow: visible; }
-            .rank-card { padding: 0.8rem; gap: 0.8rem; }
-            .card-bg { border-radius: 1rem; }
-            .rank-card.gold::after { left: 4rem; top: -1.5rem; font-size: 2.5rem; } 
-            .pos-num { font-size: 1.8rem; width: 2.5rem; }
-            .rank-card.gold .pos-num { font-size: 2rem; }
-            .rank-avatar, .rank-avatar-placeholder { width: 3rem; height: 3rem; font-size: 1.2rem;}
-            .rank-name-container { padding-right: 0.2rem; }
-            .rank-name { font-size: 1.2rem; }
-            .rank-points { min-width: 4.5rem; padding: 0.4rem 0.8rem; }
-            .pts-value { font-size: 1.8rem; }
-            #scroll-bar { display: none !important; }
+        .brand-lockup {
+            display: flex;
+            align-items: center;
+            min-width: 0;
+            gap: 1rem;
+        }
+
+        .brand-logo {
+            width: 5.25rem;
+            height: 5.25rem;
+            border-radius: 8px;
+            object-fit: cover;
+            background: #000;
+            border: 1px solid rgba(255, 255, 255, 0.18);
+            cursor: pointer;
+        }
+
+        .brand-kicker,
+        .header-kicker,
+        .panel-kicker,
+        .podium-label,
+        .sync-label {
+            margin: 0;
+            color: var(--muted);
+            font-size: 0.78rem;
+            font-weight: 800;
+            letter-spacing: 0.18rem;
+            text-transform: uppercase;
+        }
+
+        .brand-title {
+            margin: 0.18rem 0 0;
+            font-family: "Barlow Condensed", Arial, sans-serif;
+            font-size: 3.4rem;
+            line-height: 0.9;
+            font-weight: 900;
+            letter-spacing: 0.02rem;
+        }
+
+        .header-main {
+            min-width: 0;
+            text-align: center;
+        }
+
+        .header-kicker {
+            color: rgba(255, 176, 32, 0.86);
+        }
+
+        .page-title {
+            margin: 0.22rem 0 0.7rem;
+            font-family: "Barlow Condensed", Arial, sans-serif;
+            font-size: 4rem;
+            line-height: 0.86;
+            font-weight: 900;
+            letter-spacing: 0.04rem;
+            text-transform: uppercase;
+        }
+
+        .metric-strip {
+            display: flex;
+            justify-content: center;
+            gap: 0.5rem;
+            min-width: 0;
+        }
+
+        .metric-pill {
+            display: inline-flex;
+            align-items: center;
+            min-height: 2rem;
+            padding: 0.35rem 0.85rem;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 999px;
+            color: var(--muted-strong);
+            background: rgba(255, 255, 255, 0.045);
+            font-size: 0.82rem;
+            font-weight: 800;
+            letter-spacing: 0.08rem;
+            text-transform: uppercase;
+            white-space: nowrap;
+        }
+
+        .status-cluster {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            gap: 0.55rem;
+        }
+
+        .live-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.65rem;
+            min-height: 2.25rem;
+            padding: 0.35rem 0.85rem;
+            border: 1px solid rgba(34, 197, 94, 0.24);
+            border-radius: 999px;
+            background: rgba(34, 197, 94, 0.09);
+            color: #bbf7d0;
+            font-size: 0.82rem;
+            font-weight: 900;
+            letter-spacing: 0.14rem;
+            text-transform: uppercase;
+        }
+
+        .live-dot {
+            width: 0.62rem;
+            height: 0.62rem;
+            border-radius: 50%;
+            background: var(--green);
+            box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.68);
+            animation: livePulse 1.7s ease-in-out infinite;
+        }
+
+        @keyframes livePulse {
+            0% { box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.65); }
+            70% { box-shadow: 0 0 0 0.6rem rgba(34, 197, 94, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(34, 197, 94, 0); }
+        }
+
+        .clock {
+            font-family: "Barlow Condensed", Arial, sans-serif;
+            font-size: 2.55rem;
+            line-height: 0.9;
+            font-weight: 900;
+            color: #fff;
+        }
+
+        .sync-label {
+            color: var(--muted);
+            text-align: right;
+        }
+
+        .content-stage {
+            flex: 1;
+            min-height: 0;
+            display: grid;
+            grid-template-columns: minmax(28rem, 0.92fr) minmax(36rem, 1.08fr);
+            gap: 1.25rem;
+        }
+
+        .content-stage.is-searching {
+            grid-template-columns: 1fr;
+        }
+
+        .content-stage.is-searching .podium-panel {
+            display: none;
+        }
+
+        .podium-panel {
+            min-height: 0;
+            display: grid;
+            grid-template-rows: minmax(22rem, 1fr) minmax(14rem, 0.65fr);
+            gap: 1rem;
+        }
+
+        .podium-row {
+            min-height: 0;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+
+        .podium-card,
+        .leaderboard-panel {
+            position: relative;
+            overflow: hidden;
+            border: 1px solid var(--line-soft);
+            border-radius: 8px;
+            background: var(--surface);
+            box-shadow: var(--shadow);
+        }
+
+        .podium-card {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            min-width: 0;
+            min-height: 0;
+            padding: 1.25rem;
+        }
+
+        .podium-card::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            pointer-events: none;
+            border-top: 5px solid var(--rank-color);
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.09), transparent 34%);
+        }
+
+        .podium-card.gold {
+            --rank-color: var(--gold);
+            background: linear-gradient(145deg, rgba(52, 42, 12, 0.88), rgba(17, 20, 25, 0.96) 56%);
+        }
+
+        .podium-card.silver {
+            --rank-color: var(--silver);
+            background: linear-gradient(145deg, rgba(49, 56, 67, 0.86), rgba(17, 20, 25, 0.96) 58%);
+        }
+
+        .podium-card.bronze {
+            --rank-color: var(--bronze);
+            background: linear-gradient(145deg, rgba(61, 38, 22, 0.9), rgba(17, 20, 25, 0.96) 58%);
+        }
+
+        .podium-topline,
+        .row-main,
+        .ticker-item {
+            display: flex;
+            align-items: center;
+            min-width: 0;
+        }
+
+        .podium-topline {
+            justify-content: space-between;
+            gap: 1rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        .podium-position {
+            font-family: "Barlow Condensed", Arial, sans-serif;
+            font-size: 5rem;
+            line-height: 0.8;
+            font-weight: 900;
+            color: var(--rank-color);
+        }
+
+        .podium-label {
+            color: rgba(255, 255, 255, 0.64);
+            text-align: right;
+        }
+
+        .podium-body {
+            position: relative;
+            z-index: 1;
+            display: grid;
+            grid-template-columns: auto minmax(0, 1fr);
+            align-items: center;
+            gap: 1.15rem;
+            min-width: 0;
+        }
+
+        .podium-card.first .podium-body {
+            grid-template-columns: 10rem minmax(0, 1fr);
+        }
+
+        .avatar-wrap,
+        .row-avatar-wrap {
+            position: relative;
+            flex: 0 0 auto;
+            display: grid;
+            place-items: center;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.08);
+            border: 2px solid var(--rank-color, rgba(255, 255, 255, 0.18));
+            overflow: hidden;
+        }
+
+        .avatar-wrap {
+            width: 6.2rem;
+            height: 6.2rem;
+        }
+
+        .podium-card.first .avatar-wrap {
+            width: 10rem;
+            height: 10rem;
+            border-width: 3px;
+        }
+
+        .athlete-photo,
+        .row-photo,
+        .ticker-photo {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .avatar-placeholder,
+        .row-placeholder,
+        .ticker-placeholder {
+            display: grid;
+            place-items: center;
+            width: 100%;
+            height: 100%;
+            font-family: "Barlow Condensed", Arial, sans-serif;
+            font-weight: 900;
+            color: #fff;
+            background: linear-gradient(145deg, rgba(255, 90, 31, 0.8), rgba(255, 176, 32, 0.42));
+            text-transform: uppercase;
+        }
+
+        .avatar-placeholder {
+            font-size: 2.4rem;
+        }
+
+        .podium-card.first .avatar-placeholder {
+            font-size: 4rem;
+        }
+
+        .athlete-name,
+        .row-name {
+            margin: 0;
+            min-width: 0;
+            overflow: hidden;
+            display: -webkit-box;
+            -webkit-box-orient: vertical;
+            text-transform: uppercase;
+        }
+
+        .athlete-name {
+            font-family: "Barlow Condensed", Arial, sans-serif;
+            font-size: 2.15rem;
+            line-height: 0.98;
+            font-weight: 900;
+            letter-spacing: 0.02rem;
+            -webkit-line-clamp: 2;
+        }
+
+        .podium-card.first .athlete-name {
+            font-size: 4.1rem;
+            line-height: 0.88;
+        }
+
+        .score-block {
+            position: relative;
+            z-index: 1;
+            display: flex;
+            align-items: flex-end;
+            justify-content: space-between;
+            gap: 1rem;
+            padding-top: 0.85rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.12);
+        }
+
+        .score-value {
+            font-family: "Barlow Condensed", Arial, sans-serif;
+            font-size: 4rem;
+            line-height: 0.82;
+            font-weight: 900;
+            color: #fff;
+        }
+
+        .podium-card.first .score-value {
+            font-size: 6.4rem;
+        }
+
+        .score-label {
+            color: var(--muted);
+            font-size: 0.78rem;
+            font-weight: 900;
+            letter-spacing: 0.16rem;
+            text-transform: uppercase;
+        }
+
+        .leaderboard-panel {
+            display: flex;
+            flex-direction: column;
+            min-width: 0;
+            min-height: 0;
+            background: linear-gradient(180deg, rgba(18, 23, 30, 0.98), rgba(10, 13, 18, 0.94));
+        }
+
+        .panel-head {
+            display: grid;
+            grid-template-columns: minmax(0, 1fr) auto;
+            align-items: center;
+            gap: 1rem;
+            min-height: 5.6rem;
+            padding: 1rem 1.15rem;
+            border-bottom: 1px solid var(--line-soft);
+        }
+
+        .panel-title {
+            margin: 0.18rem 0 0;
+            font-family: "Barlow Condensed", Arial, sans-serif;
+            font-size: 2.7rem;
+            line-height: 0.9;
+            font-weight: 900;
+            text-transform: uppercase;
+        }
+
+        .panel-actions {
+            display: flex;
+            align-items: center;
+            gap: 0.7rem;
+        }
+
+        .icon-button {
+            display: grid;
+            place-items: center;
+            width: 3.15rem;
+            height: 3.15rem;
+            border: 1px solid rgba(255, 255, 255, 0.14);
+            border-radius: 8px;
+            color: #fff;
+            background: rgba(255, 255, 255, 0.07);
+            cursor: pointer;
+        }
+
+        .icon-button:hover,
+        body.search-open .icon-button {
+            border-color: rgba(255, 90, 31, 0.48);
+            background: rgba(255, 90, 31, 0.18);
+        }
+
+        .search-panel {
+            display: none;
+            align-items: center;
+            gap: 0.7rem;
+            width: 23rem;
+            height: 3.15rem;
+            padding: 0 0.85rem;
+            border: 1px solid rgba(255, 90, 31, 0.38);
+            border-radius: 8px;
+            background: rgba(3, 5, 8, 0.82);
+        }
+
+        body.search-open .search-panel {
+            display: flex;
+        }
+
+        .search-panel .material-icons {
+            color: var(--orange);
+        }
+
+        #input-pesquisa {
+            flex: 1;
+            min-width: 0;
+            border: 0;
+            outline: 0;
+            color: #fff;
+            background: transparent;
+            font: 700 1rem "Barlow", Arial, sans-serif;
+        }
+
+        #input-pesquisa::placeholder {
+            color: rgba(203, 213, 225, 0.58);
+        }
+
+        .ranking-list {
+            flex: 1;
+            min-height: 0;
+            display: grid;
+            grid-auto-rows: minmax(4.8rem, 1fr);
+            gap: 0.68rem;
+            padding: 1rem 1.15rem 1.15rem;
+            overflow: hidden;
+        }
+
+        .content-stage.is-searching .ranking-list {
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            grid-auto-rows: minmax(5.2rem, 1fr);
+        }
+
+        .rank-row {
+            position: relative;
+            display: grid;
+            grid-template-columns: 5rem minmax(0, 1fr) 9rem;
+            align-items: center;
+            gap: 0.95rem;
+            min-width: 0;
+            min-height: 0;
+            padding: 0.65rem 0.85rem;
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-left: 4px solid rgba(255, 255, 255, 0.16);
+            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.045);
+        }
+
+        .rank-row.gold { border-left-color: var(--gold); }
+        .rank-row.silver { border-left-color: var(--silver); }
+        .rank-row.bronze { border-left-color: var(--bronze); }
+
+        .rank-row::before {
+            content: "";
+            position: absolute;
+            inset: auto auto 0 0;
+            width: var(--score-width, 0%);
+            height: 3px;
+            background: linear-gradient(90deg, var(--orange), var(--orange-soft));
+            opacity: 0.95;
+        }
+
+        .row-position {
+            display: grid;
+            place-items: center;
+            min-width: 0;
+        }
+
+        .row-position strong {
+            font-family: "Barlow Condensed", Arial, sans-serif;
+            font-size: 3rem;
+            line-height: 0.82;
+            font-weight: 900;
+            color: #fff;
+        }
+
+        .row-position span {
+            margin-top: 0.22rem;
+            color: var(--muted);
+            font-size: 0.64rem;
+            font-weight: 900;
+            letter-spacing: 0.12rem;
+            text-transform: uppercase;
+        }
+
+        .row-main {
+            gap: 0.88rem;
+        }
+
+        .row-avatar-wrap {
+            width: 3.8rem;
+            height: 3.8rem;
+        }
+
+        .row-placeholder,
+        .ticker-placeholder {
+            font-size: 1.55rem;
+        }
+
+        .row-text {
+            min-width: 0;
+        }
+
+        .row-name {
+            color: #f8fafc;
+            font-family: "Barlow Condensed", Arial, sans-serif;
+            font-size: 1.85rem;
+            line-height: 0.96;
+            font-weight: 900;
+            letter-spacing: 0.02rem;
+            -webkit-line-clamp: 2;
+        }
+
+        .row-sub {
+            display: block;
+            margin-top: 0.16rem;
+            color: rgba(148, 163, 184, 0.82);
+            font-size: 0.78rem;
+            font-weight: 800;
+            letter-spacing: 0.12rem;
+            text-transform: uppercase;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .row-score {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            min-width: 0;
+        }
+
+        .row-score strong {
+            font-family: "Barlow Condensed", Arial, sans-serif;
+            font-size: 3rem;
+            line-height: 0.86;
+            font-weight: 900;
+            color: #fff;
+        }
+
+        .row-score span {
+            color: var(--orange-soft);
+            font-size: 0.72rem;
+            font-weight: 900;
+            letter-spacing: 0.14rem;
+            text-transform: uppercase;
+        }
+
+        .ticker-bar {
+            position: fixed;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            z-index: 4;
+            display: none;
+            align-items: center;
+            height: 4.4rem;
+            border-top: 1px solid rgba(255, 90, 31, 0.28);
+            background: rgba(5, 7, 10, 0.98);
+            box-shadow: 0 -18px 46px rgba(0, 0, 0, 0.32);
+            overflow: hidden;
+        }
+
+        body.has-ticker .ticker-bar {
+            display: flex;
+        }
+
+        .ticker-label {
+            flex: 0 0 auto;
+            display: grid;
+            place-items: center;
+            height: 100%;
+            padding: 0 1.45rem;
+            color: #111827;
+            background: linear-gradient(90deg, var(--orange), var(--orange-soft));
+            font-size: 0.84rem;
+            font-weight: 900;
+            letter-spacing: 0.14rem;
+            text-transform: uppercase;
+        }
+
+        .ticker-viewport {
+            flex: 1;
+            min-width: 0;
+            overflow: hidden;
+        }
+
+        .ticker-track {
+            display: inline-flex;
+            align-items: center;
+            white-space: nowrap;
+            padding-left: 100%;
+            animation: tickerMove linear infinite;
+        }
+
+        @keyframes tickerMove {
+            from { transform: translateX(0); }
+            to { transform: translateX(-50%); }
+        }
+
+        .ticker-item {
+            gap: 0.65rem;
+            margin-right: 3rem;
+        }
+
+        .ticker-position {
+            color: rgba(255, 255, 255, 0.4);
+            font-family: "Barlow Condensed", Arial, sans-serif;
+            font-size: 1.35rem;
+            font-weight: 900;
+        }
+
+        .ticker-photo,
+        .ticker-placeholder {
+            width: 2.25rem;
+            height: 2.25rem;
+            border-radius: 50%;
+            border: 1px solid rgba(255, 255, 255, 0.16);
+        }
+
+        .ticker-name {
+            color: rgba(255, 255, 255, 0.78);
+            font-family: "Barlow Condensed", Arial, sans-serif;
+            font-size: 1.35rem;
+            font-weight: 800;
+            text-transform: uppercase;
+        }
+
+        .ticker-score {
+            color: var(--orange-soft);
+            font-weight: 900;
+            text-transform: uppercase;
+        }
+
+        .state-panel,
+        .empty-state {
+            display: grid;
+            place-items: center;
+            min-height: 100%;
+            padding: 2rem;
+            text-align: center;
+            border: 1px solid var(--line-soft);
+            border-radius: 8px;
+            background: rgba(12, 16, 22, 0.72);
+        }
+
+        .state-panel {
+            grid-row: 1 / -1;
+        }
+
+        .state-title {
+            margin: 0;
+            font-family: "Barlow Condensed", Arial, sans-serif;
+            font-size: 2.6rem;
+            line-height: 0.95;
+            font-weight: 900;
+            text-transform: uppercase;
+        }
+
+        .state-copy {
+            margin: 0.7rem 0 0;
+            color: var(--muted);
+            font-weight: 700;
+            letter-spacing: 0.08rem;
+            text-transform: uppercase;
+        }
+
+        .state-panel.error .state-title,
+        .empty-state.error .state-title {
+            color: #fecaca;
+        }
+
+        @media (min-width: 1600px) {
+            .tv-shell { gap: 1.45rem; padding: 1.7rem 2.2rem 1.7rem; }
+            body.has-ticker .tv-shell { padding-bottom: 5.85rem; }
+            .score-header { min-height: 7.6rem; }
+            .content-stage { gap: 1.45rem; }
+            .podium-panel { gap: 1.15rem; }
+            .podium-row { gap: 1.15rem; }
+            .ranking-list { gap: 0.82rem; }
+        }
+
+        @media (max-width: 1450px), (max-height: 850px) {
+            html {
+                font-size: 12px;
+            }
+
+            .tv-shell {
+                gap: 1rem;
+                padding: 1.15rem 1.55rem 1.15rem;
+            }
+
+            body.has-ticker .tv-shell {
+                padding-bottom: 4.95rem;
+            }
+
+            .score-header {
+                min-height: 6.15rem;
+                padding: 0 1rem;
+            }
+
+            .brand-logo {
+                width: 4.75rem;
+                height: 4.75rem;
+            }
+
+            .brand-title {
+                font-size: 3rem;
+            }
+
+            .page-title {
+                margin-bottom: 0.55rem;
+                font-size: 3.55rem;
+            }
+
+            .metric-pill {
+                min-height: 1.75rem;
+                padding: 0.24rem 0.72rem;
+                font-size: 0.76rem;
+            }
+
+            .clock {
+                font-size: 2.35rem;
+            }
+
+            .content-stage {
+                gap: 1rem;
+            }
+
+            .podium-panel {
+                grid-template-rows: minmax(20.5rem, 1fr) minmax(13.6rem, 0.65fr);
+                gap: 0.9rem;
+            }
+
+            .podium-row {
+                gap: 0.9rem;
+            }
+
+            .podium-card {
+                padding: 1rem;
+            }
+
+            .podium-card.first .podium-body {
+                grid-template-columns: 9rem minmax(0, 1fr);
+            }
+
+            .podium-card.first .avatar-wrap {
+                width: 9rem;
+                height: 9rem;
+            }
+
+            .podium-card.first .athlete-name {
+                font-size: 3.75rem;
+            }
+
+            .podium-card.first .score-value {
+                font-size: 5.8rem;
+            }
+
+            .podium-position {
+                font-size: 4.45rem;
+            }
+
+            .score-value {
+                font-size: 3.45rem;
+            }
+
+            .panel-head {
+                min-height: 4.95rem;
+                padding: 0.8rem 1rem;
+            }
+
+            .panel-title {
+                font-size: 2.45rem;
+            }
+
+            .icon-button,
+            .search-panel {
+                height: 3rem;
+            }
+
+            .icon-button {
+                width: 3rem;
+            }
+
+            .search-panel {
+                width: 27rem;
+            }
+
+            .ranking-list {
+                grid-auto-rows: minmax(4.45rem, 1fr);
+                gap: 0.55rem;
+                padding: 0.8rem 1rem 0.9rem;
+            }
+
+            .rank-row {
+                grid-template-columns: 4.65rem minmax(0, 1fr) 8rem;
+                gap: 0.7rem;
+                padding: 0.52rem 0.7rem;
+            }
+
+            .row-avatar-wrap {
+                width: 3.3rem;
+                height: 3.3rem;
+            }
+
+            .row-position strong,
+            .row-score strong {
+                font-size: 2.7rem;
+            }
+
+            .row-name {
+                font-size: 1.7rem;
+            }
+
+            .row-sub {
+                font-size: 0.66rem;
+            }
+
+            .ticker-bar {
+                height: 3.95rem;
+            }
+
+            .ticker-label {
+                padding: 0 1.25rem;
+                font-size: 0.78rem;
+            }
+
+            .ticker-name {
+                font-size: 1.22rem;
+            }
+        }
+
+        @media (max-width: 1180px) {
+            body {
+                height: auto;
+                min-height: 100%;
+                overflow-y: auto;
+            }
+
+            .brand-watermark {
+                display: none;
+            }
+
+            .tv-shell,
+            body.has-ticker .tv-shell {
+                height: auto;
+                min-height: 100vh;
+                padding: 1rem;
+            }
+
+            .score-header {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+                padding: 1rem;
+                text-align: left;
+            }
+
+            .header-main {
+                text-align: left;
+            }
+
+            .metric-strip {
+                justify-content: flex-start;
+                flex-wrap: wrap;
+            }
+
+            .status-cluster {
+                align-items: flex-start;
+            }
+
+            .content-stage,
+            .content-stage.is-searching {
+                grid-template-columns: 1fr;
+            }
+
+            .content-stage.is-searching .podium-panel {
+                display: grid;
+            }
+
+            .podium-panel {
+                grid-template-rows: auto;
+            }
+
+            .podium-row,
+            .content-stage.is-searching .ranking-list {
+                grid-template-columns: 1fr;
+            }
+
+            .podium-card.first .podium-body,
+            .podium-body {
+                grid-template-columns: 5.8rem minmax(0, 1fr);
+            }
+
+            .podium-card.first .avatar-wrap,
+            .avatar-wrap {
+                width: 5.8rem;
+                height: 5.8rem;
+            }
+
+            .podium-card.first .athlete-name,
+            .athlete-name {
+                font-size: 2.15rem;
+                line-height: 0.95;
+            }
+
+            .podium-card.first .score-value,
+            .score-value {
+                font-size: 4rem;
+            }
+
+            .panel-head {
+                grid-template-columns: 1fr;
+            }
+
+            .panel-actions {
+                align-items: stretch;
+            }
+
+            .search-panel,
+            body.search-open .search-panel {
+                display: flex;
+                width: 100%;
+            }
+
+            .icon-button {
+                display: none;
+            }
+
+            .ranking-list {
+                overflow: visible;
+                grid-auto-rows: minmax(5rem, auto);
+            }
+
+            .rank-row {
+                grid-template-columns: 4.4rem minmax(0, 1fr) 7rem;
+            }
+
+            .ticker-bar {
+                display: none !important;
+            }
+        }
+
+        @media (max-width: 640px) {
+            .brand-title { font-size: 2.6rem; }
+            .page-title { font-size: 3rem; }
+            .brand-logo { width: 4.2rem; height: 4.2rem; }
+            .rank-row {
+                grid-template-columns: 3.5rem minmax(0, 1fr);
+            }
+            .row-score {
+                grid-column: 2;
+                align-items: flex-start;
+                margin-left: 4.65rem;
+            }
         }
     </style>
 </head>
 <body>
+    <img src="logo.jpeg" class="brand-watermark" alt="">
 
-    <div class="light-rays">
-        <span style="left:5%;animation-duration:8s"></span>
-        <span style="left:15%;animation-duration:6s"></span>
-        <span style="left:30%;animation-duration:7s"></span>
-        <span style="left:48%;animation-duration:5s"></span>
-        <span style="left:62%;animation-duration:9s"></span>
-        <span style="left:78%;animation-duration:6s"></span>
-        <span style="left:92%;animation-duration:8s"></span>
-    </div>
-
-    <div class="bg-watermark">MAXGYM</div>
-
-    <div id="tela-ranking">
-        <div class="header">
-            <img src="logo.jpeg" class="header-logo" alt="Logo" onclick="toggleFullScreen()" onerror="this.style.display='none'">
-            <div class="header-title-container">
-                <div class="header-title">TOP<span>10 DO MÊS</span></div>
-                <div class="header-subtitle">Pontos = Catraca + Treinos App</div>
+    <main class="tv-shell">
+        <header class="score-header">
+            <div class="brand-lockup">
+                <img src="logo.jpeg" class="brand-logo" alt="MAXGYM" onclick="toggleFullScreen()" onerror="this.style.display='none'">
+                <div>
+                    <p class="brand-kicker">Sistema de Ranking</p>
+                    <h1 class="brand-title">MAXGYM</h1>
+                </div>
             </div>
-            <div class="live-badge">
-                <div class="live-dot"></div>
-                Ao Vivo
+
+            <div class="header-main">
+                <p class="header-kicker">Catraca + Treinos</p>
+                <div class="page-title">Ranking ao Vivo</div>
+                <div class="metric-strip" aria-label="Resumo do ranking">
+                    <span class="metric-pill">Top 10 em destaque</span>
+                    <span class="metric-pill">Atualização automática</span>
+                    <span class="metric-pill" id="total-atletas">0 atletas</span>
+                </div>
             </div>
-        </div>
 
-        <div class="header-divider"></div>
-
-        <div class="search-container">
-            <span class="material-icons search-icon">search</span>
-            <input type="text" id="input-pesquisa" placeholder="Pesquisar atleta..." oninput="filtrarRanking()">
-        </div>
-
-        <div class="ranking-grid" id="board">
-            <div style="grid-column:1/-1; display:flex; flex-direction:column; align-items:center; justify-content:center; color:var(--primary); font-family:'Barlow Condensed',sans-serif; padding-top: 80px; text-shadow: 0 0 20px rgba(255,85,0,0.3);">
-                <div style="font-size:3rem; margin-bottom:10px; animation: livePulse 1s infinite;">⚡</div>
-                <div style="font-size:1.8rem; letter-spacing:3px; font-weight:900;">SINCRONIZANDO CÉREBRO MAX...</div>
+            <div class="status-cluster">
+                <div class="live-badge">
+                    <span class="live-dot"></span>
+                    Ao vivo
+                </div>
+                <div class="clock" id="clock">--:--</div>
+                <div class="sync-label" id="sync-status">Sincronizando</div>
             </div>
-        </div>
+        </header>
 
-        <div id="scroll-bar">
-            <div id="scroll-content"></div>
-        </div>
-    </div> 
+        <section class="content-stage" id="content-stage">
+            <section class="podium-panel" id="podium" aria-label="Pódio">
+                <div class="state-panel">
+                    <div>
+                        <p class="state-title">Carregando ranking</p>
+                        <p class="state-copy">Sincronizando dados dos atletas</p>
+                    </div>
+                </div>
+            </section>
 
-    <div id="tela-patrocinadores" class="digital-signage">
-        <img id="logo-patrocinador" src="" alt="Patrocinador">
-    </div>
+            <section class="leaderboard-panel" aria-label="Classificação">
+                <div class="panel-head">
+                    <div>
+                        <p class="panel-kicker" id="panel-meta">Classificação geral</p>
+                        <h2 class="panel-title" id="panel-title">Top 10</h2>
+                    </div>
+                    <div class="panel-actions">
+                        <button class="icon-button" id="search-toggle" type="button" title="Pesquisar atleta" aria-label="Pesquisar atleta">
+                            <span class="material-icons" aria-hidden="true">search</span>
+                        </button>
+                        <div class="search-panel" id="search-panel">
+                            <span class="material-icons" aria-hidden="true">search</span>
+                            <input type="text" id="input-pesquisa" placeholder="Pesquisar atleta" autocomplete="off">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="ranking-list" id="board">
+                    <div class="empty-state">
+                        <div>
+                            <p class="state-title">Aguardando dados</p>
+                            <p class="state-copy">O ranking aparecerá em instantes</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </section>
+    </main>
+
+    <footer class="ticker-bar" id="scroll-bar">
+        <div class="ticker-label">Demais posições</div>
+        <div class="ticker-viewport">
+            <div class="ticker-track" id="scroll-content"></div>
+        </div>
+    </footer>
 
     <script>
         const API_URL = "https://script.google.com/macros/s/AKfycby62vambopzAU-hOp4Och0Qg9_ZOxNCqqo19BFZvUA13OFTYBRMnTnNckq3aBzncXKTJg/exec";
-        
-        const firebaseConfig = {
-            databaseURL: "https://max-catraca-default-rtdb.firebaseio.com"
-        };
-        firebase.initializeApp(firebaseConfig);
-        const database = firebase.database();
+        const REFRESH_MS = 15000;
 
         let dadosGlobais = [];
 
+        const els = {
+            contentStage: document.getElementById("content-stage"),
+            podium: document.getElementById("podium"),
+            board: document.getElementById("board"),
+            ticker: document.getElementById("scroll-bar"),
+            tickerContent: document.getElementById("scroll-content"),
+            searchToggle: document.getElementById("search-toggle"),
+            searchInput: document.getElementById("input-pesquisa"),
+            totalAtletas: document.getElementById("total-atletas"),
+            syncStatus: document.getElementById("sync-status"),
+            panelTitle: document.getElementById("panel-title"),
+            panelMeta: document.getElementById("panel-meta"),
+            clock: document.getElementById("clock")
+        };
+
+        function escapeHtml(value) {
+            return String(value ?? "")
+                .replace(/&/g, "&amp;")
+                .replace(/</g, "&lt;")
+                .replace(/>/g, "&gt;")
+                .replace(/"/g, "&quot;")
+                .replace(/'/g, "&#039;");
+        }
+
+        function escapeAttr(value) {
+            return escapeHtml(value).replace(/`/g, "&#096;");
+        }
+
+        function getName(aluno) {
+            const nome = String(aluno?.nome ?? "").trim();
+            return nome || "Atleta";
+        }
+
+        function getInitial(name) {
+            return (Array.from(name.trim())[0] || "A").toUpperCase();
+        }
+
+        function numericPoints(value) {
+            if (typeof value === "number") return Number.isFinite(value) ? value : 0;
+            const raw = String(value ?? "0").trim();
+            const normalized = raw
+                .replace(/[^\d,.-]/g, "")
+                .replace(/\.(?=\d{3}(\D|$))/g, "")
+                .replace(",", ".");
+            const number = Number(normalized);
+            return Number.isFinite(number) ? number : 0;
+        }
+
+        function formatPoints(value) {
+            const number = numericPoints(value);
+            if (number > 0 || String(value ?? "").trim() === "0") {
+                return new Intl.NumberFormat("pt-BR").format(number);
+            }
+            return String(value ?? "0");
+        }
+
+        function getPosition(aluno, fallback) {
+            const pos = Number(aluno?.posicao);
+            return Number.isFinite(pos) && pos > 0 ? pos : fallback;
+        }
+
+        function medalClass(pos) {
+            if (pos === 1) return "gold";
+            if (pos === 2) return "silver";
+            if (pos === 3) return "bronze";
+            return "";
+        }
+
+        function renderAvatar(aluno, className) {
+            const name = getName(aluno);
+            const foto = String(aluno?.foto ?? "").trim();
+            const initial = escapeHtml(getInitial(name));
+            const wrapClass = className === "row" ? "row-avatar-wrap" : "avatar-wrap";
+            const imageClass = className === "row" ? "row-photo" : "athlete-photo";
+            const placeholderClass = className === "row" ? "row-placeholder" : "avatar-placeholder";
+
+            if (!foto) {
+                return `<div class="${wrapClass}"><div class="${placeholderClass}">${initial}</div></div>`;
+            }
+
+            return `
+                <div class="${wrapClass}">
+                    <img src="${escapeAttr(foto)}" class="${imageClass}" alt="${escapeAttr(name)}" onerror="this.style.display='none'; this.nextElementSibling.style.display='grid';">
+                    <div class="${placeholderClass}" style="display:none;">${initial}</div>
+                </div>`;
+        }
+
+        function renderTickerAvatar(aluno) {
+            const name = getName(aluno);
+            const foto = String(aluno?.foto ?? "").trim();
+            const initial = escapeHtml(getInitial(name));
+
+            if (!foto) {
+                return `<div class="ticker-placeholder">${initial}</div>`;
+            }
+
+            return `<img src="${escapeAttr(foto)}" class="ticker-photo" alt="${escapeAttr(name)}" onerror="this.outerHTML='<div class=&quot;ticker-placeholder&quot;>${initial}</div>';">`;
+        }
+
+        function renderPodiumCard(aluno, fallbackPosition, label) {
+            const pos = getPosition(aluno, fallbackPosition);
+            const name = getName(aluno);
+            const points = formatPoints(aluno?.pontos);
+            const cls = medalClass(pos);
+            const first = pos === 1 ? " first" : "";
+
+            return `
+                <article class="podium-card ${cls}${first}">
+                    <div class="podium-topline">
+                        <div class="podium-position">${pos}º</div>
+                        <div class="podium-label">${escapeHtml(label)}</div>
+                    </div>
+                    <div class="podium-body">
+                        ${renderAvatar(aluno, "podium")}
+                        <h2 class="athlete-name" title="${escapeAttr(name)}">${escapeHtml(name)}</h2>
+                    </div>
+                    <div class="score-block">
+                        <div class="score-value">${escapeHtml(points)}</div>
+                        <div class="score-label">pontos</div>
+                    </div>
+                </article>`;
+        }
+
+        function renderPodium(topThree) {
+            if (!topThree.length) {
+                els.podium.innerHTML = renderState("Ranking vazio", "Nenhum atleta foi encontrado");
+                return;
+            }
+
+            const [first, second, third] = topThree;
+            let html = "";
+            if (first) html += renderPodiumCard(first, 1, "Líder");
+            html += `<div class="podium-row">`;
+            if (second) html += renderPodiumCard(second, 2, "Vice-líder");
+            if (third) html += renderPodiumCard(third, 3, "Terceiro lugar");
+            html += `</div>`;
+            els.podium.innerHTML = html;
+        }
+
+        function renderRow(aluno, fallbackPosition, maxPoints) {
+            const pos = getPosition(aluno, fallbackPosition);
+            const name = getName(aluno);
+            const pointsNumber = numericPoints(aluno?.pontos);
+            const points = formatPoints(aluno?.pontos);
+            const progress = maxPoints > 0 ? Math.max(6, Math.min(100, Math.round((pointsNumber / maxPoints) * 100))) : 6;
+
+            return `
+                <article class="rank-row ${medalClass(pos)}" style="--score-width:${progress}%">
+                    <div class="row-position">
+                        <strong>${pos}º</strong>
+                        <span>pos</span>
+                    </div>
+                    <div class="row-main">
+                        ${renderAvatar(aluno, "row")}
+                        <div class="row-text">
+                            <h3 class="row-name" title="${escapeAttr(name)}">${escapeHtml(name)}</h3>
+                            <span class="row-sub">Atleta MAXGYM</span>
+                        </div>
+                    </div>
+                    <div class="row-score">
+                        <strong>${escapeHtml(points)}</strong>
+                        <span>pontos</span>
+                    </div>
+                </article>`;
+        }
+
+        function renderRows(rows, offset, sourceForScale) {
+            if (!rows.length) {
+                els.board.innerHTML = renderEmpty("Aguardando atletas", "Novas posições aparecerão aqui");
+                return;
+            }
+
+            const maxPoints = Math.max(...sourceForScale.map((aluno) => numericPoints(aluno?.pontos)), 0);
+            els.board.innerHTML = rows.map((aluno, index) => renderRow(aluno, offset + index + 1, maxPoints)).join("");
+        }
+
+        function renderTicker(rows) {
+            if (!rows.length || window.innerWidth <= 1180 || els.contentStage.classList.contains("is-searching")) {
+                document.body.classList.remove("has-ticker");
+                els.tickerContent.innerHTML = "";
+                return;
+            }
+
+            const html = [rows, rows].map((lista) => lista.map((aluno, index) => {
+                const pos = getPosition(aluno, index + 11);
+                const name = getName(aluno);
+                const points = formatPoints(aluno?.pontos);
+                return `
+                    <div class="ticker-item">
+                        <span class="ticker-position">${pos}º</span>
+                        ${renderTickerAvatar(aluno)}
+                        <span class="ticker-name">${escapeHtml(name)}</span>
+                        <span class="ticker-score">${escapeHtml(points)} pts</span>
+                    </div>`;
+            }).join("")).join("");
+
+            els.tickerContent.innerHTML = html;
+            els.tickerContent.style.animationDuration = `${Math.max(28, rows.length * 3.8)}s`;
+            document.body.classList.add("has-ticker");
+        }
+
+        function renderState(title, copy, isError = false) {
+            return `
+                <div class="state-panel${isError ? " error" : ""}">
+                    <div>
+                        <p class="state-title">${escapeHtml(title)}</p>
+                        <p class="state-copy">${escapeHtml(copy)}</p>
+                    </div>
+                </div>`;
+        }
+
+        function renderEmpty(title, copy, isError = false) {
+            return `
+                <div class="empty-state${isError ? " error" : ""}">
+                    <div>
+                        <p class="state-title">${escapeHtml(title)}</p>
+                        <p class="state-copy">${escapeHtml(copy)}</p>
+                    </div>
+                </div>`;
+        }
+
+        function updateTotals(total) {
+            els.totalAtletas.textContent = `${total} ${total === 1 ? "atleta" : "atletas"}`;
+        }
+
+        function updateClock() {
+            const now = new Date();
+            els.clock.textContent = now.toLocaleTimeString("pt-BR", { hour: "2-digit", minute: "2-digit" });
+        }
+
+        function setSyncLabel(text, isError = false) {
+            els.syncStatus.textContent = text;
+            els.syncStatus.style.color = isError ? "var(--danger)" : "var(--muted)";
+        }
+
         async function carregarRanking() {
             try {
-                const res = await fetch(`${API_URL}?acao=getRankingTV&t=${Date.now()}`);
-                const data = await res.json();
-                
-                dadosGlobais = Array.isArray(data) ? data : []; 
+                const response = await fetch(`${API_URL}?acao=getRankingTV&t=${Date.now()}`, { cache: "no-store" });
+                const payload = await response.json();
+                dadosGlobais = Array.isArray(payload) ? payload : [];
+                updateTotals(dadosGlobais.length);
+                setSyncLabel(`Atualizado ${new Date().toLocaleTimeString("pt-BR", { hour: "2-digit", minute: "2-digit" })}`);
                 filtrarRanking();
-            } catch(e) { 
-                console.error("Erro ao carregar ranking:", e); 
-                document.getElementById('board').innerHTML = `<div style="grid-column:1/-1; display:flex; justify-content:center; padding-top: 80px; color:rgba(255,255,255,0.4); font-family:'Barlow Condensed',sans-serif; font-size:1.8rem; letter-spacing:2px; font-weight:700;">FALHA NA CONEXÃO. TENTANDO NOVAMENTE...</div>`;
+            } catch (error) {
+                console.error("Erro ao carregar ranking:", error);
+                setSyncLabel("Reconectando", true);
+                if (!dadosGlobais.length) {
+                    els.podium.innerHTML = renderState("Sem conexão", "Tentando sincronizar novamente", true);
+                    els.board.innerHTML = renderEmpty("Dados indisponíveis", "Verifique a conexão da TV", true);
+                    renderTicker([]);
+                }
             }
         }
 
         function filtrarRanking() {
-            const termo = document.getElementById('input-pesquisa').value.toLowerCase();
-            const board = document.getElementById('board');
-            const scrollBar = document.getElementById('scroll-bar');
-            const scrollContent = document.getElementById('scroll-content');
-            
-            let filtrados = dadosGlobais;
-            if (termo !== "") filtrados = dadosGlobais.filter(a => a.nome && a.nome.toLowerCase().includes(termo));
+            const termo = els.searchInput.value.trim().toLocaleLowerCase("pt-BR");
+            const filtrados = termo
+                ? dadosGlobais.filter((aluno) => getName(aluno).toLocaleLowerCase("pt-BR").includes(termo))
+                : dadosGlobais;
+
+            els.contentStage.classList.toggle("is-searching", termo.length > 0);
+            updateTotals(dadosGlobais.length);
 
             if (!filtrados.length) {
-                board.innerHTML = `<div style="grid-column:1/-1; display:flex; justify-content:center; padding-top: 80px; color:rgba(255,255,255,0.2); font-family:'Barlow Condensed',sans-serif; font-size:1.8rem; letter-spacing:2px; font-weight:700;">NENHUM ATLETA ENCONTRADO</div>`;
-                scrollBar.style.display = 'none';
+                els.panelTitle.textContent = termo ? "Busca" : "Top 10";
+                els.panelMeta.textContent = termo ? "Nenhum resultado" : "Classificação geral";
+                els.podium.innerHTML = renderState("Sem resultados", "Nenhum atleta encontrado");
+                els.board.innerHTML = renderEmpty("Nenhum atleta", "Tente outro nome");
+                renderTicker([]);
                 return;
             }
 
-            let exibirGrid = [];
-            let exibirScroll = [];
-
-            if (termo === "") {
-                if (window.innerWidth > 800) {
-                    // Garante que só carrega exatamente 10 para encaixar no grid 5x2
-                    const top10 = filtrados.slice(0, 10);
-                    for (let i = 0; i < 5; i++) {
-                        if (top10[i]) exibirGrid.push(top10[i]);
-                        if (top10[i + 5]) exibirGrid.push(top10[i + 5]);
-                    }
-                    exibirScroll = filtrados.slice(10);
-                } else {
-                    exibirGrid = filtrados;
-                    exibirScroll = [];
-                }
-            } else {
-                exibirGrid = filtrados.slice(0, 30);
-                exibirScroll = [];
+            if (termo) {
+                els.panelTitle.textContent = "Resultados";
+                els.panelMeta.textContent = `${filtrados.length} ${filtrados.length === 1 ? "atleta encontrado" : "atletas encontrados"}`;
+                renderRows(filtrados.slice(0, 16), 0, filtrados);
+                renderTicker([]);
+                return;
             }
 
-            const pontosLider = exibirGrid.length > 0 ? (exibirGrid[0].pontos || 1) : 1;
-
-            let html = '';
-            exibirGrid.forEach((aluno, i) => {
-                let cls = 'other';
-                if (aluno.posicao == 1) cls = 'gold';
-                else if (aluno.posicao == 2) cls = 'silver';
-                else if (aluno.posicao == 3) cls = 'bronze';
-
-                const nomeSeguro = aluno.nome || "Atleta";
-                const inicialNome = nomeSeguro.charAt(0).toUpperCase();
-                
-                const temFoto = aluno.foto && typeof aluno.foto === 'string' && aluno.foto.trim() !== "";
-
-                const fotoHtml = temFoto
-                    ? `<img src="${aluno.foto}" class="rank-avatar" alt="${nomeSeguro}" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
-                       <div class="rank-avatar-placeholder" style="display:none;">${inicialNome}</div>`
-                    : `<div class="rank-avatar-placeholder">${inicialNome}</div>`;
-
-                const delay = (i * 0.08).toFixed(2);
-                const porcentagem = Math.min(100, Math.max(0, ((aluno.pontos || 0) / pontosLider) * 100));
-
-                html += `
-                <div class="rank-card ${cls}" style="animation: cascadeIn 0.5s ease-out ${delay}s both;">
-                    <div class="card-bg"></div> 
-                    <div class="pos-num">${aluno.posicao}º</div>
-                    <div class="avatar-wrapper">${fotoHtml}</div>
-                    <div class="rank-name-container">
-                        <div class="rank-name" title="${nomeSeguro}">${nomeSeguro}</div>
-                        <div class="power-bar-bg">
-                            <div class="power-bar-fill" style="--target-width: ${porcentagem}%; animation: fillBar 1s cubic-bezier(0.1, 0.8, 0.2, 1) forwards; animation-delay: ${(parseFloat(delay) + 0.3).toFixed(2)}s;"></div>
-                        </div>
-                    </div>
-                    <div class="rank-points">
-                        <div class="pts-value">${aluno.pontos || 0}</div>
-                        <div class="pts-label">pts</div>
-                    </div>
-                </div>`;
-            });
-            board.innerHTML = html;
-
-            if (exibirScroll.length > 0 && window.innerWidth > 800) {
-                let scrollHtml = '';
-                [exibirScroll, exibirScroll].forEach(lista => {
-                    lista.forEach(aluno => {
-                        const fotoEl = (aluno.foto && typeof aluno.foto === 'string' && aluno.foto.trim() !== "") 
-                            ? `<img src="${aluno.foto}" class="scroll-photo" alt="" onerror="this.style.display='none'">` 
-                            : '';
-                            
-                        scrollHtml += `
-                        <div class="scroll-item">
-                            <span class="scroll-pos">${aluno.posicao}º</span>
-                            ${fotoEl}
-                            <span class="scroll-name">${aluno.nome || "Atleta"}</span>
-                            <span class="scroll-pts">${aluno.pontos || 0} pts</span>
-                        </div>
-                        <span class="scroll-sep">•</span>`;
-                    });
-                });
-                scrollContent.innerHTML = scrollHtml;
-                const dur = Math.max(30, exibirScroll.length * 4);
-                scrollContent.style.animationDuration = `${dur}s`;
-                scrollBar.style.display = 'flex';
-            } else {
-                scrollBar.style.display = 'none';
-            }
+            els.panelTitle.textContent = "Top 10";
+            els.panelMeta.textContent = "Classificação geral";
+            renderPodium(filtrados.slice(0, 3));
+            renderRows(filtrados.slice(3, 10), 3, filtrados);
+            renderTicker(filtrados.slice(10));
         }
 
-        database.ref('acessos').on('child_added', (snapshot) => {
-            const chaveFirebase = snapshot.key;
-            carregarRanking();
-            setTimeout(() => { database.ref('acessos/' + chaveFirebase).remove(); }, 15000);
-        });
+        function toggleSearch(forceOpen) {
+            const shouldOpen = typeof forceOpen === "boolean" ? forceOpen : !document.body.classList.contains("search-open");
+            document.body.classList.toggle("search-open", shouldOpen);
+
+            if (shouldOpen) {
+                window.setTimeout(() => els.searchInput.focus(), 40);
+                return;
+            }
+
+            els.searchInput.value = "";
+            filtrarRanking();
+        }
 
         function toggleFullScreen() {
             if (!document.fullscreenElement) {
-                document.documentElement.requestFullscreen().catch(err => {
-                    console.error(`Erro ao tentar entrar em tela inteira: ${err.message}`);
-                });
-            } else {
-                if (document.exitFullscreen) document.exitFullscreen();
+                document.documentElement.requestFullscreen().catch(() => {});
+                return;
             }
+            document.exitFullscreen();
         }
 
-        const sleep = ms => new Promise(resolve => setTimeout(resolve, ms));
-
-        async function iniciarDigitalSignage() {
-            const telaAds = document.getElementById('tela-patrocinadores');
-            const imgLogo = document.getElementById('logo-patrocinador');
-
-            const patrocinadores = [
-                "https://raw.githubusercontent.com/willappsoficial-glitch/agente_ia_powerfisio/main/anuncio.png",
-                "https://raw.githubusercontent.com/willappsoficial-glitch/agente_ia_powerfisio/main/willweb.png"
-            ];
-
-            while (true) {
-                telaAds.classList.remove('show'); 
-                await sleep(1000); 
-                telaAds.style.display = 'none';
-                
-                await sleep(60000); 
-
-                telaAds.style.display = 'flex';
-                await sleep(50); 
-                telaAds.classList.add('show');
-
-                for (let i = 0; i < patrocinadores.length; i++) {
-                    if (i > 0) {
-                        imgLogo.style.opacity = 0;
-                        await sleep(500);
-                    }
-                    imgLogo.src = patrocinadores[i];
-                    imgLogo.style.opacity = 1;
-                    await sleep(10000); 
-                }
+        els.searchToggle.addEventListener("click", () => toggleSearch());
+        els.searchInput.addEventListener("input", filtrarRanking);
+        els.searchInput.addEventListener("keydown", (event) => {
+            if (event.key === "Escape") toggleSearch(false);
+        });
+        window.addEventListener("keydown", (event) => {
+            if (event.key === "/" && document.activeElement !== els.searchInput) {
+                event.preventDefault();
+                toggleSearch(true);
             }
-        }
+        });
+        window.addEventListener("resize", filtrarRanking);
 
-        window.onload = () => {
-            carregarRanking();
-            setInterval(carregarRanking, 300000); 
-            iniciarDigitalSignage();
-        };
+        updateClock();
+        window.setInterval(updateClock, 1000);
+        carregarRanking();
+        window.setInterval(carregarRanking, REFRESH_MS);
+
+        if ("serviceWorker" in navigator) {
+            window.addEventListener("load", () => {
+                navigator.serviceWorker.register("sw.js").catch(() => {});
+            });
+        }
     </script>
 </body>
 </html>

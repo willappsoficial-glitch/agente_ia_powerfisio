@@ -1085,9 +1085,39 @@
                 margin-left: 4.65rem;
             }
         }
+
+        /* =========================================
+           DIGITAL SIGNAGE / PATROCINADORES
+           ========================================= */
+        .digital-signage {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background-color: #07090c;
+            z-index: 9999;
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            transition: opacity 1s ease-in-out;
+        }
+        .digital-signage.show {
+            opacity: 1;
+        }
+        #logo-patrocinador {
+            width: 100vw;
+            height: 100vh;
+            object-fit: cover;
+        }
     </style>
 </head>
 <body>
+    <div id="tela-patrocinadores" class="digital-signage">
+        <img id="logo-patrocinador" src="" alt="Patrocinador">
+    </div>
+
     <img src="logo.jpeg" class="brand-watermark" alt="">
 
     <main class="tv-shell">
@@ -1497,6 +1527,51 @@
         window.setInterval(updateClock, 1000);
         carregarRanking();
         window.setInterval(carregarRanking, REFRESH_MS);
+
+        // =========================================
+        // DIGITAL SIGNAGE / ROTAÇÃO DE BANNERS
+        // =========================================
+        const sleep = ms => new Promise(resolve => setTimeout(resolve, ms));
+
+        async function iniciarDigitalSignage() {
+            const telaAds = document.getElementById('tela-patrocinadores');
+            const imgLogo = document.getElementById('logo-patrocinador');
+
+            // As suas logos no GitHub
+            const patrocinadores = [
+                "https://raw.githubusercontent.com/willappsoficial-glitch/agente_ia_powerfisio/main/MAXGYM.png",
+                "https://raw.githubusercontent.com/willappsoficial-glitch/agente_ia_powerfisio/main/anuncio.png"
+            ];
+
+            while (true) {
+                // 1. Mostra o Ranking durante 1 Minuto (60.000 ms)
+                telaAds.classList.remove('show');
+                await sleep(1000); // Tempo da transição
+                telaAds.style.display = 'none';
+
+                await sleep(60000); 
+
+                // 2. Prepara a tela de Banners
+                telaAds.style.display = 'flex';
+                await sleep(50);
+                telaAds.classList.add('show');
+
+                // 3. Mostra cada banner durante 10 segundos
+                for (let i = 0; i < patrocinadores.length; i++) {
+                    if (i > 0) {
+                        imgLogo.style.opacity = 0;
+                        await sleep(500);
+                    }
+                    imgLogo.src = patrocinadores[i];
+                    imgLogo.style.opacity = 1;
+                    
+                    await sleep(10000);
+                }
+            }
+        }
+
+        // Aguarda 5 segundos para o ranking carregar a primeira vez, e depois inicia a máquina de banners
+        window.setTimeout(iniciarDigitalSignage, 5000);
 
         if ("serviceWorker" in navigator) {
             window.addEventListener("load", () => {

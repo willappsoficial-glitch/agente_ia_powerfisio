@@ -261,55 +261,60 @@
         }
 
         async function salvarTudo() {
-            const id = document.getElementById('alunoId').value;
-            if (!id) return;
+    const id = document.getElementById('alunoId').value;
+    if (!id) return;
 
-            const btnSalvar = document.querySelector('.btn-salvar');
-            btnSalvar.innerText = "A SALVAR...";
-            btnSalvar.style.opacity = "0.7";
+    const btnSalvar = document.querySelector('.btn-salvar');
+    btnSalvar.innerText = "A SALVAR...";
+    btnSalvar.style.opacity = "0.7";
 
-            // Coleta Saúde
-            const botoesAtivos = document.querySelectorAll('.grid-saude .btn-toggle.ativo');
-            const condicoesSelecionadas = Array.from(botoesAtivos).map(btn => btn.innerText).join(",");
-            const obs = document.getElementById('alunoObs').value;
+    // Coleta Saúde
+    const botoesAtivos = document.querySelectorAll('.grid-saude .btn-toggle.ativo');
+    const condicoesSelecionadas = Array.from(botoesAtivos).map(btn => btn.innerText).join(",");
+    const obs = document.getElementById('alunoObs').value;
 
-            // Coleta Dados
-            const payload = {
-                acao: 'salvarAdminCompleto',
-                id: id,
-                nome: document.getElementById('alunoNome').value,
-                celular: document.getElementById('alunoZap').value,
-                nivel: document.getElementById('alunoNivel').value,
-                condicoes: condicoesSelecionadas,
-                observacoes: obs
-            };
+    // Coleta Dados
+    const payload = {
+        acao: 'salvarAdminCompleto',
+        id: id,
+        nome: document.getElementById('alunoNome').value,
+        celular: document.getElementById('alunoZap').value,
+        nivel: document.getElementById('alunoNivel').value,
+        condicoes: condicoesSelecionadas,
+        observacoes: obs
+    };
 
-            try {
-                const res = await fetch(API_URL, {
-                    method: 'POST',
-                    body: JSON.stringify(payload)
-                });
-                const resultado = await res.text();
-                
-                if (resultado.includes("Sucesso")) {
-                    btnSalvar.innerText = "✅ SALVO COM SUCESSO";
-                    btnSalvar.style.background = "var(--success)";
-                    setTimeout(() => {
-                        btnSalvar.innerText = "SALVAR DADOS DO ALUNO";
-                        btnSalvar.style.background = "linear-gradient(135deg, var(--primary), #FF8C00)";
-                        btnSalvar.style.opacity = "1";
-                    }, 3000);
-                } else {
-                    alert("Erro ao salvar: " + resultado);
-                    btnSalvar.innerText = "SALVAR DADOS DO ALUNO";
-                    btnSalvar.style.opacity = "1";
-                }
-            } catch (e) {
-                alert("Erro de conexão.");
+    try {
+        const res = await fetch(API_URL, {
+            method: 'POST',
+            headers: {
+                "Content-Type": "text/plain;charset=utf-8"
+            },
+            body: JSON.stringify(payload)
+        });
+        
+        const resultado = await res.text();
+        
+        if (resultado.includes("Sucesso") || resultado.includes("OK")) {
+            btnSalvar.innerText = "✅ SALVO COM SUCESSO";
+            btnSalvar.style.background = "var(--success)";
+            setTimeout(() => {
                 btnSalvar.innerText = "SALVAR DADOS DO ALUNO";
+                btnSalvar.style.background = "linear-gradient(135deg, var(--primary), #FF8C00)";
                 btnSalvar.style.opacity = "1";
-            }
+            }, 3000);
+        } else {
+            alert("Erro ao salvar: " + resultado);
+            btnSalvar.innerText = "SALVAR DADOS DO ALUNO";
+            btnSalvar.style.opacity = "1";
         }
+    } catch (e) {
+        alert("Erro de conexão. Verifique o console do navegador.");
+        console.error(e);
+        btnSalvar.innerText = "SALVAR DADOS DO ALUNO";
+        btnSalvar.style.opacity = "1";
+    }
+}
 
         function ajustarPontos(quantidade) {
             alert(`Funcionalidade de adicionar ${quantidade} pontos entrará na v2!`);

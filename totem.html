@@ -3,29 +3,40 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Totem - MaxGym</title>
-    <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@0,400;0,700;0,900;1,900&family=Barlow:wght@400;600;700&display=swap" rel="stylesheet">
+    <title>Totem - MaxGym AI</title>
+    <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@0,400;0,700;0,900;1,900&family=Barlow:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="manifest" href="manifest-totem.json">
     <meta name="theme-color" content="#000000">
     <link rel="apple-touch-icon" href="icon-192.png">
     <style>
         :root {
-            --primary: #FF6600; /* Laranja vibrante do logo */
-            --primary-glow: rgba(255,102,0,0.4);
-            --bg: #000000; /* Fundo preto puro do logo */
-            --bg-card: #0A0A0A;
-            --bg-surface: #141414;
-            --border: rgba(255,255,255,0.08);
-            --text: #FFFFFF; /* Texto branco do logo */
-            --muted: #808080;
-            --gold: #FFAA00; /* Ajustado para o tom da coroa/seta */
+            /* Paleta de Cores Premium */
+            --primary: #FF6600; 
+            --primary-light: #FF8533;
+            --primary-glow: rgba(255, 102, 0, 0.5);
+            --bg-dark: #050505; 
+            --bg-card: rgba(20, 20, 20, 0.6);
+            --bg-surface: #111111;
+            --border: rgba(255, 255, 255, 0.08);
+            --border-highlight: rgba(255, 102, 0, 0.3);
+            --text: #FFFFFF;
+            --muted: #A0A0A0;
+            --gold: #FFC000;
+            --gold-glow: rgba(255, 192, 0, 0.2);
+            --glass-blur: blur(12px);
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; }
 
         body {
             font-family: 'Barlow', sans-serif;
-            background: var(--bg);
+            background-color: var(--bg-dark);
+            /* Fundo com Grid Tecnológico Sutil */
+            background-image: 
+                radial-gradient(circle at 50% 0%, rgba(255, 102, 0, 0.1) 0%, transparent 50%),
+                linear-gradient(rgba(255, 255, 255, 0.015) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 255, 255, 0.015) 1px, transparent 1px);
+            background-size: 100% 100%, 40px 40px, 40px 40px;
             color: var(--text);
             height: 100vh;
             width: 100vw;
@@ -33,310 +44,388 @@
             align-items: center;
             justify-content: center;
             overflow: hidden;
+            -webkit-font-smoothing: antialiased;
         }
 
-        /* ======= SCREEN SYSTEM ======= */
+        /* ======= SISTEMA DE TELAS ======= */
         .tela {
             position: absolute;
             inset: 0;
             display: flex;
             align-items: center;
             justify-content: center;
-            transition: opacity 0.5s ease;
+            transition: opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1), transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
         }
 
-        .tela.oculta { opacity: 0; pointer-events: none; }
-        .tela.visivel { opacity: 1; pointer-events: all; }
+        .tela.oculta { opacity: 0; pointer-events: none; transform: scale(0.98); }
+        .tela.visivel { opacity: 1; pointer-events: all; transform: scale(1); }
 
-        /* ======= STANDBY SCREEN ======= */
+        /* ======= TELA DE ESPERA ======= */
         #tela-espera {
             flex-direction: column;
-            align-items: center;
             gap: 0;
-            background: radial-gradient(ellipse at 50% 40%, rgba(255,102,0,0.07) 0%, transparent 60%);
         }
 
         .logo-container {
-            margin-bottom: 48px;
+            margin-bottom: 50px;
             position: relative;
-        }
-
-        .logo-container img {
-            width: 90px;
-            height: 90px;
-            border-radius: 24px;
-            box-shadow: 0 16px 48px rgba(255,102,0,0.3);
-        }
-
-        /* Pulse rings */
-        .pulse-rings {
-            position: absolute;
-            inset: -40px;
             display: flex;
             align-items: center;
             justify-content: center;
         }
 
+        .logo-container img {
+            width: 100px;
+            height: 100px;
+            border-radius: 28px;
+            box-shadow: 0 0 60px var(--primary-glow);
+            position: relative;
+            z-index: 2;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+
+        /* Pulse rings melhorados */
+        .pulse-rings {
+            position: absolute;
+            inset: -60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1;
+        }
+
         .pulse-ring {
             position: absolute;
             border-radius: 50%;
-            border: 1px solid rgba(255,102,0,0.3);
-            animation: expandRing 3s ease-out infinite;
+            border: 1px solid var(--primary);
+            box-shadow: 0 0 20px inset var(--primary-glow);
+            animation: expandRing 3s cubic-bezier(0.16, 1, 0.3, 1) infinite;
         }
 
-        .pulse-ring:nth-child(1) { width: 140px; height: 140px; animation-delay: 0s; }
-        .pulse-ring:nth-child(2) { width: 190px; height: 190px; animation-delay: 0.8s; }
-        .pulse-ring:nth-child(3) { width: 240px; height: 240px; animation-delay: 1.6s; }
+        .pulse-ring:nth-child(1) { width: 120px; height: 120px; animation-delay: 0s; }
+        .pulse-ring:nth-child(2) { width: 120px; height: 120px; animation-delay: 1s; }
+        .pulse-ring:nth-child(3) { width: 120px; height: 120px; animation-delay: 2s; }
 
         @keyframes expandRing {
-            0% { opacity: 0.6; transform: scale(0.8); }
-            100% { opacity: 0; transform: scale(1.4); }
+            0% { opacity: 0.8; transform: scale(1); border-width: 2px; }
+            100% { opacity: 0; transform: scale(3.5); border-width: 0px; }
         }
 
         .standby-brand {
             font-family: 'Barlow Condensed', sans-serif;
-            font-size: 5rem;
+            font-size: 6rem;
             font-weight: 900;
             letter-spacing: -2px;
-            line-height: 0.9;
+            line-height: 0.85;
             text-align: center;
-            margin-bottom: 16px;
+            margin-bottom: 12px;
+            text-shadow: 0 10px 30px rgba(0,0,0,0.8);
         }
-
         .standby-brand span { color: var(--primary); }
 
         .standby-sub {
-            font-size: 0.9rem;
+            font-size: 1rem;
             color: var(--muted);
-            letter-spacing: 6px;
+            letter-spacing: 8px;
             text-transform: uppercase;
             text-align: center;
-            margin-bottom: 64px;
+            margin-bottom: 70px;
+            font-weight: 600;
         }
 
         .standby-instruction {
             display: flex;
             align-items: center;
-            gap: 12px;
+            gap: 16px;
             background: var(--bg-card);
+            backdrop-filter: var(--glass-blur);
             border: 1px solid var(--border);
-            border-radius: 16px;
-            padding: 20px 32px;
+            border-radius: 20px;
+            padding: 24px 40px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.5);
+            animation: float 4s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
         }
 
         .standby-instruction .icon {
-            width: 32px;
-            height: 32px;
+            width: 36px;
+            height: 36px;
             color: var(--primary);
             flex-shrink: 0;
+            filter: drop-shadow(0 0 10px var(--primary-glow));
         }
 
         .standby-instruction span {
-            color: var(--muted);
-            font-size: 1rem;
+            color: var(--text);
+            font-size: 1.1rem;
+            font-weight: 500;
+            letter-spacing: 1px;
         }
 
-        /* Scan bar animation */
+        /* Scan bar animation tech */
         .scan-line {
             position: absolute;
             bottom: 0;
             left: 0;
             right: 0;
-            height: 2px;
-            background: linear-gradient(90deg, transparent, var(--primary), transparent);
-            animation: scanAnim 3s ease-in-out infinite;
-            opacity: 0.4;
+            height: 4px;
+            background: linear-gradient(90deg, transparent, var(--primary), #FFF, var(--primary), transparent);
+            animation: scanAnim 3.5s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+            opacity: 0.6;
+            box-shadow: 0 0 20px var(--primary), 0 0 40px var(--primary);
+            z-index: 10;
         }
 
         @keyframes scanAnim {
             0% { transform: translateY(0); opacity: 0; }
-            10% { opacity: 0.4; }
-            90% { opacity: 0.4; }
+            10% { opacity: 0.8; }
+            90% { opacity: 0.8; }
             100% { transform: translateY(-100vh); opacity: 0; }
         }
 
-        /* DEV Button */
-        .dev-btn {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            padding: 8px 16px;
-            background: transparent;
-            border: 1px solid rgba(255,255,255,0.1);
-            border-radius: 8px;
-            color: rgba(255,255,255,0.2);
-            font-size: 0.7rem;
-            cursor: pointer;
-            z-index: 100;
-        }
-
-        /* ======= ALUNO SCREEN ======= */
+        /* ======= TELA DO ALUNO ======= */
         #tela-aluno {
             flex-direction: column;
             align-items: center;
-            padding: 60px;
-            background: radial-gradient(ellipse at 50% 0%, rgba(255,102,0,0.08) 0%, transparent 50%);
-            position: relative;
+            padding: 40px 60px;
         }
 
-        /* Botão Sair Rápido */
+        /* Botão Sair Rápido Melhorado */
         .btn-fechar {
             position: absolute;
             top: 40px;
             right: 40px;
-            background: transparent;
-            border: 2px solid var(--border);
+            background: rgba(255,255,255,0.03);
+            backdrop-filter: var(--glass-blur);
+            border: 1px solid var(--border);
             color: var(--muted);
-            padding: 12px 24px;
-            border-radius: 12px;
+            padding: 12px 28px;
+            border-radius: 100px;
             font-family: 'Barlow Condensed', sans-serif;
-            font-size: 1.2rem;
+            font-size: 1.1rem;
             font-weight: 700;
             cursor: pointer;
-            transition: all 0.2s;
-            letter-spacing: 1px;
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+            letter-spacing: 2px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
         }
 
         .btn-fechar:hover {
             color: white;
-            border-color: white;
+            border-color: rgba(255,255,255,0.3);
             background: rgba(255,255,255,0.1);
+            transform: scale(1.05);
         }
 
-        .btn-fechar:active {
-            transform: scale(0.95);
-        }
+        .btn-fechar:active { transform: scale(0.95); }
 
-        /* Foto / Placeholder */
+        /* Foto do Aluno com Efeito IA */
         .foto-wrapper {
             position: relative;
             margin-bottom: 24px;
+            width: 150px;
+            height: 150px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+        }
+
+        /* Anel giratório */
+        .foto-wrapper::before {
+            content: '';
+            position: absolute;
+            inset: -6px;
+            border-radius: 50%;
+            background: conic-gradient(from 0deg, transparent 0%, transparent 60%, var(--primary) 100%);
+            animation: spinBg 2s linear infinite;
+            z-index: 0;
+        }
+
+        .foto-wrapper::after {
+            content: '';
+            position: absolute;
+            inset: -2px;
+            border-radius: 50%;
+            background: var(--bg-dark);
+            z-index: 1;
+        }
+
+        @keyframes spinBg {
+            100% { transform: rotate(360deg); }
         }
 
         .foto-perfil, .foto-placeholder {
             width: 140px;
             height: 140px;
             border-radius: 50%;
-            border: 3px solid var(--primary);
-            box-shadow: 0 0 40px rgba(255,102,0,0.35);
+            position: relative;
+            z-index: 2;
+            border: 2px solid transparent;
         }
 
         .foto-perfil { object-fit: cover; }
 
         .foto-placeholder {
-            background: var(--bg-surface);
+            background: linear-gradient(135deg, #222, #111);
             display: flex;
             align-items: center;
             justify-content: center;
             font-family: 'Barlow Condensed', sans-serif;
-            font-size: 3.5rem;
+            font-size: 4rem;
             font-weight: 900;
             color: var(--primary);
+            box-shadow: inset 0 0 20px rgba(0,0,0,0.8);
         }
 
         .saudacao {
             font-family: 'Barlow Condensed', sans-serif;
-            font-size: 3.5rem;
+            font-size: 4rem;
             font-weight: 900;
             letter-spacing: -1px;
             text-align: center;
-            margin-bottom: 8px;
-            animation: fadeSlideIn 0.4s ease-out;
+            margin-bottom: 4px;
+            animation: fadeSlideUp 0.5s cubic-bezier(0.16, 1, 0.3, 1) both;
         }
 
-        .saudacao span { color: var(--primary); }
+        .saudacao span { 
+            color: var(--primary); 
+            text-shadow: 0 0 20px var(--primary-glow);
+        }
 
         .subtitulo-aluno {
-            font-size: 1.1rem;
+            font-size: 1.2rem;
             color: var(--muted);
             text-align: center;
-            margin-bottom: 32px;
-            animation: fadeSlideIn 0.4s ease-out 0.1s both;
+            margin-bottom: 40px;
+            font-weight: 500;
+            letter-spacing: 1px;
+            animation: fadeSlideUp 0.5s cubic-bezier(0.16, 1, 0.3, 1) 0.1s both;
         }
 
-        .subtitulo-aluno strong { color: var(--text); }
+        .subtitulo-aluno strong { color: #FFF; font-weight: 700; }
 
-        /* ======= MENU PRINCIPAL OTIMIZADO ======= */
+        @keyframes fadeSlideUp {
+            0% { opacity: 0; transform: translateY(20px); }
+            100% { opacity: 1; transform: translateY(0); }
+        }
+
+        /* ======= MENU PRINCIPAL ======= */
         .area-principal {
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 20px;
+            gap: 24px;
             width: 100%;
-            max-width: 500px;
-            animation: fadeSlideIn 0.4s ease-out 0.2s both;
+            max-width: 540px;
+            animation: fadeSlideUp 0.5s cubic-bezier(0.16, 1, 0.3, 1) 0.2s both;
         }
 
         .btn-max {
             width: 100%;
-            background: linear-gradient(135deg, var(--primary), #FF8C00);
+            background: linear-gradient(135deg, var(--primary), #FF3300);
             border: none;
             border-radius: 24px;
-            padding: 30px 20px;
+            padding: 32px 24px;
             font-family: 'Barlow Condensed', sans-serif;
-            font-size: 2.2rem;
+            font-size: 2.4rem;
             font-weight: 900;
             letter-spacing: 2px;
             color: #fff;
             cursor: pointer;
-            transition: all 0.2s ease;
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
             display: flex;
             flex-direction: column;
             align-items: center;
             gap: 12px;
-            box-shadow: 0 16px 40px rgba(255,102,0,0.4);
-            text-shadow: 0 2px 5px rgba(0,0,0,0.3);
+            box-shadow: 0 16px 40px rgba(255,102,0,0.4), inset 0 2px 0 rgba(255,255,255,0.2);
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Brilho passando pelo botão principal */
+        .btn-max::after {
+            content: '';
+            position: absolute;
+            top: 0; left: -100%; width: 50%; height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+            transform: skewX(-20deg);
+            animation: shine 4s infinite;
+        }
+
+        @keyframes shine {
+            0% { left: -100%; }
+            20% { left: 200%; }
+            100% { left: 200%; }
         }
 
         .btn-max:hover {
-            transform: translateY(-5px) scale(1.02);
-            box-shadow: 0 20px 50px rgba(255,102,0,0.6);
+            transform: translateY(-8px) scale(1.02);
+            box-shadow: 0 24px 50px rgba(255,102,0,0.6), inset 0 2px 0 rgba(255,255,255,0.3);
         }
 
         .btn-max:active { transform: scale(0.98); }
 
         .btn-icon-max {
-            font-size: 3.5rem;
+            font-size: 3.8rem;
             line-height: 1;
-            filter: drop-shadow(0 4px 6px rgba(0,0,0,0.3));
+            filter: drop-shadow(0 4px 10px rgba(0,0,0,0.4));
+            margin-bottom: -4px;
         }
 
-        /* Banner da Roleta */
+        /* Banner da Roleta - Glassmorphism Dourado */
         .roleta-banner {
             width: 100%;
-            background: rgba(255, 170, 0, 0.08);
-            border: 1px solid rgba(255, 170, 0, 0.3);
-            border-radius: 16px;
-            padding: 16px 20px;
+            background: linear-gradient(135deg, rgba(255, 192, 0, 0.1), rgba(255, 192, 0, 0.02));
+            backdrop-filter: var(--glass-blur);
+            border: 1px solid rgba(255, 192, 0, 0.2);
+            border-radius: 20px;
+            padding: 20px 24px;
             display: flex;
             align-items: center;
-            gap: 16px;
-            box-shadow: 0 8px 24px rgba(255, 170, 0, 0.05);
+            gap: 20px;
+            box-shadow: 0 8px 32px var(--gold-glow);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .roleta-banner::before {
+            content: ''; position: absolute; top: 0; left: 0; width: 4px; height: 100%;
+            background: var(--gold);
+            box-shadow: 0 0 15px var(--gold);
         }
 
         .roleta-icone {
-            font-size: 2.2rem;
-            animation: bounce 2s infinite;
+            font-size: 2.8rem;
+            animation: bounce 2.5s infinite cubic-bezier(0.28, 0.84, 0.42, 1);
+            filter: drop-shadow(0 4px 6px rgba(0,0,0,0.5));
         }
 
         .roleta-texto {
             text-align: left;
-            font-size: 0.95rem;
-            line-height: 1.4;
-            color: var(--text);
+            font-size: 1.05rem;
+            line-height: 1.5;
+            color: rgba(255,255,255,0.9);
         }
 
         .roleta-texto strong {
             color: var(--gold);
             font-family: 'Barlow Condensed', sans-serif;
-            font-size: 1.2rem;
+            font-size: 1.3rem;
             letter-spacing: 1px;
             text-transform: uppercase;
+            text-shadow: 0 0 10px var(--gold-glow);
         }
 
         @keyframes bounce {
             0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-5px); }
+            50% { transform: translateY(-8px); }
         }
 
         /* Seletor de dias */
@@ -346,55 +435,114 @@
             gap: 16px;
             width: 100%;
             max-width: 600px;
-            animation: fadeSlideIn 0.3s ease-out;
+            animation: fadeSlideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1);
         }
 
         .btn-dia {
-            background: var(--bg-card);
-            border: 2px solid var(--border);
-            border-radius: 16px;
-            padding: 24px 10px;
+            background: rgba(255,255,255,0.02);
+            backdrop-filter: var(--glass-blur);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 28px 10px;
             font-family: 'Barlow Condensed', sans-serif;
-            font-size: 1.4rem;
+            font-size: 1.6rem;
             font-weight: 900;
-            letter-spacing: 1px;
+            letter-spacing: 2px;
             color: var(--text);
             cursor: pointer;
-            transition: all 0.2s ease;
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.3);
         }
-        .btn-dia:hover { border-color: var(--primary); background: rgba(255,102,0,0.05); transform: translateY(-3px); }
+
+        .btn-dia:hover { 
+            border-color: var(--primary); 
+            background: rgba(255,102,0,0.1); 
+            transform: translateY(-5px);
+            color: var(--primary);
+            box-shadow: 0 12px 25px rgba(255,102,0,0.2);
+        }
         .btn-dia:active { transform: scale(0.95); }
 
-        /* LOADING */
+        .btn-voltar {
+            border-color: rgba(255,255,255,0.1) !important;
+            color: var(--muted) !important;
+        }
+        .btn-voltar:hover {
+            background: rgba(255,255,255,0.05) !important;
+            color: white !important;
+        }
+
+        /* LOADING IA ESTILIZADO */
         .loading-container {
             display: none;
             flex-direction: column;
             align-items: center;
-            gap: 20px;
-            margin-top: 20px;
+            gap: 30px;
+            margin-top: 40px;
+            animation: fadeSlideUp 0.3s ease-out;
         }
 
-        .loading-spinner {
-            width: 48px;
-            height: 48px;
-            border: 3px solid rgba(255,102,0,0.2);
-            border-top-color: var(--primary);
+        .ai-core-loader {
+            position: relative;
+            width: 80px;
+            height: 80px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .ai-core-loader .ring {
+            position: absolute;
             border-radius: 50%;
-            animation: spin 0.8s linear infinite;
+            border: 3px solid transparent;
+            border-top-color: var(--primary);
+            border-bottom-color: var(--primary);
+            animation: spinLoader 1.5s cubic-bezier(0.68, -0.55, 0.265, 1.55) infinite;
         }
 
-        @keyframes spin { to { transform: rotate(360deg); } }
+        .ai-core-loader .ring:nth-child(1) { width: 100%; height: 100%; animation-duration: 1.5s; }
+        .ai-core-loader .ring:nth-child(2) { width: 70%; height: 70%; animation-duration: 1s; animation-direction: reverse; border-top-color: #FFF; border-bottom-color: #FFF; }
+        .ai-core-loader .ring:nth-child(3) { width: 40%; height: 40%; border: none; background: var(--primary); box-shadow: 0 0 20px var(--primary); animation: pulseCore 1s ease-in-out infinite alternate; }
+
+        @keyframes spinLoader { 100% { transform: rotate(360deg); } }
+        @keyframes pulseCore { 0% { transform: scale(0.8); opacity: 0.8; } 100% { transform: scale(1.1); opacity: 1; } }
 
         .loading-text {
             font-family: 'Barlow Condensed', sans-serif;
-            font-size: 1.5rem;
+            font-size: 1.8rem;
             font-weight: 700;
-            letter-spacing: 2px;
-            color: var(--primary);
+            letter-spacing: 3px;
+            color: var(--text);
+            text-transform: uppercase;
+            text-shadow: 0 0 15px rgba(255,255,255,0.3);
         }
+        .loading-text span {
+            color: var(--primary);
+            animation: pulseText 1.5s infinite alternate;
+        }
+
+        @keyframes pulseText { 0% { opacity: 0.5; } 100% { opacity: 1; text-shadow: 0 0 20px var(--primary); } }
+
+        /* DEV Button */
+        .dev-btn {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            padding: 8px 16px;
+            background: rgba(0,0,0,0.5);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 8px;
+            color: rgba(255,255,255,0.3);
+            font-size: 0.8rem;
+            cursor: pointer;
+            z-index: 100;
+            transition: 0.3s;
+        }
+        .dev-btn:hover { color: #FFF; border-color: rgba(255,255,255,0.3); }
 
         /* ======= ÁREA DE IMPRESSÃO ======= */
         @media print {
+            body { background: white !important; }
             body * { visibility: hidden; }
             #area-impressao, #area-impressao * { visibility: visible !important; }
             #area-impressao {
@@ -433,14 +581,16 @@
             <svg class="icon" viewBox="0 0 24 24" fill="currentColor">
                 <path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4z"/>
             </svg>
-            <span>Passe na catraca para iniciar</span>
+            <span>PASSE NA CATRACA PARA INICIAR</span>
         </div>
     </div>
 
     <!-- TELA DO ALUNO -->
     <div id="tela-aluno" class="tela oculta">
-        <!-- Botão Novo de Fechamento Imediato -->
-        <button class="btn-fechar" onclick="resetarTela()">X SAIR</button>
+        <!-- Botão Sair Rápido -->
+        <button class="btn-fechar" onclick="resetarTela()">
+            <span>✕</span> SAIR
+        </button>
 
         <div class="foto-wrapper">
             <img id="foto-aluno" class="foto-perfil" style="display:none;" src="" alt="">
@@ -450,7 +600,7 @@
         <div class="saudacao">FALA, <span id="nome-aluno">ATLETA</span>!</div>
         <div class="subtitulo-aluno" id="txt-instrucao">A SUA MISSÃO ESTÁ PRONTA</div>
 
-        <!-- Menu Principal Otimizado (Apenas MAX + Roleta) -->
+        <!-- Menu Principal Otimizado -->
         <div class="area-principal" id="menu-principal">
             <button class="btn-max" onclick="abrirSeletorDias()">
                 <span class="btn-icon-max">🤖</span>
@@ -472,13 +622,17 @@
             <button class="btn-dia" onclick="gerarTreinoIA('Quarta')">QUA</button>
             <button class="btn-dia" onclick="gerarTreinoIA('Quinta')">QUI</button>
             <button class="btn-dia" onclick="gerarTreinoIA('Sexta')">SEX</button>
-            <button class="btn-dia" style="border-color:rgba(255,255,255,0.15);" onclick="voltarMenu()">← VOLTAR</button>
+            <button class="btn-dia btn-voltar" onclick="voltarMenu()">← VOLTAR</button>
         </div>
 
         <!-- Loading -->
         <div class="loading-container" id="loading">
-            <div class="loading-spinner"></div>
-            <div class="loading-text">MAX MONTANDO SEU TREINO...</div>
+            <div class="ai-core-loader">
+                <div class="ring"></div>
+                <div class="ring"></div>
+                <div class="ring"></div>
+            </div>
+            <div class="loading-text">MAX PROCESSANDO <span>...</span></div>
         </div>
     </div>
 
@@ -487,10 +641,10 @@
         Simular [DEV]
     </button>
 
-    <!-- Área de Impressão -->
+    <!-- Área de Impressão (Mantida Intacta e Funcional) -->
     <div id="area-impressao">
         <div style="text-align:center; margin-bottom: 5px;">
-            <strong style="font-size: 20px; font-family: 'Barlow Condensed', sans-serif;">POWERFISIO</strong>
+            <strong style="font-size: 20px; font-family: 'Barlow Condensed', sans-serif;">MAXGYM</strong>
         </div>
         <div style="border-bottom: 2px dashed #000; margin-bottom: 12px; padding-bottom: 8px; font-size: 13px; text-align: center;">
             ATLETA: <strong id="print-nome" style="font-size: 14px;">—</strong>
@@ -504,7 +658,7 @@
         <div style="border: 1px solid #000; padding: 10px; margin-bottom: 15px; text-align: center; border-radius: 8px;">
             <div style="font-size: 16px; margin-bottom: 4px;">🎰 <strong>ROLETA DA SORTE</strong> 🎰</div>
             <div style="font-size: 11px; line-height: 1.3;">
-                Abra o <strong>App Powerfisio</strong> ao concluir este treino e gire a roleta para ganhar<br>
+                Abra o <strong>App MAXGYM</strong> ao concluir este treino e gire a roleta para ganhar<br>
                 <strong style="font-size: 13px;">ATÉ +15 PONTOS EXTRAS!</strong>
             </div>
         </div>
@@ -521,7 +675,7 @@
         let radarAtivo = true;
         let alunoAtualId = "";
         
-        // NOVO: Tempo cravado em 5 segundos! Super ágil.
+        // Tempo cravado em 5 segundos
         const TEMPO_LIBERACAO = 5000; 
 
         // Polling Inteligente
@@ -533,7 +687,6 @@
             if (radarAtivo) {
                 await escutarCatraca();
             }
-            // Só faz a próxima chamada APÓS a anterior ter terminado, evitando gargalos
             setTimeout(iniciarRadarInteligente, 1200);
         }
 
@@ -604,7 +757,6 @@
             document.getElementById('tela-espera').classList.replace('visivel', 'oculta');
             document.getElementById('tela-aluno').classList.replace('oculta', 'visivel');
 
-            // Timeout ágil de 5s
             clearTimeout(timeoutReset);
             timeoutReset = setTimeout(resetarTela, TEMPO_LIBERACAO);
         }
@@ -619,7 +771,6 @@
             document.getElementById('seletor-dias').style.display = 'grid';
             document.getElementById('txt-instrucao').textContent = "IMPRIMIR O TREINO DE QUAL DIA?";
             
-            // Dá mais 5 segundos para ele escolher o dia
             clearTimeout(timeoutReset);
             timeoutReset = setTimeout(resetarTela, TEMPO_LIBERACAO);
         }
@@ -667,28 +818,23 @@
             linhas.forEach(linha => {
                 let txt = linha.trim();
                 if (!txt) {
-                    html += '<div style="margin-bottom: 8px;"></div>'; // Espaço extra entre blocos
+                    html += '<div style="margin-bottom: 8px;"></div>'; 
                     return;
                 }
                 
-                // Transforma **texto** da IA em Negrito de verdade
                 txt = txt.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+                let textoPuro = txt.replace(/<[^>]*>?/gm, ''); 
                 
-                let textoPuro = txt.replace(/<[^>]*>?/gm, ''); // Remove HTML para testar
-                
-                // Formata os Títulos de Seção (COMO EXECUTAR, NOTA CLÍNICA)
                 if (/^(como executar|nota clínica|nota clinica)/i.test(textoPuro)) {
                     html += `<div style="margin-top: 16px; margin-bottom: 6px; border-bottom: 1px solid #000; font-weight: bold; font-size: 12px; text-transform: uppercase;">${txt}</div>`;
                     return;
                 }
 
-                // Formata a lista de exercícios (1. Exercício) com recuo para não ficar bagunçado
                 if (/^\d+\./.test(textoPuro)) {
                     html += `<div style="margin-bottom: 8px; padding-left: 15px; text-indent: -15px;">${txt}</div>`;
                     return;
                 }
 
-                // Texto normal
                 html += `<div style="margin-bottom: 4px;">${txt}</div>`;
             });
             
@@ -700,7 +846,6 @@
             document.getElementById('area-impressao').style.display = 'block';
             document.getElementById('texto-impresso').textContent = titulo;
             
-            // Aqui ele envia o texto para o tradutor antes de jogar na tela
             document.getElementById('corpo-treino').innerHTML = formatarTreinoParaImpressao(conteudo);
 
             setTimeout(() => {
@@ -709,17 +854,18 @@
                 resetarTela();
             }, 500);
         }
+        
         function resetarTela() {
             document.getElementById('tela-aluno').classList.replace('visivel', 'oculta');
             document.getElementById('tela-espera').classList.replace('oculta', 'visivel');
             
-            // Restaura o layout padrão para o próximo aluno
-            document.getElementById('menu-principal').style.display = 'flex';
-            document.getElementById('seletor-dias').style.display = 'none';
-            document.getElementById('loading').style.display = 'none';
-            document.getElementById('txt-instrucao').textContent = "A SUA MISSÃO ESTÁ PRONTA!";
-            
-            radarAtivo = true; // Libera o totem para ler a próxima catraca
+            setTimeout(() => {
+                document.getElementById('menu-principal').style.display = 'flex';
+                document.getElementById('seletor-dias').style.display = 'none';
+                document.getElementById('loading').style.display = 'none';
+                document.getElementById('txt-instrucao').textContent = "A SUA MISSÃO ESTÁ PRONTA!";
+                radarAtivo = true; 
+            }, 500); // Aguarda o fim da transição de CSS para resetar o layout
         }
     </script>
     <script>

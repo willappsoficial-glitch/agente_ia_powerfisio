@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>MAXGYM - Ranking TV Formato Pódio</title>
+    <title>MAXGYM - Ranking TV Formato Circular</title>
     <!-- Fontes imponentes -->
     <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@0,500;0,700;0,900;1,800;1,900&family=Barlow:wght@400;700;800&display=swap" rel="stylesheet">
     <meta name="theme-color" content="#050505">
@@ -13,9 +13,11 @@
             --brand-orange: #ff6600;
             --brand-orange-light: #ffa133;
             --brand-white: #ffffff;
+            
             --gold: #FFD700;
             --silver: #C0C0C0;
             --bronze: #CD7F32;
+            
             --text-main: #ffffff;
             --text-muted: #888888;
         }
@@ -29,7 +31,7 @@
         html, body {
             width: 100vw;
             height: 100vh;
-            overflow: hidden; /* Trava a rolagem da tela */
+            overflow: hidden;
             font-family: "Barlow", Arial, sans-serif;
             background-color: var(--bg-dark);
             color: var(--text-main);
@@ -40,13 +42,12 @@
             position: absolute;
             inset: 0;
             background: 
-                radial-gradient(circle at 50% -20%, rgba(255, 102, 0, 0.25) 0%, transparent 70%),
-                repeating-linear-gradient(45deg, rgba(255,255,255,0.02) 0px, rgba(255,255,255,0.02) 2px, transparent 2px, transparent 8px),
+                radial-gradient(circle at 50% 50%, rgba(255, 102, 0, 0.15) 0%, transparent 60%),
+                repeating-linear-gradient(45deg, rgba(255,255,255,0.01) 0px, rgba(255,255,255,0.01) 2px, transparent 2px, transparent 8px),
                 linear-gradient(to bottom, #0a0a0a, #000000);
             z-index: -1;
         }
 
-        /* Estrutura Flexbox Rigorosa para não esconder o rodapé */
         .tv-layout {
             display: flex;
             flex-direction: column;
@@ -57,349 +58,204 @@
 
         /* ================= HEADER ================= */
         .header {
-            flex: 0 0 10vh; /* Altura fixa de 10vh */
+            flex: 0 0 10vh;
             display: flex;
             justify-content: space-between;
             align-items: center;
             padding: 0 4vw;
             background: linear-gradient(180deg, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0) 100%);
             border-bottom: 1px solid rgba(255, 102, 0, 0.2);
+            z-index: 20;
         }
 
-        .brand {
-            display: flex;
-            align-items: center;
-            gap: 1.5vw;
-        }
-
-        .brand-logo {
-            height: 7vh;
-            border-radius: 8px;
-            box-shadow: 0 0 15px rgba(255, 102, 0, 0.5);
-        }
-
+        .brand { display: flex; align-items: center; gap: 1.5vw; }
+        .brand-logo { height: 7vh; border-radius: 8px; box-shadow: 0 0 15px rgba(255, 102, 0, 0.5); cursor: pointer; }
         .brand-text h1 {
             font-family: "Barlow Condensed", sans-serif;
-            font-style: italic;
-            font-size: 4vh;
-            font-weight: 900;
-            line-height: 1;
-            text-transform: uppercase;
-            color: var(--brand-white);
+            font-style: italic; font-size: 4vh; font-weight: 900; line-height: 1; text-transform: uppercase; color: var(--brand-white);
         }
+        .brand-text p { font-size: 1.8vh; color: var(--brand-orange); font-weight: 800; letter-spacing: 3px; text-transform: uppercase; }
 
-        .brand-text p {
-            font-size: 1.8vh;
-            color: var(--brand-orange);
-            font-weight: 800;
-            letter-spacing: 3px;
-            text-transform: uppercase;
-        }
-
-        .status-bar {
-            display: flex;
-            align-items: center;
-            gap: 2vw;
-        }
-
-        .live-indicator {
-            display: flex;
-            align-items: center;
-            gap: 0.8vw;
-            color: var(--brand-orange-light);
-            font-weight: 900;
-            font-size: 2.2vh;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-
+        .status-bar { display: flex; align-items: center; gap: 2vw; }
+        .live-indicator { display: flex; align-items: center; gap: 0.8vw; color: var(--brand-orange-light); font-weight: 900; font-size: 2.2vh; text-transform: uppercase; }
         .live-dot {
-            width: 1.5vh;
-            height: 1.5vh;
-            background-color: var(--brand-orange);
-            border-radius: 50%;
-            box-shadow: 0 0 10px var(--brand-orange);
-            animation: blink 1s infinite alternate;
+            width: 1.5vh; height: 1.5vh; background-color: var(--brand-orange); border-radius: 50%;
+            box-shadow: 0 0 10px var(--brand-orange); animation: blink 1s infinite alternate;
         }
+        .clock { font-family: "Barlow Condensed", sans-serif; font-size: 5vh; font-weight: 900; color: var(--brand-white); }
 
-        .clock {
-            font-family: "Barlow Condensed", sans-serif;
-            font-size: 5vh;
-            font-weight: 900;
-            color: var(--brand-white);
-        }
-
-        /* ================= MAIN CONTENT ================= */
+        /* ================= MAIN CONTENT (ÁREA CIRCULAR) ================= */
         .main-content {
-            flex: 1; /* Preenche o espaço restante */
-            display: flex;
-            flex-direction: column;
-            padding: 2vh 4vw;
-            gap: 2vh;
-            min-height: 0; /* Impede que o conteúdo empurre o rodapé para fora */
-        }
-
-        /* Pódio Olímpico Horizontal */
-        .podium-stage {
-            flex: 0 0 40vh; /* Altura fixa para o pódio */
-            display: flex;
-            justify-content: center;
-            align-items: flex-end;
-            gap: 3vw;
-            padding-bottom: 2vh;
-            border-bottom: 1px dashed rgba(255,255,255,0.1);
-        }
-
-        .podium-card {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: flex-end;
-            background: linear-gradient(to top, rgba(20,20,20,0.9), rgba(10,10,10,0.5));
-            border-top: 6px solid var(--medal-color);
-            border-radius: 12px;
-            padding: 1.5vh 2vw;
-            width: 22vw;
+            flex: 1;
             position: relative;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.8);
-        }
-
-        .podium-card.first {
-            --medal-color: var(--gold);
-            height: 100%;
-            width: 26vw;
-            background: linear-gradient(to top, rgba(255, 215, 0, 0.15), rgba(10,10,10,0.8));
-            box-shadow: 0 0 40px rgba(255, 215, 0, 0.2);
-            z-index: 10;
-        }
-
-        .podium-card.second {
-            --medal-color: var(--silver);
-            height: 80%;
-        }
-
-        .podium-card.third {
-            --medal-color: var(--bronze);
-            height: 70%;
-        }
-
-        .podium-pos {
-            position: absolute;
-            top: -3.5vh;
-            background: var(--medal-color);
-            color: #000;
-            font-family: "Barlow Condensed", sans-serif;
-            font-weight: 900;
-            font-size: 4vh;
-            width: 7vh;
-            height: 7vh;
             display: flex;
-            align-items: center;
             justify-content: center;
-            border-radius: 50%;
-            border: 4px solid var(--bg-dark);
-            box-shadow: 0 5px 15px rgba(0,0,0,0.5);
-        }
-
-        .podium-card.first .podium-pos {
-            top: -4.5vh;
-            width: 9vh;
-            height: 9vh;
-            font-size: 5vh;
-        }
-
-        .podium-avatar {
-            width: 10vh;
-            height: 10vh;
-            border-radius: 50%;
-            border: 4px solid var(--medal-color);
-            object-fit: cover;
-            margin-bottom: 1.5vh;
-            background-color: #222;
-        }
-
-        .podium-card.first .podium-avatar {
-            width: 14vh;
-            height: 14vh;
-        }
-
-        .podium-name {
-            font-family: "Barlow Condensed", sans-serif;
-            font-size: 3.2vh;
-            font-weight: 900;
-            text-transform: uppercase;
-            text-align: center;
-            line-height: 1;
-            margin-bottom: 1vh;
-            color: var(--brand-white);
-            /* Evita que nomes gigantes quebrem o card */
-            display: -webkit-box;
-            -webkit-line-clamp: 2;
-            -webkit-box-orient: vertical;
-            overflow: hidden;
-        }
-
-        .podium-card.first .podium-name {
-            font-size: 4.5vh;
-            color: var(--gold);
-        }
-
-        .podium-pts {
-            font-family: "Barlow Condensed", sans-serif;
-            font-size: 4.5vh;
-            font-weight: 900;
-            color: var(--brand-orange-light);
-            line-height: 1;
-            text-align: center;
-        }
-
-        .podium-card.first .podium-pts {
-            font-size: 6vh;
-        }
-
-        .pts-label {
-            font-size: 1.5vh;
-            font-weight: 800;
-            color: var(--text-muted);
-            text-transform: uppercase;
-            letter-spacing: 2px;
-        }
-
-        /* ================= GRID DE ELITE (4º ao 10º) ================= */
-        .grid-stage {
-            flex: 1; 
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 1.5vh 4vw;
-            align-content: center;
+            align-items: center;
             min-height: 0;
         }
 
-        .grid-card {
-            display: flex;
-            align-items: center;
-            background: rgba(255, 255, 255, 0.03);
-            border: 1px solid rgba(255,255,255,0.08);
-            border-radius: 8px;
-            padding: 1vh 2vw;
-            gap: 1.5vw;
-        }
-
-        /* 
-           O Segredo do Layout: Travando as posições exatas
-           Índices representam a lista (1º ao 7º card da lista = 4º ao 10º lugar do ranking)
-        */
-
-        /* Coluna Esquerda: 4º, 5º, 6º (Índices 1, 2, 3) */
-        .grid-card:nth-child(1) { grid-row: 1; grid-column: 1; } /* 4º Lugar */
-        .grid-card:nth-child(2) { grid-row: 2; grid-column: 1; } /* 5º Lugar */
-        .grid-card:nth-child(3) { grid-row: 3; grid-column: 1; } /* 6º Lugar */
-
-        /* Coluna Direita: 7º, 8º, 9º (Índices 4, 5, 6) */
-        .grid-card:nth-child(4) { grid-row: 1; grid-column: 2; } /* 7º Lugar */
-        .grid-card:nth-child(5) { grid-row: 2; grid-column: 2; } /* 8º Lugar */
-        .grid-card:nth-child(6) { grid-row: 3; grid-column: 2; } /* 9º Lugar */
-
-        /* Centralizado na base: 10º (Índice 7) */
-        .grid-card:nth-child(7) {
-            grid-row: 4; /* Fica na 4ª linha */
-            grid-column: 1 / -1; /* Ocupa as duas colunas */
-            justify-self: center; /* Centraliza */
-            width: calc(50% - 2vw); /* Mesma largura dos demais */
-        }
-
-        .grid-pos {
-            font-family: "Barlow Condensed", sans-serif;
-            font-size: 4vh;
-            font-weight: 900;
-            color: var(--brand-orange);
-            width: 6vh;
-            text-align: center;
-        }
-
-        .grid-avatar {
-            width: 6.5vh;
-            height: 6.5vh;
+        /* Anel de Fundo (Apenas Visual) */
+        .circle-backdrop {
+            position: absolute;
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+            width: 58vh; height: 58vh;
             border-radius: 50%;
-            border: 2px solid rgba(255, 255, 255, 0.2);
-            object-fit: cover;
+            border: 2px dashed rgba(255, 102, 0, 0.15);
+            z-index: 0;
+            box-shadow: inset 0 0 50px rgba(0,0,0,0.8);
+        }
+
+        /* ---- 1º LUGAR (CENTRO EXATO) ---- */
+        .center-champion {
+            position: absolute;
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            z-index: 10;
+            text-align: center;
+            animation: floatCenter 4s ease-in-out infinite;
+        }
+
+        @keyframes floatCenter {
+            0%, 100% { transform: translate(-50%, -50%); }
+            50% { transform: translate(-50%, -52%); }
+        }
+
+        .center-champion .pos-badge {
+            background: var(--gold); color: #000;
+            font-family: "Barlow Condensed", sans-serif; font-weight: 900; font-size: 5vh;
+            width: 8vh; height: 8vh; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            border: 4px solid var(--bg-dark);
+            margin-bottom: -3vh; z-index: 2;
+            box-shadow: 0 0 20px rgba(255, 215, 0, 0.5);
+        }
+
+        .center-champion .avatar {
+            width: 18vh; height: 18vh; border-radius: 50%;
+            border: 6px solid var(--gold); object-fit: cover;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.8);
             background-color: #222;
         }
 
-        .grid-info {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            min-width: 0; 
+        .center-champion .name {
+            font-family: "Barlow Condensed", sans-serif; font-size: 4.5vh; font-weight: 900;
+            text-transform: uppercase; color: var(--gold); margin-top: 1vh;
+            line-height: 1; text-shadow: 2px 2px 5px rgba(0,0,0,0.8);
+            max-width: 30vw; text-align: center;
         }
 
-        .grid-name {
-            font-family: "Barlow Condensed", sans-serif;
-            font-size: 3.2vh;
-            font-weight: 800;
-            text-transform: uppercase;
-            color: var(--brand-white);
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
+        .center-champion .pts {
+            font-family: "Barlow Condensed", sans-serif; font-size: 6vh; font-weight: 900;
+            color: var(--brand-white); line-height: 1; text-shadow: 2px 2px 5px rgba(0,0,0,0.8);
+        }
+
+        /* ---- ORBITAIS (2º ao 10º LUGAR) ---- */
+        .orbiter-card {
+            position: absolute;
+            top: 50%; left: 50%;
+            /* A mágica da órbita: Move pro centro, rotaciona, afasta pelo raio, e desfaz a rotação para o texto não ficar de cabeça para baixo */
+            transform: translate(-50%, -50%) rotate(var(--angle)) translateY(calc(var(--radius) * -1)) rotate(calc(var(--angle) * -1));
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            z-index: 5;
+            transition: all 0.5s ease;
+        }
+
+        .orbiter-card .pos-badge {
+            background: var(--orbiter-color); color: #000;
+            font-family: "Barlow Condensed", sans-serif; font-weight: 900; font-size: 2.5vh;
+            width: 4vh; height: 4vh; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            border: 2px solid var(--bg-dark);
+            margin-bottom: -1.5vh; z-index: 2;
+        }
+
+        .orbiter-card .avatar {
+            width: 7vh; height: 7vh; border-radius: 50%;
+            border: 3px solid var(--orbiter-color); object-fit: cover;
+            background-color: #222;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.6);
+        }
+
+        .orbiter-card .name {
+            font-family: "Barlow Condensed", sans-serif; font-size: 2.2vh; font-weight: 800;
+            text-transform: uppercase; color: var(--brand-white); margin-top: 0.5vh;
+            width: 14vw; /* Limite de largura para não bater no vizinho */
+            display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical;
+            overflow: hidden; text-shadow: 1px 1px 3px rgba(0,0,0,0.8);
             line-height: 1.1;
         }
 
-        .grid-pts {
-            font-family: "Barlow Condensed", sans-serif;
-            font-size: 2.8vh;
-            font-weight: 900;
+        .orbiter-card .pts {
+            font-family: "Barlow Condensed", sans-serif; font-size: 2.5vh; font-weight: 900;
             color: var(--text-muted);
+        }
+
+        /* Modificadores de Destaque */
+        .orbiter-card.second {
+            --orbiter-color: var(--silver);
+            --radius: 25vh; /* Mais próximo ao centro */
+            z-index: 6;
+        }
+        .orbiter-card.second .avatar { width: 11vh; height: 11vh; border-width: 4px; }
+        .orbiter-card.second .pos-badge { width: 5.5vh; height: 5.5vh; font-size: 3.5vh; margin-bottom: -2vh; }
+        .orbiter-card.second .name { font-size: 3vh; }
+        .orbiter-card.second .pts { font-size: 3.5vh; color: var(--silver); }
+
+        .orbiter-card.third {
+            --orbiter-color: var(--bronze);
+            --radius: 25vh; /* Mais próximo ao centro */
+            z-index: 6;
+        }
+        .orbiter-card.third .avatar { width: 10vh; height: 10vh; border-width: 4px; }
+        .orbiter-card.third .pos-badge { width: 5vh; height: 5vh; font-size: 3vh; margin-bottom: -1.8vh; }
+        .orbiter-card.third .name { font-size: 2.8vh; }
+        .orbiter-card.third .pts { font-size: 3.2vh; color: var(--bronze); }
+
+        .orbiter-card.standard {
+            --orbiter-color: var(--brand-orange);
+            --radius: 31vh; /* Raio da borda externa */
+        }
+        
+        .orbiter-card.tenth {
+            --orbiter-color: var(--brand-orange);
+            --radius: 32vh; /* Desce o 10º lugar um pouquinho mais para centralizar perfeito na base */
         }
 
         /* ================= TICKER (Rodapé) ================= */
         .ticker {
-            flex: 0 0 8vh; /* Fixa o rodapé em 8vh */
+            flex: 0 0 8vh;
             background: var(--brand-orange);
             display: flex;
             align-items: center;
             overflow: hidden;
+            z-index: 20;
         }
 
         .ticker-label {
-            background: #000;
-            color: var(--brand-white);
-            height: 100%;
-            display: flex;
-            align-items: center;
-            padding: 0 3vw;
-            font-weight: 900;
-            font-size: 2.5vh;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            z-index: 2;
-            border-right: 4px solid var(--brand-white);
+            background: #000; color: var(--brand-white); height: 100%;
+            display: flex; align-items: center; padding: 0 3vw;
+            font-weight: 900; font-size: 2.5vh; text-transform: uppercase;
+            letter-spacing: 2px; z-index: 2; border-right: 4px solid var(--brand-white);
         }
 
         .ticker-track {
-            display: inline-flex;
-            align-items: center;
-            white-space: nowrap;
-            padding-left: 100vw;
-            animation: tickerMove linear infinite;
+            display: inline-flex; align-items: center; white-space: nowrap;
+            padding-left: 100vw; animation: tickerMove linear infinite;
         }
 
-        @keyframes tickerMove {
-            from { transform: translateX(0); }
-            to { transform: translateX(-100%); }
-        }
+        @keyframes tickerMove { from { transform: translateX(0); } to { transform: translateX(-100%); } }
 
         .ticker-item {
-            display: inline-flex;
-            align-items: center;
-            gap: 1vw;
-            margin-right: 5vw;
-            font-family: "Barlow Condensed", sans-serif;
-            font-size: 3.5vh;
-            font-weight: 800;
-            text-transform: uppercase;
-            color: #111;
+            display: inline-flex; align-items: center; gap: 1vw; margin-right: 5vw;
+            font-family: "Barlow Condensed", sans-serif; font-size: 3.5vh; font-weight: 800;
+            text-transform: uppercase; color: #111;
         }
 
         .ticker-pos { font-weight: 900; color: #000; }
@@ -407,35 +263,21 @@
 
         /* ================= ESTADOS & DIGITAL SIGNAGE ================= */
         .state-panel {
-            width: 100%;
-            text-align: center;
-            font-family: "Barlow Condensed", sans-serif;
-            font-size: 4vh;
-            font-weight: 800;
-            color: var(--text-muted);
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            padding: 4vh;
+            position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+            text-align: center; font-family: "Barlow Condensed", sans-serif;
+            font-size: 4vh; font-weight: 800; color: var(--text-muted);
+            text-transform: uppercase; letter-spacing: 2px;
         }
 
         .digital-signage {
-            position: fixed;
-            inset: 0;
-            background-color: #000;
-            z-index: 9999;
-            display: none;
-            justify-content: center;
-            align-items: center;
-            opacity: 0;
-            transition: opacity 1s ease-in-out;
+            position: fixed; inset: 0; background-color: #000; z-index: 9999;
+            display: none; justify-content: center; align-items: center;
+            opacity: 0; transition: opacity 1s ease-in-out;
         }
         .digital-signage.show { opacity: 1; }
         #logo-patrocinador { width: 100vw; height: 100vh; object-fit: contain; }
 
-        @keyframes blink {
-            from { opacity: 1; box-shadow: 0 0 15px var(--brand-orange); }
-            to { opacity: 0.4; box-shadow: 0 0 0px var(--brand-orange); }
-        }
+        @keyframes blink { from { opacity: 1; box-shadow: 0 0 15px var(--brand-orange); } to { opacity: 0.4; box-shadow: 0 0 0px var(--brand-orange); } }
     </style>
 </head>
 <body>
@@ -464,19 +306,9 @@
             </div>
         </header>
 
-        <!-- Área Principal (Pódio e Grid) -->
-        <section class="main-content">
-            
-            <!-- Pódio Horizontal (Top 3) -->
-            <div class="podium-stage" id="podium-area">
-                <div class="state-panel">Sincronizando Atletas...</div>
-            </div>
-
-            <!-- Grid de Elite (4º ao 10º) -->
-            <div class="grid-stage" id="grid-area">
-                <!-- Renderizado via JS -->
-            </div>
-
+        <!-- Área Principal (Círculo) -->
+        <section class="main-content" id="circle-area">
+            <div class="state-panel">Sincronizando Atletas...</div>
         </section>
 
         <!-- Rodapé Animado (Demais Posições) -->
@@ -492,93 +324,88 @@
         const REFRESH_MS = 15000;
 
         const els = {
-            podium: document.getElementById("podium-area"),
-            grid: document.getElementById("grid-area"),
+            circleArea: document.getElementById("circle-area"),
             ticker: document.getElementById("ticker-content"),
             clock: document.getElementById("clock")
         };
 
-        function escapeHtml(value) {
-            return String(value ?? "").replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
-        }
-
-        function getName(aluno) {
-            return escapeHtml(String(aluno?.nome ?? "Atleta").trim());
-        }
-
+        // Utilitários de Tratamento
+        function escapeHtml(value) { return String(value ?? "").replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;"); }
+        function getName(aluno) { return escapeHtml(String(aluno?.nome ?? "Atleta").trim()); }
         function formatPoints(value) {
-            const raw = String(value ?? "0").replace(/[^\d,.-]/g, "").replace(",", ".");
-            const num = Number(raw);
+            const num = Number(String(value ?? "0").replace(/[^\d,.-]/g, "").replace(",", "."));
             return Number.isFinite(num) ? new Intl.NumberFormat("pt-BR").format(num) : "0";
         }
-
         function getPosition(aluno, fallback) {
             const pos = Number(aluno?.posicao);
             return Number.isFinite(pos) && pos > 0 ? pos : fallback;
         }
-
         function getAvatar(aluno) {
             const foto = String(aluno?.foto ?? "").trim();
             if(foto) return escapeHtml(foto);
-            const initial = (Array.from(getName(aluno).trim())[0] || "A").toUpperCase();
-            return `https://ui-avatars.com/api/?name=${initial}&background=ff6600&color=fff&bold=true&size=200`;
+            return `https://ui-avatars.com/api/?name=${(Array.from(getName(aluno).trim())[0] || "A").toUpperCase()}&background=ff6600&color=fff&bold=true&size=200`;
         }
 
-        function buildPodiumCard(aluno, pos, cssClass) {
-            return `
-            <div class="podium-card ${cssClass}">
-                <div class="podium-pos">${pos}º</div>
-                <img src="${getAvatar(aluno)}" class="podium-avatar" alt="${getName(aluno)}" onerror="this.src='https://ui-avatars.com/api/?name=A&background=222&color=fff'">
-                <div class="podium-name">${getName(aluno)}</div>
-                <div class="podium-pts">
-                    ${formatPoints(aluno.pontos)}
-                    <div class="pts-label">Pontos</div>
-                </div>
+        // Construtor do Círculo
+        function renderCircleLayout(dados) {
+            if (!dados || dados.length === 0) {
+                els.circleArea.innerHTML = `<div class="state-panel">Nenhum atleta encontrado</div>`;
+                return;
+            }
+
+            let html = `<div class="circle-backdrop"></div>`; // Linha tracejada de fundo
+
+            // 1º Lugar (Centro)
+            const champion = dados[0];
+            const pos1 = getPosition(champion, 1);
+            html += `
+            <div class="center-champion">
+                <div class="pos-badge">${pos1}º</div>
+                <img src="${getAvatar(champion)}" class="avatar" alt="${getName(champion)}" onerror="this.src='https://ui-avatars.com/api/?name=A&background=222&color=fff'">
+                <div class="name">${getName(champion)}</div>
+                <div class="pts">${formatPoints(champion.pontos)} Pts</div>
             </div>`;
-        }
 
-        function renderPodium(topThree) {
-            if (!topThree || topThree.length === 0) {
-                els.podium.innerHTML = `<div class="state-panel">Nenhum atleta encontrado</div>`;
-                return;
-            }
+            // Mapeamento Matemático das Posições (0 graus = Topo, 180 graus = Base)
+            // [ 2º, 3º, 4º, 5º, 6º, 7º, 8º, 9º, 10º ]
+            const angulos = [
+                325, // 2º Lugar (Topo Esquerda)
+                 35, // 3º Lugar (Topo Direita)
+                285, // 4º Lugar (Esquerda Cima)
+                 75, // 5º Lugar (Direita Cima)
+                245, // 6º Lugar (Esquerda Baixo)
+                115, // 7º Lugar (Direita Baixo)
+                210, // 8º Lugar (Fundo Esquerda)
+                150, // 9º Lugar (Fundo Direita)
+                180  // 10º Lugar (Centro Base Exato)
+            ];
 
-            let html = "";
-            if (topThree[1]) html += buildPodiumCard(topThree[1], getPosition(topThree[1], 2), "second");
-            if (topThree[0]) html += buildPodiumCard(topThree[0], getPosition(topThree[0], 1), "first");
-            if (topThree[2]) html += buildPodiumCard(topThree[2], getPosition(topThree[2], 3), "third");
+            const orbiters = dados.slice(1, 10);
+            
+            orbiters.forEach((aluno, index) => {
+                const pos = getPosition(aluno, index + 2);
+                const angulo = angulos[index] !== undefined ? angulos[index] : 0;
+                
+                let cssClass = 'standard';
+                if (pos === 2) cssClass = 'second';
+                else if (pos === 3) cssClass = 'third';
+                else if (pos === 10) cssClass = 'tenth';
 
-            els.podium.innerHTML = html;
-        }
-
-        function renderGrid(rows, offset) {
-            if (!rows || rows.length === 0) {
-                els.grid.innerHTML = "";
-                return;
-            }
-
-            let html = "";
-            rows.forEach((aluno, index) => {
-                const pos = getPosition(aluno, offset + index + 1);
                 html += `
-                <div class="grid-card">
-                    <div class="grid-pos">${pos}º</div>
-                    <img src="${getAvatar(aluno)}" class="grid-avatar" alt="Avatar" onerror="this.src='https://ui-avatars.com/api/?name=A&background=222&color=fff'">
-                    <div class="grid-info">
-                        <div class="grid-name">${getName(aluno)}</div>
-                        <div class="grid-pts">${formatPoints(aluno.pontos)} Pts</div>
-                    </div>
+                <div class="orbiter-card ${cssClass}" style="--angle: ${angulo}deg;">
+                    <div class="pos-badge">${pos}º</div>
+                    <img src="${getAvatar(aluno)}" class="avatar" alt="Avatar" onerror="this.src='https://ui-avatars.com/api/?name=A&background=222&color=fff'">
+                    <div class="name">${getName(aluno)}</div>
+                    <div class="pts">${formatPoints(aluno.pontos)}</div>
                 </div>`;
             });
-            els.grid.innerHTML = html;
+
+            els.circleArea.innerHTML = html;
         }
 
         function renderTicker(rows, offset) {
             if (!rows || rows.length === 0) {
-                els.ticker.innerHTML = `
-                    <div class="ticker-item">
-                        <span class="ticker-name">CONTINUE TREINANDO PARA ENTRAR NO RANKING GERAL!</span>
-                    </div>`;
+                els.ticker.innerHTML = `<div class="ticker-item"><span class="ticker-name">CONTINUE TREINANDO PARA ENTRAR NO RANKING DE ELITE!</span></div>`;
                 els.ticker.style.animationDuration = `15s`;
                 return;
             }
@@ -604,9 +431,8 @@
                 const dadosGlobais = Array.isArray(payload) ? payload : [];
                 
                 if (dadosGlobais.length > 0) {
-                    renderPodium(dadosGlobais.slice(0, 3));
-                    renderGrid(dadosGlobais.slice(3, 10), 3);
-                    renderTicker(dadosGlobais.slice(10), 10);
+                    renderCircleLayout(dadosGlobais.slice(0, 10)); // Manda o Top 10 para o construtor do Círculo
+                    renderTicker(dadosGlobais.slice(10), 10);      // Manda o 11º em diante para o rodapé
                 }
             } catch (error) {
                 console.error("Erro na API:", error);
@@ -618,8 +444,8 @@
             els.clock.textContent = now.toLocaleTimeString("pt-BR", { hour: "2-digit", minute: "2-digit" });
         }
 
+        // Sistema de Signage
         const sleep = ms => new Promise(resolve => setTimeout(resolve, ms));
-
         async function iniciarDigitalSignage() {
             const telaAds = document.getElementById('tela-patrocinadores');
             const imgLogo = document.getElementById('logo-patrocinador');
@@ -652,14 +478,12 @@
             }
         }
 
+        // Init
         updateClock();
         setInterval(updateClock, 1000);
-        
         carregarRanking();
         setInterval(carregarRanking, REFRESH_MS);
-
         setTimeout(iniciarDigitalSignage, 5000);
     </script>
 </body>
 </html>
-

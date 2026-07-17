@@ -9,17 +9,13 @@
     <meta name="theme-color" content="#050505">
     <style>
         :root {
-            /* Cores base */
             --bg-dark: #050505;
             --brand-orange: #ff6600;
             --brand-orange-light: #ffa133;
             --brand-white: #ffffff;
-            
-            /* Medalhas */
             --gold: #FFD700;
             --silver: #C0C0C0;
             --bronze: #CD7F32;
-            
             --text-main: #ffffff;
             --text-muted: #888888;
         }
@@ -33,13 +29,12 @@
         html, body {
             width: 100vw;
             height: 100vh;
-            overflow: hidden; /* Fundamental para TV */
+            overflow: hidden; /* Trava a rolagem da tela */
             font-family: "Barlow", Arial, sans-serif;
             background-color: var(--bg-dark);
             color: var(--text-main);
         }
 
-        /* Fundo com textura esportiva */
         body::before {
             content: "";
             position: absolute;
@@ -51,17 +46,18 @@
             z-index: -1;
         }
 
-        /* Layout Grid da TV */
+        /* Estrutura Flexbox Rigorosa para não esconder o rodapé */
         .tv-layout {
             display: flex;
             flex-direction: column;
             height: 100vh;
             width: 100vw;
+            overflow: hidden;
         }
 
         /* ================= HEADER ================= */
         .header {
-            height: 12vh;
+            flex: 0 0 10vh; /* Altura fixa de 10vh */
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -135,20 +131,21 @@
 
         /* ================= MAIN CONTENT ================= */
         .main-content {
-            flex: 1;
+            flex: 1; /* Preenche o espaço restante */
             display: flex;
             flex-direction: column;
             padding: 2vh 4vw;
-            gap: 3vh;
+            gap: 2vh;
+            min-height: 0; /* Impede que o conteúdo empurre o rodapé para fora */
         }
 
         /* Pódio Olímpico Horizontal */
         .podium-stage {
+            flex: 0 0 40vh; /* Altura fixa para o pódio */
             display: flex;
             justify-content: center;
             align-items: flex-end;
             gap: 3vw;
-            height: 42vh;
             padding-bottom: 2vh;
             border-bottom: 1px dashed rgba(255,255,255,0.1);
         }
@@ -161,17 +158,16 @@
             background: linear-gradient(to top, rgba(20,20,20,0.9), rgba(10,10,10,0.5));
             border-top: 6px solid var(--medal-color);
             border-radius: 12px;
-            padding: 2vh 2vw;
+            padding: 1.5vh 2vw;
             width: 22vw;
             position: relative;
             box-shadow: 0 10px 30px rgba(0,0,0,0.8);
-            transition: all 0.5s ease;
         }
 
         .podium-card.first {
             --medal-color: var(--gold);
-            height: 100%; /* Mais alto */
-            width: 26vw; /* Mais largo */
+            height: 100%;
+            width: 26vw;
             background: linear-gradient(to top, rgba(255, 215, 0, 0.15), rgba(10,10,10,0.8));
             box-shadow: 0 0 40px rgba(255, 215, 0, 0.2);
             z-index: 10;
@@ -213,8 +209,8 @@
         }
 
         .podium-avatar {
-            width: 12vh;
-            height: 12vh;
+            width: 10vh;
+            height: 10vh;
             border-radius: 50%;
             border: 4px solid var(--medal-color);
             object-fit: cover;
@@ -223,36 +219,42 @@
         }
 
         .podium-card.first .podium-avatar {
-            width: 16vh;
-            height: 16vh;
+            width: 14vh;
+            height: 14vh;
         }
 
         .podium-name {
             font-family: "Barlow Condensed", sans-serif;
-            font-size: 3.5vh;
+            font-size: 3.2vh;
             font-weight: 900;
             text-transform: uppercase;
             text-align: center;
             line-height: 1;
             margin-bottom: 1vh;
             color: var(--brand-white);
+            /* Evita que nomes gigantes quebrem o card */
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
         }
 
         .podium-card.first .podium-name {
-            font-size: 5vh;
+            font-size: 4.5vh;
             color: var(--gold);
         }
 
         .podium-pts {
             font-family: "Barlow Condensed", sans-serif;
-            font-size: 5vh;
+            font-size: 4.5vh;
             font-weight: 900;
             color: var(--brand-orange-light);
             line-height: 1;
+            text-align: center;
         }
 
         .podium-card.first .podium-pts {
-            font-size: 7vh;
+            font-size: 6vh;
         }
 
         .pts-label {
@@ -265,10 +267,12 @@
 
         /* Grid de Elite (4º ao 10º) */
         .grid-stage {
+            flex: 1; /* Preenche a área livre do main-content */
             display: grid;
             grid-template-columns: repeat(2, 1fr);
-            gap: 2vh 4vw;
-            flex: 1;
+            gap: 1.5vh 4vw;
+            align-content: center;
+            min-height: 0;
         }
 
         .grid-card {
@@ -281,6 +285,14 @@
             gap: 1.5vw;
         }
 
+        /* ==== O SEGREDO PARA CENTRALIZAR O 10º LUGAR ==== */
+        /* O 10º lugar é o 7º item dentro desta div (pois a lista vai do 4º ao 10º) */
+        .grid-card:nth-child(7) {
+            grid-column: 1 / -1; /* Ocupa as duas colunas */
+            justify-self: center; /* Centraliza no meio exato */
+            width: calc(50% - 2vw); /* Mantém a mesma largura dos outros cards */
+        }
+
         .grid-pos {
             font-family: "Barlow Condensed", sans-serif;
             font-size: 4vh;
@@ -291,11 +303,12 @@
         }
 
         .grid-avatar {
-            width: 7vh;
-            height: 7vh;
+            width: 6.5vh;
+            height: 6.5vh;
             border-radius: 50%;
             border: 2px solid rgba(255, 255, 255, 0.2);
             object-fit: cover;
+            background-color: #222;
         }
 
         .grid-info {
@@ -303,11 +316,12 @@
             display: flex;
             flex-direction: column;
             justify-content: center;
+            min-width: 0; /* Previne overflow de texto */
         }
 
         .grid-name {
             font-family: "Barlow Condensed", sans-serif;
-            font-size: 3.5vh;
+            font-size: 3.2vh;
             font-weight: 800;
             text-transform: uppercase;
             color: var(--brand-white);
@@ -319,14 +333,14 @@
 
         .grid-pts {
             font-family: "Barlow Condensed", sans-serif;
-            font-size: 3vh;
+            font-size: 2.8vh;
             font-weight: 900;
             color: var(--text-muted);
         }
 
-        /* ================= TICKER ================= */
+        /* ================= TICKER (Rodapé) ================= */
         .ticker {
-            height: 8vh;
+            flex: 0 0 8vh; /* Fixa o rodapé em 8vh */
             background: var(--brand-orange);
             display: flex;
             align-items: center;
@@ -411,17 +425,17 @@
 </head>
 <body>
 
-    <!-- Ads Layer -->
+    <!-- Camada de Anúncios -->
     <div id="tela-patrocinadores" class="digital-signage">
         <img id="logo-patrocinador" src="" alt="Patrocinador">
     </div>
 
     <main class="tv-layout">
         
-        <!-- Topo -->
+        <!-- Cabeçalho -->
         <header class="header">
             <div class="brand">
-                <img src="logo (1).jpeg" class="brand-logo" alt="MAXGYM Logo" onclick="document.documentElement.requestFullscreen().catch(()=>{})">
+                <img src="logo.jpeg" class="brand-logo" alt="MAXGYM Logo" onclick="document.documentElement.requestFullscreen().catch(()=>{})" onerror="this.style.display='none'">
                 <div class="brand-text">
                     <h1>MAXGYM</h1>
                     <p>Ranking Oficial</p>
@@ -435,7 +449,7 @@
             </div>
         </header>
 
-        <!-- Conteúdo Principal -->
+        <!-- Área Principal (Pódio e Grid) -->
         <section class="main-content">
             
             <!-- Pódio Horizontal (Top 3) -->
@@ -450,7 +464,7 @@
 
         </section>
 
-        <!-- Rodapé Animado -->
+        <!-- Rodapé Animado (Demais Posições) -->
         <footer class="ticker">
             <div class="ticker-label">Geral</div>
             <div class="ticker-track" id="ticker-content"></div>
@@ -469,7 +483,6 @@
             clock: document.getElementById("clock")
         };
 
-        // Funções Base
         function escapeHtml(value) {
             return String(value ?? "").replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
         }
@@ -496,7 +509,6 @@
             return `https://ui-avatars.com/api/?name=${initial}&background=ff6600&color=fff&bold=true&size=200`;
         }
 
-        // Renderizadores
         function buildPodiumCard(aluno, pos, cssClass) {
             return `
             <div class="podium-card ${cssClass}">
@@ -517,7 +529,6 @@
             }
 
             let html = "";
-            // Ordem visual: Esquerda(2º), Centro(1º), Direita(3º)
             if (topThree[1]) html += buildPodiumCard(topThree[1], getPosition(topThree[1], 2), "second");
             if (topThree[0]) html += buildPodiumCard(topThree[0], getPosition(topThree[0], 1), "first");
             if (topThree[2]) html += buildPodiumCard(topThree[2], getPosition(topThree[2], 3), "third");
@@ -537,7 +548,7 @@
                 html += `
                 <div class="grid-card">
                     <div class="grid-pos">${pos}º</div>
-                    <img src="${getAvatar(aluno)}" class="grid-avatar" alt="Avatar">
+                    <img src="${getAvatar(aluno)}" class="grid-avatar" alt="Avatar" onerror="this.src='https://ui-avatars.com/api/?name=A&background=222&color=fff'">
                     <div class="grid-info">
                         <div class="grid-name">${getName(aluno)}</div>
                         <div class="grid-pts">${formatPoints(aluno.pontos)} Pts</div>
@@ -548,8 +559,13 @@
         }
 
         function renderTicker(rows, offset) {
+            // Se não houver posições além do top 10, exibe uma mensagem motivacional
             if (!rows || rows.length === 0) {
-                els.ticker.innerHTML = "";
+                els.ticker.innerHTML = `
+                    <div class="ticker-item">
+                        <span class="ticker-name">CONTINUE TREINANDO PARA ENTRAR NO RANKING GERAL!</span>
+                    </div>`;
+                els.ticker.style.animationDuration = `15s`;
                 return;
             }
 
@@ -567,7 +583,6 @@
             els.ticker.style.animationDuration = `${Math.max(20, rows.length * 3.5)}s`;
         }
 
-        // Lógica de Atualização
         async function carregarRanking() {
             try {
                 const response = await fetch(`${API_URL}?acao=getRankingTV&t=${Date.now()}`, { cache: "no-store" });
@@ -589,7 +604,6 @@
             els.clock.textContent = now.toLocaleTimeString("pt-BR", { hour: "2-digit", minute: "2-digit" });
         }
 
-        // Sistema de Patrocínios
         const sleep = ms => new Promise(resolve => setTimeout(resolve, ms));
 
         async function iniciarDigitalSignage() {
@@ -606,7 +620,7 @@
                 await sleep(1000); 
                 telaAds.style.display = 'none';
 
-                await sleep(60000); // 1 min de ranking
+                await sleep(60000); 
 
                 telaAds.style.display = 'flex';
                 await sleep(50);
@@ -619,12 +633,11 @@
                     }
                     imgLogo.src = patrocinadores[i];
                     imgLogo.style.opacity = 1;
-                    await sleep(10000); // 10 seg por banner
+                    await sleep(10000); 
                 }
             }
         }
 
-        // Init
         updateClock();
         setInterval(updateClock, 1000);
         

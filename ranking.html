@@ -3,487 +3,417 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>MAXGYM - Ranking TV Formato Circular</title>
-    <!-- Fontes imponentes -->
-    <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@0,500;0,700;0,900;1,800;1,900&family=Barlow:wght@400;700;800&display=swap" rel="stylesheet">
-    <meta name="theme-color" content="#050505">
+    <title>MAXGYM - Ranking Arena</title>
+    <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@0,500;0,600;0,700;0,900;1,800;1,900&family=Barlow:wght@400;600;700;800&display=swap" rel="stylesheet">
     <style>
         :root {
-            --bg-dark: #050505;
-            --brand-orange: #ff6600;
-            --brand-orange-light: #ffa133;
+            /* paleta extraída da logo MAXGYM */
+            --brand-orange: #ff5e00;
+            --brand-orange-light: #ffb020;
+            --brand-orange-deep: #e63f00;
+            --brand-orange-glow: rgba(255, 94, 0, 0.55);
             --brand-white: #ffffff;
-            
-            --gold: #FFD700;
-            --silver: #C0C0C0;
-            --bronze: #CD7F32;
-            
-            --text-main: #ffffff;
-            --text-muted: #888888;
+            --gold: #ffd700;
+            --gold-dim: #a3860c;
+            --silver: #d8dde3;
+            --silver-dim: #8a9099;
+            --bronze: #e0954b;
+            --bronze-dim: #8a5a28;
+            --bg-black: #060607;
+            --panel: rgba(20, 20, 22, 0.72);
+            --panel-edge: rgba(255, 255, 255, 0.07);
+            --text-dim: #9a9a9e;
         }
 
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
 
         html, body {
-            width: 100vw;
-            height: 100vh;
-            overflow: hidden;
-            font-family: "Barlow", Arial, sans-serif;
-            background-color: var(--bg-dark);
-            color: var(--text-main);
+            width: 100vw; height: 100vh; overflow: hidden;
+            font-family: "Barlow", Arial, sans-serif; color: #f2f2ee;
+            background: var(--bg-black);
+            animation: page-in 0.9s ease both;
         }
+        @keyframes page-in { from { opacity: 0; } to { opacity: 1; } }
 
-        body::before {
-            content: "";
-            position: absolute;
-            inset: 0;
-            background: 
-                radial-gradient(circle at 50% 50%, rgba(255, 102, 0, 0.15) 0%, transparent 60%),
-                repeating-linear-gradient(45deg, rgba(255,255,255,0.01) 0px, rgba(255,255,255,0.01) 2px, transparent 2px, transparent 8px),
-                linear-gradient(to bottom, #0a0a0a, #000000);
-            z-index: -1;
+        /* ===== BACKDROP: layered arena atmosphere ===== */
+        .backdrop {
+            position: fixed; inset: 0; z-index: 0; overflow: hidden;
         }
-
-        .tv-layout {
-            display: flex;
-            flex-direction: column;
-            height: 100vh;
-            width: 100vw;
-            overflow: hidden;
+        .backdrop::before {
+            /* base image / gradient wash */
+            content: ""; position: absolute; inset: -5%;
+            background:
+                radial-gradient(circle at 18% 20%, rgba(255,94,0,0.18), transparent 45%),
+                radial-gradient(circle at 85% 75%, rgba(255,176,32,0.10), transparent 50%),
+                linear-gradient(180deg, #0c0c0d 0%, #060607 55%, #0a0a0b 100%),
+                url('URL_DA_SUA_IMAGEM_AQUI');
+            background-size: cover; background-position: center;
+            filter: saturate(1.05);
         }
+        .backdrop::after {
+            /* dark vignette so foreground stays legible */
+            content: ""; position: absolute; inset: 0;
+            background: radial-gradient(ellipse at center, rgba(0,0,0,0) 40%, rgba(0,0,0,0.75) 100%);
+        }
+        .grain {
+            position: fixed; inset: 0; z-index: 1; pointer-events: none; opacity: 0.05; mix-blend-mode: overlay;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+        }
+        .stripes {
+            position: fixed; inset: 0; z-index: 1; pointer-events: none; opacity: 0.045;
+            background: repeating-linear-gradient(115deg, #fff 0 2px, transparent 2px 42px);
+        }
+        .scanline {
+            position: fixed; left: 0; right: 0; height: 3px; z-index: 2; pointer-events: none;
+            background: linear-gradient(180deg, transparent, rgba(255,102,0,0.25), transparent);
+            animation: scan 7s linear infinite;
+        }
+        @keyframes scan { 0% { top: -3px; } 100% { top: 100%; } }
 
-        /* ================= HEADER ================= */
+        .tv-layout { position: relative; z-index: 3; display: flex; flex-direction: column; height: 100vh; }
+
+        /* ===== HEADER ===== */
         .header {
-            flex: 0 0 10vh;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 0 4vw;
-            background: linear-gradient(180deg, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0) 100%);
-            border-bottom: 1px solid rgba(255, 102, 0, 0.2);
-            z-index: 20;
-        }
-
-        .brand { display: flex; align-items: center; gap: 1.5vw; }
-        .brand-logo { height: 7vh; border-radius: 8px; box-shadow: 0 0 15px rgba(255, 102, 0, 0.5); cursor: pointer; }
-        .brand-text h1 {
-            font-family: "Barlow Condensed", sans-serif;
-            font-style: italic; font-size: 4vh; font-weight: 900; line-height: 1; text-transform: uppercase; color: var(--brand-white);
-        }
-        .brand-text p { font-size: 1.8vh; color: var(--brand-orange); font-weight: 800; letter-spacing: 3px; text-transform: uppercase; }
-
-        .status-bar { display: flex; align-items: center; gap: 2vw; }
-        .live-indicator { display: flex; align-items: center; gap: 0.8vw; color: var(--brand-orange-light); font-weight: 900; font-size: 2.2vh; text-transform: uppercase; }
-        .live-dot {
-            width: 1.5vh; height: 1.5vh; background-color: var(--brand-orange); border-radius: 50%;
-            box-shadow: 0 0 10px var(--brand-orange); animation: blink 1s infinite alternate;
-        }
-        .clock { font-family: "Barlow Condensed", sans-serif; font-size: 5vh; font-weight: 900; color: var(--brand-white); }
-
-        /* ================= MAIN CONTENT (ÁREA CIRCULAR) ================= */
-        .main-content {
-            flex: 1;
+            flex: 0 0 10vh; display: flex; justify-content: space-between; align-items: center;
+            padding: 0 3vw; background: linear-gradient(180deg, rgba(0,0,0,0.75), rgba(0,0,0,0.35));
+            border-bottom: 1px solid var(--panel-edge);
             position: relative;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 0;
+            animation: drop-in 0.7s ease both 0.1s;
+        }
+        @keyframes drop-in { from { opacity: 0; transform: translateY(-1.4vh); } to { opacity: 1; transform: translateY(0); } }
+        .header::after {
+            content: ""; position: absolute; left: 0; right: 0; bottom: -2px; height: 2px;
+            background: linear-gradient(90deg, transparent, var(--brand-orange), var(--brand-orange-light), transparent);
+        }
+        .brand { display: flex; align-items: center; gap: 1.2vw; }
+        .brand-logo {
+            height: 6.2vh; border-radius: 10px;
+            box-shadow: 0 0 0 2px rgba(255,94,0,0.5), 0 0 18px var(--brand-orange-glow);
+            animation: logo-pulse 3.2s ease-in-out infinite;
+        }
+        @keyframes logo-pulse {
+            0%, 100% { box-shadow: 0 0 0 2px rgba(255,94,0,0.45), 0 0 16px rgba(255,94,0,0.3); }
+            50% { box-shadow: 0 0 0 2px rgba(255,176,32,0.7), 0 0 26px rgba(255,176,32,0.5); }
+        }
+        .brand-text h1 {
+            font-family: "Barlow Condensed", sans-serif; font-size: 3.6vh; font-weight: 900;
+            text-transform: uppercase; letter-spacing: 1px;
+            background: linear-gradient(180deg, var(--brand-white) 0%, #eee 55%, var(--brand-orange-light) 130%);
+            -webkit-background-clip: text; background-clip: text; color: transparent;
+        }
+        .brand-text p {
+            font-size: 1.5vh; color: var(--brand-orange-light); font-weight: 800;
+            letter-spacing: 3px; text-transform: uppercase; margin-top: 0.3vh;
+        }
+        .status-wrap { display: flex; align-items: center; gap: 1.2vw; }
+        .live-dot {
+            display: flex; align-items: center; gap: 0.6vw;
+            background: rgba(255,102,0,0.12); border: 1px solid rgba(255,102,0,0.4);
+            padding: 0.6vh 1.2vw; border-radius: 999px;
+            font-family: "Barlow Condensed", sans-serif; font-weight: 800; font-size: 1.7vh;
+            letter-spacing: 2px; color: var(--brand-orange-light); text-transform: uppercase;
+        }
+        .live-dot span.dot {
+            width: 1vh; height: 1vh; border-radius: 50%; background: var(--brand-orange);
+            box-shadow: 0 0 8px var(--brand-orange);
+            animation: pulse-dot 1.4s ease-in-out infinite;
+        }
+        @keyframes pulse-dot { 0%,100% { opacity: 1; transform: scale(1); } 50% { opacity: 0.35; transform: scale(0.7); } }
+        .status {
+            font-family: "Barlow Condensed", sans-serif; font-size: 4vh; font-weight: 900;
+            letter-spacing: 1px; font-variant-numeric: tabular-nums;
         }
 
-        /* Anel de Fundo (Apenas Visual) */
-        .circle-backdrop {
-            position: absolute;
-            top: 50%; left: 50%;
-            transform: translate(-50%, -50%);
-            width: 58vh; height: 58vh;
-            border-radius: 50%;
-            border: 2px dashed rgba(255, 102, 0, 0.15);
-            z-index: 0;
-            box-shadow: inset 0 0 50px rgba(0,0,0,0.8);
+        /* ===== CONTENT ===== */
+        .main-content {
+            flex: 1; display: grid; grid-template-columns: 38% 62%;
+            padding: 2.8vh 3vw; gap: 2.4vw; align-items: center; min-height: 0;
         }
 
-        /* ---- 1º LUGAR (CENTRO EXATO) ---- */
-        .center-champion {
-            position: absolute;
-            top: 50%; left: 50%;
-            transform: translate(-50%, -50%);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            z-index: 10;
-            text-align: center;
-            animation: floatCenter 4s ease-in-out infinite;
-        }
-
-        @keyframes floatCenter {
-            0%, 100% { transform: translate(-50%, -50%); }
-            50% { transform: translate(-50%, -52%); }
-        }
-
-        .center-champion .pos-badge {
-            background: var(--gold); color: #000;
-            font-family: "Barlow Condensed", sans-serif; font-weight: 900; font-size: 5vh;
-            width: 8vh; height: 8vh; border-radius: 50%;
-            display: flex; align-items: center; justify-content: center;
-            border: 4px solid var(--bg-dark);
-            margin-bottom: -3vh; z-index: 2;
-            box-shadow: 0 0 20px rgba(255, 215, 0, 0.5);
-        }
-
-        .center-champion .avatar {
-            width: 18vh; height: 18vh; border-radius: 50%;
-            border: 6px solid var(--gold); object-fit: cover;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.8);
-            background-color: #222;
-        }
-
-        .center-champion .name {
-            font-family: "Barlow Condensed", sans-serif; font-size: 4.5vh; font-weight: 900;
-            text-transform: uppercase; color: var(--gold); margin-top: 1vh;
-            line-height: 1; text-shadow: 2px 2px 5px rgba(0,0,0,0.8);
-            max-width: 30vw; text-align: center;
-        }
-
-        .center-champion .pts {
-            font-family: "Barlow Condensed", sans-serif; font-size: 6vh; font-weight: 900;
-            color: var(--brand-white); line-height: 1; text-shadow: 2px 2px 5px rgba(0,0,0,0.8);
-        }
-
-        /* ---- ORBITAIS (2º ao 10º LUGAR) ---- */
-        .orbiter-card {
-            position: absolute;
-            top: 50%; left: 50%;
-            /* A mágica da órbita: Move pro centro, rotaciona, afasta pelo raio, e desfaz a rotação para o texto não ficar de cabeça para baixo */
-            transform: translate(-50%, -50%) rotate(var(--angle)) translateY(calc(var(--radius) * -1)) rotate(calc(var(--angle) * -1));
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            text-align: center;
-            z-index: 5;
-            transition: all 0.5s ease;
-        }
-
-        .orbiter-card .pos-badge {
-            background: var(--orbiter-color); color: #000;
-            font-family: "Barlow Condensed", sans-serif; font-weight: 900; font-size: 2.5vh;
-            width: 4vh; height: 4vh; border-radius: 50%;
-            display: flex; align-items: center; justify-content: center;
-            border: 2px solid var(--bg-dark);
-            margin-bottom: -1.5vh; z-index: 2;
-        }
-
-        .orbiter-card .avatar {
-            width: 7vh; height: 7vh; border-radius: 50%;
-            border: 3px solid var(--orbiter-color); object-fit: cover;
-            background-color: #222;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.6);
-        }
-
-        .orbiter-card .name {
-            font-family: "Barlow Condensed", sans-serif; font-size: 2.2vh; font-weight: 800;
-            text-transform: uppercase; color: var(--brand-white); margin-top: 0.5vh;
-            width: 14vw; /* Limite de largura para não bater no vizinho */
-            display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical;
-            overflow: hidden; text-shadow: 1px 1px 3px rgba(0,0,0,0.8);
-            line-height: 1.1;
-        }
-
-        .orbiter-card .pts {
-            font-family: "Barlow Condensed", sans-serif; font-size: 2.5vh; font-weight: 900;
-            color: var(--text-muted);
-        }
-
-        /* Modificadores de Destaque */
-        .orbiter-card.second {
-            --orbiter-color: var(--silver);
-            --radius: 25vh; /* Mais próximo ao centro */
-            z-index: 6;
-        }
-        .orbiter-card.second .avatar { width: 11vh; height: 11vh; border-width: 4px; }
-        .orbiter-card.second .pos-badge { width: 5.5vh; height: 5.5vh; font-size: 3.5vh; margin-bottom: -2vh; }
-        .orbiter-card.second .name { font-size: 3vh; }
-        .orbiter-card.second .pts { font-size: 3.5vh; color: var(--silver); }
-
-        .orbiter-card.third {
-            --orbiter-color: var(--bronze);
-            --radius: 25vh; /* Mais próximo ao centro */
-            z-index: 6;
-        }
-        .orbiter-card.third .avatar { width: 10vh; height: 10vh; border-width: 4px; }
-        .orbiter-card.third .pos-badge { width: 5vh; height: 5vh; font-size: 3vh; margin-bottom: -1.8vh; }
-        .orbiter-card.third .name { font-size: 2.8vh; }
-        .orbiter-card.third .pts { font-size: 3.2vh; color: var(--bronze); }
-
-        .orbiter-card.standard {
-            --orbiter-color: var(--brand-orange);
-            --radius: 31vh; /* Raio da borda externa */
-        }
-        
-        .orbiter-card.tenth {
-            --orbiter-color: var(--brand-orange);
-            --radius: 32vh; /* Desce o 10º lugar um pouquinho mais para centralizar perfeito na base */
-        }
-
-        /* ================= TICKER (Rodapé) ================= */
-        .ticker {
-            flex: 0 0 8vh;
-            background: var(--brand-orange);
-            display: flex;
-            align-items: center;
+        /* SPOTLIGHT */
+        .spotlight {
+            position: relative;
+            background: var(--panel); backdrop-filter: blur(6px);
+            border: 1px solid var(--panel-edge); border-radius: 18px;
+            display: flex; flex-direction: column; align-items: center;
+            padding: 2.6vh 2vh; height: 92%; justify-content: center;
+            box-shadow: 0 0 0 1px rgba(255,255,255,0.03) inset, 0 25px 60px rgba(0,0,0,0.5);
             overflow: hidden;
-            z-index: 20;
+            animation: panel-in 0.7s ease both 0.15s;
+        }
+        @keyframes panel-in { from { opacity: 0; transform: translateX(-1.6vw); } to { opacity: 1; transform: translateX(0); } }
+        .spotlight::before {
+            content: ""; position: absolute; top: -30%; left: -30%; width: 160%; height: 160%;
+            background: conic-gradient(from 0deg, transparent 0deg, var(--brand-orange-glow) 40deg, transparent 90deg);
+            animation: rotate-glow 6s linear infinite; opacity: 0.5;
+        }
+        @keyframes rotate-glow { to { transform: rotate(360deg); } }
+        .spotlight-inner {
+            position: relative; z-index: 2; display: flex; flex-direction: column; align-items: center; width: 100%;
+            transition: opacity 0.35s ease, transform 0.35s ease; opacity: 1; transform: translateY(0) scale(1);
+        }
+        .spotlight-inner.fade-out { opacity: 0; transform: translateY(1.2vh) scale(0.97); }
+
+        .spotlight-crown-row {
+            height: 4vh; display: flex; align-items: center; justify-content: center;
+        }
+        .spotlight-crown {
+            font-size: 3vh; filter: drop-shadow(0 0 6px rgba(255,215,0,0.8));
+            animation: bob 2s ease-in-out infinite;
+        }
+        @keyframes bob { 0%,100% { transform: translateY(0) rotate(-4deg); } 50% { transform: translateY(-0.5vh) rotate(4deg); } }
+
+        .spotlight-eyebrow {
+            font-family: "Barlow Condensed", sans-serif; font-size: 2.2vh; font-weight: 800;
+            letter-spacing: 4px; color: var(--brand-orange-light); text-transform: uppercase;
+            display: flex; align-items: center; gap: 0.8vh;
+        }
+        .spotlight-eyebrow .bar { width: 3vh; height: 2px; background: var(--brand-orange); }
+
+        .spotlight-hex {
+            width: 24vh; height: 24vh; margin-top: 1.8vh;
+            background: linear-gradient(160deg, var(--brand-orange-light), var(--brand-orange) 55%, var(--brand-orange-deep));
+            clip-path: polygon(50% 0%, 95% 25%, 95% 75%, 50% 100%, 5% 75%, 5% 25%);
+            display: flex; justify-content: center; align-items: center; padding: 6px;
+            box-shadow: 0 0 40px var(--brand-orange-glow), 0 0 0 6px rgba(255,255,255,0.03);
+            animation: float 3.6s ease-in-out infinite;
+        }
+        @keyframes float { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-1.2vh); } }
+        .spotlight-img {
+            width: 100%; height: 100%; object-fit: cover; background: #1a1a1c;
+            clip-path: polygon(50% 0%, 95% 25%, 95% 75%, 50% 100%, 5% 75%, 5% 25%);
         }
 
+        .spotlight-name {
+            font-family: "Barlow Condensed", sans-serif;
+            font-size: 3.6vh; font-weight: 800; text-align: center; margin-top: 2.2vh;
+            text-transform: uppercase; letter-spacing: 1px; color: var(--brand-white);
+        }
+        .spotlight-pts {
+            font-family: "Barlow Condensed", sans-serif; font-size: 6.2vh; font-weight: 900;
+            background: linear-gradient(180deg, var(--brand-orange-light), var(--brand-orange));
+            -webkit-background-clip: text; background-clip: text; color: transparent;
+            margin-top: 0.4vh; letter-spacing: 1px;
+            filter: drop-shadow(0 0 18px var(--brand-orange-glow));
+        }
+        .spotlight-pts span { font-size: 2.2vh; color: var(--text-dim); font-weight: 700; margin-left: 0.6vh; -webkit-text-fill-color: var(--text-dim); }
+
+        .spotlight-dots { display: flex; gap: 0.8vh; margin-top: 2.2vh; }
+        .spotlight-dots i {
+            width: 0.9vh; height: 0.9vh; border-radius: 50%; background: rgba(255,255,255,0.2);
+            transition: all 0.35s ease;
+        }
+        .spotlight-dots i.active { background: var(--brand-orange-light); box-shadow: 0 0 8px var(--brand-orange); width: 2.4vh; border-radius: 999px; }
+
+        /* GRID DIREITA */
+        .arena-grid {
+            display: grid; grid-template-columns: repeat(2, 1fr);
+            grid-template-rows: repeat(5, 1fr); grid-auto-flow: column;
+            gap: 1.2vh; height: 92%;
+        }
+        .arena-card {
+            position: relative;
+            background: var(--panel); backdrop-filter: blur(6px);
+            border: 1px solid var(--panel-edge);
+            border-left: 4px solid var(--card-color, var(--brand-orange));
+            display: flex; align-items: center; padding: 0.8vh 1.1vw; gap: 0.9vw; border-radius: 8px;
+            overflow: hidden;
+            animation: slide-in 0.5s ease backwards;
+            transition: border-color 0.4s ease;
+        }
+        .arena-card::after {
+            content: ""; position: absolute; left: 0; top: 0; bottom: 0; width: var(--bar, 0%);
+            background: linear-gradient(90deg, var(--card-color, var(--brand-orange)) 0%, transparent 100%);
+            opacity: 0.14; z-index: 0; transition: width 0.6s ease;
+        }
+        .arena-card::before {
+            content: ""; position: absolute; top: 0; bottom: 0; left: -40%; width: 22%;
+            background: linear-gradient(115deg, transparent, rgba(255,255,255,0.16), transparent);
+            transform: skewX(-20deg); z-index: 1; pointer-events: none;
+            animation: shine 7s ease-in-out infinite;
+        }
+        @keyframes shine { 0% { left: -40%; } 35% { left: 120%; } 100% { left: 120%; } }
+        @keyframes slide-in { from { opacity: 0; transform: translateX(-2vw); } to { opacity: 1; transform: translateX(0); } }
+        .arena-card:nth-child(2)::before { animation-delay: 0.7s; }
+        .arena-card:nth-child(3)::before { animation-delay: 1.4s; }
+        .arena-card:nth-child(4)::before { animation-delay: 2.1s; }
+        .arena-card:nth-child(5)::before { animation-delay: 2.8s; }
+        .arena-card:nth-child(6)::before { animation-delay: 3.5s; }
+        .arena-card:nth-child(7)::before { animation-delay: 4.2s; }
+        .arena-card:nth-child(8)::before { animation-delay: 4.9s; }
+        .arena-card:nth-child(9)::before { animation-delay: 5.6s; }
+        .arena-card:nth-child(10)::before { animation-delay: 6.3s; }
+
+        .arena-card[data-pos="1"] { --card-color: var(--gold); box-shadow: 0 0 18px rgba(255,215,0,0.14); }
+        .arena-card[data-pos="2"] { --card-color: var(--silver); }
+        .arena-card[data-pos="3"] { --card-color: var(--bronze); }
+
+        .arena-pos {
+            font-family: "Barlow Condensed", sans-serif; font-size: 2.8vh; font-weight: 900;
+            color: var(--card-color, var(--brand-orange)); min-width: 3.6vh; text-align: center;
+            position: relative; z-index: 2;
+        }
+        .arena-medal { font-size: 2.4vh; position: relative; z-index: 2; min-width: 3.6vh; text-align: center; }
+        .arena-img {
+            width: 4.6vh; height: 4.6vh; border-radius: 6px; object-fit: cover; background: #222;
+            border: 1px solid rgba(255,255,255,0.1); position: relative; z-index: 2; flex-shrink: 0;
+        }
+        .arena-name {
+            font-size: 2.5vh; line-height: 1.08; font-weight: 700; text-transform: uppercase; flex: 1;
+            position: relative; z-index: 2; letter-spacing: 0.2px; color: var(--brand-white);
+            white-space: normal; overflow: hidden;
+            display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical;
+            min-width: 0;
+        }
+        .arena-pts {
+            font-family: "Barlow Condensed", sans-serif; font-size: 2.7vh; font-weight: 900;
+            position: relative; z-index: 2; color: var(--brand-orange-light); flex-shrink: 0;
+        }
+
+        /* TICKER */
+        .ticker {
+            flex: 0 0 8vh; background: linear-gradient(180deg, rgba(0,0,0,0.5), #000);
+            display: flex; align-items: center; overflow: hidden;
+            border-top: 1px solid var(--panel-edge); position: relative;
+        }
+        .ticker::before {
+            content: ""; position: absolute; left: 0; right: 0; top: 0; height: 2px;
+            background: linear-gradient(90deg, transparent, var(--brand-orange), var(--brand-orange-light), transparent);
+        }
         .ticker-label {
-            background: #000; color: var(--brand-white); height: 100%;
-            display: flex; align-items: center; padding: 0 3vw;
-            font-weight: 900; font-size: 2.5vh; text-transform: uppercase;
-            letter-spacing: 2px; z-index: 2; border-right: 4px solid var(--brand-white);
+            flex: 0 0 auto; height: 100%; display: flex; align-items: center; justify-content: center;
+            padding: 0 2vw; background: linear-gradient(135deg, var(--brand-orange-light), var(--brand-orange-deep));
+            font-family: "Barlow Condensed", sans-serif; font-weight: 900; font-size: 2.2vh;
+            letter-spacing: 2px; color: #1a0d00; text-transform: uppercase;
+            clip-path: polygon(0 0, 100% 0, calc(100% - 1.5vw) 100%, 0 100%);
+            z-index: 2;
         }
-
+        .ticker-scroll {
+            flex: 1; height: 100%; position: relative; overflow: hidden;
+            -webkit-mask-image: linear-gradient(90deg, transparent, #000 4%, #000 96%, transparent);
+            mask-image: linear-gradient(90deg, transparent, #000 4%, #000 96%, transparent);
+        }
         .ticker-track {
-            display: inline-flex; align-items: center; white-space: nowrap;
-            padding-left: 100vw; animation: tickerMove linear infinite;
+            display: inline-flex; white-space: nowrap; align-items: center; height: 100%;
+            animation: move linear infinite; position: absolute; left: 0;
         }
-
-        @keyframes tickerMove { from { transform: translateX(0); } to { transform: translateX(-100%); } }
-
+        @keyframes move { from { transform: translateX(100%); } to { transform: translateX(-100%); } }
         .ticker-item {
-            display: inline-flex; align-items: center; gap: 1vw; margin-right: 5vw;
-            font-family: "Barlow Condensed", sans-serif; font-size: 3.5vh; font-weight: 800;
-            text-transform: uppercase; color: #111;
+            display: inline-flex; align-items: center; gap: 0.8vw;
+            margin-right: 3vw; font-weight: 800; font-size: 2.6vh;
+            color: #e8e8e6; white-space: nowrap;
         }
-
-        .ticker-pos { font-weight: 900; color: #000; }
-        .ticker-pts { color: #fff; text-shadow: 1px 1px 0px rgba(0,0,0,0.3); }
-
-        /* ================= ESTADOS & DIGITAL SIGNAGE ================= */
-        .state-panel {
-            position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
-            text-align: center; font-family: "Barlow Condensed", sans-serif;
-            font-size: 4vh; font-weight: 800; color: var(--text-muted);
-            text-transform: uppercase; letter-spacing: 2px;
-        }
-
-        .digital-signage {
-            position: fixed; inset: 0; background-color: #000; z-index: 9999;
-            display: none; justify-content: center; align-items: center;
-            opacity: 0; transition: opacity 1s ease-in-out;
-        }
-        .digital-signage.show { opacity: 1; }
-        #logo-patrocinador { width: 100vw; height: 100vh; object-fit: contain; }
-
-        @keyframes blink { from { opacity: 1; box-shadow: 0 0 15px var(--brand-orange); } to { opacity: 0.4; box-shadow: 0 0 0px var(--brand-orange); } }
+        .ticker-item .t-pos { color: var(--brand-orange-light); font-family: "Barlow Condensed", sans-serif; font-weight: 900; }
+        .ticker-item .t-dot { width: 0.6vh; height: 0.6vh; border-radius: 50%; background: var(--text-dim); }
     </style>
 </head>
 <body>
-
-    <!-- Camada de Anúncios -->
-    <div id="tela-patrocinadores" class="digital-signage">
-        <img id="logo-patrocinador" src="" alt="Patrocinador">
-    </div>
+    <div class="backdrop"></div>
+    <div class="stripes"></div>
+    <div class="grain"></div>
+    <div class="scanline"></div>
 
     <main class="tv-layout">
-        
-        <!-- Cabeçalho -->
         <header class="header">
             <div class="brand">
-                <img src="logo (1).jpeg" class="brand-logo" alt="MAXGYM Logo" onclick="document.documentElement.requestFullscreen().catch(()=>{})" onerror="this.style.display='none'">
+                <img src="logo.jpeg" class="brand-logo" alt="MAXGYM">
                 <div class="brand-text">
                     <h1>MAXGYM</h1>
-                    <p>Ranking Oficial</p>
+                    <p>Top 10 do mês</p>
                 </div>
             </div>
-            <div class="status-bar">
-                <div class="live-indicator">
-                    <span class="live-dot"></span> Ao Vivo
-                </div>
-                <div class="clock" id="clock">--:--</div>
+            <div class="status-wrap">
+                <div class="live-dot"><span class="dot"></span>Ao vivo</div>
+                <div class="status" id="clock">--:--</div>
             </div>
         </header>
 
-        <!-- Área Principal (Círculo) -->
-        <section class="main-content" id="circle-area">
-            <div class="state-panel">Sincronizando Atletas...</div>
+        <section class="main-content">
+            <div class="spotlight" id="spotlight"></div>
+            <div class="arena-grid" id="grid"></div>
         </section>
 
-        <!-- Rodapé Animado (Demais Posições) -->
         <footer class="ticker">
-            <div class="ticker-label">Geral</div>
-            <div class="ticker-track" id="ticker-content"></div>
+            <div class="ticker-label">Ranking</div>
+            <div class="ticker-scroll"><div class="ticker-track" id="ticker"></div></div>
         </footer>
-
     </main>
 
     <script>
         const API_URL = "https://script.google.com/macros/s/AKfycby62vambopzAU-hOp4Och0Qg9_ZOxNCqqo19BFZvUA13OFTYBRMnTnNckq3aBzncXKTJg/exec";
-        const REFRESH_MS = 15000;
+        let allData = []; let top10 = []; let idx = 0;
+        const MEDALS = { 1: "🥇", 2: "🥈", 3: "🥉" };
 
-        const els = {
-            circleArea: document.getElementById("circle-area"),
-            ticker: document.getElementById("ticker-content"),
-            clock: document.getElementById("clock")
-        };
-
-        // Utilitários de Tratamento
-        function escapeHtml(value) { return String(value ?? "").replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;"); }
-        function getName(aluno) { return escapeHtml(String(aluno?.nome ?? "Atleta").trim()); }
-        function formatPoints(value) {
-            const num = Number(String(value ?? "0").replace(/[^\d,.-]/g, "").replace(",", "."));
-            return Number.isFinite(num) ? new Intl.NumberFormat("pt-BR").format(num) : "0";
-        }
-        function getPosition(aluno, fallback) {
-            const pos = Number(aluno?.posicao);
-            return Number.isFinite(pos) && pos > 0 ? pos : fallback;
-        }
-        function getAvatar(aluno) {
-            const foto = String(aluno?.foto ?? "").trim();
-            if(foto) return escapeHtml(foto);
-            return `https://ui-avatars.com/api/?name=${(Array.from(getName(aluno).trim())[0] || "A").toUpperCase()}&background=ff6600&color=fff&bold=true&size=200`;
-        }
-
-        // Construtor do Círculo
-        function renderCircleLayout(dados) {
-            if (!dados || dados.length === 0) {
-                els.circleArea.innerHTML = `<div class="state-panel">Nenhum atleta encontrado</div>`;
-                return;
-            }
-
-            let html = `<div class="circle-backdrop"></div>`; // Linha tracejada de fundo
-
-            // 1º Lugar (Centro)
-            const champion = dados[0];
-            const pos1 = getPosition(champion, 1);
-            html += `
-            <div class="center-champion">
-                <div class="pos-badge">${pos1}º</div>
-                <img src="${getAvatar(champion)}" class="avatar" alt="${getName(champion)}" onerror="this.src='https://ui-avatars.com/api/?name=A&background=222&color=fff'">
-                <div class="name">${getName(champion)}</div>
-                <div class="pts">${formatPoints(champion.pontos)} Pts</div>
-            </div>`;
-
-            // Mapeamento Matemático das Posições (0 graus = Topo, 180 graus = Base)
-            // [ 2º, 3º, 4º, 5º, 6º, 7º, 8º, 9º, 10º ]
-            const angulos = [
-                325, // 2º Lugar (Topo Esquerda)
-                 35, // 3º Lugar (Topo Direita)
-                285, // 4º Lugar (Esquerda Cima)
-                 75, // 5º Lugar (Direita Cima)
-                245, // 6º Lugar (Esquerda Baixo)
-                115, // 7º Lugar (Direita Baixo)
-                210, // 8º Lugar (Fundo Esquerda)
-                150, // 9º Lugar (Fundo Direita)
-                180  // 10º Lugar (Centro Base Exato)
-            ];
-
-            const orbiters = dados.slice(1, 10);
-            
-            orbiters.forEach((aluno, index) => {
-                const pos = getPosition(aluno, index + 2);
-                const angulo = angulos[index] !== undefined ? angulos[index] : 0;
-                
-                let cssClass = 'standard';
-                if (pos === 2) cssClass = 'second';
-                else if (pos === 3) cssClass = 'third';
-                else if (pos === 10) cssClass = 'tenth';
-
-                html += `
-                <div class="orbiter-card ${cssClass}" style="--angle: ${angulo}deg;">
-                    <div class="pos-badge">${pos}º</div>
-                    <img src="${getAvatar(aluno)}" class="avatar" alt="Avatar" onerror="this.src='https://ui-avatars.com/api/?name=A&background=222&color=fff'">
-                    <div class="name">${getName(aluno)}</div>
-                    <div class="pts">${formatPoints(aluno.pontos)}</div>
-                </div>`;
-            });
-
-            els.circleArea.innerHTML = html;
-        }
-
-        function renderTicker(rows, offset) {
-            if (!rows || rows.length === 0) {
-                els.ticker.innerHTML = `<div class="ticker-item"><span class="ticker-name">CONTINUE TREINANDO PARA ENTRAR NO RANKING DE ELITE!</span></div>`;
-                els.ticker.style.animationDuration = `15s`;
-                return;
-            }
-
-            const html = [rows, rows].map((lista) => lista.map((aluno, index) => {
-                const pos = getPosition(aluno, offset + index + 1);
-                return `
-                    <div class="ticker-item">
-                        <span class="ticker-pos">${pos}º</span>
-                        <span class="ticker-name">${getName(aluno)}</span>
-                        <span class="ticker-pts">${formatPoints(aluno.pontos)} pts</span>
-                    </div>`;
-            }).join("")).join("");
-
-            els.ticker.innerHTML = html;
-            els.ticker.style.animationDuration = `${Math.max(20, rows.length * 3.5)}s`;
-        }
-
-        async function carregarRanking() {
+        async function update() {
             try {
-                const response = await fetch(`${API_URL}?acao=getRankingTV&t=${Date.now()}`, { cache: "no-store" });
-                const payload = await response.json();
-                const dadosGlobais = Array.isArray(payload) ? payload : [];
-                
-                if (dadosGlobais.length > 0) {
-                    renderCircleLayout(dadosGlobais.slice(0, 10)); // Manda o Top 10 para o construtor do Círculo
-                    renderTicker(dadosGlobais.slice(10), 10);      // Manda o 11º em diante para o rodapé
+                const res = await fetch(`${API_URL}?acao=getRankingTV`);
+                allData = await res.json();
+                top10 = allData.slice(0, 10);
+                renderGrid();
+                renderTicker();
+                if (!window.__spotlightStarted) {
+                    window.__spotlightStarted = true;
+                    renderSpotlight();
                 }
-            } catch (error) {
-                console.error("Erro na API:", error);
+            } catch (e) {
+                console.error("Erro ao atualizar ranking:", e);
             }
         }
 
-        function updateClock() {
-            const now = new Date();
-            els.clock.textContent = now.toLocaleTimeString("pt-BR", { hour: "2-digit", minute: "2-digit" });
+        function renderSpotlight() {
+            if (top10.length === 0) return;
+            const p = top10[idx];
+            const leaderPts = top10[0].pontos || 1;
+            const isFirst = idx === 0;
+            document.getElementById('spotlight').innerHTML = `
+                <div class="spotlight-inner">
+                    ${isFirst ? '<div class="spotlight-crown">👑</div>' : ''}
+                    <div class="spotlight-eyebrow"><div class="bar"></div>DESTAQUE Nº ${idx + 1}<div class="bar"></div></div>
+                    <div class="spotlight-hex"><img src="${p.foto}" class="spotlight-img" onerror="this.style.opacity=0"></div>
+                    <div class="spotlight-name">${p.nome}</div>
+                    <div class="spotlight-pts">${p.pontos}<span>PTS</span></div>
+                    <div class="spotlight-dots">
+                        ${top10.map((_, i) => `<i class="${i === idx ? 'active' : ''}"></i>`).join('')}
+                    </div>
+                </div>
+            `;
+            idx = (idx + 1) % top10.length;
         }
 
-        // Sistema de Signage
-        const sleep = ms => new Promise(resolve => setTimeout(resolve, ms));
-        async function iniciarDigitalSignage() {
-            const telaAds = document.getElementById('tela-patrocinadores');
-            const imgLogo = document.getElementById('logo-patrocinador');
+        function renderGrid() {
+            const leaderPts = top10[0] ? (top10[0].pontos || 1) : 1;
+            document.getElementById('grid').innerHTML = top10.map((p, i) => `
+                <div class="arena-card" data-pos="${i + 1}" style="--bar:${Math.min(100, (p.pontos / leaderPts) * 100)}%; animation-delay:${i * 0.06}s">
+                    ${MEDALS[i + 1] ? `<div class="arena-medal">${MEDALS[i + 1]}</div>` : `<div class="arena-pos">${i + 1}º</div>`}
+                    <img src="${p.foto}" class="arena-img" onerror="this.style.opacity=0">
+                    <div class="arena-name">${p.nome}</div>
+                    <div class="arena-pts">${p.pontos} pts</div>
+                </div>
+            `).join('');
+        }
 
-            const patrocinadores = [
-                "https://raw.githubusercontent.com/willappsoficial-glitch/agente_ia_powerfisio/main/willweb.png",
-                "https://raw.githubusercontent.com/willappsoficial-glitch/agente_ia_powerfisio/main/anuncio.png"
-            ];
-
-            while (true) {
-                telaAds.classList.remove('show');
-                await sleep(1000); 
-                telaAds.style.display = 'none';
-
-                await sleep(60000); 
-
-                telaAds.style.display = 'flex';
-                await sleep(50);
-                telaAds.classList.add('show');
-
-                for (let i = 0; i < patrocinadores.length; i++) {
-                    if (i > 0) {
-                        imgLogo.style.opacity = 0;
-                        await sleep(500);
-                    }
-                    imgLogo.src = patrocinadores[i];
-                    imgLogo.style.opacity = 1;
-                    await sleep(10000); 
-                }
+        function renderTicker() {
+            const tickerEl = document.getElementById('ticker');
+            const demais = allData.slice(10);
+            if (demais.length === 0) {
+                tickerEl.innerHTML = `<div class="ticker-item">RANKING ATUALIZADO</div>`;
+                tickerEl.style.animationDuration = '15s';
+                return;
             }
+            tickerEl.innerHTML = demais.map((p, i) => `
+                <div class="ticker-item"><span class="t-pos">${i + 11}º</span> ${p.nome} — ${p.pontos} pts <span class="t-dot"></span></div>
+            `).join('');
+
+            // velocidade do ticker (ajuste o multiplicador para mais rápido/lento)
+            tickerEl.style.animationDuration = (demais.length * 4) + 's';
         }
 
-        // Init
-        updateClock();
-        setInterval(updateClock, 1000);
-        carregarRanking();
-        setInterval(carregarRanking, REFRESH_MS);
-        setTimeout(iniciarDigitalSignage, 5000);
+        update();
+        setInterval(update, 15000);
+        setInterval(renderSpotlight, 8000);
+        setInterval(() => {
+            document.getElementById('clock').innerText = new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+        }, 1000);
     </script>
 </body>
 </html>

@@ -265,9 +265,9 @@
             letter-spacing: 2px;
         }
 
-        /* Grid de Elite (4º ao 10º) */
+        /* ================= GRID DE ELITE (4º ao 10º) ================= */
         .grid-stage {
-            flex: 1; /* Preenche a área livre do main-content */
+            flex: 1; 
             display: grid;
             grid-template-columns: repeat(2, 1fr);
             gap: 1.5vh 4vw;
@@ -285,12 +285,27 @@
             gap: 1.5vw;
         }
 
-        /* ==== O SEGREDO PARA CENTRALIZAR O 10º LUGAR ==== */
-        /* O 10º lugar é o 7º item dentro desta div (pois a lista vai do 4º ao 10º) */
+        /* 
+           O Segredo do Layout: Travando as posições exatas
+           Índices representam a lista (1º ao 7º card da lista = 4º ao 10º lugar do ranking)
+        */
+
+        /* Coluna Esquerda: 4º, 5º, 6º (Índices 1, 2, 3) */
+        .grid-card:nth-child(1) { grid-row: 1; grid-column: 1; } /* 4º Lugar */
+        .grid-card:nth-child(2) { grid-row: 2; grid-column: 1; } /* 5º Lugar */
+        .grid-card:nth-child(3) { grid-row: 3; grid-column: 1; } /* 6º Lugar */
+
+        /* Coluna Direita: 7º, 8º, 9º (Índices 4, 5, 6) */
+        .grid-card:nth-child(4) { grid-row: 1; grid-column: 2; } /* 7º Lugar */
+        .grid-card:nth-child(5) { grid-row: 2; grid-column: 2; } /* 8º Lugar */
+        .grid-card:nth-child(6) { grid-row: 3; grid-column: 2; } /* 9º Lugar */
+
+        /* Centralizado na base: 10º (Índice 7) */
         .grid-card:nth-child(7) {
+            grid-row: 4; /* Fica na 4ª linha */
             grid-column: 1 / -1; /* Ocupa as duas colunas */
-            justify-self: center; /* Centraliza no meio exato */
-            width: calc(50% - 2vw); /* Mantém a mesma largura dos outros cards */
+            justify-self: center; /* Centraliza */
+            width: calc(50% - 2vw); /* Mesma largura dos demais */
         }
 
         .grid-pos {
@@ -316,7 +331,7 @@
             display: flex;
             flex-direction: column;
             justify-content: center;
-            min-width: 0; /* Previne overflow de texto */
+            min-width: 0; 
         }
 
         .grid-name {
@@ -435,7 +450,7 @@
         <!-- Cabeçalho -->
         <header class="header">
             <div class="brand">
-                <img src="logo.jpeg" class="brand-logo" alt="MAXGYM Logo" onclick="document.documentElement.requestFullscreen().catch(()=>{})" onerror="this.style.display='none'">
+                <img src="logo (1).jpeg" class="brand-logo" alt="MAXGYM Logo" onclick="document.documentElement.requestFullscreen().catch(()=>{})" onerror="this.style.display='none'">
                 <div class="brand-text">
                     <h1>MAXGYM</h1>
                     <p>Ranking Oficial</p>
@@ -559,7 +574,6 @@
         }
 
         function renderTicker(rows, offset) {
-            // Se não houver posições além do top 10, exibe uma mensagem motivacional
             if (!rows || rows.length === 0) {
                 els.ticker.innerHTML = `
                     <div class="ticker-item">
@@ -648,3 +662,4 @@
     </script>
 </body>
 </html>
+

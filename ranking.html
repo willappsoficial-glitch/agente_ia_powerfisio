@@ -3,62 +3,71 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>MAXGYM - Ranking TV</title>
+    <title>MAXGYM - Ranking TV Formato Pódio</title>
+    <!-- Fontes imponentes -->
     <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@0,500;0,700;0,900;1,800;1,900&family=Barlow:wght@400;700;800&display=swap" rel="stylesheet">
-    <link rel="manifest" href="manifest-tv.json">
     <meta name="theme-color" content="#050505">
-    <meta name="apple-mobile-web-app-capable" content="yes">
     <style>
         :root {
+            /* Cores base */
             --bg-dark: #050505;
             --brand-orange: #ff6600;
             --brand-orange-light: #ffa133;
             --brand-white: #ffffff;
+            
+            /* Medalhas */
             --gold: #FFD700;
             --silver: #C0C0C0;
             --bronze: #CD7F32;
+            
             --text-main: #ffffff;
             --text-muted: #888888;
-            --neon-shadow: 0 0 20px rgba(255, 102, 0, 0.4);
         }
 
-        * { box-sizing: border-box; margin: 0; padding: 0; }
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
 
         html, body {
             width: 100vw;
             height: 100vh;
-            overflow: hidden;
+            overflow: hidden; /* Fundamental para TV */
             font-family: "Barlow", Arial, sans-serif;
             background-color: var(--bg-dark);
             color: var(--text-main);
         }
 
+        /* Fundo com textura esportiva */
         body::before {
             content: "";
             position: absolute;
             inset: 0;
             background: 
-                radial-gradient(circle at 50% 0%, rgba(255, 102, 0, 0.15) 0%, transparent 60%),
-                linear-gradient(to bottom, rgba(0,0,0,0.8), #050505);
+                radial-gradient(circle at 50% -20%, rgba(255, 102, 0, 0.25) 0%, transparent 70%),
+                repeating-linear-gradient(45deg, rgba(255,255,255,0.02) 0px, rgba(255,255,255,0.02) 2px, transparent 2px, transparent 8px),
+                linear-gradient(to bottom, #0a0a0a, #000000);
             z-index: -1;
         }
 
+        /* Layout Grid da TV */
         .tv-layout {
-            display: grid;
-            grid-template-rows: 12vh 78vh 10vh;
+            display: flex;
+            flex-direction: column;
             height: 100vh;
             width: 100vw;
         }
 
         /* ================= HEADER ================= */
         .header {
+            height: 12vh;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 0 3vw;
-            border-bottom: 2px solid rgba(255, 102, 0, 0.3);
-            background: linear-gradient(90deg, rgba(13,13,13,0.9) 0%, rgba(5,5,5,0.9) 100%);
-            box-shadow: 0 5px 15px rgba(0,0,0,0.5);
+            padding: 0 4vw;
+            background: linear-gradient(180deg, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0) 100%);
+            border-bottom: 1px solid rgba(255, 102, 0, 0.2);
         }
 
         .brand {
@@ -68,29 +77,26 @@
         }
 
         .brand-logo {
-            height: 8vh;
+            height: 7vh;
             border-radius: 8px;
-            box-shadow: var(--neon-shadow);
-            cursor: pointer;
+            box-shadow: 0 0 15px rgba(255, 102, 0, 0.5);
         }
 
         .brand-text h1 {
             font-family: "Barlow Condensed", sans-serif;
             font-style: italic;
-            font-size: 4.5vh;
+            font-size: 4vh;
             font-weight: 900;
             line-height: 1;
             text-transform: uppercase;
-            background: linear-gradient(to right, var(--brand-white), var(--brand-orange));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
+            color: var(--brand-white);
         }
 
         .brand-text p {
             font-size: 1.8vh;
-            color: var(--brand-orange-light);
-            font-weight: 700;
-            letter-spacing: 2px;
+            color: var(--brand-orange);
+            font-weight: 800;
+            letter-spacing: 3px;
             text-transform: uppercase;
         }
 
@@ -103,207 +109,228 @@
         .live-indicator {
             display: flex;
             align-items: center;
-            gap: 0.5vw;
-            background: rgba(255, 102, 0, 0.15);
-            padding: 0.5vh 1vw;
-            border-radius: 50px;
-            border: 1px solid var(--brand-orange);
-            font-weight: 800;
-            font-size: 2vh;
+            gap: 0.8vw;
             color: var(--brand-orange-light);
+            font-weight: 900;
+            font-size: 2.2vh;
             text-transform: uppercase;
-            animation: pulse-border 2s infinite;
+            letter-spacing: 1px;
         }
 
         .live-dot {
-            width: 1.2vh;
-            height: 1.2vh;
+            width: 1.5vh;
+            height: 1.5vh;
             background-color: var(--brand-orange);
             border-radius: 50%;
-            animation: blink 1.5s infinite;
+            box-shadow: 0 0 10px var(--brand-orange);
+            animation: blink 1s infinite alternate;
         }
 
         .clock {
             font-family: "Barlow Condensed", sans-serif;
             font-size: 5vh;
             font-weight: 900;
+            color: var(--brand-white);
         }
 
         /* ================= MAIN CONTENT ================= */
         .main-content {
-            display: grid;
-            grid-template-columns: 45% 55%;
-            padding: 2vh 2vw;
-            gap: 3vw;
-        }
-
-        /* Pódio (Esquerda) */
-        .podium-container {
+            flex: 1;
             display: flex;
             flex-direction: column;
+            padding: 2vh 4vw;
+            gap: 3vh;
+        }
+
+        /* Pódio Olímpico Horizontal */
+        .podium-stage {
+            display: flex;
             justify-content: center;
-            gap: 2vh;
+            align-items: flex-end;
+            gap: 3vw;
+            height: 42vh;
+            padding-bottom: 2vh;
+            border-bottom: 1px dashed rgba(255,255,255,0.1);
         }
 
         .podium-card {
-            display: grid;
-            grid-template-columns: auto 1fr auto;
+            display: flex;
+            flex-direction: column;
             align-items: center;
-            background: linear-gradient(135deg, rgba(20,20,20,0.9), rgba(10,10,10,0.9));
-            border-radius: 16px;
+            justify-content: flex-end;
+            background: linear-gradient(to top, rgba(20,20,20,0.9), rgba(10,10,10,0.5));
+            border-top: 6px solid var(--medal-color);
+            border-radius: 12px;
             padding: 2vh 2vw;
-            gap: 2vw;
+            width: 22vw;
             position: relative;
-            overflow: hidden;
-            border-left: 6px solid var(--medal-color);
-        }
-
-        .podium-card::after {
-            content: "";
-            position: absolute;
-            top: 0; right: 0; bottom: 0; left: 0;
-            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.05));
-            pointer-events: none;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.8);
+            transition: all 0.5s ease;
         }
 
         .podium-card.first {
             --medal-color: var(--gold);
-            background: linear-gradient(135deg, rgba(255, 215, 0, 0.15), rgba(10,10,10,0.95));
-            transform: scale(1.02);
-            box-shadow: 0 10px 30px rgba(255, 215, 0, 0.15);
-            padding: 3vh 2vw;
+            height: 100%; /* Mais alto */
+            width: 26vw; /* Mais largo */
+            background: linear-gradient(to top, rgba(255, 215, 0, 0.15), rgba(10,10,10,0.8));
+            box-shadow: 0 0 40px rgba(255, 215, 0, 0.2);
+            z-index: 10;
         }
 
-        .podium-card.second { --medal-color: var(--silver); }
-        .podium-card.third { --medal-color: var(--bronze); }
+        .podium-card.second {
+            --medal-color: var(--silver);
+            height: 80%;
+        }
 
-        .pos-badge {
+        .podium-card.third {
+            --medal-color: var(--bronze);
+            height: 70%;
+        }
+
+        .podium-pos {
+            position: absolute;
+            top: -3.5vh;
+            background: var(--medal-color);
+            color: #000;
             font-family: "Barlow Condensed", sans-serif;
-            font-size: 7vh;
             font-weight: 900;
-            font-style: italic;
-            color: var(--medal-color);
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.8);
-            width: 8vh;
-            text-align: center;
-        }
-
-        .podium-card.first .pos-badge { font-size: 10vh; }
-
-        .athlete-info {
+            font-size: 4vh;
+            width: 7vh;
+            height: 7vh;
             display: flex;
             align-items: center;
-            gap: 1.5vw;
+            justify-content: center;
+            border-radius: 50%;
+            border: 4px solid var(--bg-dark);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.5);
         }
 
-        .avatar {
+        .podium-card.first .podium-pos {
+            top: -4.5vh;
             width: 9vh;
             height: 9vh;
+            font-size: 5vh;
+        }
+
+        .podium-avatar {
+            width: 12vh;
+            height: 12vh;
             border-radius: 50%;
-            border: 3px solid var(--medal-color);
+            border: 4px solid var(--medal-color);
             object-fit: cover;
+            margin-bottom: 1.5vh;
             background-color: #222;
         }
 
-        .podium-card.first .avatar {
-            width: 13vh;
-            height: 13vh;
-            border-width: 4px;
+        .podium-card.first .podium-avatar {
+            width: 16vh;
+            height: 16vh;
         }
 
-        .athlete-name {
+        .podium-name {
             font-family: "Barlow Condensed", sans-serif;
-            font-size: 4vh;
+            font-size: 3.5vh;
             font-weight: 900;
             text-transform: uppercase;
-            line-height: 1.1;
-        }
-
-        .podium-card.first .athlete-name { font-size: 6vh; color: var(--gold); }
-
-        .athlete-points { text-align: right; }
-
-        .points-val {
-            font-family: "Barlow Condensed", sans-serif;
-            font-size: 6vh;
-            font-weight: 900;
+            text-align: center;
+            line-height: 1;
+            margin-bottom: 1vh;
             color: var(--brand-white);
         }
 
-        .podium-card.first .points-val { font-size: 8vh; }
+        .podium-card.first .podium-name {
+            font-size: 5vh;
+            color: var(--gold);
+        }
 
-        .points-lbl {
-            font-size: 1.5vh;
+        .podium-pts {
+            font-family: "Barlow Condensed", sans-serif;
+            font-size: 5vh;
+            font-weight: 900;
             color: var(--brand-orange-light);
-            text-transform: uppercase;
+            line-height: 1;
+        }
+
+        .podium-card.first .podium-pts {
+            font-size: 7vh;
+        }
+
+        .pts-label {
+            font-size: 1.5vh;
             font-weight: 800;
-            letter-spacing: 1px;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 2px;
         }
 
-        /* Lista de Classificação (Direita) */
-        .list-container {
-            display: flex;
-            flex-direction: column;
-            gap: 1.2vh;
-            justify-content: center;
-        }
-
-        .list-row {
+        /* Grid de Elite (4º ao 10º) */
+        .grid-stage {
             display: grid;
-            grid-template-columns: 5vh 7vh 1fr auto;
-            align-items: center;
-            background: rgba(20, 20, 20, 0.7);
-            border-radius: 8px;
-            padding: 1vh 1.5vw;
-            gap: 1.5vw;
-            border: 1px solid rgba(255,255,255,0.05);
-            border-left: 4px solid var(--brand-orange);
-            transform: skewX(-5deg);
+            grid-template-columns: repeat(2, 1fr);
+            gap: 2vh 4vw;
+            flex: 1;
         }
 
-        .list-row > * { transform: skewX(5deg); }
+        .grid-card {
+            display: flex;
+            align-items: center;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 8px;
+            padding: 1vh 2vw;
+            gap: 1.5vw;
+        }
 
-        .row-pos {
+        .grid-pos {
             font-family: "Barlow Condensed", sans-serif;
             font-size: 4vh;
             font-weight: 900;
-            color: var(--text-muted);
+            color: var(--brand-orange);
+            width: 6vh;
             text-align: center;
         }
 
-        .row-avatar {
-            width: 6vh;
-            height: 6vh;
+        .grid-avatar {
+            width: 7vh;
+            height: 7vh;
             border-radius: 50%;
-            border: 2px solid var(--brand-orange);
+            border: 2px solid rgba(255, 255, 255, 0.2);
             object-fit: cover;
         }
 
-        .row-name {
+        .grid-info {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .grid-name {
             font-family: "Barlow Condensed", sans-serif;
             font-size: 3.5vh;
             font-weight: 800;
             text-transform: uppercase;
+            color: var(--brand-white);
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
+            line-height: 1.1;
         }
 
-        .row-points {
+        .grid-pts {
             font-family: "Barlow Condensed", sans-serif;
-            font-size: 4vh;
+            font-size: 3vh;
             font-weight: 900;
-            color: var(--brand-orange-light);
+            color: var(--text-muted);
         }
 
-        /* ================= TICKER FOOTER ================= */
+        /* ================= TICKER ================= */
         .ticker {
+            height: 8vh;
             background: var(--brand-orange);
-            color: #000;
             display: flex;
             align-items: center;
             overflow: hidden;
-            box-shadow: 0 -5px 20px rgba(255, 102, 0, 0.4);
         }
 
         .ticker-label {
@@ -312,13 +339,12 @@
             height: 100%;
             display: flex;
             align-items: center;
-            padding: 0 2vw;
+            padding: 0 3vw;
             font-weight: 900;
             font-size: 2.5vh;
             text-transform: uppercase;
             letter-spacing: 2px;
             z-index: 2;
-            box-shadow: 10px 0 20px rgba(0,0,0,0.5);
             border-right: 4px solid var(--brand-white);
         }
 
@@ -339,22 +365,34 @@
             display: inline-flex;
             align-items: center;
             gap: 1vw;
-            margin-right: 4vw;
+            margin-right: 5vw;
             font-family: "Barlow Condensed", sans-serif;
             font-size: 3.5vh;
             font-weight: 800;
             text-transform: uppercase;
+            color: #111;
         }
 
-        .ticker-pos { color: #000; font-weight: 900; }
-        .ticker-name { color: #1a1a1a; }
-        .ticker-pts { color: #fff; text-shadow: 1px 1px 2px rgba(0,0,0,0.5); }
+        .ticker-pos { font-weight: 900; color: #000; }
+        .ticker-pts { color: #fff; text-shadow: 1px 1px 0px rgba(0,0,0,0.3); }
 
-        /* ================= DIGITAL SIGNAGE ================= */
+        /* ================= ESTADOS & DIGITAL SIGNAGE ================= */
+        .state-panel {
+            width: 100%;
+            text-align: center;
+            font-family: "Barlow Condensed", sans-serif;
+            font-size: 4vh;
+            font-weight: 800;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            padding: 4vh;
+        }
+
         .digital-signage {
             position: fixed;
             inset: 0;
-            background-color: #07090c;
+            background-color: #000;
             z-index: 9999;
             display: none;
             justify-content: center;
@@ -363,49 +401,30 @@
             transition: opacity 1s ease-in-out;
         }
         .digital-signage.show { opacity: 1; }
-        #logo-patrocinador {
-            width: 100vw;
-            height: 100vh;
-            object-fit: cover;
-        }
+        #logo-patrocinador { width: 100vw; height: 100vh; object-fit: contain; }
 
-        /* UI States */
-        .state-panel {
-            text-align: center;
-            padding: 2rem;
-            color: var(--text-muted);
-            font-size: 3vh;
-            font-family: "Barlow Condensed", sans-serif;
-            text-transform: uppercase;
-            font-weight: 800;
-        }
-
-        /* Animações */
         @keyframes blink {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.3; }
-        }
-        @keyframes pulse-border {
-            0% { box-shadow: 0 0 0 0 rgba(255, 102, 0, 0.4); }
-            70% { box-shadow: 0 0 0 10px rgba(255, 102, 0, 0); }
-            100% { box-shadow: 0 0 0 0 rgba(255, 102, 0, 0); }
+            from { opacity: 1; box-shadow: 0 0 15px var(--brand-orange); }
+            to { opacity: 0.4; box-shadow: 0 0 0px var(--brand-orange); }
         }
     </style>
 </head>
 <body>
 
+    <!-- Ads Layer -->
     <div id="tela-patrocinadores" class="digital-signage">
         <img id="logo-patrocinador" src="" alt="Patrocinador">
     </div>
 
     <main class="tv-layout">
         
+        <!-- Topo -->
         <header class="header">
             <div class="brand">
-                <img src="logo (1).jpeg" class="brand-logo" alt="MAXGYM" onclick="toggleFullScreen()" onerror="this.style.display='none'">
+                <img src="logo (1).jpeg" class="brand-logo" alt="MAXGYM Logo" onclick="document.documentElement.requestFullscreen().catch(()=>{})">
                 <div class="brand-text">
                     <h1>MAXGYM</h1>
-                    <p>Catraca + Treinos</p>
+                    <p>Ranking Oficial</p>
                 </div>
             </div>
             <div class="status-bar">
@@ -416,18 +435,24 @@
             </div>
         </header>
 
+        <!-- Conteúdo Principal -->
         <section class="main-content">
-            <div class="podium-container" id="podium-area">
-                <div class="state-panel">Sincronizando dados dos atletas...</div>
+            
+            <!-- Pódio Horizontal (Top 3) -->
+            <div class="podium-stage" id="podium-area">
+                <div class="state-panel">Sincronizando Atletas...</div>
             </div>
 
-            <div class="list-container" id="list-area">
-                <div class="state-panel">O ranking aparecerá em instantes</div>
+            <!-- Grid de Elite (4º ao 10º) -->
+            <div class="grid-stage" id="grid-area">
+                <!-- Renderizado via JS -->
             </div>
+
         </section>
 
+        <!-- Rodapé Animado -->
         <footer class="ticker">
-            <div class="ticker-label">Demais posições</div>
+            <div class="ticker-label">Geral</div>
             <div class="ticker-track" id="ticker-content"></div>
         </footer>
 
@@ -437,47 +462,26 @@
         const API_URL = "https://script.google.com/macros/s/AKfycby62vambopzAU-hOp4Och0Qg9_ZOxNCqqo19BFZvUA13OFTYBRMnTnNckq3aBzncXKTJg/exec";
         const REFRESH_MS = 15000;
 
-        let dadosGlobais = [];
-
         const els = {
             podium: document.getElementById("podium-area"),
-            list: document.getElementById("list-area"),
+            grid: document.getElementById("grid-area"),
             ticker: document.getElementById("ticker-content"),
             clock: document.getElementById("clock")
         };
 
-        // ====== UTILITÁRIOS ORIGINAIS ======
+        // Funções Base
         function escapeHtml(value) {
-            return String(value ?? "")
-                .replace(/&/g, "&amp;")
-                .replace(/</g, "&lt;")
-                .replace(/>/g, "&gt;")
-                .replace(/"/g, "&quot;")
-                .replace(/'/g, "&#039;");
+            return String(value ?? "").replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
         }
 
         function getName(aluno) {
-            const nome = String(aluno?.nome ?? "").trim();
-            return nome || "Atleta";
-        }
-
-        function numericPoints(value) {
-            if (typeof value === "number") return Number.isFinite(value) ? value : 0;
-            const raw = String(value ?? "0").trim();
-            const normalized = raw
-                .replace(/[^\d,.-]/g, "")
-                .replace(/\.(?=\d{3}(\D|$))/g, "")
-                .replace(",", ".");
-            const number = Number(normalized);
-            return Number.isFinite(number) ? number : 0;
+            return escapeHtml(String(aluno?.nome ?? "Atleta").trim());
         }
 
         function formatPoints(value) {
-            const number = numericPoints(value);
-            if (number > 0 || String(value ?? "").trim() === "0") {
-                return new Intl.NumberFormat("pt-BR").format(number);
-            }
-            return String(value ?? "0");
+            const raw = String(value ?? "0").replace(/[^\d,.-]/g, "").replace(",", ".");
+            const num = Number(raw);
+            return Number.isFinite(num) ? new Intl.NumberFormat("pt-BR").format(num) : "0";
         }
 
         function getPosition(aluno, fallback) {
@@ -488,43 +492,42 @@
         function getAvatar(aluno) {
             const foto = String(aluno?.foto ?? "").trim();
             if(foto) return escapeHtml(foto);
-            
             const initial = (Array.from(getName(aluno).trim())[0] || "A").toUpperCase();
-            return `https://ui-avatars.com/api/?name=${initial}&background=ff6600&color=fff&bold=true&size=128`;
+            return `https://ui-avatars.com/api/?name=${initial}&background=ff6600&color=fff&bold=true&size=200`;
         }
 
-        // ====== RENDERIZADORES ======
+        // Renderizadores
+        function buildPodiumCard(aluno, pos, cssClass) {
+            return `
+            <div class="podium-card ${cssClass}">
+                <div class="podium-pos">${pos}º</div>
+                <img src="${getAvatar(aluno)}" class="podium-avatar" alt="${getName(aluno)}" onerror="this.src='https://ui-avatars.com/api/?name=A&background=222&color=fff'">
+                <div class="podium-name">${getName(aluno)}</div>
+                <div class="podium-pts">
+                    ${formatPoints(aluno.pontos)}
+                    <div class="pts-label">Pontos</div>
+                </div>
+            </div>`;
+        }
+
         function renderPodium(topThree) {
-            if (!topThree.length) {
-                els.podium.innerHTML = `<div class="state-panel">Nenhum atleta foi encontrado</div>`;
+            if (!topThree || topThree.length === 0) {
+                els.podium.innerHTML = `<div class="state-panel">Nenhum atleta encontrado</div>`;
                 return;
             }
 
-            const ranks = ["first", "second", "third"];
             let html = "";
-
-            topThree.forEach((aluno, index) => {
-                const pos = getPosition(aluno, index + 1);
-                html += `
-                <div class="podium-card ${ranks[index]}">
-                    <div class="pos-badge">${pos}º</div>
-                    <div class="athlete-info">
-                        <img src="${getAvatar(aluno)}" class="avatar" alt="${escapeHtml(getName(aluno))}" onerror="this.src='https://ui-avatars.com/api/?name=A&background=222&color=fff'">
-                        <div class="athlete-name">${escapeHtml(getName(aluno))}</div>
-                    </div>
-                    <div class="athlete-points">
-                        <div class="points-val">${formatPoints(aluno.pontos)}</div>
-                        <div class="points-lbl">Pts</div>
-                    </div>
-                </div>`;
-            });
+            // Ordem visual: Esquerda(2º), Centro(1º), Direita(3º)
+            if (topThree[1]) html += buildPodiumCard(topThree[1], getPosition(topThree[1], 2), "second");
+            if (topThree[0]) html += buildPodiumCard(topThree[0], getPosition(topThree[0], 1), "first");
+            if (topThree[2]) html += buildPodiumCard(topThree[2], getPosition(topThree[2], 3), "third");
 
             els.podium.innerHTML = html;
         }
 
-        function renderList(rows, offset) {
-            if (!rows.length) {
-                els.list.innerHTML = `<div class="state-panel">Novas posições aparecerão aqui</div>`;
+        function renderGrid(rows, offset) {
+            if (!rows || rows.length === 0) {
+                els.grid.innerHTML = "";
                 return;
             }
 
@@ -532,18 +535,20 @@
             rows.forEach((aluno, index) => {
                 const pos = getPosition(aluno, offset + index + 1);
                 html += `
-                <div class="list-row">
-                    <div class="row-pos">${pos}º</div>
-                    <img src="${getAvatar(aluno)}" class="row-avatar" alt="${escapeHtml(getName(aluno))}" onerror="this.src='https://ui-avatars.com/api/?name=A&background=222&color=fff'">
-                    <div class="row-name">${escapeHtml(getName(aluno))}</div>
-                    <div class="row-points">${formatPoints(aluno.pontos)} pts</div>
+                <div class="grid-card">
+                    <div class="grid-pos">${pos}º</div>
+                    <img src="${getAvatar(aluno)}" class="grid-avatar" alt="Avatar">
+                    <div class="grid-info">
+                        <div class="grid-name">${getName(aluno)}</div>
+                        <div class="grid-pts">${formatPoints(aluno.pontos)} Pts</div>
+                    </div>
                 </div>`;
             });
-            els.list.innerHTML = html;
+            els.grid.innerHTML = html;
         }
 
         function renderTicker(rows, offset) {
-            if (!rows.length) {
+            if (!rows || rows.length === 0) {
                 els.ticker.innerHTML = "";
                 return;
             }
@@ -553,7 +558,7 @@
                 return `
                     <div class="ticker-item">
                         <span class="ticker-pos">${pos}º</span>
-                        <span class="ticker-name">${escapeHtml(getName(aluno))}</span>
+                        <span class="ticker-name">${getName(aluno)}</span>
                         <span class="ticker-pts">${formatPoints(aluno.pontos)} pts</span>
                     </div>`;
             }).join("")).join("");
@@ -562,24 +567,20 @@
             els.ticker.style.animationDuration = `${Math.max(20, rows.length * 3.5)}s`;
         }
 
-        // ====== LÓGICA DE DADOS ======
+        // Lógica de Atualização
         async function carregarRanking() {
             try {
                 const response = await fetch(`${API_URL}?acao=getRankingTV&t=${Date.now()}`, { cache: "no-store" });
                 const payload = await response.json();
-                dadosGlobais = Array.isArray(payload) ? payload : [];
+                const dadosGlobais = Array.isArray(payload) ? payload : [];
                 
                 if (dadosGlobais.length > 0) {
                     renderPodium(dadosGlobais.slice(0, 3));
-                    renderList(dadosGlobais.slice(3, 10), 3);
+                    renderGrid(dadosGlobais.slice(3, 10), 3);
                     renderTicker(dadosGlobais.slice(10), 10);
-                } else {
-                    els.podium.innerHTML = `<div class="state-panel">Ranking vazio</div>`;
-                    els.list.innerHTML = "";
-                    els.ticker.innerHTML = "";
                 }
             } catch (error) {
-                console.error("Erro ao carregar ranking:", error);
+                console.error("Erro na API:", error);
             }
         }
 
@@ -588,15 +589,7 @@
             els.clock.textContent = now.toLocaleTimeString("pt-BR", { hour: "2-digit", minute: "2-digit" });
         }
 
-        function toggleFullScreen() {
-            if (!document.fullscreenElement) {
-                document.documentElement.requestFullscreen().catch(() => {});
-            } else {
-                document.exitFullscreen();
-            }
-        }
-
-        // ====== DIGITAL SIGNAGE / PATROCINADORES ======
+        // Sistema de Patrocínios
         const sleep = ms => new Promise(resolve => setTimeout(resolve, ms));
 
         async function iniciarDigitalSignage() {
@@ -613,7 +606,7 @@
                 await sleep(1000); 
                 telaAds.style.display = 'none';
 
-                await sleep(60000); 
+                await sleep(60000); // 1 min de ranking
 
                 telaAds.style.display = 'flex';
                 await sleep(50);
@@ -626,26 +619,19 @@
                     }
                     imgLogo.src = patrocinadores[i];
                     imgLogo.style.opacity = 1;
-                    
-                    await sleep(10000);
+                    await sleep(10000); // 10 seg por banner
                 }
             }
         }
 
-        // ====== BOOT ======
+        // Init
         updateClock();
-        window.setInterval(updateClock, 1000);
+        setInterval(updateClock, 1000);
         
         carregarRanking();
-        window.setInterval(carregarRanking, REFRESH_MS);
+        setInterval(carregarRanking, REFRESH_MS);
 
-        window.setTimeout(iniciarDigitalSignage, 5000);
-
-        if ("serviceWorker" in navigator) {
-            window.addEventListener("load", () => {
-                navigator.serviceWorker.register("sw.js").catch(() => {});
-            });
-        }
+        setTimeout(iniciarDigitalSignage, 5000);
     </script>
 </body>
 </html>
